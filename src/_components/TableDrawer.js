@@ -83,7 +83,7 @@ class TableDrawer extends Component {
 								>
 									{ item.input(this.props.disabled) }
 								</Form.Item>
-							) : (<></>)
+							) : (<span key={ item.name }></span>)
 						)}
 
 						<Divider />

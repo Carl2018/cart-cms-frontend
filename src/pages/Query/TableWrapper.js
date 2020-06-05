@@ -6,10 +6,10 @@ import { notification } from 'antd';
 import { FileTextOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 // import shared components
-import TableBody from './TableBody'
-import TableDropdown from './TableDropdown'
+import TableBody from '../../_components/TableBody'
+import TableDropdown from '../../_components/TableDropdown'
 import TableDrawer from './TableDrawer'
-import { cancel, refresh } from '../_components/Message'
+import { cancel, refresh } from '../../_components/Message'
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -20,6 +20,9 @@ class TableWrapper extends Component {
 			visible: false, // for opening or closing the TableDrawer
 			record: {}, // for loading a record into the form in TableDrawer
 			disabled: false, // for disabling the input fields in TableDrawer
+			//related info
+			relatedEmail: {},
+			relatedAccount: {},
 		};
 	}
 	
@@ -69,21 +72,34 @@ class TableWrapper extends Component {
 		},
 	];
 
+	// pass down related email and account
+	getRelatedInfo = data => {
+		const email = typeof data === "string" ? data : data.relatedEmail;
+		const account = typeof data === "string" ? "" : data.relatedAccount;
+		const relatedEmail = this.props.dataEmail.find( item => item.email === email )
+		const relatedAccount = this.props.dataAccount.find( item => item.accountName === account )
+		console.log(relatedEmail);
+		console.log(relatedAccount);
+		return { relatedEmail, relatedAccount };
+	}
+
 	// handlers for actions in TableBody
 	handleClickView = record => {
+		const { relatedEmail, relatedAccount } = this.getRelatedInfo(record);
+		this.setState({ relatedEmail, relatedAccount, record }, () => 
 		this.setState({
 			visible: true, 
 			disabled: true,
-			record,
-		});
+		}) );
 	}
 
 	handleClickEdit = record => {
+		const { relatedEmail, relatedAccount } = this.getRelatedInfo(record);
+		this.setState({ relatedEmail, relatedAccount, record }, () => 
 		this.setState({
 			visible: true, 
 			disabled: false,
-			record,
-		});
+		}) );
 	}
 
 	handleClickDelete = record => this.props.delete(record.key);
@@ -92,11 +108,14 @@ class TableWrapper extends Component {
 
 	// handlers for actions in TableDropdown
   handleClickAdd = event => {
+		console.log(this.props.email);
+		const { relatedEmail, relatedAccount } = this.getRelatedInfo(this.props.email);
+		this.setState({ relatedEmail, relatedAccount }, () => 
     this.setState({
       visible: true,
 			disabled: false,
 			record: {},
-    });
+    }) );
   };
 
 	handleClickRefreshTable = () => {
@@ -202,6 +221,9 @@ class TableWrapper extends Component {
 						formItems={ this.props.formItems }
 						disabled={ this.state.disabled } 
 						onSubmit={ this.handleSubmit }
+						dataEmail={ this.state.relatedEmail }
+						dataCase={ this.state.record }
+						dataAccount={ this.state.relatedAccount }
 					/>
 				</div>
 			</div>

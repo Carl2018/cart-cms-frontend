@@ -1,51 +1,31 @@
 import React, { Component } from 'react';
 
 // import styling from ant desgin
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { FileSearchOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
 
 // import shared components
-import TableWrapper from '../_components/TableWrapper'
-import { success } from '../_components/Message'
+import TableWrapper from './TableWrapper'
+import { success } from '../../_components/Message'
 
-class Query extends Component {
+class Case extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
-			data: [
-				{
-					key: '1',
-					email: 'alice@gmail.com',
-					issue: 'account unban',
-					status: 'queueing',
-					createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-				},
-				{
-					key: '2',
-					email: 'bob@gmail.com',
-					issue: 'change of membership',
-					status: 'claimed',
-					createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
-				},
-				{
-					key: '3',
-					email: 'charlie@hotmail.com',
-					issue: 'account unban',
-					status: 'queueing',
-					createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
-				},
-				{
-					key: '4',
-					email: 'david@gmail.com',
-					issue: 'change of password failed',
-					status: 'queueing',
-					createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
-				},
-			],
+			data: [],
 		};
 	}
+	
+	//componentWillReceiveProps(nextProps) {
+	//	this.setState({ data: nextProps.data });
+	//}
+
+	static getDerivedStateFromProps(nextProps, prevState) {
+		return { data: nextProps.data };
+	}
+	
 	
 	// define columns for TableBody
 	compare = (a, b) => {
@@ -56,21 +36,12 @@ class Query extends Component {
 
 	columns = [
 		{
-			title: 'Email',
-			dataIndex: 'email',
-			key: 'email',
-			sorter: (a, b) => this.compare(a.email, b.email),
+			title: 'Case Name',
+			dataIndex: 'casename',
+			key: 'casename',
+			sorter: (a, b) => this.compare(a.casename, b.casename),
 			sortDirection: ['ascend', 'descend'],
 			width: '15%',
-			setFilter: true
-		},
-		{
-			title: 'Issue',
-			dataIndex: 'issue',
-			key: 'issue',
-			sorter: (a, b) => this.compare(a.issue, b.issue),
-			sortDirection: ['ascend', 'descend'],
-			width: '30%',
 			setFilter: true
 		},
 		{
@@ -92,17 +63,35 @@ class Query extends Component {
 			width: '15%',
 			setFilter: true
 		},
+		{
+			title: 'Related Email',
+			dataIndex: 'relatedEmail',
+			key: 'relatedEmail',
+			sorter: (a, b) => this.compare(a.relatedEmail, b.relatedEmail),
+			sortDirection: ['ascend', 'descend'],
+			width: '15%',
+			setFilter: true
+		},
+		{
+			title: 'Related Account',
+			dataIndex: 'relatedAccount',
+			key: 'relatedAccount',
+			sorter: (a, b) => this.compare(a.relatedAccount, b.relatedAccount),
+			sortDirection: ['ascend', 'descend'],
+			width: '15%',
+			setFilter: true
+		},
 	];
 
 	// define form items for TableDrawer
 	formItems = [
 		{
-			label: 'Email',
-			name: 'email',
+			label: 'Case Name',
+			name: 'casename',
 			rules: [
 				{
 					required: true,
-					message: 'email cannot be empty',
+					message: 'casename cannot be empty',
 				}
 			],
 			editable: true,
@@ -115,67 +104,32 @@ class Query extends Component {
 			)
 		},
 		{
-			label: 'Issue',
-			name: 'issue',
+			label: 'Remarks',
+			name: 'remarks',
 			rules: [
 				{
 					required: true,
-					message: 'issue cannot be empty',
+					message: 'remarks cannot be empty',
 				},
 			],
 			editable: true,
 			input: disabled => (
 				<Input.TextArea
-					autoSize={{ minRows: 2, maxRows: 8 }}
+					autoSize={{ minRows: 4, maxRows: 8 }}
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
 				/>
 			)
 		},			
-		{
-			label: 'Status',
-			name: 'status',
-			rules: [
-				{
-					required: true,
-					message: 'status cannot be empty',
-				}
-			],
-			editable: false,
-			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
-					disabled={ disabled }
-				/>
-			)
-		},
-		{
-			label: 'Created at',
-			name: 'createdAt',
-			rules: [
-				{
-					required: true,
-					message: 'createdAt cannot be empty',
-				}
-			],
-			editable: false,
-			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
-					disabled={ disabled }
-				/>
-			)
-		},
 	];
 
 	// define table header
-	tableHeader = (
+	tableHeader = this.props.tableHeader ? this.props.tableHeader : 
+	(
 		<>
-			<QuestionCircleOutlined />
-			<strong>Queries</strong>
+			<FileSearchOutlined />
+			<strong>Cases</strong>
 		</>
 	)
 
@@ -183,7 +137,7 @@ class Query extends Component {
   create = record => {
 		const data = this.state.data.slice();
 		record.key = Date.now();
-		record.status = "queueing";
+		record.status = "pending";
 		record.createdAt = new Date().toISOString().split('.')[0].replace('T', ' ');
 		data.push(record);
 		if (200) success('create_success');
@@ -224,18 +178,23 @@ class Query extends Component {
 	refreshTable = () => this.setState({ tableWrapperKey: Date.now() });
 	render(){
 		return (
-			<div className='Query'>
+			<div className='Case'>
 				<TableWrapper
 					key={ this.state.tableWrapperKey }
 					data={ this.state.data }
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create a new query'
+					drawerTitle='Create a new case'
 					create={ this.create }
 					edit={ this.edit }
 					delete={ this.delete }
 					refreshTable={ this.refreshTable }
+					isSmall={ this.props.isSmall }
+					dataEmail={ this.props.dataEmail }
+					dataCase={ this.props.data }
+					dataAccount={ this.props.dataAccount }
+					email={ this.props.email }
 				>
 				</TableWrapper>
 			</div>
@@ -243,4 +202,4 @@ class Query extends Component {
 	}
 }
 
-export default Query;
+export default Case;

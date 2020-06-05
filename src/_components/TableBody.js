@@ -144,11 +144,25 @@ class TableBody extends Component {
 
 		return (
 			<div className='TableDropdown'>
-				<Table 
-					columns={ columns } 
-					dataSource={ data } 
-					rowSelection={ rowSelection } 
-				/>
+				{ this.props.selectedRowKeys ?
+					(
+						<Table 
+							columns={ columns } 
+							dataSource={ data } 
+							rowSelection={ rowSelection } 
+							size={ this.props.isSmall ? "small" : "default" }
+							pagination={ this.props.pagination }
+						/>
+					) :
+					(
+						<Table 
+							columns={ columns } 
+							dataSource={ data } 
+							size={ this.props.isSmall ? "small" : "default" }
+							pagination={ this.props.pagination }
+						/>
+					)
+				}
 			</div>
 		);
 	}

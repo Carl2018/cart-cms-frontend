@@ -14,47 +14,70 @@ class Email extends Component {
 		this.state = {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
-			data: [
-				{
-					key: '1',
-					email: 'alice@gmail.com',
-					createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-					updatedAt: new Date('2020-05-25T11:28:25').toISOString().split('.')[0].replace('T', ' '),
-				},
-				{
-					key: '2',
-					email: 'bob@gmail.com',
-					createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
-					updatedAt: new Date('2020-05-24T13:48:32').toISOString().split('.')[0].replace('T', ' '),
-				},
-				{
-					key: '3',
-					email: 'charlie@hotmail.com',
-					createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
-					updatedAt: new Date('2020-05-22T18:23:28').toISOString().split('.')[0].replace('T', ' '),
-				},
-				{
-					key: '4',
-					email: 'david@gmail.com',
-					createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
-					updatedAt: new Date('2020-05-25T12:33:18').toISOString().split('.')[0].replace('T', ' '),
-				},
-				{
-					key: '5',
-					email: 'cunningAliceUsedADifferentEmailAccount@gmail.com',
-					createdAt: new Date('2020-05-20T17:36:20').toISOString().split('.')[0].replace('T', ' '),
-					updatedAt: new Date('2020-05-21T08:40:20').toISOString().split('.')[0].replace('T', ' '),
-				},
-				{
-					key: '6',
-					email: 'davidUsedHisSecondaryEmailAccount@gmail.com',
-					createdAt: new Date('2020-05-21T13:42:20').toISOString().split('.')[0].replace('T', ' '),
-					updatedAt: new Date('2020-05-24T10:50:05').toISOString().split('.')[0].replace('T', ' '),
-				},
-			],
+			data: this.props.data ? [] : this.allEmails,
 		};
 	}
+
+	//componentWillReceiveProps(nextProps) {
+	//	this.setState({ data: nextProps.data });
+	//}
+	static getDerivedStateFromProps(nextProps, prevState) {
+		return { data: nextProps.data };
+	}
 	
+	
+	allEmails = [
+		{
+			key: '1',
+			email: 'alice@gmail.com',
+			createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
+			updatedAt: new Date('2020-05-25T11:28:25').toISOString().split('.')[0].replace('T', ' '),
+			profileID: '1',
+		},
+		{
+			key: '2',
+			email: 'bob@gmail.com',
+			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
+			updatedAt: new Date('2020-05-24T13:48:32').toISOString().split('.')[0].replace('T', ' '),
+			profileID: '2',
+		},
+		{
+			key: '21',
+			email: 'bob1234@gmail.com',
+			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
+			updatedAt: new Date('2020-05-24T13:48:32').toISOString().split('.')[0].replace('T', ' '),
+			profileID: '2',
+		},
+		{
+			key: '3',
+			email: 'charlie@hotmail.com',
+			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
+			updatedAt: new Date('2020-05-22T18:23:28').toISOString().split('.')[0].replace('T', ' '),
+			profileID: '3',
+		},
+		{
+			key: '31',
+			email: 'charlie1234@hotmail.com',
+			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
+			updatedAt: new Date('2020-05-22T18:23:28').toISOString().split('.')[0].replace('T', ' '),
+			profileID: '3',
+		},
+		{
+			key: '32',
+			email: 'charlie4321@hotmail.com',
+			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
+			updatedAt: new Date('2020-05-22T18:23:28').toISOString().split('.')[0].replace('T', ' '),
+			profileID: '3',
+		},
+		{
+			key: '4',
+			email: 'david@gmail.com',
+			createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
+			updatedAt: new Date('2020-05-25T12:33:18').toISOString().split('.')[0].replace('T', ' '),
+			profileID: '4',
+		},
+	];
+
 	// define columns for TableBody
 	compare = (a, b) => {
 		if (a >  b) return 1;
@@ -134,7 +157,8 @@ class Email extends Component {
 	];
 
 	// define table header
-	tableHeader = (
+	tableHeader = this.props.tableHeader ? this.props.tableHeader : 
+	(
 		<>
 			<MailOutlined />
 			<strong>Known Email Accounts</strong>
@@ -145,7 +169,6 @@ class Email extends Component {
   create = record => {
 		const data = this.state.data.slice();
 		record.key = Date.now();
-		record.status = "queueing";
 		record.createdAt = new Date().toISOString().split('.')[0].replace('T', ' ');
 		record.updatedAt = new Date().toISOString().split('.')[0].replace('T', ' ');
 		data.push(record);
@@ -199,6 +222,7 @@ class Email extends Component {
 					edit={ this.edit }
 					delete={ this.delete }
 					refreshTable={ this.refreshTable }
+					isSmall={ this.props.isSmall }
 				>
 				</TableWrapper>
 			</div>

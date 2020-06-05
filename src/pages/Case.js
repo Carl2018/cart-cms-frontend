@@ -14,39 +14,58 @@ class Case extends Component {
 		this.state = {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
-			data: [
-				{
-					key: '1',
-					casename: 'alice account unban',
-					remarks: 'The user has been banned once before',
-					status: 'pending',
-					createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-				},
-				{
-					key: '2',
-					casename: 'bob membership change',
-					remarks: 'The user has been a VIP for 6 months',
-					status: 'approved',
-					createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
-				},
-				{
-					key: '3',
-					casename: 'charlie account unban',
-					remarks: 'This is the first time the user got banned',
-					status: 'pending',
-					createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
-				},
-				{
-					key: '4',
-					casename: 'david passowrd change',
-					remarks: 'The user has made too many failed attempts',
-					status: 'pending',
-					createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
-				},
-			],
+			data: this.props.data ? this.props.data : this.allCases,
 		};
 	}
 	
+	allCases = [
+		{
+			key: '1',
+			casename: 'alice account unban',
+			remarks: 'The user has been banned once before',
+			status: 'pending',
+			createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
+			relatedEmail: 'alice@gmail.com',
+			relatedAccount: 'alice@facebook.com',
+		},
+		{
+			key: '2',
+			casename: 'bob membership change',
+			remarks: 'The user has been a VIP for 6 months',
+			status: 'approved',
+			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
+			relatedEmail: 'bob@gmail.com',
+			relatedAccount: '0085212345678',
+		},
+		{
+			key: '21',
+			casename: 'bob password change failed',
+			remarks: 'made more than 3 attempts',
+			status: 'approved',
+			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
+			relatedEmail: 'bob@gmail.com',
+			relatedAccount: '0085212345678',
+		},
+		{
+			key: '3',
+			casename: 'charlie account unban',
+			remarks: 'This is the first time the user got banned',
+			status: 'pending',
+			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
+			relatedEmail: 'charlie@hotmail.com',
+			relatedAccount: 'charlie@facebook.com',
+		},
+		{
+			key: '4',
+			casename: 'david passowrd change',
+			remarks: 'The user has made too many failed attempts',
+			status: 'pending',
+			createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
+			relatedEmail: 'david@gmail.com',
+			relatedAccount: '0085287654321',
+		},
+	];
+
 	// define columns for TableBody
 	compare = (a, b) => {
 		if (a >  b) return 1;
@@ -65,15 +84,6 @@ class Case extends Component {
 			setFilter: true
 		},
 		{
-			title: 'Remarks',
-			dataIndex: 'remarks',
-			key: 'remarks',
-			sorter: (a, b) => this.compare(a.remarks, b.remarks),
-			sortDirection: ['ascend', 'descend'],
-			width: '30%',
-			setFilter: true
-		},
-		{
 			title: 'Status',
 			dataIndex: 'status',
 			key: 'status',
@@ -89,6 +99,24 @@ class Case extends Component {
 			sorter: (a, b) => this.compare(a.createdAt, b.createdAt),
 			sortDirection: ['ascend', 'descend'],
 			defaultSortOrder: 'descend',
+			width: '15%',
+			setFilter: true
+		},
+		{
+			title: 'Related Email',
+			dataIndex: 'relatedEmail',
+			key: 'relatedEmail',
+			sorter: (a, b) => this.compare(a.relatedEmail, b.relatedEmail),
+			sortDirection: ['ascend', 'descend'],
+			width: '15%',
+			setFilter: true
+		},
+		{
+			title: 'Related Account',
+			dataIndex: 'relatedAccount',
+			key: 'relatedAccount',
+			sorter: (a, b) => this.compare(a.relatedAccount, b.relatedAccount),
+			sortDirection: ['ascend', 'descend'],
 			width: '15%',
 			setFilter: true
 		},
@@ -172,7 +200,8 @@ class Case extends Component {
 	];
 
 	// define table header
-	tableHeader = (
+	tableHeader = this.props.tableHeader ? this.props.tableHeader : 
+	(
 		<>
 			<FileSearchOutlined />
 			<strong>Cases</strong>

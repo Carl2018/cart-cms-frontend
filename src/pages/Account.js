@@ -16,43 +16,53 @@ class Account extends Component {
 		this.state = {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
-			data: [
-				{
-					key: '1',
-					candidateID: 'u9876543210',
-					accountName: 'alice@facebook.com',
-					accountType: 'facebook',
-					labels: ['banned'],
-					createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-				},
-				{
-					key: '2',
-					candidateID: 'u9876543212',
-					accountName: '0085212345678',
-					accountType: 'phone',
-					labels: ['normal'],
-					createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
-				},
-				{
-					key: '3',
-					candidateID: 'u9876543213',
-					accountName: 'charlie@facebook',
-					accountType: 'facebook',
-					labels: ['spammer', 'banned'],
-					createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
-				},
-				{
-					key: '4',
-					candidateID: 'u9876543214',
-					accountName: '0085287654321',
-					accountType: 'phone',
-					labels: ['VIP'],
-					createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
-				},
-			],
+			data: this.props.data ? [] : this.allAccounts,
 		};
 	}
 	
+	//componentWillReceiveProps(nextProps) {
+	//	this.setState({ data: nextProps.data });
+	//}
+	static getDerivedStateFromProps(nextProps, prevState) {
+		return { data: nextProps.data };
+	}
+	
+	
+	allAccounts = [
+		{
+			key: '1',
+			candidateID: 'u9876543210',
+			accountName: 'alice@facebook.com',
+			accountType: 'facebook',
+			labels: ['banned'],
+			createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
+		},
+		{
+			key: '2',
+			candidateID: 'u9876543212',
+			accountName: '0085212345678',
+			accountType: 'phone',
+			labels: ['normal'],
+			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
+		},
+		{
+			key: '3',
+			candidateID: 'u9876543213',
+			accountName: 'charlie@facebook',
+			accountType: 'facebook',
+			labels: ['spammer', 'banned'],
+			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
+		},
+		{
+			key: '4',
+			candidateID: 'u9876543214',
+			accountName: '0085287654321',
+			accountType: 'phone',
+			labels: ['VIP'],
+			createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
+		},
+	];
+
 	// define columns for TableBody
 	compare = (a, b) => {
 		if (a >  b) return 1;
@@ -67,7 +77,7 @@ class Account extends Component {
 			key: 'candidateID',
 			sorter: (a, b) => this.compare(a.candidateID, b.candidateID),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			width: '25%',
 			setFilter: true
 		},
 		{
@@ -235,7 +245,8 @@ class Account extends Component {
 	];
 
 	// define table header
-	tableHeader = (
+	tableHeader = this.props.tableHeader ? this.props.tableHeader : 
+	(
 		<>
 			<TeamOutlined />
 			<strong>Accounts</strong>
@@ -299,6 +310,7 @@ class Account extends Component {
 					edit={ this.edit }
 					delete={ this.delete }
 					refreshTable={ this.refreshTable }
+					isSmall={ this.props.isSmall }
 				>
 				</TableWrapper>
 			</div>

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import './App.css';
 
 // import customized component
-import Query from './pages/Query';
+import Query from './pages/Query/Query';
 import Case from './pages/Case';
 import Account from './pages/Account';
 import Email from './pages/Email';
