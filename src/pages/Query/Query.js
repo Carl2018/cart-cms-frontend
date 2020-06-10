@@ -4,9 +4,9 @@ import React, { Component } from 'react';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { AutoComplete, Input, Space, Button, Card, Row, Col, message } from 'antd';
 
-import Email from "../Email"
+import Email from "./Email"
 import Case from "./Case"
-import Account  from "../Account"
+import Account  from "./Account"
 import TableDrawer from "../../_components/TableDrawer"
 
 const { Search } = Input;
@@ -20,6 +20,7 @@ class Query extends Component {
 			tableDrawerKey: Date.now(),
 			record: {},
 			loading: false,
+			showHeader: false,
 			visible: false,
 			dataEmail: [],
 			dataCase: [],
@@ -245,9 +246,16 @@ class Query extends Component {
 		this.setState({ email, dataEmail, dataCase, dataAccount });
 		if (profileID) {
 			message.success("Profile Found");
+			this.setState({ 
+				showHeader: true,
+			});
 		} else {
 			message.info("Profile Not Found");
-			this.setState({ tableDrawerKey: Date.now(), record: { email } });
+			this.setState({ 
+				tableDrawerKey: Date.now(), 
+				record: { email },
+				showHeader: false,
+			});
 		}
 	}
 
@@ -312,17 +320,17 @@ class Query extends Component {
 				</Row>
 				<Card
 					style={{ margin: "16px" }}
-					loading={ this.state.loading }
 				>
 					<Email 
 						data={ this.state.dataEmail }
 						tableHeader={ <><strong>Profile</strong></> }
 						isSmall={ true }
+						showHeader={ this.state.showHeader }
+						loading={ this.state.loading }
 					/>
 				</Card>
 				<Card
 					style={{ margin: "16px" }}
-					loading={ this.state.loading }
 				>
 					<Case
 						data={ this.state.dataCase }
@@ -331,16 +339,19 @@ class Query extends Component {
 						email={ this.state.email }
 						tableHeader={ <><strong>Cases</strong></> }
 						isSmall={ true }
+						showHeader={ this.state.showHeader }
+						loading={ this.state.loading }
 					/>
 				</Card>
 				<Card
 					style={{ margin: "16px" }}
-					loading={ this.state.loading }
 				>
 					<Account
 						data={ this.state.dataAccount }
 						tableHeader={ <><strong>Accounts</strong></> }
 						isSmall={ true }
+						showHeader={ this.state.showHeader }
+						loading={ this.state.loading }
 					/>
 				</Card>
 				<div>

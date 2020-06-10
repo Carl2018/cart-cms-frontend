@@ -152,6 +152,8 @@ class TableBody extends Component {
 							rowSelection={ rowSelection } 
 							size={ this.props.isSmall ? "small" : "default" }
 							pagination={ this.props.pagination }
+							showHeader={ this.props.showHeader }
+							loading={ this.props.loading }
 						/>
 					) :
 					(
@@ -160,6 +162,8 @@ class TableBody extends Component {
 							dataSource={ data } 
 							size={ this.props.isSmall ? "small" : "default" }
 							pagination={ this.props.pagination }
+							showHeader={ this.props.showHeader }
+							loading={ this.props.loading }
 						/>
 					)
 				}

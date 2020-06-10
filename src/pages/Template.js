@@ -6,6 +6,7 @@ import { Input } from 'antd';
 
 // import shared components
 import TableWrapper from '../_components/TableWrapper'
+import RichTextInput from '../_components/RichTextInput'
 import { success } from '../_components/Message'
 
 class Template extends Component {
@@ -18,26 +19,26 @@ class Template extends Component {
 				{
 					key: '1',
 					title: 'change of membership response',
-					body: 'By doing so, you will lose your privilge as abcdf',
+					body: '<strong>By doing so, you will lose your privilge as abcdf</strong>',
 				},
 				{
 					key: '2',
 					title: 'unban response',
-					body: `please behave yourself
+					body: `<ol><li>please behave yourself
 								or you will be banned permanetly
 								I am not kidding
 								seriously
 								I mean it
-								stop laughing
+								stop laughing</li></ol>
 								`,
 				},
 				{
 					key: '3',
 					title: 'change of password response',
-					body: `please provide your credentials
+					body: `<h1>please provide your credentials
 								please please please
 								please please please
-								please please please
+								please please please</h1>
 								`,
 				},
 				{
@@ -114,12 +115,10 @@ class Template extends Component {
 				},
 			],
 			editable: true,
-			input: disabled => (
-				<Input.TextArea
-					autoSize={{ minRows: 20, maxRows: 30 }}
-					maxLength={255}
-					allowClear
+			input: (disabled, record) => (
+				<RichTextInput 
 					disabled={ disabled }
+					record={ record }
 				/>
 			)
 		},			
@@ -174,6 +173,17 @@ class Template extends Component {
 	}
 
 	refreshTable = () => this.setState({ tableWrapperKey: Date.now() });
+
+	// layout for forms
+	layout = {
+		labelCol: {
+			span: 6,
+		},
+		wrapperCol: {
+			span: 18,
+		},
+	};
+
 	render(){
 		return (
 			<div className='Template'>
@@ -188,6 +198,8 @@ class Template extends Component {
 					edit={ this.edit }
 					delete={ this.delete }
 					refreshTable={ this.refreshTable }
+					drawerWidth={ 900 }
+					formLayout={ this.layout }
 				>
 				</TableWrapper>
 			</div>

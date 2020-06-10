@@ -5,8 +5,8 @@ import { MailOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
 
 // import shared components
-import TableWrapper from '../_components/TableWrapper'
-import { success } from '../_components/Message'
+import TableWrapper from '../../_components/TableWrapper'
+import { success } from '../../_components/Message'
 
 class Email extends Component {
 	constructor(props) {
@@ -14,10 +14,18 @@ class Email extends Component {
 		this.state = {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
-			data: this.allEmails,
+			data: [],
 		};
 	}
 
+	//componentWillReceiveProps(nextProps) {
+	//	this.setState({ data: nextProps.data });
+	//}
+	static getDerivedStateFromProps(nextProps, prevState) {
+		return { data: nextProps.data };
+	}
+	
+	
 	allEmails = [
 		{
 			key: '1',
@@ -215,6 +223,8 @@ class Email extends Component {
 					delete={ this.delete }
 					refreshTable={ this.refreshTable }
 					isSmall={ this.props.isSmall }
+					showHeader={ this.props.showHeader }
+					loading={ this.props.loading }
 				>
 				</TableWrapper>
 			</div>

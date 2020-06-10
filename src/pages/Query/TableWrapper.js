@@ -209,6 +209,8 @@ class TableWrapper extends Component {
 						selectedRowKeys={ this.state.selectedRowKeys }
 						onSelectChange={ this.handleSelectChange }
 						isSmall={ this.props.isSmall }
+						showHeader={ this.props.showHeader }
+						loading={ this.props.loading }
 					/>
 				</div>
 				<div>

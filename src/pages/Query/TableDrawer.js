@@ -18,21 +18,26 @@ import React, { Component } from 'react';
 
 // import styling from ant design
 import { 
-	Button, Form, Divider, Input, Select, Popconfirm,
-	Modal, Drawer, Tag, Collapse, Space, message,
+	Button, Form, Divider, Input, Select, Popconfirm, Descriptions, Radio,
+	Switch, Row, Col, Card, Modal, Drawer, Tag, Collapse, Space, message,
+	Spin,
 } from 'antd';
 import { 
 	FormOutlined, 
 	UserAddOutlined, 
 	UserDeleteOutlined,
 	CopyOutlined,
+	NodeIndexOutlined,
 } from '@ant-design/icons';
 
 // import shared components
 import TableBody from '../../_components/TableBody'
-import Template from './Template'
+import SearchableInput from '../../_components/SearchableInput'
+import RichTextOutput from '../../_components/RichTextOutput'
+import TableDropdown from './TableDropdown'
 
 
+const { Item } = Descriptions;
 const { Panel } = Collapse;
 const { Option } = Select;
 
@@ -53,6 +58,19 @@ class TableDrawer extends Component {
 			formKey: Date.now(),
 			// for modal
 			visibleModal: false,
+			// for Radio
+			valueRadio: "title",
+			searchProperty: "title",
+			// for Switch
+			templateLang: "Chn",
+			// for Collapse
+			searchInput: "",
+			searchResults: this.allOptions,
+			allOptions: this.allOptions,
+			// for Spin
+			loading: false,
+			// for SearchableInput
+			modalKey: Date.now(),
 		};
 	}
 
@@ -257,8 +275,17 @@ class TableDrawer extends Component {
 	}
 
 	handleCancel = event => {
+		const sticktops = this.state.allOptions
+			.filter( item => item.stickTop );
+		const rest = this.state.allOptions
+			.filter( item => !item.stickTop )
+			.sort( this.dynamicSort("copiedCount") );
+			
 		this.setState({
+			allOptions: [...sticktops, ...rest],
+			searchResults: [...sticktops, ...rest],
 			visibleModal: false,
+			modalKey: Date.now(),
 		});
 	}
 
@@ -438,6 +465,263 @@ class TableDrawer extends Component {
 		},
 	];
 
+	genExtra = () => (
+		<Button
+			type="ghost"
+			style={{ border: "none" }}
+			size="small"
+			onClick={event => {
+				event.stopPropagation();
+			}}
+		>
+			<NodeIndexOutlined />
+			Bind
+		</Button>
+	);
+
+	title = (
+		<Row>
+			<Col span={ 8 }>
+				Case Details
+			</Col>
+			<Col
+				span={ 2 }
+				offset={ 12 }
+			>
+				<TableDropdown 
+					onClickAdd={ () => console.log("click") }
+					onClickRefreshTable={ () => console.log("click") }
+					onClickBatchDelete={ () => console.log("click") }
+				/>
+			</Col>
+		</Row>	
+	)
+
+	titleModal = () => (
+		<Row>
+			<Col span={ 8 }>
+				Search templates
+			</Col>
+			<Col
+				span={ 3 }
+				offset={ 12 }
+			>
+				<Radio.Group 
+					size="small"
+					buttonStyle="solid"
+					defaultValue="Chn"
+					onChange={this.handleChangeRadioLang} 
+					value={this.state.templateLang}
+				>
+					<Radio.Button value={"Chn"}>CHN</Radio.Button>
+					<Radio.Button value={"Eng"}>ENG</Radio.Button>
+				</Radio.Group>
+			</Col>
+		</Row>	
+	)
+
+	handleSearch = data => {
+		console.log(data);
+		this.setState({ loading: true });
+		setTimeout( () => this.updateCollapse(data) , 1000 );
+	}
+
+	updateCollapse = data => {
+		const searchProperty = this.state.searchProperty;
+		const searchResults = this.state.allOptions
+			.filter( item => item[searchProperty].includes(data) );
+		console.log(searchResults);
+		this.setState({ 
+			searchInput: data,
+			searchResults,
+			loading: false, 
+		});
+	}
+
+	allOptions = [
+		{
+			key: '1',
+			title: 'change of membership response',
+			bodyEng: '<h2>By doing so, you will lose your privilge as abcdf</h2>',
+			bodyChn: "<h2>QQQQQQQQQQDDDDDDDDDDD</h2>",
+			stickTop: false,
+			copiedCount: 0,
+			updatedAt: 0,
+		},
+		{
+			key: '2',
+			title: 'unban response',
+			bodyEng: `<h2>please behave yourself</h2>
+						<p>or you will be banned permanetly
+						I am not kidding
+						<strong>seriously</strong>
+						I mean it
+						stop laughing</p>
+						`,
+			bodyChn: "<strong>TTTTT</strong><em>AAAAAAAAAAAAAAAAA</em>",
+			stickTop: false,
+			copiedCount: 0,
+			updatedAt: 1,
+		},
+		{
+			key: '3',
+			title: 'change of password response',
+			bodyEng: `<h2>please provide your credentials</h2>
+						<p><em>please please please</em>
+						please please please
+						please please please</p>
+						`,
+			bodyChn: "<strong>ASDASDF</strong><h2>ASDFASDFASDFASDFASDF</h2>",
+			stickTop: false,
+			copiedCount: 0,
+			updatedAt: 2,
+		},
+		{
+			key: '4',
+			title: 'terms and conditions',
+			bodyEng: `<h2>terms and conditions<h2><ol>
+						<li>clause 1</li>
+						<li>clause 2</li>
+						<li>clause 3</li>
+						<li>clause 4</li></ol>
+						`,
+			bodyChn: "<em>ZZZ</em> <strong>ZZZ1234</strong>",
+			stickTop: false,
+			copiedCount: 0,
+			updatedAt: 3,
+		},
+	];
+
+	handleChangeRadio = event => {
+		const valueRadio = event.target.value;
+		let searchProperty = valueRadio;
+		if (searchProperty === "body")
+				searchProperty += this.state.templateLang;
+		this.setState({
+			valueRadio,
+			searchProperty,
+		});
+		message.info("Search Templates by " + valueRadio);
+	};
+
+	handleChangeRadioLang = event => {
+		const templateLang = event.target.value;
+		this.setState({ templateLang })
+		const valueRadio = this.state.valueRadio;
+		let searchProperty = valueRadio;
+		if (searchProperty === "body") {
+				searchProperty += templateLang;
+				this.setState({ searchProperty })
+		}
+		message.info("Template Bodies Shown in " + 
+			( templateLang === "Chn" ? "Chinese" : "English" ) );
+	}
+
+	handleClickCopy = template => {
+		const key = "body" + this.state.templateLang;
+		this.copyToClip( template[key] )
+		const allOptions = this.state.allOptions.map( item => {
+			if (item.key  === template.key)
+				 item.copiedCount++;	
+			return item;
+		});
+		console.log(allOptions);
+		this.setState({ allOptions });
+		message.success("Template Copied");
+	}
+
+
+	handleChangeSwitchStickTop = (key, checked) => {
+		console.log("hello");
+		console.log(checked);
+		console.log(key);
+		let allOptions = this.state.allOptions.map( item => {
+			if (item.key === key) {
+				item.stickTop = checked;
+				item.updatedAt = Date.now();
+			}
+			return item;
+		});
+
+		// sort the array accordingly
+		allOptions.sort(this.dynamicSort("stickTop"));
+
+		let searchResults = this.state.searchResults.slice();
+		searchResults.sort(this.dynamicSort("stickTop"));
+
+		console.log("search results");
+		console.log(searchResults);
+		this.setState({
+			allOptions,
+			searchResults,
+		});
+		const newIndex = searchResults.findIndex( item => item.key === key);
+		const panel = document.getElementById("panel" + newIndex);
+		const bgcolor = panel.style.backgroundColor;
+		panel.style.backgroundColor = "#a9a9a9";
+		console.log( panel.style.backgroundColor );
+		setTimeout( () => panel.style.backgroundColor = bgcolor, 500 );
+	}
+
+	genExtraModal = item => (
+		<div
+			onClick={ event => event.stopPropagation() }
+		>
+		<Space size="middle">
+			<Switch 
+				checkedChildren="top"
+				checked={ item.stickTop } 
+				defaultChecked={ item.stickTop } 
+				onChange={ this.handleChangeSwitchStickTop.bind(this, item.key) }
+			/>
+			<Button
+				type="ghost"
+				style={{ border: "none" }}
+				size="small"
+				onClick={ this.handleClickCopy.bind(this, item) }
+			>
+				<CopyOutlined />
+			</Button>
+		</Space>
+		</div>
+	);
+
+	copyToClip(str) {
+		function listener(e) {
+			e.clipboardData.setData("text/html", str);
+			e.clipboardData.setData("text/plain", str);
+			e.preventDefault();
+		}
+		document.addEventListener("copy", listener);
+		document.execCommand("copy");
+		document.removeEventListener("copy", listener);
+	};
+
+	dynamicSort(property) {
+			var sortOrder = 1;
+
+			if(property[0] === "-") {
+					sortOrder = -1;
+					property = property.substr(1);
+			}
+
+			return function (a,b) {
+					if (typeof a[property] === "string") {
+						if(sortOrder === -1){
+								return b[property].localeCompare(a[property]);
+						}else{
+								return a[property].localeCompare(b[property]);
+						}        
+					} else {
+						if(sortOrder === -1){
+								return a[property] - b[property];
+						}else{
+								return b[property] - a[property];
+						}        
+					}
+			}
+	}
+
 	render(){
 		return (
 			<div 
@@ -445,12 +729,24 @@ class TableDrawer extends Component {
 				key={ this.props.tableDrawerKey } 
 			>
 				<Drawer
-					title="Case Details"
+					title={ this.title }
 					width={ 1000 }
 					bodyStyle={{ paddingBottom: 80 }}
 					visible={ this.props.visible }
 					onClose={ this.props.onClose }
 				>
+					<Card
+						style={{ marginBottom: "16px" }}
+					>
+						<Descriptions title="Case"
+							column={ 2 }
+						>
+							<Item label="Casename"> { "Alice's Case" }</Item>
+							<Item label="Status">{ "pending" }</Item>
+							<Item label="Created At">{ "2020-05-25 14:27:46" }</Item>
+							<Item label="Labels">{ "banned" }</Item>
+						</Descriptions>
+					</Card>
 					<Form
 						{ ...this.layout }
 						name='basic'
@@ -465,7 +761,7 @@ class TableDrawer extends Component {
 						defaultActiveKey={
 							this.props.disabled ? ['1', '2', '3'] : ['1']
 						} 
-						expandIconPosition="right"
+						expandIconPosition="left"
 					>
 							<Panel 
 								header="Case" 
@@ -519,6 +815,7 @@ class TableDrawer extends Component {
 							<Panel 
 								header="Related Account" 
 								key="3"
+								extra={ this.genExtra() }
 							>
 								<TableBody
 									columns={ this.columnsAccount } 
@@ -600,12 +897,58 @@ class TableDrawer extends Component {
 				</div>
 				<div>
 					<Modal
-						title="Search Templates"
+						key={ this.state.modalKey }
+						title={ this.titleModal() }
+						width={ 900 }
+						style={{ top: 20 }}
+						bodyStyle={{ minHeight: 600, overflow: "auto" }}
 						visible={ this.state.visibleModal }
 						onCancel={ this.handleCancel }
 						footer={ null }
 					>
-						<Template />
+						<div
+							style={{ margin: "16px 4px" }}
+						>
+							<Space>
+								Search By
+								<Radio.Group onChange={this.handleChangeRadio} value={this.state.valueRadio}>
+									<Radio value={"title"}>Title</Radio>
+									<Radio value={"body"}>Body</Radio>
+								</Radio.Group>
+								<SearchableInput
+									allOptions={ this.allOptions }
+									searchProperty={ this.state.searchProperty }
+									onSearch={ this.handleSearch }
+									placeholder={ "Search Templates by " + this.state.valueRadio }
+								/>
+							</Space>
+						</div>
+						<div>
+							<Spin spinning={ this.state.loading }>
+								<Collapse 
+									defaultActiveKey={
+										[]
+									} 
+									expandIconPosition="left"
+								>
+										{
+											this.state.searchResults.map( (item, index) => (
+												<Panel 
+													id={ "panel"+index }
+													header={ item.title }
+													key={ index }
+													extra={ this.genExtraModal(item) }
+												>
+													<RichTextOutput 
+														body={ this.state.templateLang === "Chn" ?
+															item.bodyChn : item.bodyEng }
+													/>
+												</Panel>
+											) )
+										}
+								</Collapse>
+							</Spin>
+						</div>
 					</Modal>
 				</div>
 			</div>

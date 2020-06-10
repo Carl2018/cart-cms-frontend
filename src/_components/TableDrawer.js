@@ -34,7 +34,7 @@ class TableDrawer extends Component {
 	};
 
 	// layout for forms
-	layout = {
+	layout = this.props.formLayout || {
 		labelCol: {
 			span: 8,
 		},
@@ -57,7 +57,7 @@ class TableDrawer extends Component {
 			>
 				<Drawer
 					title={ this.props.drawerTitle || 'Create' }
-					width={ 500 }
+					width={ this.props.drawerWidth || 500 }
 					bodyStyle={{ paddingBottom: 80 }}
 					visible={ this.props.visible }
 					onClose={ this.props.onClose }
@@ -81,7 +81,7 @@ class TableDrawer extends Component {
 									rules={ item.rules }
 									initialValue={ this.props.record[item.name] }
 								>
-									{ item.input(this.props.disabled) }
+									{ item.input(this.props.disabled, this.props.record) }
 								</Form.Item>
 							) : (<span key={ item.name }></span>)
 						)}

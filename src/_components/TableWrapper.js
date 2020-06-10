@@ -142,6 +142,7 @@ class TableWrapper extends Component {
 
 	handleSubmit = record => {
 
+		console.log(record);
 		if (this.state.record.key) // edit the entry
 			this.props.edit(this.state.record.key, record);
 		else // create an entry
@@ -190,6 +191,8 @@ class TableWrapper extends Component {
 						selectedRowKeys={ this.state.selectedRowKeys }
 						onSelectChange={ this.handleSelectChange }
 						isSmall={ this.props.isSmall }
+						showHeader={ this.props.showHeader }
+						loading={ this.props.loading }
 					/>
 				</div>
 				<div>
@@ -202,6 +205,8 @@ class TableWrapper extends Component {
 						formItems={ this.props.formItems }
 						disabled={ this.state.disabled } 
 						onSubmit={ this.handleSubmit }
+						drawerWidth={ this.props.drawerWidth }
+						formLayout={ this.props.formLayout }
 					/>
 				</div>
 			</div>

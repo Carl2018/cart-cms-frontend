@@ -5,8 +5,8 @@ import { TeamOutlined } from '@ant-design/icons';
 import { Input, Select, Tag } from 'antd';
 
 // import shared components
-import TableWrapper from '../_components/TableWrapper'
-import { success } from '../_components/Message'
+import TableWrapper from '../../_components/TableWrapper'
+import { success } from '../../_components/Message'
 
 const { Option } = Select
 
@@ -16,9 +16,17 @@ class Account extends Component {
 		this.state = {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
-			data: this.allAccounts,
+			data: [],
 		};
 	}
+	
+	//componentWillReceiveProps(nextProps) {
+	//	this.setState({ data: nextProps.data });
+	//}
+	static getDerivedStateFromProps(nextProps, prevState) {
+		return { data: nextProps.data };
+	}
+	
 	
 	allAccounts = [
 		{
@@ -303,6 +311,8 @@ class Account extends Component {
 					delete={ this.delete }
 					refreshTable={ this.refreshTable }
 					isSmall={ this.props.isSmall }
+					showHeader={ this.props.showHeader }
+					loading={ this.props.loading }
 				>
 				</TableWrapper>
 			</div>

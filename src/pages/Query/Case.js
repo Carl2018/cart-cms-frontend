@@ -195,6 +195,8 @@ class Case extends Component {
 					dataCase={ this.props.data }
 					dataAccount={ this.props.dataAccount }
 					email={ this.props.email }
+					showHeader={ this.props.showHeader }
+					loading={ this.props.loading }
 				>
 				</TableWrapper>
 			</div>
