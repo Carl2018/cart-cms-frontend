@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 
 // import styling from ant desgin
-import { Space, Button, Popconfirm, Row, Col } from 'antd';
+import { 
+	Space, Button, Popconfirm, Row, Col, Input, Drawer, Form, Divider,
+} from 'antd';
 import { notification } from 'antd';
-import { FileTextOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { FileSearchOutlined, DeleteOutlined } from '@ant-design/icons';
 
 // import shared components
 import TableBody from '../../_components/TableBody'
@@ -23,6 +25,9 @@ class TableWrapper extends Component {
 			//related info
 			relatedEmail: {},
 			relatedAccount: {},
+			// for create drawer
+			visibleCreate: false,
+			formKeyCreate: Date.now(),
 		};
 	}
 	
@@ -36,17 +41,10 @@ class TableWrapper extends Component {
 				<Space size='small'>
 					<Button 
 						type='link' 
-						icon={ <FileTextOutlined /> }
+						icon={ <FileSearchOutlined /> }
 						onClick={ this.handleClickView.bind(this, record) }
 					>
-						View
-					</Button>
-					<Button 
-						type='link' 
-						icon={ <EditOutlined /> }
-						onClick={ this.handleClickEdit.bind(this, record) }
-					>
-						Edit
+						Inspect
 					</Button>
 					<Popconfirm
 						title='Are you sure to delete this record?'
@@ -112,8 +110,7 @@ class TableWrapper extends Component {
 		const { relatedEmail, relatedAccount } = this.getRelatedInfo(this.props.email);
 		this.setState({ relatedEmail, relatedAccount }, () => 
     this.setState({
-      visible: true,
-			disabled: false,
+      visibleCreate: true,
 			record: {},
     }) );
   };
@@ -160,16 +157,65 @@ class TableWrapper extends Component {
   };
 
 	handleSubmit = record => {
-
-		if (this.state.record.key) // edit the entry
+		if (this.state.record.key) { // edit the entry
+			console.log(this.state.record.key);
 			this.props.edit(this.state.record.key, record);
-		else // create an entry
+		} else { // create an entry
+			record.relatedEmail = this.state.relatedEmail?.email;
 			this.props.create(record);
+			this.setState({
+				visibleCreate: false, 
+				formKeyCreate: Date.now(),
+				record: {},
+			});
+			
+		}
 
+	}
+
+	// define form items for create Drawer
+	formItemsCreate = [
+		{
+			label: 'Case Name',
+			name: 'casename',
+			rules: [
+				{
+					required: true,
+					message: 'casename cannot be empty',
+				}
+			],
+			editable: true,
+			input: (
+				<Input
+					maxLength={255}
+					allowClear
+				/>
+			)
+		},
+		{
+			label: 'Remarks',
+			name: 'remarks',
+			rules: [
+				{
+					required: true,
+					message: 'remarks cannot be empty',
+				},
+			],
+			editable: true,
+			input: (
+				<Input.TextArea
+					autoSize={{ minRows: 6, maxRows: 10 }}
+					maxLength={255}
+					allowClear
+				/>
+			)
+		},			
+	];
+
+	handleCloseCreate = event => {
+		console.log(event);
 		this.setState({
-			record: {},
-			visible: false,
-			tableDrawerKey: Date.now(),
+			visibleCreate: false, 
 		});
 	}
 
@@ -226,7 +272,57 @@ class TableWrapper extends Component {
 						dataEmail={ this.state.relatedEmail }
 						dataCase={ this.state.record }
 						dataAccount={ this.state.relatedAccount }
+						allRelatedAccounts={ this.props.dataAccount }
 					/>
+				</div>
+				<div>
+					<Drawer
+						title="Create A Case"
+						width={ 618 }
+						bodyStyle={{ paddingBottom: 80 }}
+						visible={ this.state.visibleCreate } 
+						onClose={ this.handleCloseCreate }
+					>
+						<Form
+							key={ this.state.formKeyCreate }
+							labelCol={ { span: 8 } }
+							wrapperCol={ { span: 16 } }
+							name='basic'
+							initialValues={{
+								remember: true,
+							}}
+							onFinish={ this.handleSubmit }
+							onFinishFailed={ this.onFinishFailedCreate }
+						>
+							{ this.formItemsCreate.map( item => 
+								(
+									<Form.Item
+										key={ item.name }
+										label={ item.label }
+										name={ item.name }
+										rules={ item.rules }
+									>
+										{ item.input }
+									</Form.Item>
+								)
+							) }
+							<Divider />
+							<div style={{ textAlign:'right' }} >
+								<Button 
+									onClick={ this.handleCloseCreate } 
+									style={{ marginRight: 8 }}
+								>
+									Cancel
+								</Button>
+								<Button 
+									type='primary' 
+									htmlType='submit'
+								>
+									Submit
+								</Button>
+							</div>
+						</Form>
+					</Drawer>
 				</div>
 			</div>
 		);

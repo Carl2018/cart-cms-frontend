@@ -18,14 +18,11 @@ import React, { Component } from 'react';
 
 // import styling from ant design
 import { 
-	Button, Form, Divider, Input, Select, Popconfirm, Descriptions, Radio,
+	Button, Form, Divider, Input, Select, Descriptions, Radio,
 	Switch, Row, Col, Card, Modal, Drawer, Tag, Collapse, Space, message,
-	Spin,
+	Spin, notification,
 } from 'antd';
 import { 
-	FormOutlined, 
-	UserAddOutlined, 
-	UserDeleteOutlined,
 	CopyOutlined,
 	NodeIndexOutlined,
 } from '@ant-design/icons';
@@ -53,9 +50,15 @@ class TableDrawer extends Component {
 			dataAccount: [],
 			// populate the action table
 			dataAction: [],
-			// opening and closing of the process drawer
+			// opening and closing of the action drawer
 			visibleAction: false,
 			formKey: Date.now(),
+			// opening and closing of the edit drawer
+			visibleEdit: false,
+			formKeyEdit: Date.now(),
+			// opening and closing of the bind drawer
+			visibleBind: false,
+			formKeyBind: Date.now(),
 			// for modal
 			visibleModal: false,
 			// for Radio
@@ -74,15 +77,15 @@ class TableDrawer extends Component {
 		};
 	}
 
-	static getDerivedStateFromProps(nextProps, prevState) {
-		return {
-			dataCase: nextProps.dataCase ? [ nextProps.dataCase ] : [],
-			dataEmail: nextProps.dataEmail ? [ nextProps.dataEmail ] : [],
-			dataAccount: nextProps.dataAccount ? [ nextProps.dataAccount ] : [],
-			dataAction: nextProps.dataCase ? nextProps.dataCase.actions: [],
-		};
+	componentWillReceiveProps(nextProps) {
+		this.setState({ 
+			dataCase: nextProps.dataCase ? [ nextProps.dataCase ] : [], 
+			dataEmail: nextProps.dataEmail ? [ nextProps.dataEmail ] : [], 
+			dataAccount: nextProps.dataAccount ? [ nextProps.dataAccount ] : [], 
+			dataAction: nextProps.dataCase ? nextProps.dataCase.actions : [], 
+		});
 	}
-	
+
 	// layout for forms
 	layout = {
 		labelCol: {
@@ -116,43 +119,26 @@ class TableDrawer extends Component {
 			title: 'Case Name',
 			dataIndex: 'casename',
 			key: 'casename',
-			width: '15%',
+			width: '34%',
 			setFilter: false
 		},
 		{
 			title: 'Status',
 			dataIndex: 'status',
 			key: 'status',
-			width: '5%',
+			width: '33%',
 			setFilter: false
 		},
 		{
 			title: 'Created At',
 			dataIndex: 'createdAt',
 			key: 'createdAt',
-			width: '15%',
-			setFilter: false
-		},
-		{
-			title: 'Actions',
-			key: 'action',
-			render: (text, record) => (
-				<Space size='small'>
-					<Button 
-						type='link' 
-						icon={ <FormOutlined /> }
-						onClick={ this.handleClickAction.bind(this, record) }
-					>
-						action
-					</Button>
-				</Space>
-			),
-			width: '10%',
+			width: '33%',
 			setFilter: false
 		},
 	];
 
-	// define form items for TableDrawer
+	// define form items for action Drawer
 	formItems = [
 		{
 			label: 'Action',
@@ -185,7 +171,7 @@ class TableDrawer extends Component {
 			editable: true,
 			input: (
 				<Input.TextArea
-					autoSize={{ minRows: 4, maxRows: 8 }}
+					autoSize={{ minRows: 6, maxRows: 10 }}
 					maxLength={255}
 					allowClear
 				/>
@@ -193,8 +179,70 @@ class TableDrawer extends Component {
 		},
 	];
 
+	// define form items for edit Drawer
+	formItemsEdit = [
+		{
+			label: 'Case Name',
+			name: 'casename',
+			rules: [
+				{
+					required: true,
+					message: 'casename cannot be empty',
+				}
+			],
+			editable: true,
+			input: (
+				<Input
+					maxLength={255}
+					allowClear
+				/>
+			)
+		},
+		{
+			label: 'Remarks',
+			name: 'remarks',
+			rules: [
+				{
+					required: true,
+					message: 'remarks cannot be empty',
+				},
+			],
+			editable: true,
+			input: (
+				<Input.TextArea
+					autoSize={{ minRows: 6, maxRows: 10 }}
+					maxLength={255}
+					allowClear
+				/>
+			)
+		},			
+	];
+
+	// define form items for edit Drawer
+	formItemsBind = [
+		{
+			label: 'Bind to Account',
+			name: 'relatedAccount',
+			rules: [
+				{
+					required: true,
+					message: 'field cannot be empty',
+				}
+			],
+			editable: true,
+			input: (
+				<Select>
+					{ this.props.allRelatedAccounts.map( item => 
+						<Option value={ item.accountName }>
+							{ item.accountName }
+						</Option>
+					) }
+				</Select>
+			)
+		},
+	];
+
 	handleClickAction = record => {
-		console.log("Process");
 		this.setState({
 			visibleAction: true, 
 		});
@@ -207,12 +255,53 @@ class TableDrawer extends Component {
 		});
 	}
 
-	handleSubmitProcess = record => {
+	handleSubmitAction = record => {
 		console.log(record);
 		message.success("The action has been peformed on the case successfully");
 		this.setState({
 			visibleAction: false, 
 			formKey: Date.now(),
+		});
+	}
+
+	handleClickEdit = record => {
+		this.setState({
+			visibleEdit: true, 
+		});
+	}
+
+	handleCloseEdit = event => {
+		console.log(event);
+		this.setState({
+			visibleEdit: false, 
+		});
+	}
+
+	handleSubmitEdit = record => {
+		console.log(record);
+		this.props.onSubmit(record);
+		this.setState({
+			visibleEdit: false, 
+			formKeyEdit: Date.now(),
+		});
+	}
+
+	handleCloseBind = event => {
+		console.log(event);
+		this.setState({
+			visibleBind: false, 
+		});
+	}
+
+	handleSubmitBind = record => {
+		console.log(this.props.allRelatedAccounts);
+		const dataAccount = [ this.props.allRelatedAccounts
+			.find( item => item.accountName === record.relatedAccount ) ];
+		this.props.onSubmit(record);
+		this.setState({
+			dataAccount,
+			visibleBind: false, 
+			formKeyBind: Date.now(),
 		});
 	}
 
@@ -231,43 +320,26 @@ class TableDrawer extends Component {
 			title: 'Email',
 			dataIndex: 'email',
 			key: 'email',
-			width: '30%',
+			width: '34%',
 			setFilter: false
 		},
 		{
 			title: 'Last Contacted At',
 			dataIndex: 'updatedAt',
 			key: 'updatedAt',
-			width: '40%',
+			width: '33%',
 			setFilter: false
 		},
 		{
 			title: 'Created At',
 			dataIndex: 'createdAt',
 			key: 'createdAt',
-			width: '40%',
-			setFilter: false
-		},
-		{
-			title: 'Actions',
-			key: 'action',
-			render: (text, record) => (
-				<Space size='small'>
-					<Button 
-						type='link' 
-						icon={ <CopyOutlined /> }
-						onClick={ this.handleClickSearchTemplates }
-					>
-						Search Templates
-					</Button>
-				</Space>
-			),
-			width: '10%',
+			width: '33%',
 			setFilter: false
 		},
 	];
 
-	handleClickSearchTemplates = event => {
+	handleClickTemplates = event => {
 		console.log(event);
 		this.setState({
 			visibleModal: true,
@@ -312,14 +384,14 @@ class TableDrawer extends Component {
 			title: 'Account Type',
 			dataIndex: 'accountType',
 			key: 'accountType',
-			width: '15%',
+			width: '25%',
 			setFilter: false
 		},
 		{
 			title: 'Account Name',
 			dataIndex: 'accountName',
 			key: 'accountName',
-			width: '20%',
+			width: '25%',
 			setFilter: false
 		},
 		{
@@ -355,60 +427,71 @@ class TableDrawer extends Component {
 					})}
 				</>
 			),
-			width: '20%',
-		},
-		{
-			title: 'Actions',
-			key: 'action',
-			render: (text, record) => (
-				<Space size='small'>
-					<Popconfirm
-						title='Are you sure to UN-ban this account ?'
-						onConfirm={ this.handleClickUnban.bind(this, record) }
-						onCancel={ () => console.log('cancel') }
-						okText='Confirm'
-						cancelText='Cancel'
-						placement='left'
-					>
-					<Button 
-						type='link' 
-						icon={ <UserAddOutlined /> }
-					>
-						Unban
-					</Button>
-					</Popconfirm>
-					<Popconfirm
-						title='Are you sure to Ban this account ?'
-						onConfirm={ this.handleClickBan.bind(this, record) }
-						onCancel={ () => console.log('cancel') }
-						okText='Confirm'
-						cancelText='Cancel'
-						placement='left'
-					>
-					<Button 
-						type='link' 
-						danger 
-						icon={ <UserDeleteOutlined /> }
-					>
-						Ban
-					</Button>
-					</Popconfirm>
-				</Space>
-			),
-			width: '10%',
-			setFilter: false
+			width: '25%',
 		},
 	];
 
-	handleClickBan = record => {
-		console.log(record);
-		message.success("the account has been Banned successfully");
-	}
+	handleClickBan = () => {
+		const key = `open${Date.now()}`;
+		const btn = (
+			<Button 
+				type='primary' 
+				size='small' 
+				onClick={ this.handleClickConfirmBan.bind(this, notification.close, key) }
+			>
+				Confirm
+			</Button>
+		);
+		notification.open({
+			message: 'About to Ban This Account',
+			description:
+				<> 
+					{"Are you sure to "} 
+					<span style={{color: "#ec5f5b"}}><strong>Ban</strong></span> 
+					{" this account?"}
+				</>,
+			btn,
+			key,
+			duration: 0,
+			onClose: () => message.info("Ban Cancelled"),
+		});
+	};
 
-	handleClickUnban = record => {
-		console.log(record);
-		message.success("the account has been UN-banned successfully");
-	}
+	handleClickConfirmBan = (closeNotification, notificationKey) => {
+		message.success("the account has been Banned successfully");
+		closeNotification(notificationKey);
+	};
+
+	handleClickUnban = () => {
+		const key = `open${Date.now()}`;
+		const btn = (
+			<Button 
+				type='primary' 
+				size='small' 
+				onClick={ this.handleClickConfirmUnban.bind(this, notification.close, key) }
+			>
+				Confirm
+			</Button>
+		);
+		notification.open({
+			message: 'About to UNban This Account',
+			description:
+				<> 
+					{"Are you sure to "} 
+					<span style={{color: "#5a9ef8"}}><strong>UNban</strong></span> 
+					{" this account?"}
+				</>,
+			btn,
+			key,
+			duration: 0,
+			onClose: () => message.info("Ban Cancelled"),
+		});
+	};
+
+	handleClickConfirmUnban = (closeNotification, notificationKey) => {
+		message.success("the account has been UNbanned successfully");
+		closeNotification(notificationKey);
+	};
 
 	columnsAction = [
 		{
@@ -465,14 +548,22 @@ class TableDrawer extends Component {
 		},
 	];
 
+	handleClickBind = event => {
+		event.stopPropagation();
+		console.log(this.props.record.relatedAccount);
+		if (this.props.record.relatedAccount)
+			message.info("The case has been bound to an account already")
+		else 
+			this.setState({ visibleBind: true });
+		
+	}
+
 	genExtra = () => (
 		<Button
 			type="ghost"
 			style={{ border: "none" }}
 			size="small"
-			onClick={event => {
-				event.stopPropagation();
-			}}
+			onClick={ this.handleClickBind }
 		>
 			<NodeIndexOutlined />
 			Bind
@@ -482,16 +573,18 @@ class TableDrawer extends Component {
 	title = (
 		<Row>
 			<Col span={ 8 }>
-				Case Details
+				Inspect A Case
 			</Col>
 			<Col
 				span={ 2 }
 				offset={ 12 }
 			>
 				<TableDropdown 
-					onClickAdd={ () => console.log("click") }
-					onClickRefreshTable={ () => console.log("click") }
-					onClickBatchDelete={ () => console.log("click") }
+					onClickAction={ this.handleClickAction }
+					onClickEdit={ this.handleClickEdit }
+					onClickUnban={ this.handleClickUnban }
+					onClickBan={ this.handleClickBan }
+					onClickTemplates={ this.handleClickTemplates }
 				/>
 			</Col>
 		</Row>	
@@ -736,15 +829,29 @@ class TableDrawer extends Component {
 					onClose={ this.props.onClose }
 				>
 					<Card
-						style={{ marginBottom: "16px" }}
+						style={{ marginBottom: "16px", background: "#fafafa" }}
 					>
-						<Descriptions title="Case"
-							column={ 2 }
+						<Descriptions 
+							column={ 3 }
 						>
-							<Item label="Casename"> { "Alice's Case" }</Item>
-							<Item label="Status">{ "pending" }</Item>
-							<Item label="Created At">{ "2020-05-25 14:27:46" }</Item>
-							<Item label="Labels">{ "banned" }</Item>
+							<Item label="Case Name"> 
+								{ this.props.record.casename }
+							</Item>
+							<Item label="Status">
+								{ this.props.record.status }
+							</Item>
+							<Item label="Created At">
+								{ this.props.record.createdAt }
+							</Item>
+							<Item 
+								label="Remarks" 
+								span = { 2 } 
+							>
+								{ this.props.record.remarks }
+							</Item>
+							<Item label="Labels">
+								{ "lables" }
+							</Item>
 						</Descriptions>
 					</Card>
 					<Form
@@ -763,33 +870,6 @@ class TableDrawer extends Component {
 						} 
 						expandIconPosition="left"
 					>
-							<Panel 
-								header="Case" 
-								key="1"
-							>
-								{ this.props.disabled ? (
-									<TableBody
-										columns={ this.columnsCase } 
-										data={ this.state.dataCase } 
-										isSmall={ true }
-										pagination={ false }
-									/>) : (
-										this.props.formItems.map( item => 
-											(
-												<Form.Item
-													key={ item.name }
-													label={ item.label }
-													name={ item.name }
-													rules={ item.rules }
-													initialValue={ this.props.record[item.name] }
-												>
-													{ item.input(this.props.disabled) }
-												</Form.Item>
-											)
-										)
-									)
-								}
-							</Panel>
 							<Panel 
 								header="Action History" 
 								key="4"
@@ -846,9 +926,9 @@ class TableDrawer extends Component {
 				</Drawer>
 				<div>
 					<Drawer
-						tableDrawerKey={ this.state.tableDrawerKey }
+						key={ this.state.tableDrawerKey }
 						title="Perform An Action on A Case"
-						width={ 500 }
+						width={ 618 }
 						bodyStyle={{ paddingBottom: 80 }}
 						visible={ this.state.visibleAction } 
 						onClose={ this.handleCloseAction }
@@ -861,7 +941,7 @@ class TableDrawer extends Component {
 							initialValues={{
 								remember: true,
 							}}
-							onFinish={ this.handleSubmitProcess }
+							onFinish={ this.handleSubmitAction }
 							onFinishFailed={ this.onFinishFailed }
 						>
 							{ this.formItems.map( item => 
@@ -881,6 +961,105 @@ class TableDrawer extends Component {
 							<div style={{ textAlign:'right' }} >
 								<Button 
 									onClick={ this.handleCloseAction } 
+									style={{ marginRight: 8 }}
+								>
+									Cancel
+								</Button>
+								<Button 
+									type='primary' 
+									htmlType='submit'
+								>
+									Submit
+								</Button>
+							</div>
+						</Form>
+					</Drawer>
+				</div>
+				<div>
+					<Drawer
+						title="Edit A Case"
+						width={ 618 }
+						bodyStyle={{ paddingBottom: 80 }}
+						visible={ this.state.visibleEdit } 
+						onClose={ this.handleCloseEdit }
+					>
+						<Form
+							key={ this.state.formKeyEdit }
+							labelCol={ { span: 8 } }
+							wrapperCol={ { span: 16 } }
+							name='basic'
+							initialValues={{
+								remember: true,
+							}}
+							onFinish={ this.handleSubmitEdit }
+							onFinishFailed={ this.onFinishFailedEdit }
+						>
+							{ this.formItemsEdit.map( item => 
+								(
+									<Form.Item
+										key={ item.name }
+										label={ item.label }
+										name={ item.name }
+										rules={ item.rules }
+										initialValue={ this.props.record[item.name] }
+									>
+										{ item.input }
+									</Form.Item>
+								)
+							) }
+							<Divider />
+							<div style={{ textAlign:'right' }} >
+								<Button 
+									onClick={ this.handleCloseEdit } 
+									style={{ marginRight: 8 }}
+								>
+									Cancel
+								</Button>
+								<Button 
+									type='primary' 
+									htmlType='submit'
+								>
+									Submit
+								</Button>
+							</div>
+						</Form>
+					</Drawer>
+				</div>
+				<div>
+					<Drawer
+						title="Bind to An Account"
+						width={ 618 }
+						bodyStyle={{ paddingBottom: 80 }}
+						visible={ this.state.visibleBind } 
+						onClose={ this.handleCloseBind }
+					>
+						<Form
+							key={ this.state.formKeyBind }
+							labelCol={ { span: 8 } }
+							wrapperCol={ { span: 16 } }
+							name='basic'
+							initialValues={{
+								remember: true,
+							}}
+							onFinish={ this.handleSubmitBind }
+							onFinishFailed={ this.onFinishFailedBind }
+						>
+							{ this.formItemsBind.map( item => 
+								(
+									<Form.Item
+										key={ item.name }
+										label={ item.label }
+										name={ item.name }
+										rules={ item.rules }
+									>
+										{ item.input }
+									</Form.Item>
+								)
+							) }
+							<Divider />
+							<div style={{ textAlign:'right' }} >
+								<Button 
+									onClick={ this.handleCloseBind } 
 									style={{ marginRight: 8 }}
 								>
 									Cancel

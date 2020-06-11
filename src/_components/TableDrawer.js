@@ -57,7 +57,7 @@ class TableDrawer extends Component {
 			>
 				<Drawer
 					title={ this.props.drawerTitle || 'Create' }
-					width={ this.props.drawerWidth || 500 }
+					width={ this.props.drawerWidth || 618 }
 					bodyStyle={{ paddingBottom: 80 }}
 					visible={ this.props.visible }
 					onClose={ this.props.onClose }

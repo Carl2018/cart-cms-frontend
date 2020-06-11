@@ -18,14 +18,13 @@ class Case extends Component {
 		};
 	}
 	
-	//componentWillReceiveProps(nextProps) {
-	//	this.setState({ data: nextProps.data });
-	//}
-
-	static getDerivedStateFromProps(nextProps, prevState) {
-		return { data: nextProps.data };
+	componentWillReceiveProps(nextProps) {
+		this.setState({ data: nextProps.data });
 	}
-	
+
+//	static getDerivedStateFromProps(nextProps, prevState) {
+//		return { data: nextProps.data };
+//	}
 	
 	// define columns for TableBody
 	compare = (a, b) => {
@@ -41,7 +40,7 @@ class Case extends Component {
 			key: 'casename',
 			sorter: (a, b) => this.compare(a.casename, b.casename),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			width: '25%',
 			setFilter: true
 		},
 		{
@@ -60,7 +59,7 @@ class Case extends Component {
 			sorter: (a, b) => this.compare(a.createdAt, b.createdAt),
 			sortDirection: ['ascend', 'descend'],
 			defaultSortOrder: 'descend',
-			width: '15%',
+			width: '20%',
 			setFilter: true
 		},
 		{
@@ -69,7 +68,7 @@ class Case extends Component {
 			key: 'relatedEmail',
 			sorter: (a, b) => this.compare(a.relatedEmail, b.relatedEmail),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			width: '20%',
 			setFilter: true
 		},
 		{
@@ -78,7 +77,7 @@ class Case extends Component {
 			key: 'relatedAccount',
 			sorter: (a, b) => this.compare(a.relatedAccount, b.relatedAccount),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			width: '20%',
 			setFilter: true
 		},
 	];

@@ -18,13 +18,13 @@ class Email extends Component {
 		};
 	}
 
-	//componentWillReceiveProps(nextProps) {
-	//	this.setState({ data: nextProps.data });
-	//}
-	static getDerivedStateFromProps(nextProps, prevState) {
-		return { data: nextProps.data };
+	componentWillReceiveProps(nextProps) {
+		this.setState({ data: nextProps.data });
 	}
-	
+
+//	static getDerivedStateFromProps(nextProps, prevState) {
+//		return { data: nextProps.data };
+//	}
 	
 	allEmails = [
 		{
