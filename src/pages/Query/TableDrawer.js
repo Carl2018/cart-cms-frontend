@@ -1052,7 +1052,13 @@ class TableDrawer extends Component {
 										name={ item.name }
 										rules={ item.rules }
 									>
-										{ item.input }
+										<Select>
+											{ this.props.allRelatedAccounts.map( item => 
+												<Option value={ item.accountName }>
+													{ item.accountName }
+												</Option>
+											) }
+										</Select>
 									</Form.Item>
 								)
 							) }
