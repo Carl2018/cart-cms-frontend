@@ -99,6 +99,15 @@ class Account extends Component {
 			setFilter: true
 		},
 		{
+			title: 'Status',
+			dataIndex: 'banned',
+			key: 'banned',
+			render: banned => ( banned ? 
+				<Tag color="red">BANNED</Tag> : 
+				<Tag color="blue">UNBANNED</Tag> ),
+			width: '20%',
+		},
+		{
 			title: 'Labels',
 			key: 'labels',
 			dataIndex: 'labels',

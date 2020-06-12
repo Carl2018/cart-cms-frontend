@@ -163,6 +163,7 @@ class Query extends Component {
 			candidateID: 'u9876543210',
 			accountName: 'alice@facebook.com',
 			accountType: 'facebook',
+			banned: true,
 			labels: ['banned'],
 			createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
 		},
@@ -171,6 +172,7 @@ class Query extends Component {
 			candidateID: 'u9876543212',
 			accountName: '0085212345678',
 			accountType: 'phone',
+			banned: false,
 			labels: ['normal'],
 			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
 		},
@@ -179,6 +181,7 @@ class Query extends Component {
 			candidateID: 'u9876543213',
 			accountName: 'charlie@facebook.com',
 			accountType: 'facebook',
+			banned: false,
 			labels: ['spammer', 'banned'],
 			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
 		},
@@ -187,6 +190,7 @@ class Query extends Component {
 			candidateID: 'u9876543214',
 			accountName: '0085287654321',
 			accountType: 'phone',
+			banned: false,
 			labels: ['VIP'],
 			createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
 		},
@@ -304,6 +308,26 @@ class Query extends Component {
 		this.handleSearch(record.email);
 	}
 
+	handleClickBan = relatedAccount => {
+		console.log(relatedAccount);
+		const dataAccount = this.state.dataAccount.map( item => {
+			if (item.accountName === relatedAccount)
+				item.banned = true;
+			return item;
+		})
+		this.setState({ dataAccount });
+	}
+
+	handleClickUnban = relatedAccount => {
+		console.log(relatedAccount);
+		const dataAccount = this.state.dataAccount.map( item => {
+			if (item.accountName === relatedAccount)
+				item.banned = false;
+			return item;
+		})
+		this.setState({ dataAccount });
+	}
+
 	render(){
 		return (
 			<div className='Query'>
@@ -371,6 +395,8 @@ class Query extends Component {
 						showHeader={ this.state.showHeader }
 						loading={ this.state.loading }
 						hideDropdown={ this.state.hideDropdown }
+						onClickBan={ this.handleClickBan }
+						onClickUnban={ this.handleClickUnban }
 					/>
 				</Card>
 				<Card

@@ -173,6 +173,12 @@ class TableWrapper extends Component {
 
 	}
 
+	onClickBan = record => 
+		this.props.onClickBan(this.state.record.relatedAccount);
+
+	onClickUnban = record => 
+		this.props.onClickUnban(this.state.record.relatedAccount);
+
 	// define form items for create Drawer
 	formItemsCreate = [
 		{
@@ -276,6 +282,8 @@ class TableWrapper extends Component {
 						dataCase={ this.state.record }
 						dataAccount={ this.state.relatedAccount }
 						allRelatedAccounts={ this.props.dataAccount }
+						onClickBan={ this.onClickBan }
+						onClickUnban={ this.onClickUnban }
 					/>
 				</div>
 				<div>

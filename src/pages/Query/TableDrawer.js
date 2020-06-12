@@ -395,6 +395,15 @@ class TableDrawer extends Component {
 			setFilter: false
 		},
 		{
+			title: 'Status',
+			dataIndex: 'banned',
+			key: 'banned',
+			render: banned => ( banned ? 
+				<Tag color="red">BANNED</Tag> : 
+				<Tag color="blue">UNBANNED</Tag> ),
+			width: '20%',
+		},
+		{
 			title: 'Labels',
 			key: 'labels',
 			dataIndex: 'labels',
@@ -431,7 +440,7 @@ class TableDrawer extends Component {
 		},
 	];
 
-	handleClickBan = () => {
+	onClickBan = () => {
 		const key = `open${Date.now()}`;
 		const btn = (
 			<Button 
@@ -458,11 +467,12 @@ class TableDrawer extends Component {
 	};
 
 	handleClickConfirmBan = (closeNotification, notificationKey) => {
+		this.props.onClickBan();
 		message.success("the account has been Banned successfully");
 		closeNotification(notificationKey);
 	};
 
-	handleClickUnban = () => {
+	onClickUnban = () => {
 		const key = `open${Date.now()}`;
 		const btn = (
 			<Button 
@@ -489,6 +499,7 @@ class TableDrawer extends Component {
 	};
 
 	handleClickConfirmUnban = (closeNotification, notificationKey) => {
+		this.props.onClickUnban();
 		message.success("the account has been UNbanned successfully");
 		closeNotification(notificationKey);
 	};
@@ -582,8 +593,8 @@ class TableDrawer extends Component {
 				<TableDropdown 
 					onClickAction={ this.handleClickAction }
 					onClickEdit={ this.handleClickEdit }
-					onClickUnban={ this.handleClickUnban }
-					onClickBan={ this.handleClickBan }
+					onClickUnban={ this.onClickUnban }
+					onClickBan={ this.onClickBan }
 					onClickTemplates={ this.handleClickTemplates }
 				/>
 			</Col>

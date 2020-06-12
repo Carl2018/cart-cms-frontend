@@ -197,6 +197,8 @@ class Case extends Component {
 					showHeader={ this.props.showHeader }
 					loading={ this.props.loading }
 					hideDropdown={ this.props.hideDropdown }
+					onClickBan={ this.props.onClickBan }
+					onClickUnban={ this.props.onClickUnban }
 				>
 				</TableWrapper>
 			</div>
