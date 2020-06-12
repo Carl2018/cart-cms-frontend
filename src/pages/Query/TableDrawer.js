@@ -748,12 +748,13 @@ class TableDrawer extends Component {
 			allOptions,
 			searchResults,
 		});
-		const newIndex = searchResults.findIndex( item => item.key === key);
-		const panel = document.getElementById("panel" + newIndex);
+		const panel = document.getElementById("panel" + key);
 		const bgcolor = panel.style.backgroundColor;
 		panel.style.backgroundColor = "#a9a9a9";
 		console.log( panel.style.backgroundColor );
-		setTimeout( () => panel.style.backgroundColor = bgcolor, 500 );
+		setTimeout( () => {
+			panel.style.backgroundColor = bgcolor;
+			}, 500 );
 	}
 
 	genExtraModal = item => (
@@ -1114,17 +1115,15 @@ class TableDrawer extends Component {
 						<div>
 							<Spin spinning={ this.state.loading }>
 								<Collapse 
-									defaultActiveKey={
-										[]
-									} 
 									expandIconPosition="left"
+									accordion
 								>
 										{
-											this.state.searchResults.map( (item, index) => (
+											this.state.searchResults.map( item => (
 												<Panel 
-													id={ "panel"+index }
+													id={ "panel"+item.key }
 													header={ item.title }
-													key={ index }
+													key={ item.key }
 													extra={ this.genExtraModal(item) }
 												>
 													<RichTextOutput 
