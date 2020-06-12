@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 
 // import styling from ant desgin
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { AutoComplete, Input, Space, Button, Card, Row, Col, message } from 'antd';
+import { 
+	AutoComplete, Input, Space, Button, Card, Row, Col, 
+	message, notification, 
+} from 'antd';
 
 import Email from "./Email"
 import Case from "./Case"
 import Account  from "./Account"
-import TableDrawer from "../../_components/TableDrawer"
 
 const { Search } = Input;
 
@@ -17,11 +19,8 @@ class Query extends Component {
 		this.state = {
 			options : [],
 			email : "",
-			tableDrawerKey: Date.now(),
-			record: {},
 			loading: false,
 			showHeader: false,
-			visible: false,
 			dataEmail: [],
 			dataCase: [],
 			dataAccount: [],
@@ -192,28 +191,6 @@ class Query extends Component {
 		},
 	];
 
-	// define form items for TableDrawer
-	formItems = [
-		{
-			label: 'Email',
-			name: 'email',
-			rules: [
-				{
-					required: true,
-					message: 'email cannot be empty',
-				}
-			],
-			editable: true,
-			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
-					disabled={ disabled }
-				/>
-			)
-		},
-	];
-
 	handleChange = data => {
 		const options = this.allEmails
 		.map( item => item.email )
@@ -252,16 +229,65 @@ class Query extends Component {
 		} else {
 			message.info("Profile Not Found");
 			this.setState({ 
-				tableDrawerKey: Date.now(), 
-				record: { email },
 				showHeader: false,
 			});
 		}
 	}
 
-	handleClick = event => this.setState({ visible: true });
+	handleClickBan = () => {
+	};
 
-	handleClose = event => this.setState({ visible: false });
+	handleClick = event => {
+		const autosearch = document.getElementById("autosearch");
+		console.log(autosearch);
+		const value = autosearch.value.trim();
+		if (!value) {
+			const bgcolor = autosearch.style.backgroundColor;
+			autosearch.style.backgroundColor = "#ffcccb";
+			setTimeout( () => autosearch.style.backgroundColor = bgcolor, 1000 ); 
+			message.info( "Email cannot be empty" );
+		} else if ( this.allEmails.map( item => item.email ).includes(value) ) {
+			message.info( "Email exists already" );
+		} else {
+			const record = { email: value };
+			const key = `open${Date.now()}`;
+			const btn = (
+				<Button 
+					type='primary' 
+					size='small' 
+					onClick={ 
+						this.handleClickConfirm.bind(this, 
+							notification.close, key, record) 
+					}
+				>
+					Confirm
+				</Button>
+			);
+			notification.open({
+				message: 'About to Create A New Profile',
+				description:
+					<> 
+						<div>
+						{ `Are you sure you want to create a new profile 
+							for the following email?` }
+						</div>
+						<div style={{ color: "#5a9ef8" }} >
+						{ value }
+						</div>
+					</>,
+				btn,
+				key,
+				duration: 0,
+				onClose: () => message.info("Profile Create Cancelled"),
+			});
+		}
+	}
+
+	handleClickConfirm = (closeNotification, notificationKey, record) => {
+		this.handleSubmit(record);
+		message.success("A new profile has been created successfully");
+		closeNotification(notificationKey);
+	};
 
 	handleSubmit = record => {
 		record = {
@@ -272,9 +298,7 @@ class Query extends Component {
 			profileID: Date.now(),
 		};
 		this.allEmails.push(record);
-		this.setState({ visible: false });
 		this.handleSearch(record.email);
-		this.setState({ tableDrawerKey: Date.now(), record: {} });
 	}
 
 	render(){
@@ -298,6 +322,7 @@ class Query extends Component {
 					>
 						<Space size="large">
 							<AutoComplete
+								id={ "autosearch" }
 								onChange={ this.handleChange }
 								onSelect={ this.handleSearch }
 								options={ this.state.options }
@@ -354,18 +379,6 @@ class Query extends Component {
 						loading={ this.state.loading }
 					/>
 				</Card>
-				<div>
-					<TableDrawer 
-						tableDrawerKey={ this.state.tableDrawerKey }
-						drawerTitle="Create A New Profile"
-						record={ this.state.record }
-						visible={ this.state.visible } 
-						formItems={ this.formItems }
-						disabled={ false } 
-						onClose={ this.handleClose }
-						onSubmit={ this.handleSubmit }
-					/>
-				</div>
 			</div>
 		);
 	}

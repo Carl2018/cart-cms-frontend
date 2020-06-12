@@ -1054,7 +1054,10 @@ class TableDrawer extends Component {
 									>
 										<Select>
 											{ this.props.allRelatedAccounts.map( item => 
-												<Option value={ item.accountName }>
+												<Option 
+													key={ item.accountName }
+													value={ item.accountName }
+												>
 													{ item.accountName }
 												</Option>
 											) }
