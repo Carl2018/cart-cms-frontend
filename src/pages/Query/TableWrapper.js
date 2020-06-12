@@ -241,11 +241,14 @@ class TableWrapper extends Component {
 						}}
 						span={ 12 } 
 					>
-						<TableDropdown 
-							onClickAdd={ this.handleClickAdd }
-							onClickRefreshTable={ this.handleClickRefreshTable }
-							onClickBatchDelete={ this.handleClickBatchDelete }
-						/>
+						{ this.props.hideDropdown ? (<></>) : (<>
+								<TableDropdown 
+									onClickAdd={ this.handleClickAdd }
+									onClickRefreshTable={ this.handleClickRefreshTable }
+									onClickBatchDelete={ this.handleClickBatchDelete }
+								/>
+							</>)
+						}
 					</Col>
 				</Row>
 				<div>

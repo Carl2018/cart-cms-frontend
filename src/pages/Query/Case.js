@@ -196,6 +196,7 @@ class Case extends Component {
 					email={ this.props.email }
 					showHeader={ this.props.showHeader }
 					loading={ this.props.loading }
+					hideDropdown={ this.props.hideDropdown }
 				>
 				</TableWrapper>
 			</div>

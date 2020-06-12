@@ -21,6 +21,7 @@ class Query extends Component {
 			email : "",
 			loading: false,
 			showHeader: false,
+			hideDropdown: true,
 			dataEmail: [],
 			dataCase: [],
 			dataAccount: [],
@@ -225,11 +226,13 @@ class Query extends Component {
 			message.success("Profile Found");
 			this.setState({ 
 				showHeader: true,
+				hideDropdown: false,
 			});
 		} else {
 			message.info("Profile Not Found");
 			this.setState({ 
 				showHeader: false,
+				hideDropdown: true,
 			});
 		}
 	}
@@ -352,6 +355,7 @@ class Query extends Component {
 						isSmall={ true }
 						showHeader={ this.state.showHeader }
 						loading={ this.state.loading }
+						hideDropdown={ this.state.hideDropdown }
 					/>
 				</Card>
 				<Card
@@ -366,6 +370,7 @@ class Query extends Component {
 						isSmall={ true }
 						showHeader={ this.state.showHeader }
 						loading={ this.state.loading }
+						hideDropdown={ this.state.hideDropdown }
 					/>
 				</Card>
 				<Card
@@ -377,6 +382,7 @@ class Query extends Component {
 						isSmall={ true }
 						showHeader={ this.state.showHeader }
 						loading={ this.state.loading }
+						hideDropdown={ this.state.hideDropdown }
 					/>
 				</Card>
 			</div>

@@ -313,6 +313,7 @@ class Account extends Component {
 					isSmall={ this.props.isSmall }
 					showHeader={ this.props.showHeader }
 					loading={ this.props.loading }
+					hideDropdown={ this.props.hideDropdown }
 				>
 				</TableWrapper>
 			</div>
