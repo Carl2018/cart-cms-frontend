@@ -403,41 +403,6 @@ class TableDrawer extends Component {
 				<Tag color="blue">UNBANNED</Tag> ),
 			width: '20%',
 		},
-		{
-			title: 'Labels',
-			key: 'labels',
-			dataIndex: 'labels',
-			render: labels => !labels ? <></> : (
-				<>
-					{labels.map(tag => {
-						let color = 'blue';
-						switch (tag) {
-							case 'normal' :
-								color = 'blue';
-								break;
-							case 'banned' :
-								color = 'red';
-								break;
-							case 'spammer' :
-								color = 'purple';
-								break;
-							case 'VIP' :
-								color = 'gold';
-								break;
-							default :
-								color = 'blue';
-								break;
-						}
-						return (
-							<Tag color={color} key={tag}>
-								{tag.toUpperCase()}
-							</Tag>
-						);
-					})}
-				</>
-			),
-			width: '25%',
-		},
 	];
 
 	onClickBan = () => {
@@ -861,8 +826,47 @@ class TableDrawer extends Component {
 							>
 								{ this.props.record.remarks }
 							</Item>
-							<Item label="Labels">
-								{ "lables" }
+							<Item 
+								label="Labels"
+								span = { 1 } 
+							>
+								{ this.state.dataEmail[0]?.labels?.map(tag => {
+									let color = 'blue';
+									switch (tag) {
+										case 'burning' :
+											color = 'magenta';
+											break;
+										case 'hot' :
+											color = 'red';
+											break;
+										case 'temperate' :
+											color = 'orange';
+											break;
+										case 'warm' :
+											color = 'gold';
+											break;
+										case 'agreeable' :
+											color = 'green';
+											break;
+										case 'cold' :
+											color = 'blue';
+											break;
+										case 'icy' :
+											color = 'geekblue';
+											break;
+										case 'freezing' :
+											color = 'purple';
+											break;
+										default :
+											color = 'lime';
+											break;
+									}
+									return (
+										<Tag color={color} key={tag}>
+											{tag.toUpperCase()}
+										</Tag>
+									);
+								})}
 							</Item>
 						</Descriptions>
 					</Card>

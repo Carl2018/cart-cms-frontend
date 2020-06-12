@@ -107,51 +107,6 @@ class Account extends Component {
 				<Tag color="blue">UNBANNED</Tag> ),
 			width: '20%',
 		},
-		{
-			title: 'Labels',
-			key: 'labels',
-			dataIndex: 'labels',
-			render: labels => !labels ? <></> : (
-				<>
-					{labels.map(tag => {
-						let color = 'blue';
-						switch (tag) {
-							case 'normal' :
-								color = 'blue';
-								break;
-							case 'banned' :
-								color = 'red';
-								break;
-							case 'spammer' :
-								color = 'purple';
-								break;
-							case 'VIP' :
-								color = 'gold';
-								break;
-							default :
-								color = 'blue';
-								break;
-						}
-						return (
-							<Tag color={color} key={tag}>
-								{tag.toUpperCase()}
-							</Tag>
-						);
-					})}
-				</>
-			),
-			width: '20%',
-		},
-//		{
-//			title: 'Created At',
-//			dataIndex: 'createdAt',
-//			key: 'createdAt',
-//			sorter: (a, b) => this.compare(a.createdAt, b.createdAt),
-//			sortDirection: ['ascend', 'descend'],
-//			defaultSortOrder: 'descend',
-//			width: '15%',
-//			setFilter: true
-//		},
 	];
 
 	// define form items for TableDrawer
@@ -211,28 +166,6 @@ class Account extends Component {
 				/>
 			)
 		},			
-		{
-			label: 'Labels',
-			name: 'labels',
-			rules: [
-				{
-					required: true,
-					message: 'labels cannot be empty',
-				}
-			],
-			editable: true,
-			input: disabled => (
-				<Select
-					mode='multiple'
-					disabled={ disabled }
-				>
-					<Option value="normal">normal</Option>
-					<Option value="banned">banned</Option>
-					<Option value="spammer">spammer</Option>
-					<Option value="VIP">VIP</Option>
-				</Select>
-			)
-		},
 		{
 			label: 'Created at',
 			name: 'createdAt',

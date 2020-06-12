@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 
 // import styling from ant desgin
 import { MailOutlined } from '@ant-design/icons';
-import { Input } from 'antd';
+import { Input, Tag, Select } from 'antd';
 
 // import shared components
 import TableWrapper from '../../_components/TableWrapper'
 import { success } from '../../_components/Message'
 
+const { Option } = Select;
 class Email extends Component {
 	constructor(props) {
 		super(props);
@@ -106,6 +107,53 @@ class Email extends Component {
 			setFilter: true
 		},
 		{
+			title: 'Labels',
+			key: 'labels',
+			dataIndex: 'labels',
+			render: labels => !labels ? <></> : (
+				<>
+					{labels.map(tag => {
+						let color = 'blue';
+						switch (tag) {
+							case 'burning' :
+								color = 'magenta';
+								break;
+							case 'hot' :
+								color = 'red';
+								break;
+							case 'temperate' :
+								color = 'orange';
+								break;
+							case 'warm' :
+								color = 'gold';
+								break;
+							case 'agreeable' :
+								color = 'green';
+								break;
+							case 'cold' :
+								color = 'blue';
+								break;
+							case 'icy' :
+								color = 'geekblue';
+								break;
+							case 'freezing' :
+								color = 'purple';
+								break;
+							default :
+								color = 'lime';
+								break;
+						}
+						return (
+							<Tag color={color} key={tag}>
+								{tag.toUpperCase()}
+							</Tag>
+						);
+					})}
+				</>
+			),
+			width: '20%',
+		},
+		{
 			title: 'Created At',
 			dataIndex: 'createdAt',
 			key: 'createdAt',
@@ -134,6 +182,32 @@ class Email extends Component {
 					allowClear
 					disabled={ disabled }
 				/>
+			)
+		},
+		{
+			label: 'Labels',
+			name: 'labels',
+			rules: [
+				{
+					required: true,
+					message: 'labels cannot be empty',
+				}
+			],
+			editable: true,
+			input: disabled => (
+				<Select
+					mode='multiple'
+					disabled={ disabled }
+				>
+					<Option value="burning">burning</Option>
+					<Option value="hot">hot</Option>
+					<Option value="temperate">temperate</Option>
+					<Option value="warm">warm</Option>
+					<Option value="agreeable">agreeable</Option>
+					<Option value="cold">cold</Option>
+					<Option value="icy">icy</Option>
+					<Option value="freezing">freezing</Option>
+				</Select>
 			)
 		},
 		{

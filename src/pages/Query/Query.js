@@ -32,6 +32,7 @@ class Query extends Component {
 		{
 			key: '1',
 			email: 'alice@gmail.com',
+			labels: ['burning', 'hot'],
 			createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
 			updatedAt: new Date('2020-05-25T11:28:25').toISOString().split('.')[0].replace('T', ' '),
 			profileID: '1',
@@ -39,6 +40,7 @@ class Query extends Component {
 		{
 			key: '2',
 			email: 'bob@gmail.com',
+			labels: ['freezing','cold'],
 			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
 			updatedAt: new Date('2020-05-24T13:48:32').toISOString().split('.')[0].replace('T', ' '),
 			profileID: '2',
@@ -46,6 +48,7 @@ class Query extends Component {
 		{
 			key: '21',
 			email: 'bob1234@gmail.com',
+			labels: ['temperate'],
 			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
 			updatedAt: new Date('2020-05-24T13:48:32').toISOString().split('.')[0].replace('T', ' '),
 			profileID: '2',
@@ -53,6 +56,7 @@ class Query extends Component {
 		{
 			key: '3',
 			email: 'charlie@hotmail.com',
+			labels: ['warm', 'agreeable'],
 			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
 			updatedAt: new Date('2020-05-22T18:23:28').toISOString().split('.')[0].replace('T', ' '),
 			profileID: '3',
@@ -60,6 +64,7 @@ class Query extends Component {
 		{
 			key: '31',
 			email: 'charlie1234@hotmail.com',
+			labels: ['icy'],
 			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
 			updatedAt: new Date('2020-05-22T18:23:28').toISOString().split('.')[0].replace('T', ' '),
 			profileID: '3',
@@ -67,6 +72,7 @@ class Query extends Component {
 		{
 			key: '32',
 			email: 'charlie4321@hotmail.com',
+			labels: ['burning'],
 			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
 			updatedAt: new Date('2020-05-22T18:23:28').toISOString().split('.')[0].replace('T', ' '),
 			profileID: '3',
@@ -74,6 +80,7 @@ class Query extends Component {
 		{
 			key: '4',
 			email: 'david@gmail.com',
+			labels: ['freezing', 'icy'],
 			createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
 			updatedAt: new Date('2020-05-25T12:33:18').toISOString().split('.')[0].replace('T', ' '),
 			profileID: '4',
