@@ -366,6 +366,7 @@ class Query extends Component {
 									onSearch={ this.handleSearch }
 									placeholder="Search Profile by Email"
 									size="middle"
+									allowClear
 								/>
 							</AutoComplete>
 							<Button
