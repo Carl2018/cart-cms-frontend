@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 
-// import styling from ant desgin
+// import components from ant design
 import { TeamOutlined } from '@ant-design/icons';
 import { Input, Select, Tag } from 'antd';
 
-// import shared components
+// import shared and child components
 import TableWrapper from '../../_components/TableWrapper'
 import { success } from '../../_components/Message'
 
+// destructure child components
 const { Option } = Select
 
 class Account extends Component {

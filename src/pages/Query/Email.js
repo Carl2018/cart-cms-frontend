@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 
-// import styling from ant desgin
+// import components from ant design
 import { MailOutlined } from '@ant-design/icons';
 import { Input, Tag, Select } from 'antd';
 
-// import shared components
+// import shared and child components
 import TableWrapper from '../../_components/TableWrapper'
 import { success } from '../../_components/Message'
+
+// destructure child components
 
 const { Option } = Select;
 class Email extends Component {

@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 
-// import styling from ant design
+// import components from ant design
 import { Drawer, Button, Form, Divider, Input } from 'antd';
+
+// import shared and child components
+
+// destructure child components
 
 class EditDrawer extends Component {
 	constructor(props) {

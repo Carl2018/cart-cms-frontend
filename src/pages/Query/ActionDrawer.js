@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 
-// import styling from ant design
+// import components from ant design
 import { Drawer, Button, Form, Divider, Select, Input } from 'antd';
 
+// import shared and child components
+
+// destructure child components
 const { Option } = Select;
 
 class ActionDrawer extends Component {

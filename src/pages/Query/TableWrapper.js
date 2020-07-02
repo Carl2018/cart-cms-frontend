@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
 
-// import styling from ant desgin
+// import components from ant design
 import { 
-	Space, Button, Popconfirm, Row, Col, Input, Drawer, Form, Divider,
+	Space, Button, Popconfirm, Row, Col, 
+	Input, Drawer, Form, Divider, notification,
 } from 'antd';
-import { notification } from 'antd';
-import { FileSearchOutlined, DeleteOutlined } from '@ant-design/icons';
+import { 
+	FileSearchOutlined, 
+	DeleteOutlined, 
+} from '@ant-design/icons';
 
-// import shared components
+// import shared and child components
 import TableBody from '../../_components/TableBody'
 import TableDropdown from '../../_components/TableDropdown'
 import TableDrawer from './TableDrawer'
 import { cancel, refresh } from '../../_components/Message'
+
+// destructure child components
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -74,10 +79,10 @@ class TableWrapper extends Component {
 	getRelatedInfo = data => {
 		const email = typeof data === "string" ? data : data.relatedEmail;
 		const account = typeof data === "string" ? "" : data.relatedAccount;
-		const relatedEmail = this.props.dataEmail.find( item => item.email === email )
-		const relatedAccount = this.props.dataAccount.find( item => item.accountName === account )
-		console.log(relatedEmail);
-		console.log(relatedAccount);
+		const relatedEmail = this.props.dataEmail
+			.find( item => item.email === email )
+		const relatedAccount = this.props.dataAccount
+			.find( item => item.accountName === account )
 		return { relatedEmail, relatedAccount };
 	}
 
@@ -106,7 +111,6 @@ class TableWrapper extends Component {
 
 	// handlers for actions in TableDropdown
   handleClickAdd = event => {
-		console.log(this.props.email);
 		const { relatedEmail, relatedAccount } = this.getRelatedInfo(this.props.email);
 		this.setState({ relatedEmail, relatedAccount }, () => 
     this.setState({
@@ -158,7 +162,6 @@ class TableWrapper extends Component {
 
 	handleSubmit = record => {
 		if (this.state.record.key) { // edit the entry
-			console.log(this.state.record.key);
 			this.props.edit(this.state.record.key, record);
 		} else { // create an entry
 			record.relatedEmail = this.state.relatedEmail?.email;
@@ -219,7 +222,6 @@ class TableWrapper extends Component {
 	];
 
 	handleCloseCreate = event => {
-		console.log(event);
 		this.setState({
 			visibleCreate: false, 
 		});

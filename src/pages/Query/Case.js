@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 
-// import styling from ant desgin
+// import components from ant design
 import { FileSearchOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
 
-// import shared components
+// import shared and child components
 import TableWrapper from './TableWrapper'
 import { success } from '../../_components/Message'
+
+// destructure child components
 
 class Case extends Component {
 	constructor(props) {

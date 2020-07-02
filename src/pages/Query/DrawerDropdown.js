@@ -1,15 +1,6 @@
 import React, { Component } from 'react';
 
-/*
-		This component is a dropdown
-		It requires 3 props
-
-		function 'onClickAction' for the Add Button
-		function 'onClickEdit' for the Refresh Table Button
-		function 'onClickUnban' for the Batch Delete Button
-*/
-
-// import styling from ant design
+// import components from ant design
 import { Menu, Dropdown } from 'antd';
 import { 
 	AuditOutlined, 
@@ -19,7 +10,11 @@ import {
 	CopyOutlined,
 } from '@ant-design/icons';
 
-class TableDropdown extends Component {
+// import shared and child components
+
+// destructure child components
+
+class DrawerDropdown extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -66,7 +61,7 @@ class TableDropdown extends Component {
 	
 	render(){
 		return (
-			<div className='TableDropdown'>
+			<div className='DrawerDropdown'>
 				<Dropdown.Button 
 					onClick={ this.props.onClickAction }
 					overlay={ this.menu }
@@ -78,4 +73,4 @@ class TableDropdown extends Component {
 	}
 }
 
-export default TableDropdown;
+export default DrawerDropdown;

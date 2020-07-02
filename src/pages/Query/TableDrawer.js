@@ -1,22 +1,23 @@
 import React, { Component } from 'react';
 
-// import styling from ant design
+// import components from ant design
 import { 
-	Button, Form, Divider, Descriptions, Row, Col, Card, 
-	Drawer, Tag, Collapse, message, notification,
+	Button, Descriptions, Row, Col, Card, Drawer, 
+	Tag, Collapse, message, notification,
 } from 'antd';
 import { 
 	NodeIndexOutlined,
 } from '@ant-design/icons';
 
-// import shared components
+// import shared and child components
 import TableBody from '../../_components/TableBody'
-import TableDropdown from './TableDropdown'
+import DrawerDropdown from './DrawerDropdown'
 import ActionDrawer from './ActionDrawer'
 import EditDrawer from './EditDrawer'
 import BindDrawer from './BindDrawer'
 import Template from './Template'
 
+// destructure child components
 const { Item } = Descriptions;
 const { Panel } = Collapse;
 
@@ -24,33 +25,30 @@ class TableDrawer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			// populate the email table
+			// for the case table
 			dataCase: [],
-			// populate the email table
+			// for the email table
 			dataEmail: [],
-			// populate the account table body with data
+			// for the account table
 			dataAccount: [],
-			// populate the action table
+			// for the action table
 			dataAction: [],
-			// opening and closing of the action drawer
+			// for the action drawer
 			visibleAction: false,
 			formKeyAction: Date.now(),
-			// opening and closing of the edit drawer
+			// for the edit drawer
 			visibleEdit: false,
 			formKeyEdit: Date.now(),
-			// opening and closing of the bind drawer
+			// for the bind drawer
 			visibleBind: false,
 			formKeyBind: Date.now(),
-			// for modal
-			visibleModal: false,
-			// for Collapse
-			searchResults: this.allOptions,
-			allOptions: this.allOptions,
-			// for SearchableInput
-			modalKey: Date.now(),
+			// for the template modal
+			visibleTemplate: false,
+			modalKeyTemplate: Date.now(),
 		};
 	}
 
+	// update the corresponding state variables
 	componentWillReceiveProps(nextProps) {
 		this.setState({ 
 			dataCase: nextProps.dataCase ? [ nextProps.dataCase ] : [], 
@@ -60,265 +58,7 @@ class TableDrawer extends Component {
 		});
 	}
 
-	// layout for forms
-	layout = {
-		labelCol: {
-			span: 8,
-		},
-		wrapperCol: {
-			span: 12,
-		},
-	};
-	tailLayout = {
-		wrapperCol: {
-			offset: 8,
-			span: 16,
-		},
-	};
-
-	columnsCase = [
-		{
-			title: 'Case Name',
-			dataIndex: 'casename',
-			key: 'casename',
-			width: '34%',
-			setFilter: false
-		},
-		{
-			title: 'Status',
-			dataIndex: 'status',
-			key: 'status',
-			width: '33%',
-			setFilter: false
-		},
-		{
-			title: 'Created At',
-			dataIndex: 'createdAt',
-			key: 'createdAt',
-			width: '33%',
-			setFilter: false
-		},
-	];
-
-	handleClickAction = record => {
-		this.setState({
-			visibleAction: true, 
-		});
-	}
-
-	handleCloseAction = event => {
-		console.log(event);
-		this.setState({
-			visibleAction: false, 
-		});
-	}
-
-	handleSubmitAction = record => {
-		console.log(record);
-		message.success("The action has been peformed on the case successfully");
-		this.setState({
-			visibleAction: false, 
-			formKeyAction: Date.now(),
-		});
-	}
-
-	handleClickEdit = record => {
-		this.setState({
-			visibleEdit: true, 
-		});
-	}
-
-	handleCloseEdit = event => {
-		console.log(event);
-		this.setState({
-			visibleEdit: false, 
-		});
-	}
-
-	handleSubmitEdit = record => {
-		console.log(record);
-		this.props.onSubmit(record);
-		this.setState({
-			visibleEdit: false, 
-			formKeyEdit: Date.now(),
-		});
-	}
-
-	handleCloseBind = event => {
-		console.log(event);
-		this.setState({
-			visibleBind: false, 
-		});
-	}
-
-	handleSubmitBind = record => {
-		console.log(this.props.allRelatedAccounts);
-		const dataAccount = [ this.props.allRelatedAccounts
-			.find( item => item.accountName === record.relatedAccount ) ];
-		this.props.onSubmit(record);
-		this.setState({
-			dataAccount,
-			visibleBind: false, 
-			formKeyBind: Date.now(),
-		});
-	}
-
-	allEmails = [
-		{
-			key: '1',
-			email: 'alice@gmail.com',
-			createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-25T11:28:25').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '1',
-		},
-	];
-
-	columnsEmail = [
-		{
-			title: 'Email',
-			dataIndex: 'email',
-			key: 'email',
-			width: '34%',
-			setFilter: false
-		},
-		{
-			title: 'Last Contacted At',
-			dataIndex: 'updatedAt',
-			key: 'updatedAt',
-			width: '33%',
-			setFilter: false
-		},
-		{
-			title: 'Created At',
-			dataIndex: 'createdAt',
-			key: 'createdAt',
-			width: '33%',
-			setFilter: false
-		},
-	];
-
-	handleClickTemplates = event => {
-		console.log(event);
-		this.setState({
-			visibleModal: true,
-		});
-	}
-
-	handleCancel = event => {
-		this.setState({
-			visibleModal: false,
-			modalKey: Date.now(),
-		});
-	}
-
-	allAccounts = [
-		{
-			key: '1',
-			candidateID: 'u9876543210',
-			accountName: 'alice@facebook.com',
-			accountType: 'facebook',
-			labels: ['banned'],
-			createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-		},
-	];
-
-	columnsAccount = [
-		{
-			title: 'Candidate ID',
-			dataIndex: 'candidateID',
-			key: 'candidateID',
-			width: '25%',
-			setFilter: false
-		},
-		{
-			title: 'Account Type',
-			dataIndex: 'accountType',
-			key: 'accountType',
-			width: '25%',
-			setFilter: false
-		},
-		{
-			title: 'Account Name',
-			dataIndex: 'accountName',
-			key: 'accountName',
-			width: '25%',
-			setFilter: false
-		},
-		{
-			title: 'Status',
-			dataIndex: 'banned',
-			key: 'banned',
-			render: banned => ( banned ? 
-				<Tag color="red">BANNED</Tag> : 
-				<Tag color="blue">UNBANNED</Tag> ),
-			width: '20%',
-		},
-	];
-
-	onClickBan = () => {
-		const key = `open${Date.now()}`;
-		const btn = (
-			<Button 
-				type='primary' 
-				size='small' 
-				onClick={ this.handleClickConfirmBan.bind(this, notification.close, key) }
-			>
-				Confirm
-			</Button>
-		);
-		notification.open({
-			message: 'About to Ban This Account',
-			description:
-				<> 
-					{"Are you sure to "} 
-					<span style={{color: "#ec5f5b"}}><strong>Ban</strong></span> 
-					{" this account?"}
-				</>,
-			btn,
-			key,
-			duration: 0,
-			onClose: () => message.info("Ban Cancelled"),
-		});
-	};
-
-	handleClickConfirmBan = (closeNotification, notificationKey) => {
-		this.props.onClickBan();
-		message.success("the account has been Banned successfully");
-		closeNotification(notificationKey);
-	};
-
-	onClickUnban = () => {
-		const key = `open${Date.now()}`;
-		const btn = (
-			<Button 
-				type='primary' 
-				size='small' 
-				onClick={ this.handleClickConfirmUnban.bind(this, notification.close, key) }
-			>
-				Confirm
-			</Button>
-		);
-		notification.open({
-			message: 'About to UNban This Account',
-			description:
-				<> 
-					{"Are you sure to "} 
-					<span style={{color: "#5a9ef8"}}><strong>UNban</strong></span> 
-					{" this account?"}
-				</>,
-			btn,
-			key,
-			duration: 0,
-			onClose: () => message.info("Ban Cancelled"),
-		});
-	};
-
-	handleClickConfirmUnban = (closeNotification, notificationKey) => {
-		this.props.onClickUnban();
-		message.success("the account has been UNbanned successfully");
-		closeNotification(notificationKey);
-	};
-
+	// for action history panel
 	columnsAction = [
 		{
 			title: 'Action',
@@ -374,16 +114,190 @@ class TableDrawer extends Component {
 		},
 	];
 
-	handleClickBind = event => {
-		event.stopPropagation();
-		console.log(this.props.record.relatedAccount);
-		if (this.props.record.relatedAccount)
-			message.info("The case has been bound to an account already")
-		else 
-			this.setState({ visibleBind: true });
-		
+	// for related email panel
+	columnsEmail = [
+		{
+			title: 'Email',
+			dataIndex: 'email',
+			key: 'email',
+			width: '34%',
+			setFilter: false
+		},
+		{
+			title: 'Last Contacted At',
+			dataIndex: 'updatedAt',
+			key: 'updatedAt',
+			width: '33%',
+			setFilter: false
+		},
+		{
+			title: 'Created At',
+			dataIndex: 'createdAt',
+			key: 'createdAt',
+			width: '33%',
+			setFilter: false
+		},
+	];
+
+	// for related account panel
+	columnsAccount = [
+		{
+			title: 'Candidate ID',
+			dataIndex: 'candidateID',
+			key: 'candidateID',
+			width: '25%',
+			setFilter: false
+		},
+		{
+			title: 'Account Type',
+			dataIndex: 'accountType',
+			key: 'accountType',
+			width: '25%',
+			setFilter: false
+		},
+		{
+			title: 'Account Name',
+			dataIndex: 'accountName',
+			key: 'accountName',
+			width: '25%',
+			setFilter: false
+		},
+		{
+			title: 'Status',
+			dataIndex: 'banned',
+			key: 'banned',
+			render: banned => ( banned ? 
+				<Tag color="red">BANNED</Tag> : 
+				<Tag color="blue">UNBANNED</Tag> ),
+			width: '20%',
+		},
+	];
+
+
+	// handlers for the action 
+	handleClickAction = record => {
+		this.setState({
+			visibleAction: true, 
+		});
 	}
 
+	handleCloseAction = event => {
+		this.setState({
+			visibleAction: false, 
+		});
+	}
+
+	handleSubmitAction = record => {
+		message.success("The action has been peformed successfully");
+		this.setState({
+			visibleAction: false, 
+			formKeyAction: Date.now(),
+		});
+	}
+
+	// handlers for edit
+	handleClickEdit = record => {
+		this.setState({
+			visibleEdit: true, 
+		});
+	}
+
+	handleCloseEdit = event => {
+		this.setState({
+			visibleEdit: false, 
+		});
+	}
+
+	handleSubmitEdit = record => {
+		this.props.onSubmit(record);
+		this.setState({
+			visibleEdit: false, 
+			formKeyEdit: Date.now(),
+		});
+	}
+
+	// handlers for unban
+	onClickUnban = () => {
+		const key = `open${Date.now()}`;
+		const btn = (
+			<Button 
+				type='primary' 
+				size='small' 
+				onClick={ this.handleClickConfirmUnban.bind(this, notification.close, key) }
+			>
+				Confirm
+			</Button>
+		);
+		notification.open({
+			message: 'About to UNban This Account',
+			description:
+				<> 
+					{"Are you sure to "} 
+					<span style={{color: "#5a9ef8"}}><strong>UNban</strong></span> 
+					{" this account?"}
+				</>,
+			btn,
+			key,
+			duration: 0,
+			onClose: () => message.info("Ban Cancelled"),
+		});
+	};
+
+	handleClickConfirmUnban = (closeNotification, notificationKey) => {
+		this.props.onClickUnban();
+		message.success("the account has been UNbanned successfully");
+		closeNotification(notificationKey);
+	};
+
+	// handlers for ban
+	onClickBan = () => {
+		const key = `open${Date.now()}`;
+		const btn = (
+			<Button 
+				type='primary' 
+				size='small' 
+				onClick={ this.handleClickConfirmBan.bind(this, notification.close, key) }
+			>
+				Confirm
+			</Button>
+		);
+		notification.open({
+			message: 'About to Ban This Account',
+			description:
+				<> 
+					{"Are you sure to "} 
+					<span style={{color: "#ec5f5b"}}><strong>Ban</strong></span> 
+					{" this account?"}
+				</>,
+			btn,
+			key,
+			duration: 0,
+			onClose: () => message.info("Ban Cancelled"),
+		});
+	};
+
+	handleClickConfirmBan = (closeNotification, notificationKey) => {
+		this.props.onClickBan();
+		message.success("the account has been Banned successfully");
+		closeNotification(notificationKey);
+	};
+
+
+	// handlers for templates
+	handleClickTemplates = event => {
+		this.setState({
+			visibleTemplate: true,
+		});
+	}
+
+	handleCloseTemplate = event => {
+		this.setState({
+			visibleTemplate: false,
+			modalKeyTemplate: Date.now(),
+		});
+	}
+
+	// define the bind button
 	genExtra = () => (
 		<Button
 			type="ghost"
@@ -396,6 +310,33 @@ class TableDrawer extends Component {
 		</Button>
 	);
 
+	// handlers for bind
+	handleClickBind = event => {
+		event.stopPropagation();
+		if (this.props.record.relatedAccount)
+			message.info("The case has been bound to an account already")
+		else 
+			this.setState({ visibleBind: true });
+	}
+
+	handleCloseBind = event => {
+		this.setState({
+			visibleBind: false, 
+		});
+	}
+
+	handleSubmitBind = record => {
+		const dataAccount = [ this.props.allRelatedAccounts
+			.find( item => item.accountName === record.relatedAccount ) ];
+		this.props.onSubmit(record);
+		this.setState({
+			dataAccount,
+			visibleBind: false, 
+			formKeyBind: Date.now(),
+		});
+	}
+
+	// define the header for the table drawer
 	title = (
 		<Row>
 			<Col span={ 8 }>
@@ -405,7 +346,7 @@ class TableDrawer extends Component {
 				span={ 2 }
 				offset={ 12 }
 			>
-				<TableDropdown 
+				<DrawerDropdown 
 					onClickAction={ this.handleClickAction }
 					onClickEdit={ this.handleClickEdit }
 					onClickUnban={ this.onClickUnban }
@@ -416,6 +357,7 @@ class TableDrawer extends Component {
 		</Row>	
 	)
 
+	// sorting rules
 	dynamicSort(property) {
 			var sortOrder = 1;
 
@@ -519,16 +461,6 @@ class TableDrawer extends Component {
 							</Item>
 						</Descriptions>
 					</Card>
-					<Form
-						{ ...this.layout }
-						name='basic'
-						initialValues={{
-							remember: true,
-						}}
-						onFinish={ this.props.onSubmit }
-						onFinishFailed={ this.onFinishFailed }
-					>
-
 					<Collapse 
 						defaultActiveKey={
 							this.props.disabled ? ['1', '2', '3'] : ['1']
@@ -570,24 +502,6 @@ class TableDrawer extends Component {
 								/>
 							</Panel>
 						</Collapse>
-						<Divider />
-						{ this.props.disabled ? <></> : 
-							<div style={{ textAlign:'right' }} >
-								<Button 
-									onClick={ this.props.onClose } 
-									style={{ marginRight: 8 }}
-								>
-									Cancel
-								</Button>
-								<Button 
-									type='primary' 
-									htmlType='submit'
-								>
-									Submit
-								</Button>
-							</div>
-						}
-					</Form>
 				</Drawer>
 				<div>
 					<ActionDrawer
@@ -620,9 +534,9 @@ class TableDrawer extends Component {
 				</div>
 				<div>
 					<Template
-						modalKey={ this.state.modalKey }
-						visible={ this.state.visibleModal }
-						onCancel={ this.handleCancel }
+						modalKey={ this.state.modalKeyTemplate }
+						visible={ this.state.visibleTemplate }
+						onCancel={ this.handleCloseTemplate }
 					>
 					</Template>
 				</div>

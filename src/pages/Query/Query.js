@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 
-// import styling from ant desgin
+// import components from ant design
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { 
-	AutoComplete, Input, Space, Button, Card, Row, Col, 
-	message, notification, 
+	AutoComplete, Input, Space, Button, Card, 
+	Row, Col, message, notification, 
 } from 'antd';
 
+// import shared and child components
 import Email from "./Email"
 import Case from "./Case"
 import Account  from "./Account"
 
+// destructure child components
 const { Search } = Input;
 
 class Query extends Component {
