@@ -5,8 +5,8 @@ import { MailOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
 
 // import shared components
-import TableWrapper from '../_components/TableWrapper'
-import { success } from '../_components/Message'
+import TableWrapper from '../../_components/TableWrapper'
+import { success } from '../../_components/Message'
 
 class Email extends Component {
 	constructor(props) {

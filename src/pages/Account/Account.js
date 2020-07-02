@@ -1,68 +1,57 @@
 import React, { Component } from 'react';
 
 // import styling from ant desgin
-import { FileSearchOutlined } from '@ant-design/icons';
-import { Input } from 'antd';
+import { TeamOutlined } from '@ant-design/icons';
+import { Input, Select, Tag } from 'antd';
 
 // import shared components
-import TableWrapper from '../_components/TableWrapper'
-import { success } from '../_components/Message'
+import TableWrapper from '../../_components/TableWrapper'
+import { success } from '../../_components/Message'
 
-class Case extends Component {
+const { Option } = Select
+
+class Account extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
-			data: this.props.data ? this.props.data : this.allCases,
+			data: this.allAccounts,
 		};
 	}
 	
-	allCases = [
+	allAccounts = [
 		{
 			key: '1',
-			casename: 'alice account unban',
-			remarks: 'The user has been banned once before',
-			status: 'pending',
+			candidateID: 'u9876543210',
+			accountName: 'alice@facebook.com',
+			accountType: 'facebook',
+			labels: ['banned'],
 			createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-			relatedEmail: 'alice@gmail.com',
-			relatedAccount: 'alice@facebook.com',
 		},
 		{
 			key: '2',
-			casename: 'bob membership change',
-			remarks: 'The user has been a VIP for 6 months',
-			status: 'approved',
+			candidateID: 'u9876543212',
+			accountName: '0085212345678',
+			accountType: 'phone',
+			labels: ['normal'],
 			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
-			relatedEmail: 'bob@gmail.com',
-			relatedAccount: '0085212345678',
-		},
-		{
-			key: '21',
-			casename: 'bob password change failed',
-			remarks: 'made more than 3 attempts',
-			status: 'approved',
-			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
-			relatedEmail: 'bob@gmail.com',
-			relatedAccount: '0085212345678',
 		},
 		{
 			key: '3',
-			casename: 'charlie account unban',
-			remarks: 'This is the first time the user got banned',
-			status: 'pending',
+			candidateID: 'u9876543213',
+			accountName: 'charlie@facebook',
+			accountType: 'facebook',
+			labels: ['spammer', 'banned'],
 			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
-			relatedEmail: 'charlie@hotmail.com',
-			relatedAccount: 'charlie@facebook.com',
 		},
 		{
 			key: '4',
-			casename: 'david passowrd change',
-			remarks: 'The user has made too many failed attempts',
-			status: 'pending',
+			candidateID: 'u9876543214',
+			accountName: '0085287654321',
+			accountType: 'phone',
+			labels: ['VIP'],
 			createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
-			relatedEmail: 'david@gmail.com',
-			relatedAccount: '0085287654321',
 		},
 	];
 
@@ -75,62 +64,88 @@ class Case extends Component {
 
 	columns = [
 		{
-			title: 'Case Name',
-			dataIndex: 'casename',
-			key: 'casename',
-			sorter: (a, b) => this.compare(a.casename, b.casename),
+			title: 'Candidate ID',
+			dataIndex: 'candidateID',
+			key: 'candidateID',
+			sorter: (a, b) => this.compare(a.candidateID, b.candidateID),
+			sortDirection: ['ascend', 'descend'],
+			width: '25%',
+			setFilter: true
+		},
+		{
+			title: 'Account Type',
+			dataIndex: 'accountType',
+			key: 'accountType',
+			sorter: (a, b) => this.compare(a.accountType, b.accountType),
 			sortDirection: ['ascend', 'descend'],
 			width: '15%',
 			setFilter: true
 		},
 		{
-			title: 'Status',
-			dataIndex: 'status',
-			key: 'status',
-			sorter: (a, b) => this.compare(a.status, b.status),
+			title: 'Account Name',
+			dataIndex: 'accountName',
+			key: 'accountName',
+			sorter: (a, b) => this.compare(a.accountName, b.accountName),
 			sortDirection: ['ascend', 'descend'],
-			width: '5%',
+			width: '20%',
 			setFilter: true
 		},
 		{
-			title: 'Created At',
-			dataIndex: 'createdAt',
-			key: 'createdAt',
-			sorter: (a, b) => this.compare(a.createdAt, b.createdAt),
-			sortDirection: ['ascend', 'descend'],
-			defaultSortOrder: 'descend',
-			width: '15%',
-			setFilter: true
+			title: 'Labels',
+			key: 'labels',
+			dataIndex: 'labels',
+			render: labels => !labels ? <></> : (
+				<>
+					{labels.map(tag => {
+						let color = 'blue';
+						switch (tag) {
+							case 'normal' :
+								color = 'blue';
+								break;
+							case 'banned' :
+								color = 'red';
+								break;
+							case 'spammer' :
+								color = 'purple';
+								break;
+							case 'VIP' :
+								color = 'gold';
+								break;
+							default :
+								color = 'blue';
+								break;
+						}
+						return (
+							<Tag color={color} key={tag}>
+								{tag.toUpperCase()}
+							</Tag>
+						);
+					})}
+				</>
+			),
+			width: '20%',
 		},
-		{
-			title: 'Related Email',
-			dataIndex: 'relatedEmail',
-			key: 'relatedEmail',
-			sorter: (a, b) => this.compare(a.relatedEmail, b.relatedEmail),
-			sortDirection: ['ascend', 'descend'],
-			width: '15%',
-			setFilter: true
-		},
-		{
-			title: 'Related Account',
-			dataIndex: 'relatedAccount',
-			key: 'relatedAccount',
-			sorter: (a, b) => this.compare(a.relatedAccount, b.relatedAccount),
-			sortDirection: ['ascend', 'descend'],
-			width: '15%',
-			setFilter: true
-		},
+//		{
+//			title: 'Created At',
+//			dataIndex: 'createdAt',
+//			key: 'createdAt',
+//			sorter: (a, b) => this.compare(a.createdAt, b.createdAt),
+//			sortDirection: ['ascend', 'descend'],
+//			defaultSortOrder: 'descend',
+//			width: '15%',
+//			setFilter: true
+//		},
 	];
 
 	// define form items for TableDrawer
 	formItems = [
 		{
-			label: 'Case Name',
-			name: 'casename',
+			label: 'Candidate ID',
+			name: 'candidateID',
 			rules: [
 				{
 					required: true,
-					message: 'casename cannot be empty',
+					message: 'candidateID cannot be empty',
 				}
 			],
 			editable: true,
@@ -143,18 +158,36 @@ class Case extends Component {
 			)
 		},
 		{
-			label: 'Remarks',
-			name: 'remarks',
+			label: 'Account Type',
+			name: 'accountType',
 			rules: [
 				{
 					required: true,
-					message: 'remarks cannot be empty',
+					message: 'accountType cannot be empty',
+				}
+			],
+			editable: true,
+			input: disabled => (
+				<Select
+					disabled={ disabled }
+				>
+					<Option value="facebook">facebook</Option>
+					<Option value="phone">phone</Option>
+				</Select>
+			)
+		},
+		{
+			label: 'Account Name',
+			name: 'accountName',
+			rules: [
+				{
+					required: true,
+					message: 'accountName cannot be empty',
 				},
 			],
 			editable: true,
 			input: disabled => (
-				<Input.TextArea
-					autoSize={{ minRows: 2, maxRows: 8 }}
+				<Input
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
@@ -162,21 +195,25 @@ class Case extends Component {
 			)
 		},			
 		{
-			label: 'Status',
-			name: 'status',
+			label: 'Labels',
+			name: 'labels',
 			rules: [
 				{
 					required: true,
-					message: 'status cannot be empty',
+					message: 'labels cannot be empty',
 				}
 			],
-			editable: false,
+			editable: true,
 			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
+				<Select
+					mode='multiple'
 					disabled={ disabled }
-				/>
+				>
+					<Option value="normal">normal</Option>
+					<Option value="banned">banned</Option>
+					<Option value="spammer">spammer</Option>
+					<Option value="VIP">VIP</Option>
+				</Select>
 			)
 		},
 		{
@@ -203,8 +240,8 @@ class Case extends Component {
 	tableHeader = this.props.tableHeader ? this.props.tableHeader : 
 	(
 		<>
-			<FileSearchOutlined />
-			<strong>Cases</strong>
+			<TeamOutlined />
+			<strong>Accounts</strong>
 		</>
 	)
 
@@ -212,7 +249,7 @@ class Case extends Component {
   create = record => {
 		const data = this.state.data.slice();
 		record.key = Date.now();
-		record.status = "pending";
+		record.accountType = "queueing";
 		record.createdAt = new Date().toISOString().split('.')[0].replace('T', ' ');
 		data.push(record);
 		if (200) success('create_success');
@@ -253,18 +290,19 @@ class Case extends Component {
 	refreshTable = () => this.setState({ tableWrapperKey: Date.now() });
 	render(){
 		return (
-			<div className='Case'>
+			<div className='Account'>
 				<TableWrapper
 					key={ this.state.tableWrapperKey }
 					data={ this.state.data }
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create a new case'
+					drawerTitle='Create a new account'
 					create={ this.create }
 					edit={ this.edit }
 					delete={ this.delete }
 					refreshTable={ this.refreshTable }
+					isSmall={ this.props.isSmall }
 				>
 				</TableWrapper>
 			</div>
@@ -272,4 +310,4 @@ class Case extends Component {
 	}
 }
 
-export default Case;
+export default Account;

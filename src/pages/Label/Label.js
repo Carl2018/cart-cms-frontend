@@ -5,8 +5,8 @@ import { TagOutlined } from '@ant-design/icons';
 import { Input, Tag, Select } from 'antd';
 
 // import shared components
-import TableWrapper from '../_components/TableWrapper'
-import { success } from '../_components/Message'
+import TableWrapper from '../../_components/TableWrapper'
+import { success } from '../../_components/Message'
 
 const { Option } = Select;
 

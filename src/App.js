@@ -4,12 +4,12 @@ import './App.css';
 
 // import customized component
 import Query from './pages/Query/Query';
-import Case from './pages/Case';
-import Account from './pages/Account';
-import Email from './pages/Email';
-import Label from './pages/Label';
-import Template from './pages/Template';
-import Category from './pages/Category';
+import Case from './pages/Case/Case';
+import Account from './pages/Account/Account';
+import Email from './pages/Email/Email';
+import Label from './pages/Label/Label';
+import Template from './pages/Template/Template';
+import Category from './pages/Category/Category';
 
 // import styling from ant design
 import 'antd/dist/antd.css';
