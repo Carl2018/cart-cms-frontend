@@ -29,58 +29,6 @@ class Email extends Component {
 //		return { data: nextProps.data };
 //	}
 	
-	allEmails = [
-		{
-			key: '1',
-			email: 'alice@gmail.com',
-			createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-25T11:28:25').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '1',
-		},
-		{
-			key: '2',
-			email: 'bob@gmail.com',
-			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-24T13:48:32').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '2',
-		},
-		{
-			key: '21',
-			email: 'bob1234@gmail.com',
-			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-24T13:48:32').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '2',
-		},
-		{
-			key: '3',
-			email: 'charlie@hotmail.com',
-			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-22T18:23:28').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '3',
-		},
-		{
-			key: '31',
-			email: 'charlie1234@hotmail.com',
-			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-22T18:23:28').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '3',
-		},
-		{
-			key: '32',
-			email: 'charlie4321@hotmail.com',
-			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-22T18:23:28').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '3',
-		},
-		{
-			key: '4',
-			email: 'david@gmail.com',
-			createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-25T12:33:18').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '4',
-		},
-	];
-
 	// define columns for TableBody
 	compare = (a, b) => {
 		if (a >  b) return 1;
@@ -284,12 +232,12 @@ class Email extends Component {
 	}
 
 	refreshTable = () => this.setState({ tableWrapperKey: Date.now() });
+
 	render(){
 		return (
 			<div className='Email'>
 				<TableWrapper
 					key={ this.state.tableWrapperKey }
-					data={ this.state.data }
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
@@ -299,9 +247,10 @@ class Email extends Component {
 					delete={ this.delete }
 					refreshTable={ this.refreshTable }
 					isSmall={ this.props.isSmall }
-					showHeader={ this.props.showHeader }
+					data={ this.state.data }
 					loading={ this.props.loading }
-					hideDropdown={ this.props.hideDropdown }
+					showHeader={ this.props.showHeader }
+					showDropdown={ this.props.showDropdown }
 				>
 				</TableWrapper>
 			</div>

@@ -1,16 +1,23 @@
 import React, { Component } from 'react';
 
 // import components from ant design
-import { QuestionCircleOutlined } from '@ant-design/icons';
 import { 
-	AutoComplete, Input, Space, Button, Card, 
-	Row, Col, message, notification, 
+	AutoComplete, 
+	Button, 
+	Card, 
+	Col, 
+	Input, 
+	Row, 
+	Space, 
+	message, 
+	notification, 
 } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 
 // import shared and child components
-import Email from "./Email"
-import Case from "./Case"
 import Account  from "./Account"
+import Case from "./Case"
+import Email from "./Email"
 
 // destructure child components
 const { Search } = Input;
@@ -19,14 +26,14 @@ class Query extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			options : [],
-			email : "",
-			loading: false,
-			showHeader: false,
-			hideDropdown: true,
-			dataEmail: [],
-			dataCase: [],
-			dataAccount: [],
+			options : [], // options for AutoComplete
+			email : "", // current search
+			loading: false, // for Spin
+			showHeader: false, // for header in each table
+			showDropdown: false, // for dropdown in each table
+			dataEmail: [], // for email table
+			dataCase: [], // for case table
+			dataAccount: [], // for account table
 		};
 	}
 	
@@ -207,9 +214,9 @@ class Query extends Component {
 
 	handleChange = data => {
 		const options = this.allEmails
-		.map( item => item.email )
-		.filter( item => item.includes(data) )
-		.map( entry => ({ value:entry }) )
+			.map( item => item.email )
+			.filter( item => item.includes(data) )
+			.map( item => ({ value: item }) );
 		this.setState({ options });
 	}
 
@@ -239,19 +246,16 @@ class Query extends Component {
 			message.success("Profile Found");
 			this.setState({ 
 				showHeader: true,
-				hideDropdown: false,
+				showDropdown: true,
 			});
 		} else {
 			message.info("Profile Not Found");
 			this.setState({ 
 				showHeader: false,
-				hideDropdown: true,
+				showDropdown: false,
 			});
 		}
 	}
-
-	handleClickBan = () => {
-	};
 
 	handleClick = event => {
 		const autosearch = document.getElementById("autosearch");
@@ -384,27 +388,27 @@ class Query extends Component {
 					style={{ margin: "16px" }}
 				>
 					<Email 
-						data={ this.state.dataEmail }
 						tableHeader={ <><strong>Profile</strong></> }
 						isSmall={ true }
-						showHeader={ this.state.showHeader }
+						data={ this.state.dataEmail }
 						loading={ this.state.loading }
-						hideDropdown={ this.state.hideDropdown }
+						showHeader={ this.state.showHeader }
+						showDropdown={ this.state.showDropdown }
 					/>
 				</Card>
 				<Card
 					style={{ margin: "16px" }}
 				>
 					<Case
+						tableHeader={ <><strong>Cases</strong></> }
+						isSmall={ true }
 						data={ this.state.dataCase }
 						dataEmail={ this.state.dataEmail }
 						dataAccount={ this.state.dataAccount }
 						email={ this.state.email }
-						tableHeader={ <><strong>Cases</strong></> }
-						isSmall={ true }
-						showHeader={ this.state.showHeader }
 						loading={ this.state.loading }
-						hideDropdown={ this.state.hideDropdown }
+						showHeader={ this.state.showHeader }
+						showDropdown={ this.state.showDropdown }
 						onClickBan={ this.handleClickBan }
 						onClickUnban={ this.handleClickUnban }
 					/>
@@ -413,12 +417,12 @@ class Query extends Component {
 					style={{ margin: "16px" }}
 				>
 					<Account
-						data={ this.state.dataAccount }
 						tableHeader={ <><strong>Accounts</strong></> }
 						isSmall={ true }
-						showHeader={ this.state.showHeader }
+						data={ this.state.dataAccount }
 						loading={ this.state.loading }
-						hideDropdown={ this.state.hideDropdown }
+						showHeader={ this.state.showHeader }
+						showDropdown={ this.state.showDropdown }
 					/>
 				</Card>
 			</div>

@@ -29,41 +29,6 @@ class Account extends Component {
 //		return { data: nextProps.data };
 //	}
 	
-	allAccounts = [
-		{
-			key: '1',
-			candidateID: 'u9876543210',
-			accountName: 'alice@facebook.com',
-			accountType: 'facebook',
-			labels: ['banned'],
-			createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-		},
-		{
-			key: '2',
-			candidateID: 'u9876543212',
-			accountName: '0085212345678',
-			accountType: 'phone',
-			labels: ['normal'],
-			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
-		},
-		{
-			key: '3',
-			candidateID: 'u9876543213',
-			accountName: 'charlie@facebook',
-			accountType: 'facebook',
-			labels: ['spammer', 'banned'],
-			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
-		},
-		{
-			key: '4',
-			candidateID: 'u9876543214',
-			accountName: '0085287654321',
-			accountType: 'phone',
-			labels: ['VIP'],
-			createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
-		},
-	];
-
 	// define columns for TableBody
 	compare = (a, b) => {
 		if (a >  b) return 1;
@@ -239,12 +204,12 @@ class Account extends Component {
 	}
 
 	refreshTable = () => this.setState({ tableWrapperKey: Date.now() });
+
 	render(){
 		return (
 			<div className='Account'>
 				<TableWrapper
 					key={ this.state.tableWrapperKey }
-					data={ this.state.data }
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
@@ -254,9 +219,10 @@ class Account extends Component {
 					delete={ this.delete }
 					refreshTable={ this.refreshTable }
 					isSmall={ this.props.isSmall }
-					showHeader={ this.props.showHeader }
+					data={ this.state.data }
 					loading={ this.props.loading }
-					hideDropdown={ this.props.hideDropdown }
+					showHeader={ this.props.showHeader }
+					showDropdown={ this.props.showDropdown }
 				>
 				</TableWrapper>
 			</div>

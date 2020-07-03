@@ -47,7 +47,7 @@ class TableWrapper extends Component {
 					<Button 
 						type='link' 
 						icon={ <FileSearchOutlined /> }
-						onClick={ this.handleClickView.bind(this, record) }
+						onClick={ this.handleClickInspect.bind(this, record) }
 					>
 						Inspect
 					</Button>
@@ -87,21 +87,12 @@ class TableWrapper extends Component {
 	}
 
 	// handlers for actions in TableBody
-	handleClickView = record => {
+	handleClickInspect = record => {
 		const { relatedEmail, relatedAccount } = this.getRelatedInfo(record);
 		this.setState({ relatedEmail, relatedAccount, record }, () => 
 		this.setState({
 			visible: true, 
 			disabled: true,
-		}) );
-	}
-
-	handleClickEdit = record => {
-		const { relatedEmail, relatedAccount } = this.getRelatedInfo(record);
-		this.setState({ relatedEmail, relatedAccount, record }, () => 
-		this.setState({
-			visible: true, 
-			disabled: false,
 		}) );
 	}
 
@@ -249,7 +240,7 @@ class TableWrapper extends Component {
 						}}
 						span={ 12 } 
 					>
-						{ this.props.hideDropdown ? (<></>) : (<>
+						{ !this.props.showDropdown ? (<></>) : (<>
 								<TableDropdown 
 									onClickAdd={ this.handleClickAdd }
 									onClickRefreshTable={ this.handleClickRefreshTable }
