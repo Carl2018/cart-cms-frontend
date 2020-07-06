@@ -176,6 +176,7 @@ class Case extends Component {
 		this.setState({ data });
 	}
 
+	// refresh table
 	refreshTable = () => this.setState({ tableWrapperKey: Date.now() });
 
 	render(){
@@ -183,23 +184,25 @@ class Case extends Component {
 			<div className='Case'>
 				<TableWrapper
 					key={ this.state.tableWrapperKey }
+					// data props
+					data={ this.state.data }
+					dataEmail={ this.props.dataEmail }
+					dataAccount={ this.props.dataAccount }
+					email={ this.props.email }
+					// display props
+					loading={ this.props.loading }
+					tableHeader={ this.tableHeader }
 					columns={ this.columns }
 					formItems={ this.formItems }
-					tableHeader={ this.tableHeader }
+					isSmall={ this.props.isSmall }
+					showHeader={ this.props.showHeader }
+					showDropdown={ this.props.showDropdown }
 					drawerTitle='Create a new case'
+					// api props
 					create={ this.create }
 					edit={ this.edit }
 					delete={ this.delete }
 					refreshTable={ this.refreshTable }
-					isSmall={ this.props.isSmall }
-					data={ this.state.data }
-					dataEmail={ this.props.dataEmail }
-					dataCase={ this.props.data }
-					dataAccount={ this.props.dataAccount }
-					email={ this.props.email }
-					loading={ this.props.loading }
-					showHeader={ this.props.showHeader }
-					showDropdown={ this.props.showDropdown }
 					onClickBan={ this.props.onClickBan }
 					onClickUnban={ this.props.onClickUnban }
 				>

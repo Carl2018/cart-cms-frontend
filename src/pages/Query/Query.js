@@ -37,6 +37,7 @@ class Query extends Component {
 		};
 	}
 	
+	// data from email table
 	allEmails = [
 		{
 			key: '1',
@@ -96,6 +97,7 @@ class Query extends Component {
 		},
 	];
 
+	// data from action table
 	actions = [
 		{
 			key: '1',
@@ -120,6 +122,7 @@ class Query extends Component {
 		},
 	];
 
+	// data from case table
 	allCases = [
 		{
 			key: '1',
@@ -173,6 +176,7 @@ class Query extends Component {
 		},
 	];
 
+	// data from account table
 	allAccounts = [
 		{
 			key: '1',
@@ -212,6 +216,7 @@ class Query extends Component {
 		},
 	];
 
+	// filter AutoComplete options when input field changes
 	handleChange = data => {
 		const options = this.allEmails
 			.map( item => item.email )
@@ -220,11 +225,13 @@ class Query extends Component {
 		this.setState({ options });
 	}
 
+	// perform a search when the search button is pressed
 	handleSearch = data => {
 		this.setState({ loading: true });
 		setTimeout( () => this.updateTables(data), 500);
 	}
 
+	// update all 3 tables upon a search
 	updateTables = data => {
 		const email = data;
 		const profileID = this.allEmails
@@ -257,7 +264,8 @@ class Query extends Component {
 		}
 	}
 
-	handleClick = event => {
+	// handler for the create profile button
+	handleClickCreate = event => {
 		const autosearch = document.getElementById("autosearch");
 		console.log(autosearch);
 		const value = autosearch.value.trim();
@@ -303,12 +311,14 @@ class Query extends Component {
 		}
 	}
 
+	// handler for create profile confirmation
 	handleClickConfirm = (closeNotification, notificationKey, record) => {
 		this.handleSubmit(record);
 		message.success("A new profile has been created successfully");
 		closeNotification(notificationKey);
 	};
 
+	// handler for submitting a new profile
 	handleSubmit = record => {
 		record = {
 			key: Date.now(),
@@ -321,6 +331,7 @@ class Query extends Component {
 		this.handleSearch(record.email);
 	}
 
+	// handler for ban button in child component
 	handleClickBan = relatedAccount => {
 		console.log(relatedAccount);
 		const dataAccount = this.state.dataAccount.map( item => {
@@ -331,6 +342,7 @@ class Query extends Component {
 		this.setState({ dataAccount });
 	}
 
+	// handler for unban button in child component
 	handleClickUnban = relatedAccount => {
 		console.log(relatedAccount);
 		const dataAccount = this.state.dataAccount.map( item => {
@@ -377,7 +389,7 @@ class Query extends Component {
 							</AutoComplete>
 							<Button
 								size="middle"
-								onClick={ this.handleClick }
+								onClick={ this.handleClickCreate }
 							>
 								Create Profile
 							</Button>
@@ -388,27 +400,33 @@ class Query extends Component {
 					style={{ margin: "16px" }}
 				>
 					<Email 
+						// data props
+						data={ this.state.dataEmail }
+						// display props
+						loading={ this.state.loading }
 						tableHeader={ <><strong>Profile</strong></> }
 						isSmall={ true }
-						data={ this.state.dataEmail }
-						loading={ this.state.loading }
 						showHeader={ this.state.showHeader }
 						showDropdown={ this.state.showDropdown }
+						// api props
 					/>
 				</Card>
 				<Card
 					style={{ margin: "16px" }}
 				>
 					<Case
-						tableHeader={ <><strong>Cases</strong></> }
-						isSmall={ true }
+						// data props
 						data={ this.state.dataCase }
 						dataEmail={ this.state.dataEmail }
 						dataAccount={ this.state.dataAccount }
 						email={ this.state.email }
+						// display props
 						loading={ this.state.loading }
+						tableHeader={ <><strong>Cases</strong></> }
+						isSmall={ true }
 						showHeader={ this.state.showHeader }
 						showDropdown={ this.state.showDropdown }
+						// api props
 						onClickBan={ this.handleClickBan }
 						onClickUnban={ this.handleClickUnban }
 					/>
@@ -417,12 +435,15 @@ class Query extends Component {
 					style={{ margin: "16px" }}
 				>
 					<Account
+						// data props
+						data={ this.state.dataAccount }
+						// display props
+						loading={ this.state.loading }
 						tableHeader={ <><strong>Accounts</strong></> }
 						isSmall={ true }
-						data={ this.state.dataAccount }
-						loading={ this.state.loading }
 						showHeader={ this.state.showHeader }
 						showDropdown={ this.state.showDropdown }
+						// api props
 					/>
 				</Card>
 			</div>

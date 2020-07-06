@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 
 // import components from ant design
+import { 
+	Input, 
+	Select,
+	Tag, 
+} from 'antd';
 import { MailOutlined } from '@ant-design/icons';
-import { Input, Tag, Select } from 'antd';
 
 // import shared and child components
 import TableWrapper from '../../_components/TableWrapper'
 import { success } from '../../_components/Message'
 
 // destructure child components
-
 const { Option } = Select;
+
 class Email extends Component {
 	constructor(props) {
 		super(props);
@@ -231,6 +235,7 @@ class Email extends Component {
 		this.setState({ data });
 	}
 
+	// refresh table
 	refreshTable = () => this.setState({ tableWrapperKey: Date.now() });
 
 	render(){
@@ -238,19 +243,22 @@ class Email extends Component {
 			<div className='Email'>
 				<TableWrapper
 					key={ this.state.tableWrapperKey }
+					// data props
+					data={ this.state.data }
+					// display props
+					loading={ this.props.loading }
+					tableHeader={ this.tableHeader }
 					columns={ this.columns }
 					formItems={ this.formItems }
-					tableHeader={ this.tableHeader }
+					isSmall={ this.props.isSmall }
+					showHeader={ this.props.showHeader }
+					showDropdown={ this.props.showDropdown }
 					drawerTitle='Create a new email'
+					// api props
 					create={ this.create }
 					edit={ this.edit }
 					delete={ this.delete }
 					refreshTable={ this.refreshTable }
-					isSmall={ this.props.isSmall }
-					data={ this.state.data }
-					loading={ this.props.loading }
-					showHeader={ this.props.showHeader }
-					showDropdown={ this.props.showDropdown }
 				>
 				</TableWrapper>
 			</div>

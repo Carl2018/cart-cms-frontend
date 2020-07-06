@@ -2,19 +2,25 @@ import React, { Component } from 'react';
 
 // import components from ant design
 import { 
-	Button, Descriptions, Row, Col, Card, Drawer, 
-	Tag, Collapse, message, notification,
+	Button, 
+	Card, 
+	Col, 
+	Collapse, 
+	Descriptions, 
+	Drawer, 
+	Row, 
+	Tag, 
+	message, 
+	notification,
 } from 'antd';
-import { 
-	NodeIndexOutlined,
-} from '@ant-design/icons';
+import { NodeIndexOutlined } from '@ant-design/icons';
 
 // import shared and child components
-import TableBody from '../../_components/TableBody'
-import DrawerDropdown from './DrawerDropdown'
 import ActionDrawer from './ActionDrawer'
-import EditDrawer from './EditDrawer'
 import BindDrawer from './BindDrawer'
+import DrawerDropdown from './DrawerDropdown'
+import EditDrawer from './EditDrawer'
+import TableBody from '../../_components/TableBody'
 import Template from './Template'
 
 // destructure child components
@@ -90,30 +96,6 @@ class TableDrawer extends Component {
 		},
 	];
 
-	allActions = [
-		{
-			key: '1',
-			action: 'open',
-			details: 'opened a case',
-			createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-			createdBy: 'root',
-		},
-		{
-			key: '2',
-			action: 'reply',
-			details: 'informed the user to wait for 1 day',
-			createdAt: new Date('2020-05-21T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-			createdBy: 'root',
-		},
-		{
-			key: '3',
-			action: 'reply',
-			details: 'informed the user that his account has been unbaned',
-			createdAt: new Date('2020-05-21T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-			createdBy: 'andy',
-		},
-	];
-
 	// for related email panel
 	columnsEmail = [
 		{
@@ -173,8 +155,7 @@ class TableDrawer extends Component {
 		},
 	];
 
-
-	// handlers for the action 
+	// handlers for action button and action drawer
 	handleClickAction = record => {
 		this.setState({
 			visibleAction: true, 
@@ -195,7 +176,7 @@ class TableDrawer extends Component {
 		});
 	}
 
-	// handlers for edit
+	// handlers for edit button and edit drawer
 	handleClickEdit = record => {
 		this.setState({
 			visibleEdit: true, 
@@ -313,7 +294,7 @@ class TableDrawer extends Component {
 	// handlers for bind
 	handleClickBind = event => {
 		event.stopPropagation();
-		if (this.props.record.relatedAccount)
+		if (this.props.dataCase.relatedAccount)
 			message.info("The case has been bound to an account already")
 		else 
 			this.setState({ visibleBind: true });
@@ -403,19 +384,19 @@ class TableDrawer extends Component {
 							column={ 3 }
 						>
 							<Item label="Case Name"> 
-								{ this.props.record.casename }
+								{ this.props.dataCase.casename }
 							</Item>
 							<Item label="Status">
-								{ this.props.record.status }
+								{ this.props.dataCase.status }
 							</Item>
 							<Item label="Created At">
-								{ this.props.record.createdAt }
+								{ this.props.dataCase.createdAt }
 							</Item>
 							<Item 
 								label="Remarks" 
 								span = { 2 } 
 							>
-								{ this.props.record.remarks }
+								{ this.props.dataCase.remarks }
 							</Item>
 							<Item 
 								label="Labels"
@@ -518,7 +499,7 @@ class TableDrawer extends Component {
 						onClose={ this.handleCloseEdit }
 						formKey={ this.state.formKeyEdit }
 						onFinish={ this.handleSubmitEdit }
-						record={ this.props.record }
+						record={ this.props.dataCase }
 					>
 					</EditDrawer>
 				</div>
