@@ -3,9 +3,6 @@ import React, { Component } from 'react';
 // import components from ant design
 import { 
 	Button, 
-	Divider, 
-	Drawer, 
-	Form, 
 	Input, 
 	Col, 
 	Popconfirm, 
@@ -21,7 +18,8 @@ import {
 // import shared and child components
 import TableBody from '../../_components/TableBody'
 import TableDropdown from '../../_components/TableDropdown'
-import TableDrawer from './TableDrawer'
+import TableDrawer from '../../_components/TableDrawer'
+import InspectDrawer from './InspectDrawer'
 import { cancel, refresh } from '../../_components/Message'
 
 // destructure child components
@@ -34,9 +32,9 @@ class TableWrapper extends Component {
 			selectedRowKeys: [], 
 			// for create drawer
 			visibleCreate: false,
-			formKeyCreate: Date.now(),
+			createDrawerKey: Date.now(),
 			// for inspect drawer
-			tableDrawerKey: Date.now(), 
+			inspectDrawerKey: Date.now(), 
 			visible: false, 
 			record: {}, 
 			disabled: false, 
@@ -96,7 +94,7 @@ class TableWrapper extends Component {
 				}
 			],
 			editable: true,
-			input: (
+			input: () => (
 				<Input
 					maxLength={ 255 }
 					allowClear
@@ -113,7 +111,7 @@ class TableWrapper extends Component {
 				},
 			],
 			editable: true,
-			input: (
+			input: () => (
 				<Input.TextArea
 					autoSize={{ minRows: 6, maxRows: 10 }}
 					maxLength={255}
@@ -214,7 +212,7 @@ class TableWrapper extends Component {
 			this.props.create(record);
 			this.setState({
 				visibleCreate: false, 
-				formKeyCreate: Date.now(),
+				createDrawerKey: Date.now(),
 				record: {},
 			});
 		}
@@ -226,7 +224,7 @@ class TableWrapper extends Component {
     this.setState({
       visible: false,
 			record: {},
-			tableDrawerKey: Date.now(),
+			inspectDrawerKey: Date.now(),
     });
   };
 
@@ -285,8 +283,8 @@ class TableWrapper extends Component {
 					/>
 				</div>
 				<div>
-					<TableDrawer 
-						tableDrawerKey={ this.state.tableDrawerKey }
+					<InspectDrawer 
+						tableDrawerKey={ this.state.inspectDrawerKey }
 						// data props
 						dataCase={ this.state.record }
 						dataEmail={ this.state.relatedEmail }
@@ -305,53 +303,21 @@ class TableWrapper extends Component {
 					/>
 				</div>
 				<div>
-					<Drawer
-						title="Create A Case"
-						width={ 618 }
-						bodyStyle={{ paddingBottom: 80 }}
+					<TableDrawer 
+						tableDrawerKey={ this.state.createDrawerKey }
+						// data props
+						//record={ }
+						// display props
 						visible={ this.state.visibleCreate } 
+						drawerTitle={ this.props.drawerTitle } 
+						formItems={ this.formItemsCreate }
+						drawerWidth={ 618 }
+						//disabled={ this.state.disabled } 
+						//formLayout={ this.props.formLayout }
+						// api props
 						onClose={ this.handleCloseCreate }
-					>
-						<Form
-							key={ this.state.formKeyCreate }
-							labelCol={ { span: 8 } }
-							wrapperCol={ { span: 16 } }
-							name='basic'
-							initialValues={{
-								remember: true,
-							}}
-							onFinish={ this.handleSubmit }
-							onFinishFailed={ this.onFinishFailedCreate }
-						>
-							{ this.formItemsCreate.map( item => 
-								(
-									<Form.Item
-										key={ item.name }
-										label={ item.label }
-										name={ item.name }
-										rules={ item.rules }
-									>
-										{ item.input }
-									</Form.Item>
-								)
-							) }
-							<Divider />
-							<div style={{ textAlign:'right' }} >
-								<Button 
-									onClick={ this.handleCloseCreate } 
-									style={{ marginRight: 8 }}
-								>
-									Cancel
-								</Button>
-								<Button 
-									type='primary' 
-									htmlType='submit'
-								>
-									Submit
-								</Button>
-							</div>
-						</Form>
-					</Drawer>
+						onSubmit={ this.handleSubmit }
+					/>
 				</div>
 			</div>
 		);

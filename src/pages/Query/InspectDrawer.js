@@ -27,7 +27,7 @@ import Template from './Template'
 const { Item } = Descriptions;
 const { Panel } = Collapse;
 
-class TableDrawer extends Component {
+class InspectDrawer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -367,7 +367,7 @@ class TableDrawer extends Component {
 	render(){
 		return (
 			<div 
-				className='TableDrawer'
+				className='InspectDrawer'
 				key={ this.props.tableDrawerKey } 
 			>
 				<Drawer
@@ -526,4 +526,4 @@ class TableDrawer extends Component {
 	}
 }
 
-export default TableDrawer;
+export default InspectDrawer;
