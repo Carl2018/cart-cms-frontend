@@ -177,7 +177,7 @@ class TableWrapper extends Component {
 						}}
 						span={ 12 } 
 					>
-						{ !this.props.showDropdown ? (<></>) : (<>
+						{ this.props.showDropdown === false ? (<></>) : (<>
 								<TableDropdown 
 									onClickAdd={ this.handleClickAdd }
 									onClickRefreshTable={ this.handleClickRefreshTable }

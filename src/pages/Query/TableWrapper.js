@@ -203,22 +203,15 @@ class TableWrapper extends Component {
 		});
 	}
 
-	// handler for create from create drawer and edit from inspect drawer
-	handleSubmit = record => {
-		if (this.state.record.key) { // edit the entry
-			this.props.edit(this.state.record.key, record);
-			// update the related info
-			const { relatedEmail, relatedAccount } = this.getRelatedInfo(record);
-			this.setState({ relatedEmail, relatedAccount });
-		} else { // create an entry
-			record.relatedEmail = this.state.relatedEmail?.email;
-			this.props.create(record);
-			this.setState({
-				visibleCreate: false, 
-				createDrawerKey: Date.now(),
-				record: {},
-			});
-		}
+	// handler for create 
+	handleSubmitCreate = record => {
+		record.relatedEmail = this.state.relatedEmail?.email;
+		this.props.create(record);
+		this.setState({
+			visibleCreate: false, 
+			createDrawerKey: Date.now(),
+			record: {},
+		});
 	}
 
 	// handlers for actions in inspect drawer
@@ -230,6 +223,14 @@ class TableWrapper extends Component {
 			inspectDrawerKey: Date.now(),
     });
   };
+
+	// handler for edit and bind actions
+	handleSubmitEdit = record => {
+		this.props.edit(this.state.record.key, record);
+		// update the related info
+		const { relatedEmail, relatedAccount } = this.getRelatedInfo(record);
+		this.setState({ relatedEmail, relatedAccount });
+	}
 
 	// handler for click ban
 	onClickBan = record => 
@@ -300,7 +301,7 @@ class TableWrapper extends Component {
 						disabled={ this.state.disabled } 
 						// api props
 						onClose={ this.handleClose }
-						onSubmit={ this.handleSubmit }
+						onSubmit={ this.handleSubmitEdit }
 						onClickBan={ this.onClickBan }
 						onClickUnban={ this.onClickUnban }
 					/>
@@ -319,7 +320,7 @@ class TableWrapper extends Component {
 						//formLayout={ this.props.formLayout }
 						// api props
 						onClose={ this.handleCloseCreate }
-						onSubmit={ this.handleSubmit }
+						onSubmit={ this.handleSubmitCreate }
 					/>
 				</div>
 			</div>
