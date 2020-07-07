@@ -266,9 +266,8 @@ class Query extends Component {
 		const autosearch = document.getElementById("autosearch");
 		const value = autosearch.value.trim();
 		if (!value) {
-			const bgcolor = autosearch.style.backgroundColor;
 			autosearch.style.backgroundColor = "#ffcccb";
-			setTimeout( () => autosearch.style.backgroundColor = bgcolor, 1000 ); 
+			setTimeout( () => autosearch.style.backgroundColor = "#fff" , 1000 ); 
 			message.info( "Email cannot be empty" );
 		} else if ( this.allEmails.map( item => item.email ).includes(value) ) {
 			message.info( "Email exists already" );
@@ -372,7 +371,7 @@ class Query extends Component {
 
 	// delete api
   delete = (data, dataName, keys) => {
-		let dataCopied = data.slice(); // do not mutate the dataCopied in state
+		let dataCopied = data.slice();
 		if (Array.isArray(keys)) {
 			dataCopied = dataCopied.filter( 
 				item => !keys.includes(item.key)
