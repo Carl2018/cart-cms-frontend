@@ -207,6 +207,9 @@ class TableWrapper extends Component {
 	handleSubmit = record => {
 		if (this.state.record.key) { // edit the entry
 			this.props.edit(this.state.record.key, record);
+			// update the related info
+			const { relatedEmail, relatedAccount } = this.getRelatedInfo(record);
+			this.setState({ relatedEmail, relatedAccount });
 		} else { // create an entry
 			record.relatedEmail = this.state.relatedEmail?.email;
 			this.props.create(record);
@@ -306,7 +309,7 @@ class TableWrapper extends Component {
 					<TableDrawer 
 						tableDrawerKey={ this.state.createDrawerKey }
 						// data props
-						//record={ }
+						record={ this.state.record }
 						// display props
 						visible={ this.state.visibleCreate } 
 						drawerTitle={ this.props.drawerTitle } 

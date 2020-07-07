@@ -31,14 +31,6 @@ class InspectDrawer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			// for the case table
-			dataCase: [],
-			// for the email table
-			dataEmail: [],
-			// for the account table
-			dataAccount: [],
-			// for the action table
-			dataAction: [],
 			// for the action drawer
 			visibleAction: false,
 			formKeyAction: Date.now(),
@@ -52,16 +44,6 @@ class InspectDrawer extends Component {
 			visibleTemplate: false,
 			modalKeyTemplate: Date.now(),
 		};
-	}
-
-	// update the corresponding state variables
-	componentWillReceiveProps(nextProps) {
-		this.setState({ 
-			dataCase: nextProps.dataCase ? [ nextProps.dataCase ] : [], 
-			dataEmail: nextProps.dataEmail ? [ nextProps.dataEmail ] : [], 
-			dataAccount: nextProps.dataAccount ? [ nextProps.dataAccount ] : [], 
-			dataAction: nextProps.dataCase ? nextProps.dataCase.actions : [], 
-		});
 	}
 
 	// for action history panel
@@ -190,6 +172,9 @@ class InspectDrawer extends Component {
 	}
 
 	handleSubmitEdit = record => {
+		// append related info for instant table update
+		record.relatedEmail = this.props.dataEmail.email;
+		record.relatedAccount = this.props.dataAccount.accountName;
 		this.props.onSubmit(record);
 		this.setState({
 			visibleEdit: false, 
@@ -307,11 +292,10 @@ class InspectDrawer extends Component {
 	}
 
 	handleSubmitBind = record => {
-		const dataAccount = [ this.props.allRelatedAccounts
-			.find( item => item.accountName === record.relatedAccount ) ];
+		// append related info for instant table update
+		record.relatedEmail = this.props.dataEmail.email;
 		this.props.onSubmit(record);
 		this.setState({
-			dataAccount,
 			visibleBind: false, 
 			formKeyBind: Date.now(),
 		});
@@ -402,7 +386,7 @@ class InspectDrawer extends Component {
 								label="Labels"
 								span = { 1 } 
 							>
-								{ this.state.dataEmail[0]?.labels?.map(tag => {
+								{ this.props.dataEmail?.labels?.map(tag => {
 									let color = 'blue';
 									switch (tag) {
 										case 'burning' :
@@ -454,7 +438,8 @@ class InspectDrawer extends Component {
 							>
 								<TableBody
 									columns={ this.columnsAction } 
-									data={ this.state.dataAction ? this.state.dataAction : [] } 
+									data={ this.props.dataCase.actions ? 
+										this.props.dataCase.actions: [] } 
 									isSmall={ true }
 									pagination={ false }
 								/>
@@ -465,7 +450,8 @@ class InspectDrawer extends Component {
 							>
 								<TableBody
 									columns={ this.columnsEmail } 
-									data={ this.state.dataEmail ? this.state.dataEmail : [] }
+									data={ this.props.dataEmail ? 
+										[ this.props.dataEmail ] : [] }
 									isSmall={ true }
 									pagination={ false }
 								/>
@@ -477,7 +463,8 @@ class InspectDrawer extends Component {
 							>
 								<TableBody
 									columns={ this.columnsAccount } 
-									data={ this.state.dataAccount ? this.state.dataAccount : [] } 
+									data={ this.props.dataAccount ? 
+										[ this.props.dataAccount ] : [] } 
 									isSmall={ true }
 									pagination={ false }
 								/>
