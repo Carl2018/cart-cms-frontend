@@ -347,126 +347,44 @@ class Query extends Component {
 		this.setState({ dataAccount });
 	}
 
-	// handlers for CRUD actions
-	// email CUD
+	// handlers for CUD actions
 	// create api
-  createEmail = record => {
-		const dataEmail = this.state.dataEmail.slice();
+  create = (data, dataName, record) => {
+		const dataCopied = data.slice();
 		record.key = Date.now();
 		record.createdAt = new Date().toISOString().split('.')[0].replace('T', ' ');
 		record.updatedAt = new Date().toISOString().split('.')[0].replace('T', ' ');
-		dataEmail.push(record);
-		if (200) message.success('A new email has been created');
-		this.setState({ dataEmail });
+		dataCopied.push(record);
+		if (200) message.success('A new record has been created');
+		this.setState({ [ dataName ] : dataCopied });
 	}
 
 	// edit api
-  editEmail = (key, record) => {
-		let dataEmail = this.state.dataEmail.slice();
-
-		let originalRecord = dataEmail.find( item => item.key === key);
-		let index = dataEmail.findIndex( item => item.key === key);
+  edit = (data, dataName, key, record) => {
+		let dataCopied = data.slice();
+		let originalRecord = dataCopied.find( item => item.key === key);
+		let index = dataCopied.findIndex( item => item.key === key);
 		Object.keys(record).forEach(item => originalRecord[item] = record[item])
-		dataEmail[index] = originalRecord;
-		if (200) message.success('The email has been edited');
-		this.setState({ dataEmail });
+		dataCopied[index] = originalRecord;
+		if (200) message.success('The record has been edited');
+		this.setState({ [ dataName ] : dataCopied });
 	}
 
 	// delete api
-  deleteEmail = keys => {
-		let dataEmail = this.state.dataEmail.slice(); // do not mutate the dataEmail in state
+  delete = (data, dataName, keys) => {
+		let dataCopied = data.slice(); // do not mutate the dataCopied in state
 		if (Array.isArray(keys)) {
-			dataEmail = dataEmail.filter( 
+			dataCopied = dataCopied.filter( 
 				item => !keys.includes(item.key)
 			);
 			if (200) message.success('Multiple records have been deleted');
 		} else {
-			dataEmail = dataEmail.filter( 
+			dataCopied = dataCopied.filter( 
 				item => item.key !== keys
 			);
 			if (200) message.success('The record has been deleted');
 		}
-		this.setState({ dataEmail });
-	}
-
-	// case CUD
-	// create api
-  createCase = record => {
-		const dataCase = this.state.dataCase.slice();
-		record.key = Date.now();
-		record.status = "pending";
-		record.createdAt = new Date().toISOString().split('.')[0].replace('T', ' ');
-		dataCase.push(record);
-		if (200) message.success('A new case has been created');
-		this.setState({ dataCase });
-	}
-
-	// edit api
-  editCase = (key, record) => {
-		let dataCase = this.state.dataCase.slice();
-
-		let originalRecord = dataCase.find( item => item.key === key);
-		let index = dataCase.findIndex( item => item.key === key);
-		Object.keys(record).forEach(item => originalRecord[item] = record[item])
-		dataCase[index] = originalRecord;
-		if (200) message.success('The case has been edited');
-		this.setState({ dataCase });
-	}
-
-	// delete api
-  deleteCase = keys => {
-		let dataCase = this.state.dataCase.slice(); // do not mutate the dataCase in state
-		if (Array.isArray(keys)) {
-			dataCase = dataCase.filter( 
-				item => !keys.includes(item.key)
-			);
-			if (200) message.success('Multiple records have been deleted');
-		} else {
-			dataCase = dataCase.filter( 
-				item => item.key !== keys
-			);
-			if (200) message.success('The record has been deleted');
-		}
-		this.setState({ dataCase });
-	}
-
-	// account CUD
-	// create api
-  createAccount = record => {
-		const dataAccount = this.state.dataAccount.slice();
-		record.key = Date.now();
-		record.createdAt = new Date().toISOString().split('.')[0].replace('T', ' ');
-		dataAccount.push(record);
-		if (200) message.success('A new account has been created');
-		this.setState({ dataAccount });
-	}
-
-	// edit api
-  editAccount = (key, record) => {
-		let dataAccount = this.state.dataAccount.slice();
-		let originalRecord = dataAccount.find( item => item.key === key);
-		let index = dataAccount.findIndex( item => item.key === key);
-		Object.keys(record).forEach(item => originalRecord[item] = record[item])
-		dataAccount[index] = originalRecord;
-		if (200) message.success('The account has been edited');
-		this.setState({ dataAccount });
-	}
-
-	// delete api
-  deleteAccount = keys => {
-		let dataAccount = this.state.dataAccount.slice(); // do not mutate the dataAccount in state
-		if (Array.isArray(keys)) {
-			dataAccount = dataAccount.filter( 
-				item => !keys.includes(item.key)
-			);
-			if (200) message.success('Multiple records have been deleted');
-		} else {
-			dataAccount = dataAccount.filter( 
-				item => item.key !== keys
-			);
-			if (200) message.success('The record has been deleted');
-		}
-		this.setState({ dataAccount });
+		this.setState({ [ dataName ] : dataCopied });
 	}
 
 	render(){
@@ -525,9 +443,9 @@ class Query extends Component {
 						showHeader={ this.state.showHeader }
 						showDropdown={ this.state.showDropdown }
 						// api props
-						create={ this.createEmail }
-						edit={ this.editEmail }
-						delete={ this.deleteEmail }
+						create={ this.create.bind(this, this.state.dataEmail, 'dataEmail') }
+						edit={ this.edit.bind(this, this.state.dataEmail, 'dataEmail') }
+						delete={ this.delete.bind(this, this.state.dataEmail, 'dataEmail') }
 					/>
 				</Card>
 				<Card
@@ -546,9 +464,9 @@ class Query extends Component {
 						showHeader={ this.state.showHeader }
 						showDropdown={ this.state.showDropdown }
 						// api props
-						create={ this.createCase}
-						edit={ this.editCase }
-						delete={ this.deleteCase }
+						create={ this.create.bind(this, this.state.dataCase, 'dataCase') }
+						edit={ this.edit.bind(this, this.state.dataCase, 'dataCase') }
+						delete={ this.delete.bind(this, this.state.dataCase, 'dataCase') }
 						onClickBan={ this.handleClickBan }
 						onClickUnban={ this.handleClickUnban }
 					/>
@@ -566,9 +484,9 @@ class Query extends Component {
 						showHeader={ this.state.showHeader }
 						showDropdown={ this.state.showDropdown }
 						// api props
-						create={ this.createAccount}
-						edit={ this.editAccount }
-						delete={ this.deleteAccount }
+						create={ this.create.bind(this, this.state.dataAccount, 'dataAccount') }
+						edit={ this.edit.bind(this, this.state.dataAccount, 'dataAccount') }
+						delete={ this.delete.bind(this, this.state.dataAccount, 'dataAccount') }
 					/>
 				</Card>
 			</div>
