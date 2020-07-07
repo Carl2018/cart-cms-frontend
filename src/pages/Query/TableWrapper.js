@@ -175,7 +175,7 @@ class TableWrapper extends Component {
 		});
 	};
 
-	// handler for confirm batch delete
+	// handler for batch delete confirmation
   handleClickConfirm = (closeNotification, notificationKey) => {
 		this.props.delete(this.state.selectedRowKeys);
 		closeNotification(notificationKey);

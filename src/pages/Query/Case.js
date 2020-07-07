@@ -6,7 +6,6 @@ import { Input } from 'antd';
 
 // import shared and child components
 import TableWrapper from './TableWrapper'
-import { success } from '../../_components/Message'
 
 // destructure child components
 
@@ -15,14 +14,12 @@ class Case extends Component {
 		super(props);
 		this.state = {
 			tableWrapperKey: Date.now(),
-			// populate the table body with data
-			data: [],
 		};
 	}
 	
-	componentWillReceiveProps(nextProps) {
-		this.setState({ data: nextProps.data });
-	}
+//	componentWillReceiveProps(nextProps) {
+//		this.setState({ data: nextProps.data });
+//	}
 
 //	static getDerivedStateFromProps(nextProps, prevState) {
 //		return { data: nextProps.data };
@@ -134,48 +131,6 @@ class Case extends Component {
 		</>
 	)
 
-	// create api
-  create = record => {
-		const data = this.state.data.slice();
-		record.key = Date.now();
-		record.status = "pending";
-		record.createdAt = new Date().toISOString().split('.')[0].replace('T', ' ');
-		data.push(record);
-		if (200) success('create_success');
-		console.log(data);
-		this.setState({ data });
-	}
-
-	// edit api
-  edit = (key, record) => {
-		let data = this.state.data.slice();
-
-		let originalRecord = data.find( item => item.key === key);
-		let index = data.findIndex( item => item.key === key);
-		Object.keys(record).forEach(item => originalRecord[item] = record[item])
-		console.log(originalRecord);
-		data[index] = originalRecord;
-		if (200) success('edit_success');
-		this.setState({ data });
-	}
-
-	// delete api
-  delete = keys => {
-		let data = this.state.data.slice(); // do not mutate the data in state
-		if (Array.isArray(keys)) {
-			data = data.filter( 
-				item => !keys.includes(item.key)
-			);
-			if (200) success('batch_delete_success');
-		} else {
-			data = data.filter( 
-				item => item.key !== keys
-			);
-			if (200) success('delete_success');
-		}
-		this.setState({ data });
-	}
-
 	// refresh table
 	refreshTable = () => this.setState({ tableWrapperKey: Date.now() });
 
@@ -185,7 +140,7 @@ class Case extends Component {
 				<TableWrapper
 					key={ this.state.tableWrapperKey }
 					// data props
-					data={ this.state.data }
+					data={ this.props.data }
 					dataEmail={ this.props.dataEmail }
 					dataAccount={ this.props.dataAccount }
 					email={ this.props.email }
@@ -199,9 +154,9 @@ class Case extends Component {
 					showDropdown={ this.props.showDropdown }
 					drawerTitle='Create a new case'
 					// api props
-					create={ this.create }
-					edit={ this.edit }
-					delete={ this.delete }
+					create={ this.props.create }
+					edit={ this.props.edit }
+					delete={ this.props.delete }
 					refreshTable={ this.refreshTable }
 					onClickBan={ this.props.onClickBan }
 					onClickUnban={ this.props.onClickUnban }
