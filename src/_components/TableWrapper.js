@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 
 // import styling from ant desgin
 import { Space, Button, Popconfirm, Row, Col } from 'antd';
-import { notification } from 'antd';
+import { message, notification } from 'antd';
 import { FileTextOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 // import shared components
 import TableBody from './TableBody'
 import TableDropdown from './TableDropdown'
 import TableDrawer from './TableDrawer'
-import { cancel, refresh } from '../_components/Message'
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -101,7 +100,7 @@ class TableWrapper extends Component {
 
 	handleClickRefreshTable = () => {
 		this.props.refreshTable();
-		refresh('table_refresh');
+		message.info('the table has been refreshed');
 	}
 
 	handleClickBatchDelete = () => {
@@ -122,7 +121,7 @@ class TableWrapper extends Component {
 			btn,
 			key,
 			duration: 0,
-			onClose: () => cancel('batch_delete_cancel'),
+			onClose: () => message.info('batch delete has been canceled'),
 		});
 	};
 

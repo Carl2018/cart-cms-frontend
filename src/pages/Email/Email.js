@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 
 // import styling from ant desgin
 import { MailOutlined } from '@ant-design/icons';
-import { Input } from 'antd';
+import { Input, message } from 'antd';
 
 // import shared components
 import TableWrapper from '../../_components/TableWrapper'
-import { success } from '../../_components/Message'
 
 class Email extends Component {
 	constructor(props) {
@@ -164,7 +163,7 @@ class Email extends Component {
 		record.createdAt = new Date().toISOString().split('.')[0].replace('T', ' ');
 		record.updatedAt = new Date().toISOString().split('.')[0].replace('T', ' ');
 		data.push(record);
-		if (200) success('create_success');
+		if (200) message.success('A record has been created');
 		console.log(data);
 		this.setState({ data });
 	}
@@ -178,7 +177,7 @@ class Email extends Component {
 		Object.keys(record).forEach(item => originalRecord[item] = record[item])
 		console.log(originalRecord);
 		data[index] = originalRecord;
-		if (200) success('edit_success');
+		if (200) message.success('The record has been edited');
 		this.setState({ data });
 	}
 
@@ -189,12 +188,12 @@ class Email extends Component {
 			data = data.filter( 
 				item => !keys.includes(item.key)
 			);
-			if (200) success('batch_delete_success');
+			if (200) message.success('Multiple records have been deleted');
 		} else {
 			data = data.filter( 
 				item => item.key !== keys
 			);
-			if (200) success('delete_success');
+			if (200) message.success('The record has been deleted');
 		}
 		this.setState({ data });
 	}
