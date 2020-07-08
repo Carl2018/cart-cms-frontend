@@ -11,6 +11,12 @@ import Label from './pages/Label/Label';
 import Template from './pages/Template/Template';
 import Category from './pages/Category/Category';
 
+import { history } from './_helpers/history';
+import { authenticationService } from './_services/authentication.service';
+import { PrivateRoute } from './_components/PrivateRoute';
+import { HomePage } from './HomePage/HomePage';
+import { LoginPage } from './LoginPage/LoginPage';
+
 // import styling from ant design
 import 'antd/dist/antd.css';
 import { Layout, Menu } from 'antd';
@@ -32,20 +38,31 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			currentUser: null,
 			collapsed: true,
 		};
 	}
 	
+	componentDidMount() {
+			authenticationService.currentUser.subscribe(x => this.setState({ currentUser: x }));
+	}
+
+	logout() {
+			authenticationService.logout();
+			history.push('/login');
+	}
+
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed
     });
-  };
+  }
 
 	render(){
+		const { currentUser } = this.state;
 		return (
 			<div className="App">
-				<Router>
+				<Router history={history}>
 					<Layout>
 						<Sider 
 							trigger={null} 
@@ -61,7 +78,7 @@ class App extends Component {
 									key="1" 
 									icon={<QuestionCircleOutlined />}
 								>
-									<Link to="/">
+									<Link to="/query">
 										Queries
 									</Link>
 								</Menu.Item>
@@ -136,7 +153,10 @@ class App extends Component {
 									minHeight: 540,
 								}}
 							>
-									<Route exact path="/" component={ Query }/>
+									<div>{ currentUser }</div>
+									<PrivateRoute exact path="/" component={HomePage} />
+									<Route path="/login" component={LoginPage} />
+									<Route path="/query" component={ Query }/>
 									<Route path="/case" component={ Case }/>
 									<Route path="/account" component={ Account }/>
 									<Route path="/email" component={ Email }/>
