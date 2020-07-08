@@ -173,8 +173,8 @@ class InspectDrawer extends Component {
 
 	handleSubmitEdit = record => {
 		// append related info for instant table update
-		record.relatedEmail = this.props.dataEmail.email;
-		record.relatedAccount = this.props.dataAccount.accountName;
+		record.relatedEmail = this.props.dataEmail?.email;
+		record.relatedAccount = this.props.dataAccount?.accountName;
 		this.props.onSubmit(record);
 		this.setState({
 			visibleEdit: false, 
@@ -293,7 +293,7 @@ class InspectDrawer extends Component {
 
 	handleSubmitBind = record => {
 		// append related info for instant table update
-		record.relatedEmail = this.props.dataEmail.email;
+		record.relatedEmail = this.props.dataEmail?.email;
 		this.props.onSubmit(record);
 		this.setState({
 			visibleBind: false, 

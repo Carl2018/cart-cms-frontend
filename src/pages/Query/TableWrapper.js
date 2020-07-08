@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 // import components from ant design
 import { 
 	Button, 
-	Input, 
 	Col, 
 	Popconfirm, 
 	Row, 
 	Space, 
+	message,
 	notification,
 } from 'antd';
 import { 
@@ -20,7 +20,6 @@ import TableBody from '../../_components/TableBody'
 import TableDropdown from '../../_components/TableDropdown'
 import TableDrawer from '../../_components/TableDrawer'
 import InspectDrawer from './InspectDrawer'
-import { cancel, refresh } from '../../_components/Message'
 
 // destructure child components
 
@@ -82,45 +81,6 @@ class TableWrapper extends Component {
 		},
 	];
 
-	// define form items for create drawer
-	formItemsCreate = [
-		{
-			label: 'Case Name',
-			name: 'casename',
-			rules: [
-				{
-					required: true,
-					message: 'casename cannot be empty',
-				}
-			],
-			editable: true,
-			input: () => (
-				<Input
-					maxLength={ 255 }
-					allowClear
-				/>
-			)
-		},
-		{
-			label: 'Remarks',
-			name: 'remarks',
-			rules: [
-				{
-					required: true,
-					message: 'remarks cannot be empty',
-				},
-			],
-			editable: true,
-			input: () => (
-				<Input.TextArea
-					autoSize={{ minRows: 6, maxRows: 10 }}
-					maxLength={255}
-					allowClear
-				/>
-			)
-		},			
-	];
-
 	// handler for row selections
 	handleSelectChange = selectedRowKeys => this.setState({ selectedRowKeys });
 
@@ -149,7 +109,7 @@ class TableWrapper extends Component {
 	// handler for refresh table
 	handleClickRefreshTable = () => {
 		this.props.refreshTable();
-		refresh('table_refresh');
+		message.info('the table has been refreshed');
 	}
 
 	// handler for batch delete
@@ -171,7 +131,7 @@ class TableWrapper extends Component {
 			btn,
 			key,
 			duration: 0,
-			onClose: () => cancel('batch_delete_cancel'),
+			onClose: () => message.info('batch delete has been canceled'),
 		});
 	};
 
@@ -314,7 +274,7 @@ class TableWrapper extends Component {
 						// display props
 						visible={ this.state.visibleCreate } 
 						drawerTitle={ this.props.drawerTitle } 
-						formItems={ this.formItemsCreate }
+						formItems={ this.props.formItems }
 						drawerWidth={ 618 }
 						//disabled={ this.state.disabled } 
 						//formLayout={ this.props.formLayout }
