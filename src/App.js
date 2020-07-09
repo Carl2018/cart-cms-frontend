@@ -153,16 +153,15 @@ class App extends Component {
 									minHeight: 540,
 								}}
 							>
-									<div>{ currentUser }</div>
-									<PrivateRoute exact path="/" component={HomePage} />
-									<Route path="/login" component={LoginPage} />
-									<Route path="/query" component={ Query }/>
-									<Route path="/case" component={ Case }/>
-									<Route path="/account" component={ Account }/>
-									<Route path="/email" component={ Email }/>
-									<Route path="/label" component={ Label }/>
-									<Route path="/template" component={ Template }/>
-									<Route path="/category" component={ Category }/>
+									<Route path="/login" component={ LoginPage } />
+									<PrivateRoute exact path="/" component={ HomePage } />
+									<PrivateRoute path="/query" component={ Query }/>
+									<PrivateRoute path="/case" component={ Case }/>
+									<PrivateRoute path="/account" component={ Account }/>
+									<PrivateRoute path="/email" component={ Email }/>
+									<PrivateRoute path="/label" component={ Label }/>
+									<PrivateRoute path="/template" component={ Template }/>
+									<PrivateRoute path="/category" component={ Category }/>
 							</Content>
 							<Footer style={{textAlign: "center", color:"#a1a1a1"}}>
 								Copyright &copy; {new Date().getFullYear()} Heymandi 
