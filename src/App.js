@@ -19,20 +19,32 @@ import { PrivateRoute } from './_components/PrivateRoute';
 
 // import styling from ant design
 import 'antd/dist/antd.css';
-import { Layout, Menu } from 'antd';
+import { 
+	Button,
+	Col,
+	Dropdown,
+	Layout, 
+	Menu,
+	Row,
+} from 'antd';
 import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  QuestionCircleOutlined,
-  FileSearchOutlined,
-  TeamOutlined,
-  MailOutlined,
-  TagOutlined,
   CopyOutlined,
+  FileSearchOutlined,
   HddOutlined,
+  HomeOutlined,
+  LogoutOutlined,
+  MailOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  UserOutlined,
+  QuestionCircleOutlined,
+  TagOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
 
 const { Header, Sider, Footer, Content } = Layout;
+
+const { Item } = Menu;
 
 class App extends Component {
 	constructor(props) {
@@ -47,11 +59,48 @@ class App extends Component {
 			authenticationService.currentUser.subscribe(x => this.setState({ currentUser: x }));
 	}
 
+	// profile menu
+	menu = (
+		<Menu>
+			<Item 
+				key='1' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <HomeOutlined /> }
+				onClick={ this.handleClickHome }
+			>
+				<Link to="/">
+					Home
+				</Link>
+			</Item>
+			<Item 
+				key='2' 
+				style={{ color:'#ec5f5b' }} 
+				icon={ <LogoutOutlined /> }
+				onClick={ this.handleClickLogout }
+			>
+				Logout
+			</Item>
+		</Menu>
+	);
+
+	// home button handler
+	handleClickHome() {
+		history.push('/');
+	}
+
+	// logout button handler
+	handleClickLogout() {
+		authenticationService.logout();
+		history.push('/login');
+	}
+
+	// logout handler
 	logout() {
 			authenticationService.logout();
 			history.push('/login');
 	}
 
+	// toggle the sidebar
   toggle = () => {
     this.setState({
       collapsed: !this.state.collapsed
@@ -75,62 +124,62 @@ class App extends Component {
 								theme="dark" 
 								mode="inline" 
 							>
-								<Menu.Item 
+								<Item 
 									key="1" 
 									icon={<QuestionCircleOutlined />}
 								>
 									<Link to="/query">
 										Queries
 									</Link>
-								</Menu.Item>
-								<Menu.Item 
+								</Item>
+								<Item 
 									key="2" 
 									icon={<FileSearchOutlined />}
 								>
 									<Link to="/case">
 										Cases
 									</Link>
-								</Menu.Item>
-								<Menu.Item 
+								</Item>
+								<Item 
 									key="3" 
 									icon={<TeamOutlined />}
 								>
 									<Link to="/account">
 										Accounts
 									</Link>
-								</Menu.Item>
-								<Menu.Item 
+								</Item>
+								<Item 
 									key="4" 
 									icon={<MailOutlined />}
 								>
 									<Link to="/email">
 										Emails
 									</Link>
-								</Menu.Item>
-								<Menu.Item 
+								</Item>
+								<Item 
 									key="5" 
 									icon={<TagOutlined />}
 								>
 									<Link to="/label">
 										Labels
 									</Link>
-								</Menu.Item>
-								<Menu.Item 
+								</Item>
+								<Item 
 									key="6" 
 									icon={<CopyOutlined />}
 								>
 									<Link to="/template">
 										Templates
 									</Link>
-								</Menu.Item>
-								<Menu.Item 
+								</Item>
+								<Item 
 									key="7" 
 									icon={<HddOutlined />}
 								>
 									<Link to="/category">
 										Categories
 									</Link>
-								</Menu.Item>
+								</Item>
 							</Menu>
 						</Sider> }
 						<Layout className="site-layout">
@@ -139,13 +188,36 @@ class App extends Component {
 								className="site-layout-background" 
 								style={{ padding: 0 }}
 							>
-								{ React.createElement(
-									this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, 
-									{
-										className: 'trigger',
-										onClick: this.toggle,
-									}
-								) }
+								<Row>
+									<Col span={ 4 }>
+										{ React.createElement(
+											this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, 
+											{
+												className: 'trigger',
+												onClick: this.toggle,
+											}
+										) }
+									</Col>
+									<Col 
+										span={ 2 }
+										offset={ 18 }
+										style={{ textAlign: "center" }}
+									>
+										<Dropdown overlay={ this.menu }>
+											<Link to="/">
+												<Button
+													type="ghost"
+													style={{ border: "none" }}
+													size="large"
+													onClick={ this.handleClickHome }
+												>
+													Alice
+													<UserOutlined />
+												</Button>
+											</Link>
+										</Dropdown>
+									</Col>
+								</Row>
 							</Header> }
 							<Content
 								className="site-layout-background"
