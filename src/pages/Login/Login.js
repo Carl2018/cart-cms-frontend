@@ -1,6 +1,13 @@
 import React from 'react';
 
-import { Form, Input, Button, Checkbox } from 'antd';
+import { 
+	Button, 
+	Col, 
+	Checkbox,
+	Form, 
+	Input, 
+	Row, 
+} from 'antd';
 
 import { authenticationService } from '../../_services/authentication.service';
 
@@ -47,56 +54,74 @@ class Login extends React.Component {
     render() {
         return (
             <div>
-                <div className="alert alert-info">
-                    Username: test<br />
-                    Password: test
-                </div>
-                <h2>Login</h2>
-								<Form
-									{...this.layout}
-									name="basic"
-									initialValues={{
-										remember: true,
-									}}
-									onFinish={this.onFinish}
-									onFinishFailed={this.onFinishFailed}
-								>
-									<Form.Item
-										label="Username"
-										name="username"
-										rules={[
-											{
-												required: true,
-												message: 'Please input your username!',
-											},
-										]}
+								<Row>
+									<Col
+										span={ 8 }
+										offset={ 8 }
 									>
-										<Input />
-									</Form.Item>
-
-									<Form.Item
-										label="Password"
-										name="password"
-										rules={[
-											{
-												required: true,
-												message: 'Please input your password!',
-											},
-										]}
+										<div
+											style={{ 
+												textAlign: "center",
+												marginTop: "100px",
+												marginBottom: "50px",
+											}}
+										>
+											<h2>Heymandi CMS</h2>
+										</div>
+									</Col>
+								</Row>
+								<Row>
+									<Col
+										span={ 8 }
+										offset={ 8 }
 									>
-										<Input.Password />
-									</Form.Item>
+										<Form
+											{...this.layout}
+											name="basic"
+											initialValues={{
+												remember: true,
+											}}
+											onFinish={this.onFinish}
+											onFinishFailed={this.onFinishFailed}
+										>
+											<Form.Item
+												label="Username"
+												name="username"
+												rules={[
+													{
+														required: true,
+														message: 'Please input your username!',
+													},
+												]}
+											>
+												<Input />
+											</Form.Item>
 
-									<Form.Item {...this.tailLayout} name="remember" valuePropName="checked">
-										<Checkbox>Remember me</Checkbox>
-									</Form.Item>
+											<Form.Item
+												label="Password"
+												name="password"
+												rules={[
+													{
+														required: true,
+														message: 'Please input your password!',
+													},
+												]}
+											>
+												<Input.Password />
+											</Form.Item>
 
-									<Form.Item {...this.tailLayout}>
-										<Button type="primary" htmlType="submit">
-											Submit
-										</Button>
-									</Form.Item>
-								</Form>
+											<Form.Item {...this.tailLayout} name="remember" valuePropName="checked">
+												<Checkbox>Remember me</Checkbox>
+											</Form.Item>
+
+											<Form.Item {...this.tailLayout}>
+												<Button type="primary" htmlType="submit">
+													Submit
+												</Button>
+											</Form.Item>
+										</Form>
+									</Col>
+								</Row>
             </div>
         )
     }

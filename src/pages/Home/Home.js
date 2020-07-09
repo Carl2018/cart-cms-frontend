@@ -22,7 +22,7 @@ class Home extends React.Component {
         return (
             <div>
                 <h1>Hi {currentUser.firstName}!</h1>
-                <p>You're logged in with React & JWT!!</p>
+                <p>proceed by clicking one of the items on the sidebar</p>
                 <h3>Users from secure api end point:</h3>
                 {users &&
                     <ul>

@@ -211,7 +211,7 @@ class App extends Component {
 													size="large"
 													onClick={ this.handleClickHome }
 												>
-													Alice
+													{ currentUser.firstName }
 													<UserOutlined />
 												</Button>
 											</Link>
