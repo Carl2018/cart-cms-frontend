@@ -51,6 +51,8 @@ class App extends Component {
 		super(props);
 		this.state = {
 			currentUser: null,
+			// for sidebar menu
+			menuKey: Date.now(),
 			collapsed: true,
 		};
 	}
@@ -66,7 +68,7 @@ class App extends Component {
 				key='1' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <HomeOutlined /> }
-				onClick={ this.handleClickHome }
+				onClick={ this.handleClickHome.bind(this) }
 			>
 				<Link to="/">
 					Home
@@ -86,6 +88,7 @@ class App extends Component {
 	// home button handler
 	handleClickHome() {
 		history.push('/');
+		this.setState({ menuKey: Date.now() }); // refresh menu
 	}
 
 	// logout button handler
@@ -121,6 +124,7 @@ class App extends Component {
 						>
 							<div className="logo" />
 							<Menu 
+								key={ this.state.menuKey }
 								theme="dark" 
 								mode="inline" 
 							>
@@ -203,18 +207,18 @@ class App extends Component {
 										offset={ 18 }
 										style={{ textAlign: "center" }}
 									>
-										<Dropdown overlay={ this.menu }>
-											<Link to="/">
-												<Button
-													type="ghost"
-													style={{ border: "none" }}
-													size="large"
-													onClick={ this.handleClickHome }
-												>
-													{ currentUser.firstName }
-													<UserOutlined />
-												</Button>
-											</Link>
+										<Dropdown 
+											overlay={ this.menu }
+										>
+											<Button
+												type="ghost"
+												style={{ border: "none" }}
+												size="large"
+												onClick={ event => console.log('profile clicked')}
+											>
+												{ currentUser.firstName }
+												<UserOutlined />
+											</Button>
 										</Dropdown>
 									</Col>
 								</Row>
@@ -224,7 +228,7 @@ class App extends Component {
 								style={{
 									margin: '24px 16px',
 									padding: 24,
-									minHeight: 540,
+									minHeight: 600,
 								}}
 							>
 									<Route path="/login" component={ Login } />

@@ -18,19 +18,11 @@ class Home extends React.Component {
     }
 
     render() {
-        const { currentUser, users } = this.state;
+        const { currentUser } = this.state;
         return (
             <div>
                 <h1>Hi {currentUser.firstName}!</h1>
-                <p>proceed by clicking one of the items on the sidebar</p>
-                <h3>Users from secure api end point:</h3>
-                {users &&
-                    <ul>
-                        {users.map(user =>
-                            <li key={user.id}>{user.firstName} {user.lastName}</li>
-                        )}
-                    </ul>
-                }
+                <p>Use the sidebar to navigate</p>
             </div>
         );
     }
