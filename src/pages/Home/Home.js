@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { authenticationService } from '../_services/authentication.service';
-import { userService } from '../_services/user.service';
+import { authenticationService } from '../../_services/authentication.service';
+import { userService } from '../../_services/user.service';
 
-class HomePage extends React.Component {
+class Home extends React.Component {
     constructor(props) {
         super(props);
 
@@ -36,4 +36,4 @@ class HomePage extends React.Component {
     }
 }
 
-export { HomePage };
+export default Home;

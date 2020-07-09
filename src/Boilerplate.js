@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Template extends Component {
+class Boilerplate extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -9,10 +9,10 @@ class Template extends Component {
 	
 	render(){
 		return (
-			<div className="Template">
+			<div className="Boilerplate">
 			</div>
 		);
 	}
 }
 
-export default Template;
+export default Boilerplate;

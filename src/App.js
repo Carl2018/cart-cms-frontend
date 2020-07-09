@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import './App.css';
 
 // import customized component
+import Login from './pages/Login/Login';
+import Home from './pages/Home/Home';
 import Query from './pages/Query/Query';
 import Case from './pages/Case/Case';
 import Account from './pages/Account/Account';
@@ -14,8 +16,6 @@ import Category from './pages/Category/Category';
 import { history } from './_helpers/history';
 import { authenticationService } from './_services/authentication.service';
 import { PrivateRoute } from './_components/PrivateRoute';
-import { HomePage } from './HomePage/HomePage';
-import { LoginPage } from './LoginPage/LoginPage';
 
 // import styling from ant design
 import 'antd/dist/antd.css';
@@ -64,6 +64,7 @@ class App extends Component {
 			<div className="App">
 				<Router history={history}>
 					<Layout>
+						{ currentUser &&
 						<Sider 
 							trigger={null} 
 							collapsible 
@@ -131,8 +132,9 @@ class App extends Component {
 									</Link>
 								</Menu.Item>
 							</Menu>
-						</Sider>
+						</Sider> }
 						<Layout className="site-layout">
+							{ currentUser &&
 							<Header 
 								className="site-layout-background" 
 								style={{ padding: 0 }}
@@ -144,7 +146,7 @@ class App extends Component {
 										onClick: this.toggle,
 									}
 								) }
-							</Header>
+							</Header> }
 							<Content
 								className="site-layout-background"
 								style={{
@@ -153,8 +155,8 @@ class App extends Component {
 									minHeight: 540,
 								}}
 							>
-									<Route path="/login" component={ LoginPage } />
-									<PrivateRoute exact path="/" component={ HomePage } />
+									<Route path="/login" component={ Login } />
+									<PrivateRoute exact path="/" component={ Home } />
 									<PrivateRoute path="/query" component={ Query }/>
 									<PrivateRoute path="/case" component={ Case }/>
 									<PrivateRoute path="/account" component={ Account }/>

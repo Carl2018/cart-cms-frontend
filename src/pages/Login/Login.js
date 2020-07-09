@@ -2,9 +2,9 @@ import React from 'react';
 
 import { Form, Input, Button, Checkbox } from 'antd';
 
-import { authenticationService } from '../_services/authentication.service';
+import { authenticationService } from '../../_services/authentication.service';
 
-class LoginPage extends React.Component {
+class Login extends React.Component {
     constructor(props) {
         super(props);
 
@@ -102,4 +102,4 @@ class LoginPage extends React.Component {
     }
 }
 
-export { LoginPage }; 
+export default Login; 
