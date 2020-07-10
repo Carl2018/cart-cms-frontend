@@ -229,6 +229,7 @@ class App extends Component {
 									margin: '24px 16px',
 									padding: 24,
 									minHeight: 600,
+									backgroundColor: currentUser ? "#fff":"transparent",
 								}}
 							>
 									<Route path="/login" component={ Login } />

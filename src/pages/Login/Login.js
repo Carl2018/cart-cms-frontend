@@ -2,6 +2,7 @@ import React from 'react';
 
 import { 
 	Button, 
+	Card, 
 	Col, 
 	Form, 
 	Input, 
@@ -59,60 +60,60 @@ class Login extends React.Component {
 										span={ 8 }
 										offset={ 8 }
 									>
-										<div
+										<Card
 											style={{ 
-												textAlign: "center",
-												marginTop: "100px",
-												marginBottom: "50px",
+												marginTop: "80px",
+												padding: "40px 40px 40px 20px" 
 											}}
 										>
-											<h2>Heymandi CMS</h2>
-										</div>
-									</Col>
-								</Row>
-								<Row>
-									<Col
-										span={ 8 }
-										offset={ 8 }
-									>
-										<Form
-											{...this.layout}
-											name="basic"
-											onFinish={this.onFinish}
-											onFinishFailed={this.onFinishFailed}
-										>
-											<Form.Item
-												label="Username"
-												name="username"
-												rules={[
-													{
-														required: true,
-														message: 'Please input your username!',
-													},
-												]}
+											<div
+												style={{ 
+													textAlign: "center",
+													marginTop: "20px",
+													marginBottom: "50px",
+												}}
 											>
-												<Input />
-											</Form.Item>
-
-											<Form.Item
-												label="Password"
-												name="password"
-												rules={[
-													{
-														required: true,
-														message: 'Please input your password!',
-													},
-												]}
+												<h2>{"  Heymandi CMS"}</h2>
+											</div>
+											<Form
+												{...this.layout}
+												name="basic"
+												onFinish={this.onFinish}
+												onFinishFailed={this.onFinishFailed}
 											>
-												<Input.Password />
-											</Form.Item>
+												<Form.Item
+													label="Username"
+													name="username"
+													rules={[
+														{
+															required: true,
+															message: 'Please input your username!',
+														},
+													]}
+												>
+													<Input />
+												</Form.Item>
 
-											<Form.Item {...this.tailLayout}>
-												<Button type="primary" htmlType="submit">
-													Submit
-												</Button>
-											</Form.Item>
-										</Form>
+												<Form.Item
+													label="Password"
+													name="password"
+													rules={[
+														{
+															required: true,
+															message: 'Please input your password!',
+														},
+													]}
+												>
+													<Input.Password />
+												</Form.Item>
+
+												<Form.Item {...this.tailLayout}>
+													<Button type="primary" htmlType="submit">
+														Login
+													</Button>
+												</Form.Item>
+											</Form>
+										</Card>
 									</Col>
 								</Row>
             </div>
