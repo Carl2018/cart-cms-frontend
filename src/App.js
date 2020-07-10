@@ -66,21 +66,37 @@ class App extends Component {
 		<Menu>
 			<Item 
 				key='1' 
-				style={{ color:'#5a9ef8' }} 
-				icon={ <HomeOutlined /> }
-				onClick={ this.handleClickHome.bind(this) }
 			>
 				<Link to="/">
-					Home
+					<Button
+					type="ghost"
+					style={{ 
+						border: "none",
+						color:'#5a9ef8' 
+					}} 
+					icon={ <HomeOutlined /> }
+					onClick={ this.handleClickHome.bind(this) }
+					>
+						Home
+					</Button>
 				</Link>
 			</Item>
 			<Item 
 				key='2' 
-				style={{ color:'#ec5f5b' }} 
-				icon={ <LogoutOutlined /> }
-				onClick={ this.handleClickLogout }
 			>
-				Logout
+				<Link to="/">
+					<Button
+					type="ghost"
+					style={{ 
+						border: "none",
+						color:'#ec5f5b'
+					}} 
+					icon={ <LogoutOutlined /> }
+					onClick={ this.handleClickLogout }
+					>
+						Logout
+					</Button>
+				</Link>
 			</Item>
 		</Menu>
 	);
