@@ -87,7 +87,7 @@ class Login extends React.Component {
 													rules={[
 														{
 															required: true,
-															message: 'Please input your username!',
+															message: 'Username cannot be empty',
 														},
 													]}
 												>
@@ -100,7 +100,7 @@ class Login extends React.Component {
 													rules={[
 														{
 															required: true,
-															message: 'Please input your password!',
+															message: 'Password cannot be empty',
 														},
 													]}
 												>

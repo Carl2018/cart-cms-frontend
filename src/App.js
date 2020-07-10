@@ -61,7 +61,7 @@ class App extends Component {
 			authenticationService.currentUser.subscribe(x => this.setState({ currentUser: x }));
 	}
 
-	// profile menu
+	// for profile menu
 	menu = (
 		<Menu>
 			<Item 
@@ -111,12 +111,6 @@ class App extends Component {
 	handleClickLogout() {
 		authenticationService.logout();
 		history.push('/login');
-	}
-
-	// logout handler
-	logout() {
-			authenticationService.logout();
-			history.push('/login');
 	}
 
 	// toggle the sidebar
