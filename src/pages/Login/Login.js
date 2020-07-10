@@ -3,7 +3,6 @@ import React from 'react';
 import { 
 	Button, 
 	Col, 
-	Checkbox,
 	Form, 
 	Input, 
 	Row, 
@@ -79,9 +78,6 @@ class Login extends React.Component {
 										<Form
 											{...this.layout}
 											name="basic"
-											initialValues={{
-												remember: true,
-											}}
 											onFinish={this.onFinish}
 											onFinishFailed={this.onFinishFailed}
 										>
@@ -109,10 +105,6 @@ class Login extends React.Component {
 												]}
 											>
 												<Input.Password />
-											</Form.Item>
-
-											<Form.Item {...this.tailLayout} name="remember" valuePropName="checked">
-												<Checkbox>Remember me</Checkbox>
 											</Form.Item>
 
 											<Form.Item {...this.tailLayout}>
