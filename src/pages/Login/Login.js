@@ -7,6 +7,7 @@ import {
 	Form, 
 	Input, 
 	Row, 
+	message, 
 } from 'antd';
 
 import { authenticationService } from '../../_services/authentication.service';
@@ -43,7 +44,7 @@ class Login extends React.Component {
 										const { from } = this.props.location.state || { from: { pathname: "/" } };
 										this.props.history.push(from);
 								},
-								error => console.log(error)
+								error => message.error("Error: Invalid username or password")
 						);
 		}
 
