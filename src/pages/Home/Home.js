@@ -121,7 +121,7 @@ class Home extends React.Component {
 									</Row>
                 </Card>
                 <Card
-									title="In Past 6 Months"
+									title="In the Past 6 Months"
 									style={{ margin: "16px" }}
 								>	
 									<Line data={data} />
