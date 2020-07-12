@@ -37,4 +37,4 @@ class RichTextInput extends Component {
     );
   }
 }
-export default RichTextInput;
+export { RichTextInput };

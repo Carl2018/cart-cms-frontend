@@ -5,7 +5,7 @@ import { HddOutlined } from '@ant-design/icons';
 import { Input, message } from 'antd';
 
 // import shared components
-import TableWrapper from '../../_components/TableWrapper'
+import { TableWrapper } from '_components'
 
 class Category extends Component {
 	constructor(props) {
@@ -177,4 +177,4 @@ class Category extends Component {
 	}
 }
 
-export default Category;
+export { Category };

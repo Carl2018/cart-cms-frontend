@@ -5,7 +5,7 @@ import { TagOutlined } from '@ant-design/icons';
 import { Input, Tag, Select, message } from 'antd';
 
 // import shared components
-import TableWrapper from '../../_components/TableWrapper'
+import { TableWrapper } from '_components'
 
 const { Option } = Select;
 
@@ -225,4 +225,4 @@ class Label extends Component {
 	}
 }
 
-export default Label;
+export { Label };

@@ -5,7 +5,7 @@ import { FileSearchOutlined } from '@ant-design/icons';
 import { Input, message } from 'antd';
 
 // import shared components
-import TableWrapper from '../../_components/TableWrapper'
+import { TableWrapper } from '_components'
 
 class Case extends Component {
 	constructor(props) {
@@ -271,4 +271,4 @@ class Case extends Component {
 	}
 }
 
-export default Case;
+export { Case };

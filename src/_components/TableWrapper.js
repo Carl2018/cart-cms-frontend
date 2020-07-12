@@ -6,9 +6,9 @@ import { message, notification } from 'antd';
 import { FileTextOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 // import shared components
-import TableBody from './TableBody'
-import TableDropdown from './TableDropdown'
-import TableDrawer from './TableDrawer'
+import { TableBody } from './TableBody'
+import { TableDropdown } from './TableDropdown'
+import { TableDrawer } from './TableDrawer'
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -216,4 +216,4 @@ class TableWrapper extends Component {
 	}
 }
 
-export default TableWrapper;
+export { TableWrapper };

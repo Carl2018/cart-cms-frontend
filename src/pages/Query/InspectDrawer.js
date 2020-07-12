@@ -16,11 +16,11 @@ import {
 import { NodeIndexOutlined } from '@ant-design/icons';
 
 // import shared and child components
+import { TableBody } from '_components'
 import ActionDrawer from './ActionDrawer'
 import BindDrawer from './BindDrawer'
 import DrawerDropdown from './DrawerDropdown'
 import EditDrawer from './EditDrawer'
-import TableBody from '../../_components/TableBody'
 import Template from './Template'
 
 // destructure child components

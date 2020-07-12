@@ -10,7 +10,7 @@ import {
 	message, 
 } from 'antd';
 
-import { authenticationService } from '../../_services/authentication.service';
+import { authenticationService } from '_services';
 
 class Login extends React.Component {
     constructor(props) {
@@ -121,4 +121,4 @@ class Login extends React.Component {
     }
 }
 
-export default Login; 
+export { Login }; 

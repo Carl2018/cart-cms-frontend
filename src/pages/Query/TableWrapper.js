@@ -16,9 +16,11 @@ import {
 } from '@ant-design/icons';
 
 // import shared and child components
-import TableBody from '../../_components/TableBody'
-import TableDropdown from '../../_components/TableDropdown'
-import TableDrawer from '../../_components/TableDrawer'
+import { 
+	TableBody,
+	TableDrawer,
+	TableDropdown,
+} from '_components'
 import InspectDrawer from './InspectDrawer'
 
 // destructure child components

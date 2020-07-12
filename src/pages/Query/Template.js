@@ -10,8 +10,10 @@ import {
 } from '@ant-design/icons';
 
 // import shared and child components
-import SearchableInput from '../../_components/SearchableInput'
-import RichTextOutput from '../../_components/RichTextOutput'
+import { 
+	RichTextOutput,
+	SearchableInput,
+} from '_components'
 
 // destructure child components
 const { Panel } = Collapse;

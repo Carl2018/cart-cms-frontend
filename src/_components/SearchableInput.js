@@ -53,4 +53,4 @@ class SearchableInput extends Component {
 	}
 }
 
-export default SearchableInput;
+export { SearchableInput };

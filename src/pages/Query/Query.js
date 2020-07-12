@@ -493,4 +493,4 @@ class Query extends Component {
 	}
 }
 
-export default Query;
+export { Query };

@@ -39,4 +39,4 @@ class RichTextOutput extends Component {
     );
   }
 }
-export default RichTextOutput;
+export { RichTextOutput };

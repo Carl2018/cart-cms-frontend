@@ -110,4 +110,4 @@ class TableDrawer extends Component {
 	}
 }
 
-export default TableDrawer;
+export { TableDrawer };

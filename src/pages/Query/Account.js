@@ -9,7 +9,7 @@ import {
 import { TeamOutlined } from '@ant-design/icons';
 
 // import shared and child components
-import TableWrapper from '../../_components/TableWrapper'
+import { TableWrapper } from '_components'
 
 // destructure child components
 const { Option } = Select

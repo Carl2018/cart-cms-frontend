@@ -1,21 +1,23 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-import './App.css';
+import 'App.css';
 
 // import customized component
-import Login from './pages/Login/Login';
-import Home from './pages/Home/Home';
-import Query from './pages/Query/Query';
-import Case from './pages/Case/Case';
-import Account from './pages/Account/Account';
-import Email from './pages/Email/Email';
-import Label from './pages/Label/Label';
-import Template from './pages/Template/Template';
-import Category from './pages/Category/Category';
+import { 
+	Login,
+	Home,
+	Query,
+	Case,
+	Account,
+	Email,
+	Label,
+	Template,
+	Category,
+} from 'pages';
 
-import { history } from './_helpers/history';
-import { authenticationService } from './_services/authentication.service';
-import { PrivateRoute } from './_components/PrivateRoute';
+import { history } from '_helpers';
+import { authenticationService } from '_services';
+import { PrivateRoute } from '_components';
 
 // import styling from ant design
 import 'antd/dist/antd.css';
@@ -138,6 +140,14 @@ class App extends Component {
 								theme="dark" 
 								mode="inline" 
 							>
+								<Item 
+									key="0" 
+									icon={<HomeOutlined />}
+								>
+									<Link to="/">
+										Home
+									</Link>
+								</Item>
 								<Item 
 									key="1" 
 									icon={<QuestionCircleOutlined />}

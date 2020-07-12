@@ -11,8 +11,10 @@ import {
 	Statistic, 
 } from 'antd';
 
-import { authenticationService } from '../../_services/authentication.service';
-import { userService } from '../../_services/user.service';
+import { 
+	authenticationService,
+	userService ,
+} from '_services';
 
 const data = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -129,4 +131,4 @@ class Home extends React.Component {
     }
 }
 
-export default Home;
+export { Home };

@@ -56,4 +56,4 @@ class TableDropdown extends Component {
 	}
 }
 
-export default TableDropdown;
+export { TableDropdown };

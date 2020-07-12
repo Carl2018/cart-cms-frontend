@@ -5,7 +5,7 @@ import { TeamOutlined } from '@ant-design/icons';
 import { Input, Select, Tag, message } from 'antd';
 
 // import shared components
-import TableWrapper from '../../_components/TableWrapper'
+import { TableWrapper } from '_components'
 
 const { Option } = Select
 
@@ -309,4 +309,4 @@ class Account extends Component {
 	}
 }
 
-export default Account;
+export { Account };

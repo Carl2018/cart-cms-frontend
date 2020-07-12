@@ -5,8 +5,10 @@ import { CopyOutlined } from '@ant-design/icons';
 import { Input, message } from 'antd';
 
 // import shared components
-import TableWrapper from '../../_components/TableWrapper'
-import RichTextInput from '../../_components/RichTextInput'
+import {
+	RichTextInput,
+	TableWrapper,
+} from '_components'
 
 class Template extends Component {
 	constructor(props) {
@@ -206,4 +208,4 @@ class Template extends Component {
 	}
 }
 
-export default Template;
+export { Template };
