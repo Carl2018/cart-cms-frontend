@@ -54,7 +54,8 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        userService.getAll().then(users => this.setState({ users }));
+        userService.list().then(data=> console.log(data));
+        //userService.getAll().then(users => this.setState({ users }));
     }
 
     render() {

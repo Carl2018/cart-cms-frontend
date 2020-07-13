@@ -3,11 +3,21 @@ import { authHeader } from '_helpers';
 import { handleResponse } from '_helpers';
 
 export const userService = {
-    getAll
+    getAll,
+    list,
 };
 
 function getAll() {
     const requestOptions = { method: 'GET', headers: authHeader() };
     //return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
     return fetch(`/users`, requestOptions).then(handleResponse);
+}
+
+function list() {
+    const requestOptions = { method: 'GET', headers: authHeader() };
+    return fetch(`http://localhost:8080/api/user/list`, requestOptions)
+			.then(handleResponse)
+			.then(data => {
+					return data;
+			});
 }
