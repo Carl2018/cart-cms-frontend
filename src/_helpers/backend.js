@@ -9,7 +9,7 @@ export const backend = {
 };
 
 // create api
-async function create(service, record) {
+async function create(service, objectName, record) {
 	// insert the record into the backend table
 	let response = null;
 	await service.create(record)
@@ -20,7 +20,7 @@ async function create(service, record) {
 		const data = this.state.data.slice();
 		record.id = response.entry.id;
 		data.push(record);
-		this.setState({ data });
+		this.setState({ [objectName]: data });
 		message.success('A record has been created');
 	} else {
 		message.error(response.en);
@@ -28,13 +28,13 @@ async function create(service, record) {
 }
 
 // list api
-async function list(service) {
+async function list(service, objectName) {
 	service.list()
-		.then( ({ entry: data }) => this.setState({ data }) );
+		.then( ({ entry: data }) => this.setState({ [objectName]: data }) );
 }
 
 // update api
-async function update(service, id, record) {
+async function update(service, objectName, id, record) {
 	// update the record in the backend table
 	let response = null;
 	await service.update({ id, ...record })
@@ -45,7 +45,7 @@ async function update(service, id, record) {
 		let data = this.state.data.slice();
 		let index = data.findIndex( item => item.id === id);
 		Object.keys(record).forEach(item => data[index][item] = record[item])
-		this.setState({ data });
+		this.setState({ [objectName]: data });
 		message.success('The record has been edited');
 	} else {
 		message.error(response.en);
@@ -53,7 +53,7 @@ async function update(service, id, record) {
 }
 
 // hide api
-async function hide(service, ids) {
+async function hide(service, objectName, ids) {
 	// convert to array if ids is a string
 	ids = Array.isArray(ids) ? ids : [ ids ];
 
@@ -67,7 +67,7 @@ async function hide(service, ids) {
 		let data = this.state.data.slice(); 
 		data = data.filter( item => !ids.includes(item.id) );
 		message.success('The records have been deleted');
-		this.setState({ data });
+		this.setState({ [objectName]: data });
 	} else {
 			message.error(response.en);
 		}

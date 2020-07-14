@@ -42,7 +42,7 @@ class Category extends Component {
 			key: 'categoryname',
 			sorter: (a, b) => compare(a.categoryname, b.categoryname),
 			sortDirection: ['ascend', 'descend'],
-			width: '30%',
+			width: '40%',
 			setFilter: true
 		},
 		{
@@ -106,10 +106,10 @@ class Category extends Component {
 	)
 
 	// bind versions of CRUD
-	create= create.bind(this, categoryService);
-	list = list.bind(this, categoryService);
-	update = update.bind(this, categoryService);
-	hide = hide.bind(this, categoryService);
+	create= create.bind(this, categoryService, 'data');
+	list = list.bind(this, categoryService, 'data');
+	update = update.bind(this, categoryService, 'data');
+	hide = hide.bind(this, categoryService, 'data');
 
 	// refresh table
 	refreshTable = () => {

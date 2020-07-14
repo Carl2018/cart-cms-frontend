@@ -11,7 +11,10 @@ import {
 } from '_components'
 
 // import services
-import { templateService } from '_services';
+import { 
+	categoryService,
+	templateService
+} from '_services';
 
 // import helpers
 import { 
@@ -31,11 +34,13 @@ class Template extends Component {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
 			data: [],
+			categories: [],
 		};
 	}
 	
 	componentDidMount() {
 		this.list();
+		this.listCategory();
 	}
 
 	// define columns for TableBody
@@ -46,16 +51,7 @@ class Template extends Component {
 			key: 'title',
 			sorter: (a, b) => compare(a.title, b.title),
 			sortDirection: ['ascend', 'descend'],
-			width: '25%',
-			setFilter: true
-		},
-		{
-			title: 'Body',
-			dataIndex: 'body',
-			key: 'body',
-			sorter: (a, b) => compare(a.body, b.body),
-			sortDirection: ['ascend', 'descend'],
-			width: '30%',
+			width: '40%',
 			setFilter: true
 		},
 		{
@@ -64,7 +60,7 @@ class Template extends Component {
 			key: 'categoryname',
 			sorter: (a, b) => compare(a.body, b.body),
 			sortDirection: ['ascend', 'descend'],
-			width: '25%',
+			width: '30%',
 			setFilter: true
 		},
 	];
@@ -90,6 +86,33 @@ class Template extends Component {
 			)
 		},
 		{
+			label: 'Category',
+			name: 'categoryname',
+			rules: [
+				{
+					required: true,
+					message: 'Category cannot be empty',
+				}
+			],
+			editable: true,
+			input: disabled => (
+				<Select
+					disabled={ disabled }
+				>
+					{
+						this.state.categories.map( item => (
+							<Option
+								key={ item.id }
+								value={ item.categoryname }
+							>
+								{ item.categoryname }
+							</Option>
+						))
+					}
+				</Select>
+			)
+		},
+		{
 			label: 'Body',
 			name: 'body',
 			rules: [
@@ -106,25 +129,6 @@ class Template extends Component {
 				/>
 			)
 		},			
-		{
-			label: 'Category',
-			name: 'category_id',
-			rules: [
-				{
-					required: true,
-					message: 'Category cannot be empty',
-				}
-			],
-			editable: true,
-			input: disabled => (
-				<Select
-					disabled={ disabled }
-				>
-					<Option value="1">General</Option>
-					<Option value="2">Membership</Option>
-				</Select>
-			)
-		},
 	];
 
 	// define table header
@@ -136,14 +140,17 @@ class Template extends Component {
 	)
 
 	// bind versions of CRUD
-	create= create.bind(this, templateService);
-	list = list.bind(this, templateService);
-	update = update.bind(this, templateService);
-	hide = hide.bind(this, templateService);
+	create= create.bind(this, templateService, 'data');
+	list = list.bind(this, templateService, 'data');
+	update = update.bind(this, templateService, 'data');
+	hide = hide.bind(this, templateService, 'data');
+	listCategory = list.bind(this, categoryService, 'categories');
 
 	// refresh table
 	refreshTable = () => {
 		this.list();
+		this.listCategory();
+		console.log(this.state.categories);
 		this.setState({ tableWrapperKey: Date.now() })
 	};
 
