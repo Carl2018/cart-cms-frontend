@@ -236,7 +236,7 @@ class App extends Component {
 												size="large"
 												onClick={ event => console.log('profile clicked')}
 											>
-												{ currentUser.firstName }
+												{ currentUser.alias }
 												<UserOutlined />
 											</Button>
 										</Dropdown>

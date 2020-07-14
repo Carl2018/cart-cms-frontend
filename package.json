@@ -8,7 +8,6 @@
     "@testing-library/user-event": "^7.2.1",
     "antd": "^4.2.4",
     "chart.js": "^2.9.3",
-    "formik": "^2.1.4",
     "history": "^5.0.0",
     "react": "^16.13.1",
     "react-chartjs-2": "^2.9.0",
@@ -17,8 +16,7 @@
     "react-router-dom": "^5.2.0",
     "react-rte": "^0.16.1",
     "react-scripts": "3.4.1",
-    "rxjs": "^6.6.0",
-    "yup": "^0.29.1"
+    "rxjs": "^6.6.0"
   },
   "scripts": {
     "start": "react-scripts start",
