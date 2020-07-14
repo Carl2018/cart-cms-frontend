@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 // import components from ant design
-import { Input, message } from 'antd';
+import { Input } from 'antd';
 import { HddOutlined } from '@ant-design/icons';
 
 // import shared and child components
@@ -11,9 +11,13 @@ import { TableWrapper } from '_components'
 import { categoryService } from '_services';
 
 // import helpers
-import { helpers } from '_helpers';
+import { 
+	backend,
+	helpers 
+} from '_helpers';
 
 // destructure imported components and objects
+const { create, list, update, hide } = backend;
 const { compare } = helpers;
 
 class Category extends Component {
@@ -101,55 +105,18 @@ class Category extends Component {
 		</>
 	)
 
-	// create api
-  create = record => {
-		const data = this.state.data.slice();
-		record.key = Date.now();
-		data.push(record);
-		if (200) message.success('A record has been created');
-		console.log(data);
-		this.setState({ data });
-	}
+	// bind versions of CRUD
+	create= create.bind(this, categoryService);
+	list = list.bind(this, categoryService);
+	update = update.bind(this, categoryService);
+	hide = hide.bind(this, categoryService);
 
-	// list api
-	list = () => {
-			categoryService.list().then( ({ entry: data }) => 
-				this.setState({ 
-					data: data.map( ({ id: key, ...rest}) => ({ key, ...rest}) )
-				})
-			);
-	}
-	// edit api
-  edit = (key, record) => {
-		let data = this.state.data.slice();
+	// refresh table
+	refreshTable = () => {
+		this.list();
+		this.setState({ tableWrapperKey: Date.now() })
+	};
 
-		let originalRecord = data.find( item => item.key === key);
-		let index = data.findIndex( item => item.key === key);
-		Object.keys(record).forEach(item => originalRecord[item] = record[item])
-		console.log(originalRecord);
-		data[index] = originalRecord;
-		if (200) message.success('The record has been edited');
-		this.setState({ data });
-	}
-
-	// delete api
-  delete = keys => {
-		let data = this.state.data.slice(); // do not mutate the data in state
-		if (Array.isArray(keys)) {
-			data = data.filter( 
-				item => !keys.includes(item.key)
-			);
-			if (200) message.success('Multiple record have been deleted');
-		} else {
-			data = data.filter( 
-				item => item.key !== keys
-			);
-			if (200) message.success('The record has been deleted');
-		}
-		this.setState({ data });
-	}
-
-	refreshTable = () => this.setState({ tableWrapperKey: Date.now() });
 	render(){
 		return (
 			<div className='Category'>
@@ -161,8 +128,8 @@ class Category extends Component {
 					tableHeader={ this.tableHeader }
 					drawerTitle='Create a new category'
 					create={ this.create }
-					edit={ this.edit }
-					delete={ this.delete }
+					edit={ this.update }
+					delete={ this.hide }
 					refreshTable={ this.refreshTable }
 				>
 				</TableWrapper>

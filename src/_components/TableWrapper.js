@@ -85,7 +85,7 @@ class TableWrapper extends Component {
 		});
 	}
 
-	handleClickDelete = record => this.props.delete(record.key);
+	handleClickDelete = record => this.props.delete(record.id);
 
 	handleSelectChange = selectedRowKeys => this.setState({ selectedRowKeys });
 
@@ -142,8 +142,8 @@ class TableWrapper extends Component {
 	handleSubmit = record => {
 
 		console.log(record);
-		if (this.state.record.key) // edit the entry
-			this.props.edit(this.state.record.key, record);
+		if (this.state.record.id) // edit the entry
+			this.props.edit(this.state.record.id, record);
 		else // create an entry
 			this.props.create(record);
 
