@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
 
-// import styling from ant desgin
-import { HddOutlined } from '@ant-design/icons';
+// import components from ant design
 import { Input, message } from 'antd';
+import { HddOutlined } from '@ant-design/icons';
 
-// import shared components
+// import shared and child components
 import { TableWrapper } from '_components'
+
+// import services
+import { categoryService } from '_services';
+
+// import helpers
+import { helpers } from '_helpers';
+
+// destructure imported components and objects
+const { compare } = helpers;
 
 class Category extends Component {
 	constructor(props) {
@@ -13,44 +22,21 @@ class Category extends Component {
 		this.state = {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
-			data: [
-				{
-					key: '1',
-					category: 'Membership',
-					description: 'Queries and templates pertain to membership',
-				},
-				{
-					key: '2',
-					category: 'Account Unban',
-					description: 'Queries and templates pertain to account unban',
-				},
-				{
-					key: '3',
-					category: 'Account Credentials',
-					description: 'Queries and templates pertain to account credentials',
-				},
-				{
-					key: '4',
-					category: 'Miscellaneous',
-					description: 'Queries and templates with no apparent category',
-				},
-			],
+			data: [],
 		};
 	}
 	
-	// define columns for TableBody
-	compare = (a, b) => {
-		if (a >  b) return 1;
-		if (a ===  b) return 0;
-		if (a <  b) return -1;
+	componentDidMount() {
+		this.list();
 	}
 
+	// define columns for TableBody
 	columns = [
 		{
 			title: 'Category',
-			dataIndex: 'category',
-			key: 'category',
-			sorter: (a, b) => this.compare(a.category, b.category),
+			dataIndex: 'categoryname',
+			key: 'categoryname',
+			sorter: (a, b) => compare(a.categoryname, b.categoryname),
 			sortDirection: ['ascend', 'descend'],
 			width: '30%',
 			setFilter: true
@@ -59,7 +45,7 @@ class Category extends Component {
 			title: 'Description',
 			dataIndex: 'description',
 			key: 'description',
-			sorter: (a, b) => this.compare(a.description, b.description),
+			sorter: (a, b) => compare(a.description, b.description),
 			sortDirection: ['ascend', 'descend'],
 			width: '40%',
 			setFilter: true
@@ -70,7 +56,7 @@ class Category extends Component {
 	formItems = [
 		{
 			label: 'Category',
-			name: 'category',
+			name: 'categoryname',
 			rules: [
 				{
 					required: true,
@@ -125,6 +111,14 @@ class Category extends Component {
 		this.setState({ data });
 	}
 
+	// list api
+	list = () => {
+			categoryService.list().then( ({ entry: data }) => 
+				this.setState({ 
+					data: data.map( ({ id: key, ...rest}) => ({ key, ...rest}) )
+				})
+			);
+	}
 	// edit api
   edit = (key, record) => {
 		let data = this.state.data.slice();
