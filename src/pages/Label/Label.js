@@ -47,7 +47,7 @@ class Label extends Component {
 			key: 'labelname',
 			sorter: (a, b) => compare(a.labelname, b.labelname),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '30%',
 			setFilter: true
 		},
 		{
@@ -56,7 +56,7 @@ class Label extends Component {
 			key: 'label_color',
 			sorter: (a, b) => compare(a.label_color, b.label_color),
 			sortDirection: ['ascend', 'descend'],
-			width: '30%',
+			width: '20%',
 			//setFilter: true,
 			render: label_color => {
 				let text = 'Gray';
@@ -85,10 +85,12 @@ class Label extends Component {
 		},
 		{
 			title: 'Label',
-			key: 'label_color',
-			dataIndex: 'label_color',
-			render: (label_color, record) => {
-				let labelname = record.labelname;
+			key: 'labelname',
+			dataIndex: 'labelname',
+			sorter: (a, b) => compare(a.labelname, b.labelname),
+			sortDirection: ['ascend', 'descend'],
+			render: (labelname, record) => {
+				let label_color= record.label_color;
 				let color = 'default';
 				switch (label_color) {
 					case 'l' :
