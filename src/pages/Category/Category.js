@@ -126,7 +126,7 @@ class Category extends Component {
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create a new category'
+					drawerTitle='Create a New Category'
 					create={ this.create }
 					edit={ this.update }
 					delete={ this.hide }

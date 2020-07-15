@@ -163,7 +163,7 @@ class Template extends Component {
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create a new template'
+					drawerTitle='Create a New Template'
 					create={ this.create }
 					edit={ this.update }
 					delete={ this.hide }

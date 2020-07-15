@@ -1,12 +1,28 @@
 import React, { Component } from 'react';
 
-// import styling from ant desgin
+// import components from ant design
 import { TagOutlined } from '@ant-design/icons';
-import { Input, Tag, Select, message } from 'antd';
+import { 
+	Input, 
+	Select, 
+	Tag, 
+} from 'antd';
 
-// import shared components
+// import shared and child components
 import { TableWrapper } from '_components'
 
+// import services
+import { labelService } from '_services';
+
+// import helpers
+import { 
+	backend,
+	helpers 
+} from '_helpers';
+
+// destructure imported components and objects
+const { create, list, update, hide } = backend;
+const { compare } = helpers;
 const { Option } = Select;
 
 class Label extends Component {
@@ -15,97 +31,91 @@ class Label extends Component {
 		this.state = {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
-			data: [
-				{
-					key: '1',
-					labelName: 'normal',
-					labelType: 'Information',
-					labels: [['Information', 'normal']],
-				},
-				{
-					key: '2',
-					labelName: 'frequent user',
-					labelType: 'Information',
-					labels: [['Information', 'frequent user']],
-				},
-				{
-					key: '3',
-					labelName: 'VIP',
-					labelType: 'Warning',
-					labels: [['Warning', 'VIP']],
-				},
-				{
-					key: '4',
-					labelName: 'banned',
-					labelType: 'Danger',
-					labels: [['Danger', 'banned']],
-				},
-				{
-					key: '5',
-					labelName: 'spammer',
-					labelType: 'Danger',
-					labels: [['Danger', 'spammer']],
-				},
-			],
+			data: [],
 		};
 	}
 	
-	// define columns for TableBody
-	compare = (a, b) => {
-		if (a >  b) return 1;
-		if (a ===  b) return 0;
-		if (a <  b) return -1;
+	componentDidMount() {
+		this.list();
 	}
 
+	// define columns for TableBody
 	columns = [
 		{
 			title: 'Label Name',
-			dataIndex: 'labelName',
-			key: 'labelName',
-			sorter: (a, b) => this.compare(a.labelName, b.labelName),
+			dataIndex: 'labelname',
+			key: 'labelname',
+			sorter: (a, b) => compare(a.labelname, b.labelname),
 			sortDirection: ['ascend', 'descend'],
 			width: '20%',
 			setFilter: true
 		},
 		{
-			title: 'Label Type',
-			dataIndex: 'labelType',
-			key: 'labelType',
-			sorter: (a, b) => this.compare(a.labelType, b.labelType),
+			title: 'Label Color',
+			dataIndex: 'label_color',
+			key: 'label_color',
+			sorter: (a, b) => compare(a.label_color, b.label_color),
 			sortDirection: ['ascend', 'descend'],
 			width: '30%',
-			setFilter: true
+			//setFilter: true,
+			render: label_color => {
+				let text = 'Gray';
+				switch (label_color) {
+					case 'l' :
+						text = 'Green';
+						break;
+					case 'b' :
+						text = 'Blue';
+						break;
+					case 'r' :
+						text = 'Red';
+						break;
+					case 'y' :
+						text = 'Gold';
+						break;
+					case 'g' :
+						text = 'Gray';
+						break;
+					default :
+						text = 'Gray';
+						break;
+				};	
+				return (<>{ text }</>);
+			}
 		},
 		{
 			title: 'Label',
-			key: 'labels',
-			dataIndex: 'labels',
-			render: labels => !labels ? <></> : (
-				<>
-					{labels.map(tag => {
-						let color = 'blue';
-						switch (tag[0]) {
-							case 'Information' :
-								color = 'blue';
-								break;
-							case 'Warning' :
-								color = 'gold';
-								break;
-							case 'Danger' :
-								color = 'red';
-								break;
-							default :
-								color = 'blue';
-								break;
-						}
-						return (
-							<Tag color={color} key={tag[1]}>
-								{tag[1].toUpperCase()}
-							</Tag>
-						);
-					})}
-				</>
-			),
+			key: 'label_color',
+			dataIndex: 'label_color',
+			render: (label_color, record) => {
+				let labelname = record.labelname;
+				let color = 'default';
+				switch (label_color) {
+					case 'l' :
+						color = 'success';
+						break;
+					case 'b' :
+						color = 'processing';
+						break;
+					case 'r' :
+						color = 'error';
+						break;
+					case 'y' :
+						color = 'warning';
+						break;
+					case 'g' :
+						color = 'default';
+						break;
+					default :
+						color = 'default';
+						break;
+				};	
+				return (
+					<Tag color={color} key={Date.now()}>
+						{ labelname }
+					</Tag>
+				);
+			},
 			width: '20%',
 		},
 	];
@@ -114,11 +124,11 @@ class Label extends Component {
 	formItems = [
 		{
 			label: 'Label Name',
-			name: 'labelName',
+			name: 'labelname',
 			rules: [
 				{
 					required: true,
-					message: 'labelName cannot be empty',
+					message: 'Label name cannot be empty',
 				}
 			],
 			editable: true,
@@ -131,12 +141,12 @@ class Label extends Component {
 			)
 		},
 		{
-			label: 'Label Type',
-			name: 'labelType',
+			label: 'Label Color',
+			name: 'label_color',
 			rules: [
 				{
 					required: true,
-					message: 'labelType cannot be empty',
+					message: 'Label color cannot be empty',
 				},
 			],
 			editable: true,
@@ -144,9 +154,11 @@ class Label extends Component {
 				<Select
 					disabled={ disabled }
 				>
-					<Option value="Information">Information</Option>
-					<Option value="Warning">Warning</Option>
-					<Option value="Danger">Danger</Option>
+					<Option value="l">Green</Option>
+					<Option value="b">Blue</Option>
+					<Option value="r">Red</Option>
+					<Option value="y">Gold</Option>
+					<Option value="g">Gray</Option>
 				</Select>
 			)
 		},			
@@ -160,50 +172,18 @@ class Label extends Component {
 		</>
 	)
 
-	// create api
-  create = record => {
-		const data = this.state.data.slice();
-		record.key = Date.now();
-		record.labels = [[record.labelType, record.labelName]];
-		console.log(record.labels);
-		data.push(record);
-		if (200) message.success('A record has been created');
-		console.log(data);
-		this.setState({ data });
-	}
+	// bind versions of CRUD
+	create= create.bind(this, labelService, 'data');
+	list = list.bind(this, labelService, 'data');
+	update = update.bind(this, labelService, 'data');
+	hide = hide.bind(this, labelService, 'data');
 
-	// edit api
-  edit = (key, record) => {
-		let data = this.state.data.slice();
+	// refresh table
+	refreshTable = () => {
+		this.list();
+		this.setState({ tableWrapperKey: Date.now() })
+	};
 
-		let originalRecord = data.find( item => item.key === key);
-		let index = data.findIndex( item => item.key === key);
-		Object.keys(record).forEach(item => originalRecord[item] = record[item])
-		originalRecord.labels = [[originalRecord.labelType, originalRecord.labelName]];
-		console.log(originalRecord);
-		data[index] = originalRecord;
-		if (200) message.success('The record has been edited');
-		this.setState({ data });
-	}
-
-	// delete api
-  delete = keys => {
-		let data = this.state.data.slice(); // do not mutate the data in state
-		if (Array.isArray(keys)) {
-			data = data.filter( 
-				item => !keys.includes(item.key)
-			);
-			if (200) message.success('Multiple records have been deleted');
-		} else {
-			data = data.filter( 
-				item => item.key !== keys
-			);
-			if (200) message.success('The record has been deleted');
-		}
-		this.setState({ data });
-	}
-
-	refreshTable = () => this.setState({ tableWrapperKey: Date.now() });
 	render(){
 		return (
 			<div className='Label'>
@@ -213,10 +193,10 @@ class Label extends Component {
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create a new tag'
+					drawerTitle='Create a New Label'
 					create={ this.create }
-					edit={ this.edit }
-					delete={ this.delete }
+					edit={ this.update }
+					delete={ this.hide }
 					refreshTable={ this.refreshTable }
 				>
 				</TableWrapper>
