@@ -49,7 +49,8 @@ class TableDropdown extends Component {
 					onClick={ this.props.onClickAdd }
 					overlay={ this.menu }
 				>
-					<PlusOutlined />Add
+					<PlusOutlined />
+					{ this.props.dropdownName ?  this.props.dropdownName : "Add" }
 				</Dropdown.Button>
 			</div>
 		);

@@ -177,7 +177,7 @@ class App extends Component {
 									icon={<MailOutlined />}
 								>
 									<Link to="/email">
-										Emails
+										Known Emails
 									</Link>
 								</Item>
 								<Item 

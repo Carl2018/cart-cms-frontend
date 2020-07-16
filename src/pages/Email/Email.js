@@ -272,6 +272,7 @@ class Email extends Component {
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
 					drawerTitle='Create an Email with a NEW profile'
+					dropdownName='Create Profile'
 					create={ this.createRefresh }
 					edit={ this.updateRefresh }
 					delete={ this.hide }

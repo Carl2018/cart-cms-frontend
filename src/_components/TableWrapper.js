@@ -178,6 +178,7 @@ class TableWrapper extends Component {
 					>
 						{ this.props.showDropdown === false ? (<></>) : (<>
 								<TableDropdown 
+									dropdownName={ this.props.dropdownName }
 									onClickAdd={ this.handleClickAdd }
 									onClickRefreshTable={ this.handleClickRefreshTable }
 									onClickBatchDelete={ this.handleClickBatchDelete }
