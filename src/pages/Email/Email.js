@@ -1,11 +1,34 @@
 import React, { Component } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
-// import styling from ant desgin
+// import components from ant design
 import { MailOutlined } from '@ant-design/icons';
-import { Input, message } from 'antd';
+import { 
+	Input, 
+	Select, 
+	Tag, 
+} from 'antd';
 
-// import shared components
+// import shared and child components
 import { TableWrapper } from '_components'
+
+// import services
+import { 
+	emailService,
+	labelService,
+	profileService,
+} from '_services';
+
+// import helpers
+import { 
+	backend,
+	helpers 
+} from '_helpers';
+
+// destructure imported components and objects
+const { create, list, listCombined, update, hide } = backend;
+const { compare } = helpers;
+const { Option } = Select
 
 class Email extends Component {
 	constructor(props) {
@@ -13,97 +36,100 @@ class Email extends Component {
 		this.state = {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
-			data: this.allEmails,
+			data: [],
+			labels: [],
 		};
 	}
 
-	allEmails = [
-		{
-			key: '1',
-			email: 'alice@gmail.com',
-			createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-25T11:28:25').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '1',
-		},
-		{
-			key: '2',
-			email: 'bob@gmail.com',
-			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-24T13:48:32').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '2',
-		},
-		{
-			key: '21',
-			email: 'bob1234@gmail.com',
-			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-24T13:48:32').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '2',
-		},
-		{
-			key: '3',
-			email: 'charlie@hotmail.com',
-			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-22T18:23:28').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '3',
-		},
-		{
-			key: '31',
-			email: 'charlie1234@hotmail.com',
-			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-22T18:23:28').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '3',
-		},
-		{
-			key: '32',
-			email: 'charlie4321@hotmail.com',
-			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-22T18:23:28').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '3',
-		},
-		{
-			key: '4',
-			email: 'david@gmail.com',
-			createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
-			updatedAt: new Date('2020-05-25T12:33:18').toISOString().split('.')[0].replace('T', ' '),
-			profileID: '4',
-		},
-	];
-
-	// define columns for TableBody
-	compare = (a, b) => {
-		if (a >  b) return 1;
-		if (a ===  b) return 0;
-		if (a <  b) return -1;
+	componentDidMount() {
+		this.list();
+		this.listLabels();
 	}
 
+	// define columns for TableBody
 	columns = [
 		{
 			title: 'Email',
 			dataIndex: 'email',
 			key: 'email',
-			sorter: (a, b) => this.compare(a.email, b.email),
+			sorter: (a, b) => compare(a.email, b.email),
 			sortDirection: ['ascend', 'descend'],
-			width: '30%',
+			width: '10%',
 			setFilter: true
 		},
 		{
-			title: 'Last Contacted At',
-			dataIndex: 'updatedAt',
-			key: 'updatedAt',
-			sorter: (a, b) => this.compare(a.createdAt, b.createdAt),
+			title: 'Last Updated At',
+			dataIndex: 'updated_at',
+			key: 'updated_at',
+			sorter: (a, b) => compare(a.updated_at, b.updated_at),
 			sortDirection: ['ascend', 'descend'],
 			defaultSortOrder: 'descend',
-			width: '40%',
+			width: '20%',
 			setFilter: true
 		},
 		{
-			title: 'Created At',
-			dataIndex: 'createdAt',
-			key: 'createdAt',
-			sorter: (a, b) => this.compare(a.createdAt, b.createdAt),
+			title: 'Profile ID',
+			dataIndex: 'profile_id',
+			key: 'profile_id',
+			sorter: (a, b) => compare(a.profile_id, b.profile_id),
 			sortDirection: ['ascend', 'descend'],
-			width: '40%',
+			width: '20%',
 			setFilter: true
+		},
+		{
+			title: 'Profile Description',
+			dataIndex: 'description',
+			key: 'description',
+			sorter: (a, b) => compare(a.description, b.description),
+			sortDirection: ['ascend', 'descend'],
+			width: '20%',
+			setFilter: true
+		},
+		{
+			title: 'Label',
+			key: 'labelname',
+			dataIndex: 'labelname',
+			sorter: (a, b) => compare(a.labelname, b.labelname),
+			sortDirection: ['ascend', 'descend'],
+			render: labelname => {
+				const labels = this.state.labels.slice();
+				const elements = labelname === undefined 
+					|| labelname[0] === null 
+					|| labels.length === 0 
+					? <></> : 
+					labelname.map( (item, index) => {
+						const label_color = labels
+							.find( label => label.labelname === item ).label_color;
+						let color = 'default';
+						switch (label_color) {
+							case 'l' :
+								color = 'success';
+								break;
+							case 'b' :
+								color = 'processing';
+								break;
+							case 'r' :
+								color = 'error';
+								break;
+							case 'y' :
+								color = 'warning';
+								break;
+							case 'g' :
+								color = 'default';
+								break;
+							default :
+								color = 'default';
+								break;
+						};	
+						return (
+							<Tag color={ color } key={ uuidv4() }>
+								{ item }
+							</Tag>
+						);
+					});
+				return elements;
+			},
+			width: '20%',
 		},
 	];
 
@@ -128,12 +154,12 @@ class Email extends Component {
 			)
 		},
 		{
-			label: 'Created at',
-			name: 'createdAt',
+			label: 'Last Contacted At',
+			name: 'updated_at',
 			rules: [
 				{
 					required: true,
-					message: 'createdAt cannot be empty',
+					message: 'updated_at cannot be empty',
 				}
 			],
 			editable: false,
@@ -145,6 +171,70 @@ class Email extends Component {
 				/>
 			)
 		},
+		{
+			label: 'Profile ID',
+			name: 'profile_id',
+			rules: [
+				{
+					required: true,
+					message: 'Profile ID description cannot be empty',
+				}
+			],
+			editable: false,
+			input: disabled => (
+				<Input
+					maxLength={255}
+					allowClear
+					disabled={ disabled }
+				/>
+			)
+		},
+		{
+			label: 'Profile Description',
+			name: 'description',
+			rules: [
+				{
+					required: true,
+					message: 'Profile description cannot be empty',
+				}
+			],
+			editable: true,
+			input: disabled => (
+				<Input
+					maxLength={255}
+					allowClear
+					disabled={ disabled }
+				/>
+			)
+		},
+		{
+			label: 'Labels',
+			name: 'labelname',
+			rules: [
+				{
+					required: false,
+					message: 'Labels cannot be empty',
+				}
+			],
+			editable: true,
+			input: disabled => (
+				<Select
+					disabled={ disabled }
+					mode="multiple"
+				>
+					{
+						this.state.labels.map( item => (
+							<Option
+								key={ item.id }
+								value={ item.labelname }
+							>
+								{ item.labelname }
+							</Option>
+						))
+					}
+				</Select>
+			)
+		},
 	];
 
 	// define table header
@@ -152,53 +242,26 @@ class Email extends Component {
 	(
 		<>
 			<MailOutlined />
-			<strong>Known Email Accounts</strong>
+			<strong>Known Emails</strong>
 		</>
 	)
 
-	// create api
-  create = record => {
-		const data = this.state.data.slice();
-		record.key = Date.now();
-		record.createdAt = new Date().toISOString().split('.')[0].replace('T', ' ');
-		record.updatedAt = new Date().toISOString().split('.')[0].replace('T', ' ');
-		data.push(record);
-		if (200) message.success('A record has been created');
-		console.log(data);
-		this.setState({ data });
-	}
+	// bind versions of CRUD
+	create = create.bind(this, profileService, 'data');
+	createRefresh = record => this.create(record).then( res => this.list() );
+	list = listCombined.bind(this, emailService, 'data', ['labelname', 'label_color']);
+	update = update.bind(this, emailService, 'data');
+	updateRefresh = (id, record) => this.update(id, record).then( res => this.list() );
+	hide = hide.bind(this, emailService, 'data');
+	listLabels = list.bind(this, labelService, 'labels');
 
-	// edit api
-  edit = (key, record) => {
-		let data = this.state.data.slice();
+	// refresh table
+	refreshTable = () => {
+		this.list();
+		this.listLabels();
+		this.setState({ tableWrapperKey: Date.now() })
+	};
 
-		let originalRecord = data.find( item => item.key === key);
-		let index = data.findIndex( item => item.key === key);
-		Object.keys(record).forEach(item => originalRecord[item] = record[item])
-		console.log(originalRecord);
-		data[index] = originalRecord;
-		if (200) message.success('The record has been edited');
-		this.setState({ data });
-	}
-
-	// delete api
-  delete = keys => {
-		let data = this.state.data.slice(); // do not mutate the data in state
-		if (Array.isArray(keys)) {
-			data = data.filter( 
-				item => !keys.includes(item.key)
-			);
-			if (200) message.success('Multiple records have been deleted');
-		} else {
-			data = data.filter( 
-				item => item.key !== keys
-			);
-			if (200) message.success('The record has been deleted');
-		}
-		this.setState({ data });
-	}
-
-	refreshTable = () => this.setState({ tableWrapperKey: Date.now() });
 	render(){
 		return (
 			<div className='Email'>
@@ -208,10 +271,10 @@ class Email extends Component {
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create a new email'
-					create={ this.create }
-					edit={ this.edit }
-					delete={ this.delete }
+					drawerTitle='Create an Email with a NEW profile'
+					create={ this.createRefresh }
+					edit={ this.updateRefresh }
+					delete={ this.hide }
 					refreshTable={ this.refreshTable }
 					isSmall={ this.props.isSmall }
 				>

@@ -1,9 +1,16 @@
 // import components from ant design
 import { message } from 'antd';
 
+// import helpers
+import { helpers } from './helpers';
+
+// destructure imported components and objects
+const { getCurrentDatetime } = helpers;
+
 export const backend = {
     create,
     list,
+    listCombined,
     update,
     hide,
 };
@@ -19,6 +26,8 @@ async function create(service, objectName, record) {
 	if (response.code === 200){
 		const data = this.state.data.slice();
 		record.id = response.entry.id;
+		record.created_at = getCurrentDatetime();
+		record.updated_at = getCurrentDatetime();
 		data.push(record);
 		this.setState({ [objectName]: data });
 		message.success('A record has been created');
@@ -31,6 +40,25 @@ async function create(service, objectName, record) {
 async function list(service, objectName) {
 	service.list()
 		.then( ({ entry: data }) => this.setState({ [objectName]: data }) );
+}
+
+// list combined api
+async function listCombined(service, objectName, keys) {
+	service.list()
+		.then( ({ entry: data }) => {
+			const ids = data.map( item => item.id );
+			ids.forEach( (item, index, array) => {
+				const first = array.indexOf(item);
+				if (first === index) {
+					keys.forEach( key => data[index][key] = [ data[index][key] ] );
+				} else {
+					keys.forEach( key => data[first][key].push(data[index][key]) )
+					data[index] = null;
+				}
+			});
+			data = data.filter( item => item !== null )
+			this.setState({ [objectName]: data });
+		});
 }
 
 // update api

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 // import components from ant design
 import { TagOutlined } from '@ant-design/icons';
@@ -113,7 +114,7 @@ class Label extends Component {
 						break;
 				};	
 				return (
-					<Tag color={color} key={Date.now()}>
+					<Tag color={ color } key={ uuidv4() }>
 						{ labelname }
 					</Tag>
 				);
