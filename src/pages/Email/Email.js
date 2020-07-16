@@ -68,10 +68,10 @@ class Email extends Component {
 			setFilter: true
 		},
 		{
-			title: 'Profile ID',
-			dataIndex: 'profile_id',
-			key: 'profile_id',
-			sorter: (a, b) => compare(a.profile_id, b.profile_id),
+			title: 'Profile Name',
+			dataIndex: 'profilename',
+			key: 'profilename',
+			sorter: (a, b) => compare(a.profilename, b.profilename),
 			sortDirection: ['ascend', 'descend'],
 			width: '20%',
 			setFilter: true
@@ -172,15 +172,15 @@ class Email extends Component {
 			)
 		},
 		{
-			label: 'Profile ID',
-			name: 'profile_id',
+			label: 'Profile Name',
+			name: 'profilename',
 			rules: [
 				{
 					required: true,
-					message: 'Profile ID description cannot be empty',
+					message: 'Profile name cannot be empty',
 				}
 			],
-			editable: false,
+			editable: true,
 			input: disabled => (
 				<Input
 					maxLength={255}
