@@ -90,7 +90,7 @@ class Template extends Component {
 			name: 'categoryname',
 			rules: [
 				{
-					required: true,
+					required: false,
 					message: 'Category cannot be empty',
 				}
 			],
