@@ -1,13 +1,35 @@
 import React, { Component } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
-// import styling from ant desgin
+// import components from ant design
 import { TeamOutlined } from '@ant-design/icons';
-import { Input, Select, Tag, message } from 'antd';
+import { 
+	AutoComplete, 
+	Input, 
+	Select, 
+	Tag, 
+} from 'antd';
 
-// import shared components
-import { TableWrapper } from '_components'
+// import shared and child components
+import { TableWrapper } from './TableWrapper';
 
-const { Option } = Select
+// import services
+import { 
+	accountService, 
+	profileService, 
+} from '_services';
+
+// import helpers
+import { 
+	backend,
+	helpers 
+} from '_helpers';
+
+// destructure imported components and objects
+const { create, list, update, ban, hide } = backend;
+const { compare } = helpers;
+const { Search } = Input;
+const { Option } = Select;
 
 class Account extends Component {
 	constructor(props) {
@@ -15,136 +37,120 @@ class Account extends Component {
 		this.state = {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
-			data: this.allAccounts,
+			data: [],
+			// options for profile search
+			profiles: [],
+			options: [],
 		};
 	}
 	
-	allAccounts = [
-		{
-			key: '1',
-			candidateID: 'u9876543210',
-			accountName: 'alice@facebook.com',
-			accountType: 'facebook',
-			labels: ['banned'],
-			createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-		},
-		{
-			key: '2',
-			candidateID: 'u9876543212',
-			accountName: '0085212345678',
-			accountType: 'phone',
-			labels: ['normal'],
-			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
-		},
-		{
-			key: '3',
-			candidateID: 'u9876543213',
-			accountName: 'charlie@facebook',
-			accountType: 'facebook',
-			labels: ['spammer', 'banned'],
-			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
-		},
-		{
-			key: '4',
-			candidateID: 'u9876543214',
-			accountName: '0085287654321',
-			accountType: 'phone',
-			labels: ['VIP'],
-			createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
-		},
-	];
-
-	// define columns for TableBody
-	compare = (a, b) => {
-		if (a >  b) return 1;
-		if (a ===  b) return 0;
-		if (a <  b) return -1;
+	componentDidMount() {
+		this.list();
+		this.listProfiles();
 	}
 
+	// define columns for TableBody
 	columns = [
 		{
 			title: 'Candidate ID',
-			dataIndex: 'candidateID',
-			key: 'candidateID',
-			sorter: (a, b) => this.compare(a.candidateID, b.candidateID),
+			dataIndex: 'candidate_id',
+			key: 'candidate_id',
+			sorter: (a, b) => compare(a.candidate_id, b.candidate_id),
 			sortDirection: ['ascend', 'descend'],
-			width: '25%',
+			width: '20%',
 			setFilter: true
 		},
 		{
 			title: 'Account Type',
-			dataIndex: 'accountType',
-			key: 'accountType',
-			sorter: (a, b) => this.compare(a.accountType, b.accountType),
+			key: 'account_type',
+			dataIndex: 'account_type',
+			sorter: (a, b) => compare(a.account_type, b.account_type),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
-			setFilter: true
+			render: account_type => {
+				let color = 'gold';
+				let text = 'Phone';
+				switch (account_type) {
+					case 'f' :
+						color = 'blue';
+						text = 'Facebook';
+						break;
+					case 'p' :
+						color = 'gold';
+						text = 'Phone';
+						break;
+					default:
+						color = 'gold';
+						text = 'Phone';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+			width: '20%',
 		},
 		{
 			title: 'Account Name',
-			dataIndex: 'accountName',
-			key: 'accountName',
-			sorter: (a, b) => this.compare(a.accountName, b.accountName),
+			dataIndex: 'accountname',
+			key: 'accountname',
+			sorter: (a, b) => compare(a.accountname, b.accountname),
 			sortDirection: ['ascend', 'descend'],
 			width: '20%',
 			setFilter: true
 		},
 		{
-			title: 'Labels',
-			key: 'labels',
-			dataIndex: 'labels',
-			render: labels => !labels ? <></> : (
-				<>
-					{labels.map(tag => {
-						let color = 'blue';
-						switch (tag) {
-							case 'normal' :
-								color = 'blue';
-								break;
-							case 'banned' :
-								color = 'red';
-								break;
-							case 'spammer' :
-								color = 'purple';
-								break;
-							case 'VIP' :
-								color = 'gold';
-								break;
-							default :
-								color = 'blue';
-								break;
-						}
-						return (
-							<Tag color={color} key={tag}>
-								{tag.toUpperCase()}
-							</Tag>
-						);
-					})}
-				</>
-			),
-			width: '20%',
+			title: 'Status',
+			key: 'status',
+			dataIndex: 'status',
+			sorter: (a, b) => compare(a.status, b.status),
+			sortDirection: ['ascend', 'descend'],
+			render: status => {
+				let color = 'green';
+				let text = 'Unbanned';
+				switch (status) {
+					case 'b' :
+						color = 'red';
+						text = 'Banned';
+						break;
+					case 'u' :
+						color = 'green';
+						text = 'Unbanned';
+						break;
+					default:
+						color = 'green';
+						text = 'Unbanned';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+			width: '10%',
 		},
-//		{
-//			title: 'Created At',
-//			dataIndex: 'createdAt',
-//			key: 'createdAt',
-//			sorter: (a, b) => this.compare(a.createdAt, b.createdAt),
-//			sortDirection: ['ascend', 'descend'],
-//			defaultSortOrder: 'descend',
-//			width: '15%',
-//			setFilter: true
-//		},
+		{
+			title: 'Profile',
+			dataIndex: 'profilename',
+			key: 'profilename',
+			sorter: (a, b) => compare(a.profilename, b.profilename),
+			sortDirection: ['ascend', 'descend'],
+			width: '20%',
+			setFilter: true
+		},
 	];
 
 	// define form items for TableDrawer
 	formItems = [
 		{
 			label: 'Candidate ID',
-			name: 'candidateID',
+			name: 'candidate_id',
 			rules: [
 				{
 					required: true,
-					message: 'candidateID cannot be empty',
+					message: 'candidate_id cannot be empty',
 				}
 			],
 			editable: true,
@@ -158,11 +164,11 @@ class Account extends Component {
 		},
 		{
 			label: 'Account Type',
-			name: 'accountType',
+			name: 'account_type',
 			rules: [
 				{
 					required: true,
-					message: 'accountType cannot be empty',
+					message: 'account_type cannot be empty',
 				}
 			],
 			editable: true,
@@ -170,18 +176,18 @@ class Account extends Component {
 				<Select
 					disabled={ disabled }
 				>
-					<Option value="facebook">facebook</Option>
-					<Option value="phone">phone</Option>
+					<Option value="f">facebook</Option>
+					<Option value="p">phone</Option>
 				</Select>
 			)
 		},
 		{
 			label: 'Account Name',
-			name: 'accountName',
+			name: 'accountname',
 			rules: [
 				{
 					required: true,
-					message: 'accountName cannot be empty',
+					message: 'accountname cannot be empty',
 				},
 			],
 			editable: true,
@@ -194,43 +200,54 @@ class Account extends Component {
 			)
 		},			
 		{
-			label: 'Labels',
-			name: 'labels',
+			label: 'Status',
+			name: 'status',
 			rules: [
 				{
 					required: true,
-					message: 'labels cannot be empty',
-				}
-			],
-			editable: true,
-			input: disabled => (
-				<Select
-					mode='multiple'
-					disabled={ disabled }
-				>
-					<Option value="normal">normal</Option>
-					<Option value="banned">banned</Option>
-					<Option value="spammer">spammer</Option>
-					<Option value="VIP">VIP</Option>
-				</Select>
-			)
-		},
-		{
-			label: 'Created at',
-			name: 'createdAt',
-			rules: [
-				{
-					required: true,
-					message: 'createdAt cannot be empty',
-				}
+					message: 'Status cannot be empty',
+				},
 			],
 			editable: false,
 			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
+				<Select
 					disabled={ disabled }
-				/>
+				>
+					<Option value="u">Unbanned</Option>
+					<Option value="b">Banned</Option>
+				</Select>
+			)
+		},			
+		{
+			label: 'Profile',
+			name: 'profilename',
+			rules: [
+				{
+					required: true,
+					message: 'Profile cannot be empty',
+				}
+			],
+			editable: true,
+			input: (disabled, record) => 
+			record.profilename ?
+			(
+				<span style={{ marginLeft: "15px" }}>
+					{ record.profilename }
+				</span>
+			) : 
+			(
+				<AutoComplete
+					onChange={ this.handleChange }
+					onSelect={ this.handleSearch }
+					options={ this.state.options }
+				>
+					<Search
+						onSearch={ this.handleSearch }
+						placeholder="Search Profile"
+						size="middle"
+						allowClear
+					/>
+				</AutoComplete>
 			)
 		},
 	];
@@ -244,49 +261,36 @@ class Account extends Component {
 		</>
 	)
 
-	// create api
-  create = record => {
-		const data = this.state.data.slice();
-		record.key = Date.now();
-		record.accountType = "queueing";
-		record.createdAt = new Date().toISOString().split('.')[0].replace('T', ' ');
-		data.push(record);
-		if (200) message.success('A record has been created');
-		console.log(data);
-		this.setState({ data });
+	// filter AutoComplete options when input field changes
+	handleChange = data => {
+		const options = this.state.profiles
+			.map( item => item.profilename )
+			.filter( item => item.includes(data) )
+			.map( item => ({ value: item }) );
+		this.setState({ options });
 	}
 
-	// edit api
-  edit = (key, record) => {
-		let data = this.state.data.slice();
-
-		let originalRecord = data.find( item => item.key === key);
-		let index = data.findIndex( item => item.key === key);
-		Object.keys(record).forEach(item => originalRecord[item] = record[item])
-		console.log(originalRecord);
-		data[index] = originalRecord;
-		if (200) message.success('The record has been edited');
-		this.setState({ data });
+	// perform a search when the search button is pressed
+	handleSearch = data => {
+		console.log("search");
 	}
 
-	// delete api
-  delete = keys => {
-		let data = this.state.data.slice(); // do not mutate the data in state
-		if (Array.isArray(keys)) {
-			data = data.filter( 
-				item => !keys.includes(item.key)
-			);
-			if (200) message.success('Multiple records have been deleted');
-		} else {
-			data = data.filter( 
-				item => item.key !== keys
-			);
-			if (200) message.success('The record has been deleted');
-		}
-		this.setState({ data });
-	}
+	// bind versions of CRUD
+	create= create.bind(this, accountService, 'data');
+	list = list.bind(this, accountService, 'data');
+	update = update.bind(this, accountService, 'data');
+	ban = ban.bind(this, accountService, 'data');
+	hide = hide.bind(this, accountService, 'data');
+	listProfiles = list.bind(this, profileService, 'profiles');
 
-	refreshTable = () => this.setState({ tableWrapperKey: Date.now() });
+	// refresh table
+	refreshTable = () => {
+		this.list();
+		this.listProfiles();
+		console.log(this.state.profiles);
+		this.setState({ tableWrapperKey: Date.now() })
+	};
+
 	render(){
 		return (
 			<div className='Account'>
@@ -298,8 +302,9 @@ class Account extends Component {
 					tableHeader={ this.tableHeader }
 					drawerTitle='Create a new account'
 					create={ this.create }
-					edit={ this.edit }
-					delete={ this.delete }
+					edit={ this.update }
+					ban={ this.ban }
+					delete={ this.hide }
 					refreshTable={ this.refreshTable }
 					isSmall={ this.props.isSmall }
 				>

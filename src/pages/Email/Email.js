@@ -248,10 +248,10 @@ class Email extends Component {
 
 	// bind versions of CRUD
 	create = create.bind(this, profileService, 'data');
-	createRefresh = record => this.create(record).then( res => this.list() );
+	createSync = record => this.create(record).then( res => this.list() );
 	list = listCombined.bind(this, emailService, 'data', ['labelname', 'label_color']);
 	update = update.bind(this, emailService, 'data');
-	updateRefresh = (id, record) => this.update(id, record).then( res => this.list() );
+	updateSync = (id, record) => this.update(id, record).then( res => this.list() );
 	hide = hide.bind(this, emailService, 'data');
 	listLabels = list.bind(this, labelService, 'labels');
 
@@ -273,8 +273,8 @@ class Email extends Component {
 					tableHeader={ this.tableHeader }
 					drawerTitle='Create an Email with a NEW profile'
 					dropdownName='Create Profile'
-					create={ this.createRefresh }
-					edit={ this.updateRefresh }
+					create={ this.createSync }
+					edit={ this.updateSync }
 					delete={ this.hide }
 					refreshTable={ this.refreshTable }
 					isSmall={ this.props.isSmall }

@@ -12,10 +12,12 @@ export const backend = {
     list,
     listCombined,
     update,
+    ban,
     hide,
 };
 
-// create api
+// create apis
+// interface for create
 async function create(service, objectName, record) {
 	// insert the record into the backend table
 	let response = null;
@@ -36,13 +38,13 @@ async function create(service, objectName, record) {
 	}
 }
 
-// list api
+// list apis
+// interface for list
 async function list(service, objectName) {
 	service.list()
 		.then( ({ entry: data }) => this.setState({ [objectName]: data }) );
 }
-
-// list combined api
+// interface for list with combined attributes
 async function listCombined(service, objectName, keys) {
 	service.list()
 		.then( ({ entry: data }) => {
@@ -61,7 +63,8 @@ async function listCombined(service, objectName, keys) {
 		});
 }
 
-// update api
+// update apis
+// interface for update
 async function update(service, objectName, id, record) {
 	// update the record in the backend table
 	let response = null;
@@ -79,8 +82,31 @@ async function update(service, objectName, id, record) {
 		message.error(response.en);
 	}
 }
+// interface for ban
+async function ban(service, objectName, record) {
+		console.log(record);
+	// update the record in the backend table
+	let response = null;
+	await service.ban( record )
+		.then( result => response = result )
+		.catch( error => response = error );
+	// update the frontend data accordingly
+	if (response.code === 200){
+		const toggle = { u: 'b', b: 'u' };
+		let data = this.state.data.slice();
+		let index = data.findIndex( item => item.id === record.id);
+		data[index].status = toggle[data[index].status];
+		this.setState({ [objectName]: data });
+		data[index].status === 'u' ?
+			message.success('The account has been unbanned') :
+			message.success('The account has been banned');
+	} else {
+		message.error(response.en);
+	}
+}
 
-// hide api
+// hide apis
+// interface for hide
 async function hide(service, objectName, ids) {
 	// convert to array if ids is a string
 	ids = Array.isArray(ids) ? ids : [ ids ];
