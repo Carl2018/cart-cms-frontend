@@ -1,6 +1,7 @@
 export * from './authentication.service';
 export * from './user.service';
 export * from './account.service';
+export * from './case.service';
 export * from './category.service';
 export * from './email.service';
 export * from './label.service';

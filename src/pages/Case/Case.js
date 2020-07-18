@@ -1,11 +1,36 @@
 import React, { Component } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
-// import styling from ant desgin
+// import components from ant design
 import { FileSearchOutlined } from '@ant-design/icons';
-import { Input, message } from 'antd';
+import { 
+	AutoComplete, 
+	Input, 
+	Select, 
+	Tag, 
+} from 'antd';
 
-// import shared components
-import { TableWrapper } from '_components'
+// import shared and child components
+import { TableWrapper } from './TableWrapper'
+
+// import services
+import { 
+	caseService,
+	categoryService,
+	emailService,
+ } from '_services';
+
+// import helpers
+import { 
+	backend,
+	helpers 
+} from '_helpers';
+
+// destructure imported components and objects
+const { create, list, update, hide } = backend;
+const { compare } = helpers;
+const { Search } = Input;
+const { Option } = Select
 
 class Case extends Component {
 	constructor(props) {
@@ -13,116 +38,138 @@ class Case extends Component {
 		this.state = {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
-			data: this.props.data ? this.props.data : this.allCases,
+			data: [],
+			// for category selections
+			categories: [],
+			// options for profile search
+			emails: [],
+			options: [],
 		};
 	}
 	
-	allCases = [
-		{
-			key: '1',
-			casename: 'alice account unban',
-			remarks: 'The user has been banned once before',
-			status: 'pending',
-			createdAt: new Date('2020-05-20T14:20:20').toISOString().split('.')[0].replace('T', ' '),
-			relatedEmail: 'alice@gmail.com',
-			relatedAccount: 'alice@facebook.com',
-		},
-		{
-			key: '2',
-			casename: 'bob membership change',
-			remarks: 'The user has been a VIP for 6 months',
-			status: 'approved',
-			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
-			relatedEmail: 'bob@gmail.com',
-			relatedAccount: '0085212345678',
-		},
-		{
-			key: '21',
-			casename: 'bob password change failed',
-			remarks: 'made more than 3 attempts',
-			status: 'approved',
-			createdAt: new Date('2020-05-22T17:30:15').toISOString().split('.')[0].replace('T', ' '),
-			relatedEmail: 'bob@gmail.com',
-			relatedAccount: '0085212345678',
-		},
-		{
-			key: '3',
-			casename: 'charlie account unban',
-			remarks: 'This is the first time the user got banned',
-			status: 'pending',
-			createdAt: new Date('2020-05-21T10:15:45').toISOString().split('.')[0].replace('T', ' '),
-			relatedEmail: 'charlie@hotmail.com',
-			relatedAccount: 'charlie@facebook.com',
-		},
-		{
-			key: '4',
-			casename: 'david passowrd change',
-			remarks: 'The user has made too many failed attempts',
-			status: 'pending',
-			createdAt: new Date('2020-05-20T16:16:20').toISOString().split('.')[0].replace('T', ' '),
-			relatedEmail: 'david@gmail.com',
-			relatedAccount: '0085287654321',
-		},
-	];
-
-	// define columns for TableBody
-	compare = (a, b) => {
-		if (a >  b) return 1;
-		if (a ===  b) return 0;
-		if (a <  b) return -1;
+	componentDidMount() {
+		this.list();
+		this.listCategories();
+		this.listEmails();
 	}
 
+	// define columns for TableBody
 	columns = [
 		{
 			title: 'Case Name',
 			dataIndex: 'casename',
 			key: 'casename',
-			sorter: (a, b) => this.compare(a.casename, b.casename),
+			sorter: (a, b) => compare(a.casename, b.casename),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			width: '20%',
 			setFilter: true
 		},
 		{
 			title: 'Status',
 			dataIndex: 'status',
 			key: 'status',
-			sorter: (a, b) => this.compare(a.status, b.status),
+			sorter: (a, b) => compare(a.status, b.status),
 			sortDirection: ['ascend', 'descend'],
-			width: '5%',
+			width: '10%',
+			//setFilter: true
+			render: status => {
+				let color = 'geekblue';
+				let text = 'Open';
+				switch (status) {
+					case 'o' :
+						color = 'geekblue';
+						text = 'Open';
+						break;
+					case 'q' :
+						color = 'purple';
+						text = 'Queried';
+						break;
+					case 'r' :
+						color = 'cyan';
+						text = 'Replied';
+						break;
+					case 'a' :
+						color = 'green';
+						text = 'Approved';
+						break;
+					case 'e' :
+						color = 'red';
+						text = 'Rejected';
+						break;
+					case 'd' :
+						color = 'default';
+						text = 'Deferred';
+						break;
+					default:
+						color = 'geekblue';
+						text = 'Open';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+		},
+		{
+			title: 'Category',
+			dataIndex: 'categoryname',
+			key: 'categoryname',
+			sorter: (a, b) => compare(a.categoryname, b.categoryname),
+			sortDirection: ['ascend', 'descend'],
+			width: '10%',
 			setFilter: true
 		},
 		{
-			title: 'Created At',
-			dataIndex: 'createdAt',
-			key: 'createdAt',
-			sorter: (a, b) => this.compare(a.createdAt, b.createdAt),
+			title: 'Queried Email',
+			dataIndex: 'email',
+			key: 'email',
+			sorter: (a, b) => compare(a.email, b.email),
 			sortDirection: ['ascend', 'descend'],
-			defaultSortOrder: 'descend',
-			width: '15%',
+			width: '20%',
 			setFilter: true
 		},
 		{
-			title: 'Related Email',
-			dataIndex: 'relatedEmail',
-			key: 'relatedEmail',
-			sorter: (a, b) => this.compare(a.relatedEmail, b.relatedEmail),
+			title: 'Account Bound',
+			dataIndex: 'accountname',
+			key: 'accountname',
+			sorter: (a, b) => compare(a.accountname, b.accountname),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
-			setFilter: true
-		},
-		{
-			title: 'Related Account',
-			dataIndex: 'relatedAccount',
-			key: 'relatedAccount',
-			sorter: (a, b) => this.compare(a.relatedAccount, b.relatedAccount),
-			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			width: '20%',
 			setFilter: true
 		},
 	];
 
 	// define form items for TableDrawer
 	formItems = [
+		{
+			label: 'Category',
+			name: 'categoryname',
+			rules: [
+				{
+					required: false,
+					message: 'Category cannot be empty',
+				}
+			],
+			editable: true,
+			input: disabled => (
+				<Select
+					disabled={ disabled }
+				>
+					{
+						this.state.categories.map( item => (
+							<Option
+								key={ item.id }
+								value={ item.categoryname }
+							>
+								{ item.categoryname }
+							</Option>
+						))
+					}
+				</Select>
+			)
+		},
 		{
 			label: 'Case Name',
 			name: 'casename',
@@ -171,29 +218,48 @@ class Case extends Component {
 			],
 			editable: false,
 			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
+				<Select
 					disabled={ disabled }
-				/>
+				>
+					<Option value="o">Open</Option>
+					<Option value="q">Queried</Option>
+					<Option value="r">Replied</Option>
+					<Option value="a">Approved</Option>
+					<Option value="e">Rejected</Option>
+					<Option value="d">Deferred</Option>
+				</Select>
 			)
 		},
 		{
-			label: 'Created at',
-			name: 'createdAt',
+			label: 'Queried Email',
+			name: 'email',
 			rules: [
 				{
 					required: true,
-					message: 'createdAt cannot be empty',
+					message: 'Queried email cannot be empty',
 				}
 			],
-			editable: false,
-			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
-					disabled={ disabled }
-				/>
+			editable: true,
+			input: (disabled, record) => 
+			record.email ?
+			(
+				<span style={{ marginLeft: "15px" }}>
+					{ record.email }
+				</span>
+			) : 
+			(
+				<AutoComplete
+					onChange={ this.handleChange }
+					onSelect={ this.handleSearch }
+					options={ this.state.options }
+				>
+					<Search
+						onSearch={ this.handleSearch }
+						placeholder="Search Email"
+						size="middle"
+						allowClear
+					/>
+				</AutoComplete>
 			)
 		},
 	];
@@ -207,49 +273,38 @@ class Case extends Component {
 		</>
 	)
 
-	// create api
-  create = record => {
-		const data = this.state.data.slice();
-		record.key = Date.now();
-		record.status = "pending";
-		record.createdAt = new Date().toISOString().split('.')[0].replace('T', ' ');
-		data.push(record);
-		if (200) message.success('A record has been created');
-		console.log(data);
-		this.setState({ data });
+	// filter AutoComplete options when input field changes
+	handleChange = data => {
+		const options = this.state.emails
+			.map( item => item.email )
+			.filter( (item, index, array) => array.indexOf(item) === index )
+			.filter( item => item.includes(data) )
+			.map( item => ({ value: item }) );
+		this.setState({ options });
 	}
 
-	// edit api
-  edit = (key, record) => {
-		let data = this.state.data.slice();
-
-		let originalRecord = data.find( item => item.key === key);
-		let index = data.findIndex( item => item.key === key);
-		Object.keys(record).forEach(item => originalRecord[item] = record[item])
-		console.log(originalRecord);
-		data[index] = originalRecord;
-		if (200) message.success('The record has been edited');
-		this.setState({ data });
+	// perform a search when the search button is pressed
+	handleSearch = data => {
+		console.log("search");
 	}
 
-	// delete api
-  delete = keys => {
-		let data = this.state.data.slice(); // do not mutate the data in state
-		if (Array.isArray(keys)) {
-			data = data.filter( 
-				item => !keys.includes(item.key)
-			);
-			if (200) message.success('Multiple records have been deleted');
-		} else {
-			data = data.filter( 
-				item => item.key !== keys
-			);
-			if (200) message.success('The record has been deleted');
-		}
-		this.setState({ data });
-	}
+	// bind versions of CRUD
+	create= create.bind(this, caseService, 'data');
+	createSync = record => this.create(record).then( res => this.list() );
+	list = list.bind(this, caseService, 'data');
+	update = update.bind(this, caseService, 'data');
+	hide = hide.bind(this, caseService, 'data');
+	listCategories = list.bind(this, categoryService, 'categories');
+	listEmails = list.bind(this, emailService, 'emails');
 
-	refreshTable = () => this.setState({ tableWrapperKey: Date.now() });
+	// refresh table
+	refreshTable = () => {
+		this.list();
+		this.listCategories();
+		this.listEmails();
+		this.setState({ tableWrapperKey: Date.now() })
+	};
+
 	render(){
 		return (
 			<div className='Case'>
@@ -260,9 +315,9 @@ class Case extends Component {
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
 					drawerTitle='Create a new case'
-					create={ this.create }
-					edit={ this.edit }
-					delete={ this.delete }
+					create={ this.createSync }
+					edit={ this.update }
+					delete={ this.hide }
 					refreshTable={ this.refreshTable }
 				>
 				</TableWrapper>

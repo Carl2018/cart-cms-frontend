@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 
 // import components from ant design
 import { CopyOutlined } from '@ant-design/icons';
-import { Input, Select } from 'antd';
+import { 
+	Input,
+	Select,
+} from 'antd';
 
 // import shared and child components
 import {
@@ -34,13 +37,14 @@ class Template extends Component {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
 			data: [],
+			// for category selections
 			categories: [],
 		};
 	}
 	
 	componentDidMount() {
 		this.list();
-		this.listCategory();
+		this.listCategories();
 	}
 
 	// define columns for TableBody
@@ -68,24 +72,6 @@ class Template extends Component {
 	// define form items for TableDrawer
 	formItems = [
 		{
-			label: 'Title',
-			name: 'title',
-			rules: [
-				{
-					required: true,
-					message: 'title cannot be empty',
-				}
-			],
-			editable: true,
-			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
-					disabled={ disabled }
-				/>
-			)
-		},
-		{
 			label: 'Category',
 			name: 'categoryname',
 			rules: [
@@ -110,6 +96,24 @@ class Template extends Component {
 						))
 					}
 				</Select>
+			)
+		},
+		{
+			label: 'Title',
+			name: 'title',
+			rules: [
+				{
+					required: true,
+					message: 'title cannot be empty',
+				}
+			],
+			editable: true,
+			input: disabled => (
+				<Input
+					maxLength={255}
+					allowClear
+					disabled={ disabled }
+				/>
 			)
 		},
 		{
@@ -144,12 +148,12 @@ class Template extends Component {
 	list = list.bind(this, templateService, 'data');
 	update = update.bind(this, templateService, 'data');
 	hide = hide.bind(this, templateService, 'data');
-	listCategory = list.bind(this, categoryService, 'categories');
+	listCategories = list.bind(this, categoryService, 'categories');
 
 	// refresh table
 	refreshTable = () => {
 		this.list();
-		this.listCategory();
+		this.listCategories();
 		console.log(this.state.categories);
 		this.setState({ tableWrapperKey: Date.now() })
 	};
