@@ -27,7 +27,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { create, list, update, hide } = backend;
+const { create, list, update, bind, hide } = backend;
 const { compare } = helpers;
 const { Search } = Input;
 const { Option } = Select
@@ -293,6 +293,7 @@ class Case extends Component {
 	createSync = record => this.create(record).then( res => this.list() );
 	list = list.bind(this, caseService, 'data');
 	update = update.bind(this, caseService, 'data');
+	bind = bind.bind(this, caseService, 'data');
 	hide = hide.bind(this, caseService, 'data');
 	listCategories = list.bind(this, categoryService, 'categories');
 	listEmails = list.bind(this, emailService, 'emails');
@@ -317,6 +318,7 @@ class Case extends Component {
 					drawerTitle='Create a new case'
 					create={ this.createSync }
 					edit={ this.update }
+					bind={ this.bind }
 					delete={ this.hide }
 					refreshTable={ this.refreshTable }
 					list={ this.list }

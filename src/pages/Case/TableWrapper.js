@@ -50,6 +50,7 @@ class TableWrapper extends Component {
 			dataProcess: [],
 			// for the bind drawer
 			visibleBind: false,
+			bindDrawerKey: Date.now(),
 		};
 	}
 	
@@ -220,6 +221,7 @@ class TableWrapper extends Component {
 	handleCloseProcess = event => {
 		this.setState({
 			visibleProcess: false, 
+			record: {},
 			dataProcess: [],
 		});
 	}
@@ -235,6 +237,19 @@ class TableWrapper extends Component {
 	handleCloseBind = event => {
 		this.setState({
 			visibleBind: false, 
+			record: {},
+			bindDrawerKey: Date.now(), 
+		});
+	}
+
+	handleSubmitBind = record => {
+		const bind = 
+			{ case_id: this.state.record.id, accountname: record.accountname }
+		this.props.bind(this.state.record.id, bind);
+		this.setState({
+			visibleBind: false, 
+			record: {},
+			bindDrawerKey: Date.now(), 
 		});
 	}
 
@@ -315,9 +330,11 @@ class TableWrapper extends Component {
 				</div>
 				<div>
 					<BindDrawer
+						tableDrawerKey={ this.state.bindDrawerKey } 
 						visible={ this.state.visibleBind } 
 						onClose={ this.handleCloseBind }
 						record={ this.state.record }
+						onSubmit={ this.handleSubmitBind }
 					>
 					</BindDrawer>
 				</div>

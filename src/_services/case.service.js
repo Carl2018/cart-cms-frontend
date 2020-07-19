@@ -6,6 +6,7 @@ export const caseService = {
     create,
     list,
     update,
+    bind,
     hide,
 };
 
@@ -32,6 +33,16 @@ function update(record) {
 			body: JSON.stringify(record)
 		};
     return fetch(`${config.apiUrl}/case/update`, requestOptions)
+			.then(handleResponse);
+}
+
+function bind(record) {
+    const requestOptions = { 
+			method: 'PUT', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/case/bind`, requestOptions)
 			.then(handleResponse);
 }
 

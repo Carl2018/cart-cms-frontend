@@ -95,7 +95,7 @@ class BindDrawer extends Component {
 				key={ this.props.tableDrawerKey }
 			>
 				<Drawer
-					title="Process A Case"
+					title="Bind to An Account"
 					width={ 618 }
 					bodyStyle={{ paddingBottom: 80 }}
 					visible={ this.props.visible } 

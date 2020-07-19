@@ -13,6 +13,7 @@ export const backend = {
     listCombined,
     listFiltered,
     update,
+    bind,
     ban,
     hide,
 };
@@ -84,6 +85,24 @@ async function update(service, objectName, id, record) {
 		Object.keys(record).forEach(item => data[index][item] = record[item])
 		this.setState({ [objectName]: data });
 		message.success('The record has been edited');
+	} else {
+		message.error(response.en);
+	}
+}
+// interface for bind
+async function bind(service, objectName, id, record) {
+	// update the record in the backend table
+	let response = null;
+	await service.bind({ id, ...record })
+		.then( result => response = result )
+		.catch( error => response = error );
+	// update the frontend data accordingly
+	if (response.code === 200){
+		let data = this.state[objectName].slice();
+		let index = data.findIndex( item => item.id === id);
+		Object.keys(record).forEach(item => data[index][item] = record[item])
+		this.setState({ [objectName]: data });
+		message.success('The case has been bound to an account');
 	} else {
 		message.error(response.en);
 	}
