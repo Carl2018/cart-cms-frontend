@@ -318,7 +318,13 @@ class TableWrapper extends Component {
 
 	// bind versions of CRUD
 	create= create.bind(this, processService, 'dataProcess');
-	createSync = record => this.create(record).then( res => this.props.list());
+	createSync = record => this.create(record)
+		.then( res => this.props.list())
+		.then( res => {
+			const newRecord = this.state.record;
+			newRecord.status = record.process;
+			this.setState({ record: newRecord });
+		});
 	listFiltered = listFiltered.bind(this, processService, 'dataProcess');
 	listByEmail = listByEmail.bind(this, accountService, 'inProfile');
 	update = update.bind(this, processService, 'dataProcess');

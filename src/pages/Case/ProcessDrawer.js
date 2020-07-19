@@ -4,9 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 // import components from ant design
 import { 
 	Button, 
-	Col, 
+	Card, 
+	Descriptions, 
 	Drawer, 
-	Row,
 	Space, 
 	Tag, 
 } from 'antd';
@@ -155,34 +155,104 @@ class ProcessDrawer extends Component {
 		});
 	}
 
+	// define the add button
+	genExtra = () => (
+		<Button 
+			type="ghost"
+			style={{ border: "none" }}
+			size="small"
+			onClick={ this.handleClickAdd }
+		>
+			<PlusOutlined />
+			{ "Add" }
+		</Button>
+	);
+
+	//genStatus
+	genStatus = () => {
+		let color = 'geekblue';
+		let text = 'Open';
+		switch (this.props.record.status) {
+			case 'o' :
+				color = 'geekblue';
+				text = 'Open';
+				break;
+			case 'q' :
+				color = 'purple';
+				text = 'Queried';
+				break;
+			case 'r' :
+				color = 'cyan';
+				text = 'Replied';
+				break;
+			case 'a' :
+				color = 'green';
+				text = 'Approved';
+				break;
+			case 'e' :
+				color = 'red';
+				text = 'Rejected';
+				break;
+			case 'd' :
+				color = 'default';
+				text = 'Deferred';
+				break;
+			default:
+				color = 'geekblue';
+				text = 'Open';
+				break;
+		};	
+		return (
+			<Tag color={ color } key={ uuidv4() }>
+				{ text }
+			</Tag>
+		);
+	}
+
 	render(){
 		return (
 			<div className='ProcessDrawer'>
 				<Drawer
-					title="Process History"
+					title="Process A Case"
 					width={ 1000 }
 					bodyStyle={{ paddingBottom: 80 }}
 					visible={ this.props.visible } 
 					onClose={ this.props.onClose }
 				>
-					<Row style={{ margin: "8px" }}>
-						<Col 
-							style={{ fontSize: '20px',  textAlign: 'right' }}
-							span={ 12 } 
-							offset={ 12 } 
-						>
-							<Button onClick={ this.handleClickAdd }>
-								<PlusOutlined />
-								{ "Add" }
-							</Button>
-						</Col>
-					</Row>
-					<TableBody 
-						data={ this.props.data } 
-						columns={ this.columns } 
-						isSmall={ true }
-						showHeader={ true }
-					/>
+					<Card
+						title="Case Info"
+						style={{ marginBottom: "16px", background: "#fafafa" }}
+					>	
+						<Descriptions>
+							<Descriptions.Item label="Case Name">
+								{ this.props.record.casename }
+							</Descriptions.Item>
+							<Descriptions.Item label="Status">
+								{ this.genStatus() } 
+							</Descriptions.Item>
+							<Descriptions.Item label="Category">
+								{ this.props.record.categoryname }
+							</Descriptions.Item>
+							<Descriptions.Item label="Queried Email">
+								{ this.props.record.email }
+							</Descriptions.Item>
+							<Descriptions.Item label="Account Bound">
+								{ this.props.record.accountname }
+							</Descriptions.Item>
+						</Descriptions>
+					</Card>
+					<Card
+						title="Process History"
+						style={{ marginBottom: "16px" }}
+						extra={ this.genExtra() }
+					>	
+						<TableBody 
+							data={ this.props.data } 
+							columns={ this.columns } 
+							isSmall={ true }
+							showHeader={ true }
+						/>
+					</Card>
 					<div>
 						<SecondaryDrawer
 							tableDrawerKey={ this.state.tableDrawerKey }
