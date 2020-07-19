@@ -223,6 +223,7 @@ class TableWrapper extends Component {
 
 	// bind versions of CRUD
 	create= create.bind(this, processService, 'dataProcess');
+	createSync = record => this.create(record).then( res => this.props.list());
 	listFiltered = listFiltered.bind(this, processService, 'dataProcess');
 	update = update.bind(this, processService, 'dataProcess');
 
@@ -290,7 +291,7 @@ class TableWrapper extends Component {
 						visible={ this.state.visibleProcess } 
 						onClose={ this.handleCloseProcess }
 						record={ this.state.record }
-						create={ this.create }
+						create={ this.createSync }
 						edit={ this.update }
 					>
 					</ProcessDrawer>

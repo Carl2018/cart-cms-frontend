@@ -116,7 +116,6 @@ class ProcessDrawer extends Component {
 
 	// handlers for click edit
 	handleClickEdit = record => {
-		console.log('edit');
 		this.setState({
 			visible: true, 
 			disabled: false,
@@ -126,7 +125,6 @@ class ProcessDrawer extends Component {
 
 	// handlers for click add
   handleClickAdd = event => {
-		console.log('add');
     this.setState({
       visible: true,
 			disabled: false,

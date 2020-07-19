@@ -319,6 +319,7 @@ class Case extends Component {
 					edit={ this.update }
 					delete={ this.hide }
 					refreshTable={ this.refreshTable }
+					list={ this.list }
 				>
 				</TableWrapper>
 			</div>
