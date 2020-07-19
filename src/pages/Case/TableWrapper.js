@@ -25,6 +25,7 @@ import { TableBody } from '_components'
 import { TableDropdown } from '_components'
 import { TableDrawer } from '_components'
 import { ProcessDrawer } from './ProcessDrawer'
+import { BindDrawer } from './BindDrawer'
 
 // import services
 import { processService } from '_services';
@@ -47,6 +48,8 @@ class TableWrapper extends Component {
 			// for the process drawer
 			visibleProcess: false,
 			dataProcess: [],
+			// for the bind drawer
+			visibleBind: false,
 		};
 	}
 	
@@ -57,7 +60,7 @@ class TableWrapper extends Component {
 				key='1' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <NodeIndexOutlined /> }
-				onClick={ this.handleClickEdit.bind(null, record) }
+				onClick={ this.handleClickBind.bind(null, record) }
 			>
 				Bind
 			</Menu.Item>
@@ -221,6 +224,20 @@ class TableWrapper extends Component {
 		});
 	}
 
+	// handlers for bind button and bind drawer
+	handleClickBind = record => {
+		this.setState({
+			visibleBind: true, 
+			record, 
+		});
+	}
+
+	handleCloseBind = event => {
+		this.setState({
+			visibleBind: false, 
+		});
+	}
+
 	// bind versions of CRUD
 	create= create.bind(this, processService, 'dataProcess');
 	createSync = record => this.create(record).then( res => this.props.list());
@@ -295,6 +312,14 @@ class TableWrapper extends Component {
 						edit={ this.update }
 					>
 					</ProcessDrawer>
+				</div>
+				<div>
+					<BindDrawer
+						visible={ this.state.visibleBind } 
+						onClose={ this.handleCloseBind }
+						record={ this.state.record }
+					>
+					</BindDrawer>
 				</div>
 			</div>
 		);
