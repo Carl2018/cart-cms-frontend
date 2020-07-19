@@ -28,13 +28,16 @@ import { ProcessDrawer } from './ProcessDrawer'
 import { BindDrawer } from './BindDrawer'
 
 // import services
-import { processService } from '_services';
+import { 
+	accountService,
+	processService, 
+} from '_services';
 
 // import helpers
 import { backend } from '_helpers';
 
 // destructure imported components and objects
-const { create, listFiltered, update } = backend;
+const { create, listFiltered, listByEmail, update } = backend;
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -51,6 +54,8 @@ class TableWrapper extends Component {
 			// for the bind drawer
 			visibleBind: false,
 			bindDrawerKey: Date.now(),
+			// accounts in the same profile
+			inProfile: [],
 		};
 	}
 	
@@ -228,6 +233,8 @@ class TableWrapper extends Component {
 
 	// handlers for bind button and bind drawer
 	handleClickBind = record => {
+		// get all accounts in the same profile
+		this.listByEmail({email: record.email});
 		this.setState({
 			visibleBind: true, 
 			record, 
@@ -243,20 +250,77 @@ class TableWrapper extends Component {
 	}
 
 	handleSubmitBind = record => {
+		// check if there is a merge
 		const bind = 
 			{ case_id: this.state.record.id, accountname: record.accountname }
-		this.props.bind(this.state.record.id, bind);
-		this.setState({
-			visibleBind: false, 
-			record: {},
-			bindDrawerKey: Date.now(), 
-		});
+		const accounts = this.state.inProfile.map( item => item.accountname );
+		// bind
+		if (accounts.includes(record.accountname)) {
+			this.props.bind(this.state.record.id, bind);
+			// close drawer
+			this.setState({
+				visibleBind: false, 
+				record: {},
+				bindDrawerKey: Date.now(), 
+			});
+			console.log("no merge");
+		} else {
+			this.handleClickMerge();
+			console.log("merge");
+		}
 	}
+
+	handleClickMerge = () => {
+		const key = `open${Date.now()}Merge`;
+		const btn = (
+			<Button 
+				type='primary' 
+				size='small' 
+				onClick={ this.handleClickConfirmMerge.bind(this, notification.close, key) }
+			>
+				Merge
+			</Button>
+		);
+		notification.open({
+			message: 'About to Merge 2 Profiles',
+			description:
+			(<>
+				<div>
+					{`The account you have entered is bound to a different profile 
+					from the one that the queried email is bound to.`}
+				</div>
+				<div>
+					{`If you proceed to bind the case to this account, 
+					a merge will occur and the action is ` }
+					<strong
+						style={{ color: 'red' }}
+					> 
+						{ `irreversible.` }
+					</strong>
+				</div>
+				<br />
+				<div>
+					{`Are you sure you want to merge the 2 profiles?`}
+				</div>
+			</>),
+			btn,
+			key,
+			duration: 0,
+			onClose: () => message.info('Merge Aborted'),
+		});
+	};
+
+	handleClickConfirmMerge = (closeNotification, notificationKey) => {
+		//this.props.delete(this.state.selectedRowKeys);
+		console.log('merge completed');
+		closeNotification(notificationKey);
+	};
 
 	// bind versions of CRUD
 	create= create.bind(this, processService, 'dataProcess');
 	createSync = record => this.create(record).then( res => this.props.list());
 	listFiltered = listFiltered.bind(this, processService, 'dataProcess');
+	listByEmail = listByEmail.bind(this, accountService, 'inProfile');
 	update = update.bind(this, processService, 'dataProcess');
 
 	render(){
