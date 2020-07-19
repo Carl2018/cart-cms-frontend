@@ -17,7 +17,6 @@ import {
 	EditOutlined, 
 	FileTextOutlined, 
 	HistoryOutlined, 
-	InteractionOutlined, 
 	NodeIndexOutlined, 
 } from '@ant-design/icons';
 
@@ -26,6 +25,15 @@ import { TableBody } from '_components'
 import { TableDropdown } from '_components'
 import { TableDrawer } from '_components'
 import { ProcessDrawer } from './ProcessDrawer'
+
+// import services
+import { processService } from '_services';
+
+// import helpers
+import { backend } from '_helpers';
+
+// destructure imported components and objects
+const { create, listFiltered, update } = backend;
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -38,11 +46,11 @@ class TableWrapper extends Component {
 			disabled: false, // for disabling the input fields in TableDrawer
 			// for the process drawer
 			visibleProcess: false,
-			formKeyProcess: Date.now(),
+			dataProcess: [],
 		};
 	}
 	
-	// menu for bind, process, process history
+	// customised menu for bind, process, process history
 	getMenu = record => (
 		<Menu >
 			<Menu.Item 
@@ -56,18 +64,10 @@ class TableWrapper extends Component {
 			<Menu.Item 
 				key='2' 
 				style={{ color:'#5a9ef8' }} 
-				icon={ <InteractionOutlined /> }
+				icon={ <HistoryOutlined /> }
 				onClick={ this.handleClickProcess.bind(null, record) }
 			>
 				Process
-			</Menu.Item>
-			<Menu.Item 
-				key='3' 
-				style={{ color:'#5a9ef8' }} 
-				icon={ <HistoryOutlined /> }
-				onClick={ this.handleClickEdit.bind(null, record) }
-			>
-				History
 			</Menu.Item>
 		</Menu>
 	);
@@ -206,6 +206,8 @@ class TableWrapper extends Component {
 
 	// handlers for process button and process drawer
 	handleClickProcess = record => {
+		// get process history
+		this.listFiltered({'case_id': record.id});
 		this.setState({
 			visibleProcess: true, 
 			record, 
@@ -215,17 +217,14 @@ class TableWrapper extends Component {
 	handleCloseProcess = event => {
 		this.setState({
 			visibleProcess: false, 
+			dataProcess: [],
 		});
 	}
 
-	handleSubmitProcess = record => {
-		console.log(record);
-		//this.props.onProcess(this.state.record.id, record);
-		this.setState({
-			visibleProcess: false, 
-			formKeyProcess: Date.now(),
-		});
-	}
+	// bind versions of CRUD
+	create= create.bind(this, processService, 'dataProcess');
+	listFiltered = listFiltered.bind(this, processService, 'dataProcess');
+	update = update.bind(this, processService, 'dataProcess');
 
 	render(){
 		return (
@@ -287,11 +286,12 @@ class TableWrapper extends Component {
 				</div>
 				<div>
 					<ProcessDrawer
+						data={ this.state.dataProcess } 
 						visible={ this.state.visibleProcess } 
 						onClose={ this.handleCloseProcess }
-						formKey={ this.state.formKeyProcess }
-						onFinish={ this.handleSubmitProcess }
-						record={ this.props.dataCase }
+						record={ this.state.record }
+						create={ this.create }
+						edit={ this.update }
 					>
 					</ProcessDrawer>
 				</div>

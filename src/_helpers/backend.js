@@ -11,6 +11,7 @@ export const backend = {
     create,
     list,
     listCombined,
+    listFiltered,
     update,
     ban,
     hide,
@@ -26,7 +27,7 @@ async function create(service, objectName, record) {
 		.catch( error => response = error );
 	// update the frontend data accordingly
 	if (response.code === 200){
-		const data = this.state.data.slice();
+		const data = this.state[objectName].slice();
 		record.id = response.entry.id;
 		record.created_at = getCurrentDatetime();
 		record.updated_at = getCurrentDatetime();
@@ -62,6 +63,11 @@ async function listCombined(service, objectName, keys) {
 			this.setState({ [objectName]: data });
 		});
 }
+// interface for list with filter
+async function listFiltered(service, objectName, filters) {
+	service.list(filters)
+		.then( ({ entry: data }) => this.setState({ [objectName]: data }) );
+}
 
 // update apis
 // interface for update
@@ -73,7 +79,7 @@ async function update(service, objectName, id, record) {
 		.catch( error => response = error );
 	// update the frontend data accordingly
 	if (response.code === 200){
-		let data = this.state.data.slice();
+		let data = this.state[objectName].slice();
 		let index = data.findIndex( item => item.id === id);
 		Object.keys(record).forEach(item => data[index][item] = record[item])
 		this.setState({ [objectName]: data });
@@ -93,7 +99,7 @@ async function ban(service, objectName, record) {
 	// update the frontend data accordingly
 	if (response.code === 200){
 		const toggle = { u: 'b', b: 'u' };
-		let data = this.state.data.slice();
+		let data = this.state[objectName].slice();
 		let index = data.findIndex( item => item.id === record.id);
 		data[index].status = toggle[data[index].status];
 		this.setState({ [objectName]: data });

@@ -1,112 +1,200 @@
 import React, { Component } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 // import components from ant design
-import { Drawer, Button, Form, Divider, Input } from 'antd';
+import { 
+	Button, 
+	Col, 
+	Drawer, 
+	Row,
+	Space, 
+	Tag, 
+} from 'antd';
+import { 
+	EditOutlined, 
+	PlusOutlined, 
+} from '@ant-design/icons';
 
 // import shared and child components
+import { TableBody } from '_components'
+import { SecondaryDrawer } from './SecondaryDrawer'
 
-// destructure child components
+// import helpers
+import { helpers } from '_helpers';
+
+// destructure imported components and objects
+const { compare } = helpers;
 
 class ProcessDrawer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			visible: false, // for opening or closing the drawer
+			record: {}, // for loading a record into the form in drawer
+			disabled: false, // for disabling the input fields in drawer
+			tableDrawerKey: Date.now(), //for refreshing the drawer
 		};
 	}
 	
-	// define form items for edit drawer
-	formItems = [
+	// define columns in TableBody
+	columns = [
 		{
-			label: 'Process',
-			name: 'process',
-			rules: [
-				{
-					required: true,
-					message: 'process cannot be empty',
-				}
-			],
-			editable: true,
-			input: (
-				<Input
-					maxLength={255}
-					allowClear
-				/>
-			)
+			title: 'Process',
+			dataIndex: 'process',
+			key: 'process',
+			sorter: (a, b) => compare(a.process, b.process),
+			sortDirection: ['ascend', 'descend'],
+			width: '30%',
+			//setFilter: true
+			render: process => {
+				let color = 'geekblue';
+				let text = 'Open';
+				switch (process) {
+					case 'o' :
+						color = 'geekblue';
+						text = 'Open';
+						break;
+					case 'q' :
+						color = 'purple';
+						text = 'Queried';
+						break;
+					case 'r' :
+						color = 'cyan';
+						text = 'Replied';
+						break;
+					case 'a' :
+						color = 'green';
+						text = 'Approved';
+						break;
+					case 'e' :
+						color = 'red';
+						text = 'Rejected';
+						break;
+					case 'd' :
+						color = 'default';
+						text = 'Deferred';
+						break;
+					default:
+						color = 'geekblue';
+						text = 'Open';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
 		},
 		{
-			label: 'Details',
-			name: 'details',
-			rules: [
-				{
-					required: true,
-					message: 'details cannot be empty',
-				},
-			],
-			editable: true,
-			input: (
-				<Input.TextArea
-					autoSize={{ minRows: 6, maxRows: 10 }}
-					maxLength={255}
-					allowClear
-				/>
-			)
-		},			
+			title: 'Details',
+			dataIndex: 'details',
+			key: 'details',
+			sorter: (a, b) => compare(a.details, b.details),
+			sortDirection: ['ascend', 'descend'],
+			width: '40%',
+			setFilter: true
+		},
+		{
+			title: 'Actions',
+			key: 'action',
+			render: (text, record) => (
+				<Space size='small'>
+					<Button 
+						type='link' 
+						icon={ <EditOutlined /> }
+						onClick={ this.handleClickEdit.bind(this, record) }
+					>
+						Edit
+					</Button>
+				</Space>
+			),
+			width: '30%',
+			setFilter: false
+		},
 	];
 
-	// listeners for forms
-	onFinishFailed = errorInfo => {
-		console.log('Failed:', errorInfo);
-	};
+	// handlers for click edit
+	handleClickEdit = record => {
+		console.log('edit');
+		this.setState({
+			visible: true, 
+			disabled: false,
+			record,
+		});
+	}
+
+	// handlers for click add
+  handleClickAdd = event => {
+		console.log('add');
+    this.setState({
+      visible: true,
+			disabled: false,
+			record: {},
+    });
+  };
+
+	// handlers for click close
+  handleClose = () => {
+    this.setState({
+      visible: false,
+			record: {},
+			tableDrawerKey: Date.now(),
+    });
+  };
+
+	// handlers for click submit
+	handleSubmit = record => {
+		if (this.state.record.id)  // edit the entry
+			this.props.edit(this.state.record.id, record);
+		else // create an entry
+			this.props.create({case_id: this.props.record.id, ...record});
+
+		this.setState({
+			record: {},
+			visible: false,
+			tableDrawerKey: Date.now(),
+		});
+	}
 
 	render(){
 		return (
-			<div className="ProcessDrawer">
+			<div className='ProcessDrawer'>
 				<Drawer
-					title="Process A Case"
-					width={ 618 }
+					title="Process History"
+					width={ 1000 }
 					bodyStyle={{ paddingBottom: 80 }}
 					visible={ this.props.visible } 
 					onClose={ this.props.onClose }
 				>
-					<Form
-						key={ this.props.formKeyEdit }
-						labelCol={ { span: 8 } }
-						wrapperCol={ { span: 16 } }
-						name='basic'
-						initialValues={{
-							remember: true,
-						}}
-						onFinish={ this.props.onFinish }
-						onFinishFailed={ this.onFinishFailed }
-					>
-						{ this.formItems.map( item => 
-							(
-								<Form.Item
-									key={ item.name }
-									label={ item.label }
-									name={ item.name }
-									rules={ item.rules }
-								>
-									{ item.input }
-								</Form.Item>
-							)
-						) }
-						<Divider />
-						<div style={{ textAlign:'right' }} >
-							<Button 
-								onClick={ this.props.onClose } 
-								style={{ marginRight: 8 }}
-							>
-								Cancel
+					<Row style={{ margin: "8px" }}>
+						<Col 
+							style={{ fontSize: '20px',  textAlign: 'right' }}
+							span={ 12 } 
+							offset={ 12 } 
+						>
+							<Button onClick={ this.handleClickAdd }>
+								<PlusOutlined />
+								{ "Add" }
 							</Button>
-							<Button 
-								type='primary' 
-								htmlType='submit'
-							>
-								Submit
-							</Button>
-						</div>
-					</Form>
+						</Col>
+					</Row>
+					<TableBody 
+						data={ this.props.data } 
+						columns={ this.columns } 
+						isSmall={ true }
+						showHeader={ true }
+					/>
+					<div>
+						<SecondaryDrawer
+							tableDrawerKey={ this.state.tableDrawerKey }
+							record={ this.state.record }
+							visible={ this.state.visible } 
+							onSubmit={ this.handleSubmit }
+							onClose={ this.handleClose }
+						>
+						</SecondaryDrawer>
+					</div>
 				</Drawer>
 			</div>
 		);

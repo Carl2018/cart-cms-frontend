@@ -5,5 +5,6 @@ export * from './case.service';
 export * from './category.service';
 export * from './email.service';
 export * from './label.service';
+export * from './process.service';
 export * from './profile.service';
 export * from './template.service';
