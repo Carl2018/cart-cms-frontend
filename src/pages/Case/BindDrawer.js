@@ -21,18 +21,25 @@ import {
 import { backend } from '_helpers';
 
 // destructure imported components and objects
-const { list } = backend;
+const { list, listByEmail } = backend;
 const { Search } = Input;
 
 class BindDrawer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			// for AutoComplete
+			accounts: [],
+			options: [],
+			// accounts in the same profile
+			inProfile: [],
 		};
 	}
 
 	componentDidMount() {
 		this.listAccounts();
+		console.log(this.props.record);
+		this.listByEmail({email: this.props.record.email});
 	}
 
 	// define form items for TableDrawer
@@ -67,6 +74,7 @@ class BindDrawer extends Component {
 
 	// listeners for forms
 	onFinishFailed = errorInfo => {
+		console.log(this.state.inProfile);
 		console.log('Failed:', errorInfo);
 	};
 
@@ -87,6 +95,7 @@ class BindDrawer extends Component {
 
 	// bind versions of CRUD
 	listAccounts = list.bind(this, accountService, 'accounts');
+	listByEmail = listByEmail.bind(this, accountService, 'inProfile');
 
 	render(){
 		return (

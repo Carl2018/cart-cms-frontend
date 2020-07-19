@@ -12,6 +12,7 @@ export const backend = {
     list,
     listCombined,
     listFiltered,
+    listByEmail,
     update,
     bind,
     ban,
@@ -67,6 +68,11 @@ async function listCombined(service, objectName, keys) {
 // interface for list with filter
 async function listFiltered(service, objectName, filters) {
 	service.list(filters)
+		.then( ({ entry: data }) => this.setState({ [objectName]: data }) );
+}
+// interface for list by email
+async function listByEmail(service, objectName, filters) {
+	service.listByEmail(filters)
 		.then( ({ entry: data }) => this.setState({ [objectName]: data }) );
 }
 

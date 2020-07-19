@@ -5,6 +5,7 @@ import { handleResponse } from '_helpers';
 export const accountService = {
     create,
     list,
+    listByEmail,
     update,
     ban,
     hide,
@@ -23,6 +24,16 @@ function create(record) {
 function list() {
     const requestOptions = { method: 'GET', headers: authHeader() };
     return fetch(`${config.apiUrl}/account/list`, requestOptions)
+			.then(handleResponse);
+}
+
+function listByEmail(filters) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/account/list_by_email`);
+		Object.keys(filters).forEach( key => 
+			url.searchParams.append(key, filters[key]) );
+    const requestOptions = { method: 'GET', headers: authHeader() };
+    return fetch(url, requestOptions)
 			.then(handleResponse);
 }
 
