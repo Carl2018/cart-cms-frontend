@@ -145,6 +145,7 @@ class Template extends Component {
 
 	// bind versions of CRUD
 	create= create.bind(this, templateService, 'data');
+	createSync = record => this.create(record).then( res => this.list() );
 	list = list.bind(this, templateService, 'data');
 	update = update.bind(this, templateService, 'data');
 	hide = hide.bind(this, templateService, 'data');
@@ -168,7 +169,7 @@ class Template extends Component {
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
 					drawerTitle='Create a New Template'
-					create={ this.create }
+					create={ this.createSync }
 					edit={ this.update }
 					delete={ this.hide }
 					refreshTable={ this.refreshTable }
