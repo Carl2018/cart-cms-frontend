@@ -76,7 +76,7 @@ class TableWrapper extends Component {
 					mode="multiple"
 				>
 					{
-						this.state.labels.map( item => (
+						this.props.labels.map( item => (
 							<Option
 								key={ item.id }
 								value={ item.labelname }
@@ -148,7 +148,7 @@ class TableWrapper extends Component {
 	}
 
 	handleClickEdit = record => {
-		this.setState({formItems: this.formItems,}, () =>
+		this.setState({formItems: this.formItems}, () =>
 			this.setState({
 				visible: true, 
 				disabled: false,

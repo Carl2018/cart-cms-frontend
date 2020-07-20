@@ -6,7 +6,6 @@ import { MailOutlined } from '@ant-design/icons';
 import { 
 	AutoComplete, 
 	Input, 
-	Select, 
 	Tag, 
 } from 'antd';
 
@@ -60,16 +59,6 @@ class Email extends Component {
 			sorter: (a, b) => compare(a.email, b.email),
 			sortDirection: ['ascend', 'descend'],
 			width: '10%',
-			setFilter: true
-		},
-		{
-			title: 'Last Updated At',
-			dataIndex: 'updated_at',
-			key: 'updated_at',
-			sorter: (a, b) => compare(a.updated_at, b.updated_at),
-			sortDirection: ['ascend', 'descend'],
-			defaultSortOrder: 'descend',
-			width: '20%',
 			setFilter: true
 		},
 		{
@@ -150,24 +139,6 @@ class Email extends Component {
 				}
 			],
 			editable: true,
-			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
-					disabled={ disabled }
-				/>
-			)
-		},
-		{
-			label: 'Last Contacted At',
-			name: 'updated_at',
-			rules: [
-				{
-					required: true,
-					message: 'updated_at cannot be empty',
-				}
-			],
-			editable: false,
 			input: disabled => (
 				<Input
 					maxLength={255}
@@ -266,6 +237,7 @@ class Email extends Component {
 					delete={ this.hide }
 					refreshTable={ this.refreshTable }
 					isSmall={ this.props.isSmall }
+					labels={ this.state.labels }
 				>
 				</TableWrapper>
 			</div>
