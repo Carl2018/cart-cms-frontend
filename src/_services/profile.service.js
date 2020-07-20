@@ -6,6 +6,7 @@ export const profileService = {
     create,
     list,
     update,
+    updateMerge,
     hide,
 };
 
@@ -32,6 +33,16 @@ function update(record) {
 			body: JSON.stringify(record)
 		};
     return fetch(`${config.apiUrl}/profile/update`, requestOptions)
+			.then(handleResponse);
+}
+
+function updateMerge(record) {
+    const requestOptions = { 
+			method: 'PUT', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/profile/update_merge`, requestOptions)
 			.then(handleResponse);
 }
 

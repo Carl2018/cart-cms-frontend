@@ -39,7 +39,7 @@ import {
 import { backend } from '_helpers';
 
 // destructure imported components and objects
-const { create, list, listFiltered, listByEmail, update } = backend;
+const { create, list, listFiltered, listByEmail, update, updateMerge } = backend;
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -364,7 +364,7 @@ class TableWrapper extends Component {
 			record.description = merge.profile_to.description;
 		}
 		console.log(record);
-		this.updateProfile( id, record );
+		this.updateMergeProfile( id, record );
 		this.setState({
 			visibleMerge: false, 
 			record: {},
@@ -385,7 +385,7 @@ class TableWrapper extends Component {
 	listByEmail = listByEmail.bind(this, accountService, 'inProfile');
 	update = update.bind(this, processService, 'dataProcess');
 	listProfiles = list.bind(this, profileService, 'profiles');
-	updateProfile = update.bind(this, profileService, 'profiles');
+	updateMergeProfile = updateMerge.bind(this, profileService, 'profiles');
 
 	render(){
 		return (

@@ -14,6 +14,7 @@ export const backend = {
     listFiltered,
     listByEmail,
     update,
+    updateMerge,
     bind,
     ban,
     hide,
@@ -82,6 +83,24 @@ async function update(service, objectName, id, record) {
 	// update the record in the backend table
 	let response = null;
 	await service.update({ id, ...record })
+		.then( result => response = result )
+		.catch( error => response = error );
+	// update the frontend data accordingly
+	if (response.code === 200){
+		let data = this.state[objectName].slice();
+		let index = data.findIndex( item => item.id === id);
+		Object.keys(record).forEach(item => data[index][item] = record[item])
+		this.setState({ [objectName]: data });
+		message.success('The record has been edited');
+	} else {
+		message.error(response.en);
+	}
+}
+// interface for update after merge
+async function updateMerge(service, objectName, id, record) {
+	// update the record in the backend table
+	let response = null;
+	await service.updateMerge({ id, ...record })
 		.then( result => response = result )
 		.catch( error => response = error );
 	// update the frontend data accordingly

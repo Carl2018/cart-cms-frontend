@@ -278,6 +278,7 @@ class Account extends Component {
 
 	// bind versions of CRUD
 	create= create.bind(this, accountService, 'data');
+	createSync = record => this.create(record).then( res => this.list() );
 	list = list.bind(this, accountService, 'data');
 	update = update.bind(this, accountService, 'data');
 	ban = ban.bind(this, accountService, 'data');
@@ -302,7 +303,7 @@ class Account extends Component {
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
 					drawerTitle='Create a new account'
-					create={ this.create }
+					create={ this.createSync }
 					edit={ this.update }
 					ban={ this.ban }
 					delete={ this.hide }
