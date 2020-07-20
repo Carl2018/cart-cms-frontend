@@ -265,6 +265,7 @@ class Account extends Component {
 	handleChange = data => {
 		const options = this.state.profiles
 			.map( item => item.profilename )
+			.filter( (item, index, array) => array.indexOf(item) === index )
 			.filter( item => item.includes(data) )
 			.map( item => ({ value: item }) );
 		this.setState({ options });

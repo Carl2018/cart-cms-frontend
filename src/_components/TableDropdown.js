@@ -50,7 +50,7 @@ class TableDropdown extends Component {
 					overlay={ this.menu }
 				>
 					<PlusOutlined />
-					{ this.props.dropdownName ?  this.props.dropdownName : "Add" }
+					{ "Add" }
 				</Dropdown.Button>
 			</div>
 		);

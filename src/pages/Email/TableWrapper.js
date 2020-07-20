@@ -1,14 +1,30 @@
 import React, { Component } from 'react';
 
-// import styling from ant desgin
-import { Space, Button, Popconfirm, Row, Col } from 'antd';
-import { message, notification } from 'antd';
-import { FileTextOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+// import components from ant design
+import { 
+	Button, 
+	Col, 
+	Input, 
+	Popconfirm, 
+	Row, 
+	Select, 
+	Space, 
+	message, 
+	notification, 
+} from 'antd';
+import { 
+	DeleteOutlined,
+	EditOutlined, 
+	FileTextOutlined, 
+} from '@ant-design/icons';
 
-// import shared components
-import { TableBody } from './TableBody'
-import { TableDropdown } from './TableDropdown'
-import { TableDrawer } from './TableDrawer'
+// import shared and child components
+import { TableBody } from '_components'
+import { TableDropdown } from '_components'
+import { TableDrawer } from '_components'
+
+// destructure imported components and objects
+const { Option } = Select
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -19,8 +35,60 @@ class TableWrapper extends Component {
 			visible: false, // for opening or closing the TableDrawer
 			record: {}, // for loading a record into the form in TableDrawer
 			disabled: false, // for disabling the input fields in TableDrawer
+			formItems: this.props.formItems,
 		};
 	}
+
+	// define formItems in TableDrawer when add is clicked
+	formItems = [
+		...this.props.formItems,
+		{
+			label: 'Profile Description',
+			name: 'description',
+			rules: [
+				{
+					required: true,
+					message: 'Profile description cannot be empty',
+				}
+			],
+			editable: true,
+			input: disabled => (
+				<Input
+					maxLength={255}
+					allowClear
+					disabled={ disabled }
+				/>
+			)
+		},
+		{
+			label: 'Labels',
+			name: 'labelname',
+			rules: [
+				{
+					required: false,
+					message: 'Labels cannot be empty',
+				}
+			],
+			editable: true,
+			input: disabled => (
+				<Select
+					disabled={ disabled }
+					mode="multiple"
+				>
+					{
+						this.state.labels.map( item => (
+							<Option
+								key={ item.id }
+								value={ item.labelname }
+							>
+								{ item.labelname }
+							</Option>
+						))
+					}
+				</Select>
+			)
+		},
+	]
 	
 	// define columns in TableBody
 	columns = [
@@ -70,19 +138,23 @@ class TableWrapper extends Component {
 
 	// handlers for actions in TableBody
 	handleClickView = record => {
-		this.setState({
-			visible: true, 
-			disabled: true,
-			record,
-		});
+		this.setState({formItems: this.formItems}, () =>
+			this.setState({
+				visible: true, 
+				disabled: true,
+				record,
+			})
+		);
 	}
 
 	handleClickEdit = record => {
-		this.setState({
-			visible: true, 
-			disabled: false,
-			record,
-		});
+		this.setState({formItems: this.formItems,}, () =>
+			this.setState({
+				visible: true, 
+				disabled: false,
+				record,
+			})
+		);
 	}
 
 	handleClickDelete = record => this.props.delete(record.id);
@@ -91,12 +163,14 @@ class TableWrapper extends Component {
 
 	// handlers for actions in TableDropdown
   handleClickAdd = event => {
-    this.setState({
-      visible: true,
-			disabled: false,
-			record: {},
-    });
-  };
+		this.setState({formItems: this.props.formItems}, () =>
+			this.setState({
+				visible: true,
+				disabled: false,
+				record: {},
+			})
+		);
+  }
 
 	handleClickRefreshTable = () => {
 		this.props.refreshTable();
@@ -201,10 +275,11 @@ class TableWrapper extends Component {
 				<div>
 					<TableDrawer 
 						tableDrawerKey={ this.state.tableDrawerKey }
+						drawerTitle={ this.props.drawerTitle } 
 						visible={ this.state.visible } 
 						onClose={ this.handleClose }
 						record={ this.state.record }
-						formItems={ this.props.formItems }
+						formItems={ this.state.formItems }
 						disabled={ this.state.disabled } 
 						onSubmit={ this.handleSubmit }
 						drawerWidth={ this.props.drawerWidth }

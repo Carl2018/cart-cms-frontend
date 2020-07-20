@@ -4,13 +4,14 @@ import { v4 as uuidv4 } from 'uuid';
 // import components from ant design
 import { MailOutlined } from '@ant-design/icons';
 import { 
+	AutoComplete, 
 	Input, 
 	Select, 
 	Tag, 
 } from 'antd';
 
 // import shared and child components
-import { TableWrapper } from '_components'
+import { TableWrapper } from './TableWrapper'
 
 // import services
 import { 
@@ -28,7 +29,7 @@ import {
 // destructure imported components and objects
 const { create, list, listCombined, update, hide } = backend;
 const { compare } = helpers;
-const { Option } = Select
+const { Search } = Input;
 
 class Email extends Component {
 	constructor(props) {
@@ -38,12 +39,16 @@ class Email extends Component {
 			// populate the table body with data
 			data: [],
 			labels: [],
+			// options for profile search
+			profiles: [],
+			options: [],
 		};
 	}
 
 	componentDidMount() {
 		this.list();
 		this.listLabels();
+		this.listProfiles();
 	}
 
 	// define columns for TableBody
@@ -172,67 +177,35 @@ class Email extends Component {
 			)
 		},
 		{
-			label: 'Profile Name',
+			label: 'Profile',
 			name: 'profilename',
 			rules: [
 				{
 					required: true,
-					message: 'Profile name cannot be empty',
+					message: 'Profile cannot be empty',
 				}
 			],
 			editable: true,
-			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
-					disabled={ disabled }
-				/>
-			)
-		},
-		{
-			label: 'Profile Description',
-			name: 'description',
-			rules: [
-				{
-					required: true,
-					message: 'Profile description cannot be empty',
-				}
-			],
-			editable: true,
-			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
-					disabled={ disabled }
-				/>
-			)
-		},
-		{
-			label: 'Labels',
-			name: 'labelname',
-			rules: [
-				{
-					required: false,
-					message: 'Labels cannot be empty',
-				}
-			],
-			editable: true,
-			input: disabled => (
-				<Select
-					disabled={ disabled }
-					mode="multiple"
+			input: (disabled, record) => 
+			record.profilename ?
+			(
+				<span style={{ marginLeft: "15px" }}>
+					{ record.profilename }
+				</span>
+			) : 
+			(
+				<AutoComplete
+					onChange={ this.handleChange }
+					onSelect={ this.handleSearch }
+					options={ this.state.options }
 				>
-					{
-						this.state.labels.map( item => (
-							<Option
-								key={ item.id }
-								value={ item.labelname }
-							>
-								{ item.labelname }
-							</Option>
-						))
-					}
-				</Select>
+					<Search
+						onSearch={ this.handleSearch }
+						placeholder="Search Profile"
+						size="middle"
+						allowClear
+					/>
+				</AutoComplete>
 			)
 		},
 	];
@@ -246,14 +219,30 @@ class Email extends Component {
 		</>
 	)
 
+	// filter AutoComplete options when input field changes
+	handleChange = data => {
+		const options = this.state.profiles
+			.map( item => item.profilename )
+			.filter( (item, index, array) => array.indexOf(item) === index )
+			.filter( item => item.includes(data) )
+			.map( item => ({ value: item }) );
+		this.setState({ options });
+	}
+
+	// perform a search when the search button is pressed
+	handleSearch = data => {
+		console.log("search");
+	}
+
 	// bind versions of CRUD
-	create = create.bind(this, profileService, 'data');
+	create = create.bind(this, emailService, 'data');
 	createSync = record => this.create(record).then( res => this.list() );
 	list = listCombined.bind(this, emailService, 'data', ['labelname', 'label_color']);
 	update = update.bind(this, emailService, 'data');
 	updateSync = (id, record) => this.update(id, record).then( res => this.list() );
 	hide = hide.bind(this, emailService, 'data');
 	listLabels = list.bind(this, labelService, 'labels');
+	listProfiles = list.bind(this, profileService, 'profiles');
 
 	// refresh table
 	refreshTable = () => {
@@ -271,7 +260,6 @@ class Email extends Component {
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create an Email with a NEW profile'
 					dropdownName='Create Profile'
 					create={ this.createSync }
 					edit={ this.updateSync }
