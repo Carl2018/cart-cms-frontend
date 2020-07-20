@@ -109,6 +109,7 @@ async function bind(service, objectName, id, record) {
 		Object.keys(record).forEach(item => data[index][item] = record[item])
 		this.setState({ [objectName]: data });
 		message.success('The case has been bound to an account');
+		return response.entry;
 	} else {
 		message.error(response.en);
 	}

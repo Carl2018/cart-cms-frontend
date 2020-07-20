@@ -26,18 +26,20 @@ import { TableDropdown } from '_components'
 import { TableDrawer } from '_components'
 import { ProcessDrawer } from './ProcessDrawer'
 import { BindDrawer } from './BindDrawer'
+import { MergeDrawer } from './MergeDrawer'
 
 // import services
 import { 
 	accountService,
 	processService, 
+	profileService, 
 } from '_services';
 
 // import helpers
 import { backend } from '_helpers';
 
 // destructure imported components and objects
-const { create, listFiltered, listByEmail, update } = backend;
+const { create, list, listFiltered, listByEmail, update } = backend;
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -56,9 +58,19 @@ class TableWrapper extends Component {
 			bindDrawerKey: Date.now(),
 			// accounts in the same profile
 			inProfile: [],
+			// for the merge modal
+			bind: {},
+			merge: {},
+			visibleMerge: false,
+			mergeModalKey: Date.now(),
+			profiles: {}, //temp solution
 		};
 	}
 	
+	componentDidMount() {
+		this.listProfiles();
+	}
+
 	// customised menu for bind, process, process history
 	getMenu = record => (
 		<Menu >
@@ -250,12 +262,14 @@ class TableWrapper extends Component {
 	}
 
 	handleSubmitBind = record => {
-		// check if there is a merge
+		// save the bind for a merge
 		const bind = 
 			{ case_id: this.state.record.id, accountname: record.accountname }
+		this.setState({ bind });
+		// check if there is a merge
 		const accounts = this.state.inProfile.map( item => item.accountname );
-		// bind
 		if (accounts.includes(record.accountname)) {
+			// bind
 			this.props.bind(this.state.record.id, bind);
 			// close drawer
 			this.setState({
@@ -311,10 +325,52 @@ class TableWrapper extends Component {
 	};
 
 	handleClickConfirmMerge = (closeNotification, notificationKey) => {
-		//this.props.delete(this.state.selectedRowKeys);
 		console.log('merge completed');
+		// call merge api
+		const id = this.state.record.id;
+		const bind = Object.assign({}, this.state.bind);
+		this.props.bind(id, bind)
+			.then( entry => this.setState({ merge: entry }) );
+		// set state
+		this.setState({ 
+			visibleBind: false,
+			bindDrawerKey: Date.now(), 
+		}, () => this.setState({
+			visibleMerge: true,
+		}) );
 		closeNotification(notificationKey);
 	};
+
+	// handlers for merge modal
+	handleCloseMerge = event => {
+		this.setState({
+			visibleMerge: false, 
+			record: {},
+			mergeModalKey: Date.now(), 
+		});
+	}
+
+	handleSubmitMerge = change => {
+		console.log(this.state.merge);
+		console.log(change);
+		const merge = Object.assign( {}, this.state.merge );
+		const id = merge.profile_id_to;
+		const record = { };
+		if (change) {
+			record.profilename = merge.profile_from.profilename;
+			record.description = merge.profile_from.description;
+		} else {
+			record.profilename = merge.profile_to.profilename;
+			record.description = merge.profile_to.description;
+		}
+		console.log(record);
+		this.updateProfile( id, record );
+		this.setState({
+			visibleMerge: false, 
+			record: {},
+			mergeModalKey: Date.now(), 
+		});
+	}
 
 	// bind versions of CRUD
 	create= create.bind(this, processService, 'dataProcess');
@@ -328,6 +384,8 @@ class TableWrapper extends Component {
 	listFiltered = listFiltered.bind(this, processService, 'dataProcess');
 	listByEmail = listByEmail.bind(this, accountService, 'inProfile');
 	update = update.bind(this, processService, 'dataProcess');
+	listProfiles = list.bind(this, profileService, 'profiles');
+	updateProfile = update.bind(this, profileService, 'profiles');
 
 	render(){
 		return (
@@ -407,6 +465,16 @@ class TableWrapper extends Component {
 						onSubmit={ this.handleSubmitBind }
 					>
 					</BindDrawer>
+				</div>
+				<div>
+					<MergeDrawer
+						mergeModalKey ={ this.state.mergeModalKey } 
+						visible={ this.state.visibleMerge } 
+						onClose={ this.handleCloseMerge }
+						record={ this.state.merge }
+						onSubmit={ this.handleSubmitMerge }
+					>
+					</MergeDrawer>
 				</div>
 			</div>
 		);
