@@ -10,6 +10,7 @@ import {
 	Case,
 	Account,
 	Email,
+	Profile,
 	Label,
 	Template,
 	Category,
@@ -30,6 +31,7 @@ import {
 	Row,
 } from 'antd';
 import {
+  ContactsOutlined,
   CopyOutlined,
   FileSearchOutlined,
   HddOutlined,
@@ -182,6 +184,14 @@ class App extends Component {
 								</Item>
 								<Item 
 									key="5" 
+									icon={<ContactsOutlined />}
+								>
+									<Link to="/profile">
+										Profiles
+									</Link>
+								</Item>
+								<Item 
+									key="6" 
 									icon={<TagOutlined />}
 								>
 									<Link to="/label">
@@ -189,7 +199,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="6" 
+									key="7" 
 									icon={<CopyOutlined />}
 								>
 									<Link to="/template">
@@ -197,7 +207,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="7" 
+									key="8" 
 									icon={<HddOutlined />}
 								>
 									<Link to="/category">
@@ -258,6 +268,7 @@ class App extends Component {
 									<PrivateRoute path="/case" component={ Case }/>
 									<PrivateRoute path="/account" component={ Account }/>
 									<PrivateRoute path="/email" component={ Email }/>
+									<PrivateRoute path="/profile" component={ Profile }/>
 									<PrivateRoute path="/label" component={ Label }/>
 									<PrivateRoute path="/template" component={ Template }/>
 									<PrivateRoute path="/category" component={ Category }/>

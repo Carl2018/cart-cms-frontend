@@ -5,5 +5,6 @@ export * from './Email/Email';
 export * from './Home/Home';
 export * from './Label/Label';
 export * from './Login/Login';
+export * from './Profile/Profile';
 export * from './Query/Query';
 export * from './Template/Template';
