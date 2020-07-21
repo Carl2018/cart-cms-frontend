@@ -219,6 +219,7 @@ class Email extends Component {
 	refreshTable = () => {
 		this.list();
 		this.listLabels();
+		this.listProfiles();
 		this.setState({ tableWrapperKey: Date.now() })
 	};
 

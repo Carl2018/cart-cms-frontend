@@ -1,18 +1,25 @@
 import React, { Component } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 // import components from ant design
+import { TeamOutlined } from '@ant-design/icons';
 import { 
 	Input, 
 	Select, 
 	Tag, 
 } from 'antd';
-import { TeamOutlined } from '@ant-design/icons';
 
 // import shared and child components
-import { TableWrapper } from '_components'
+import { AccountWrapper } from './AccountWrapper';
 
-// destructure child components
-const { Option } = Select
+// import services
+
+// import helpers
+import { helpers } from '_helpers';
+
+// destructure imported components and objects
+const { compare } = helpers;
+const { Option } = Select;
 
 class Account extends Component {
 	constructor(props) {
@@ -22,57 +29,90 @@ class Account extends Component {
 		};
 	}
 	
-//	componentWillReceiveProps(nextProps) {
-//		this.setState({ data: nextProps.data });
-//	}
-
-//	static getDerivedStateFromProps(nextProps, prevState) {
-//		return { data: nextProps.data };
-//	}
-	
-	// define columns for TableBody
-	compare = (a, b) => {
-		if (a >  b) return 1;
-		if (a ===  b) return 0;
-		if (a <  b) return -1;
+	componentDidMount() {
 	}
 
+	// define columns for TableBody
 	columns = [
 		{
 			title: 'Candidate ID',
-			dataIndex: 'candidateID',
-			key: 'candidateID',
-			sorter: (a, b) => this.compare(a.candidateID, b.candidateID),
+			dataIndex: 'candidate_id',
+			key: 'candidate_id',
+			sorter: (a, b) => compare(a.candidate_id, b.candidate_id),
 			sortDirection: ['ascend', 'descend'],
-			width: '25%',
+			width: '20%',
 			setFilter: true
 		},
 		{
 			title: 'Account Type',
-			dataIndex: 'accountType',
-			key: 'accountType',
-			sorter: (a, b) => this.compare(a.accountType, b.accountType),
+			key: 'account_type',
+			dataIndex: 'account_type',
+			sorter: (a, b) => compare(a.account_type, b.account_type),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
-			setFilter: true
+			render: account_type => {
+				let color = 'gold';
+				let text = 'Phone';
+				switch (account_type) {
+					case 'f' :
+						color = 'blue';
+						text = 'Facebook';
+						break;
+					case 'p' :
+						color = 'gold';
+						text = 'Phone';
+						break;
+					default:
+						color = 'gold';
+						text = 'Phone';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+			width: '20%',
 		},
 		{
 			title: 'Account Name',
-			dataIndex: 'accountName',
-			key: 'accountName',
-			sorter: (a, b) => this.compare(a.accountName, b.accountName),
+			dataIndex: 'accountname',
+			key: 'accountname',
+			sorter: (a, b) => compare(a.accountname, b.accountname),
 			sortDirection: ['ascend', 'descend'],
 			width: '20%',
 			setFilter: true
 		},
 		{
 			title: 'Status',
-			dataIndex: 'banned',
-			key: 'banned',
-			render: banned => ( banned ? 
-				<Tag color="red">BANNED</Tag> : 
-				<Tag color="blue">UNBANNED</Tag> ),
-			width: '20%',
+			key: 'status',
+			dataIndex: 'status',
+			sorter: (a, b) => compare(a.status, b.status),
+			sortDirection: ['ascend', 'descend'],
+			render: status => {
+				let color = 'green';
+				let text = 'Unbanned';
+				switch (status) {
+					case 'b' :
+						color = 'red';
+						text = 'Banned';
+						break;
+					case 'u' :
+						color = 'green';
+						text = 'Unbanned';
+						break;
+					default:
+						color = 'green';
+						text = 'Unbanned';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+			width: '10%',
 		},
 	];
 
@@ -80,11 +120,11 @@ class Account extends Component {
 	formItems = [
 		{
 			label: 'Candidate ID',
-			name: 'candidateID',
+			name: 'candidate_id',
 			rules: [
 				{
 					required: true,
-					message: 'candidateID cannot be empty',
+					message: 'candidate_id cannot be empty',
 				}
 			],
 			editable: true,
@@ -98,11 +138,11 @@ class Account extends Component {
 		},
 		{
 			label: 'Account Type',
-			name: 'accountType',
+			name: 'account_type',
 			rules: [
 				{
 					required: true,
-					message: 'accountType cannot be empty',
+					message: 'account_type cannot be empty',
 				}
 			],
 			editable: true,
@@ -110,18 +150,18 @@ class Account extends Component {
 				<Select
 					disabled={ disabled }
 				>
-					<Option value="facebook">facebook</Option>
-					<Option value="phone">phone</Option>
+					<Option value="f">facebook</Option>
+					<Option value="p">phone</Option>
 				</Select>
 			)
 		},
 		{
 			label: 'Account Name',
-			name: 'accountName',
+			name: 'accountname',
 			rules: [
 				{
 					required: true,
-					message: 'accountName cannot be empty',
+					message: 'accountname cannot be empty',
 				},
 			],
 			editable: true,
@@ -134,22 +174,45 @@ class Account extends Component {
 			)
 		},			
 		{
-			label: 'Created at',
-			name: 'createdAt',
+			label: 'Status',
+			name: 'status',
 			rules: [
 				{
 					required: true,
-					message: 'createdAt cannot be empty',
-				}
+					message: 'Status cannot be empty',
+				},
 			],
 			editable: false,
 			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
+				<Select
 					disabled={ disabled }
-				/>
+				>
+					<Option value="u">Unbanned</Option>
+					<Option value="b">Banned</Option>
+				</Select>
 			)
+		},			
+		{
+			label: 'Profile',
+			name: 'profilename',
+			rules: [
+				{
+					required: true,
+					message: 'Profile cannot be empty',
+				}
+			],
+			editable: true,
+			input: disabled => 
+			this.props.data.length === 0 ? (<></>) :
+			(
+				<Select
+					disabled={ disabled }
+				>
+					<Option value={ this.props.data[0].profilename }>
+						{ this.props.data[0].profilename }
+					</Option>
+				</Select>
+			) 
 		},
 	];
 
@@ -162,35 +225,40 @@ class Account extends Component {
 		</>
 	)
 
+	// bind versions of CRUD
+
 	// refresh table
-	refreshTable = () => this.setState({ tableWrapperKey: Date.now() });
+	refreshTable = () => {
+		this.setState({ tableWrapperKey: Date.now() })
+	};
 
 	render(){
 		return (
 			<div className='Account'>
-				<TableWrapper
+				<AccountWrapper
 					key={ this.state.tableWrapperKey }
 					// data props
 					data={ this.props.data }
 					// display props
-					loading={ this.props.loading }
-					tableHeader={ this.tableHeader }
 					columns={ this.columns }
 					formItems={ this.formItems }
+					tableHeader={ this.tableHeader }
+					drawerTitle='Create A New Account'
+					loading={ this.props.loading }
 					isSmall={ this.props.isSmall }
 					showHeader={ this.props.showHeader }
 					showDropdown={ this.props.showDropdown }
-					drawerTitle='Create a new account'
 					// api props
 					create={ this.props.create }
 					edit={ this.props.edit }
+					ban={ this.props.ban }
 					delete={ this.props.delete }
 					refreshTable={ this.refreshTable }
 				>
-				</TableWrapper>
+				</AccountWrapper>
 			</div>
 		);
 	}
 }
 
-export default Account;
+export { Account };

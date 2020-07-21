@@ -45,12 +45,14 @@ async function create(service, objectName, record) {
 // list apis
 // interface for list
 async function list(service, objectName) {
-	service.list()
-		.then( ({ entry: data }) => this.setState({ [objectName]: data }) );
+	await service.list()
+		.then( ({ entry: data }) => 
+			this.setState({ [objectName]: data }, () => {return;} ) 
+		);
 }
 // interface for list with combined attributes
 async function listCombined(service, objectName, keys) {
-	service.list()
+	await service.list()
 		.then( ({ entry: data }) => {
 			const ids = data.map( item => item.id );
 			ids.forEach( (item, index, array) => {
@@ -63,7 +65,7 @@ async function listCombined(service, objectName, keys) {
 				}
 			});
 			data = data.filter( item => item !== null )
-			this.setState({ [objectName]: data });
+			this.setState({ [objectName]: data }, () => {return;} );
 		});
 }
 // interface for list with filter
@@ -169,7 +171,7 @@ async function hide(service, objectName, ids) {
 		.catch( error => { response = error; console.log(error) } );
 	// hide the frontend data accordingly
 	if (response.code === 200){
-		let data = this.state.data.slice(); 
+		let data = this.state[objectName].slice(); 
 		data = data.filter( item => !ids.includes(item.id) );
 		message.success('The records have been deleted');
 		this.setState({ [objectName]: data });

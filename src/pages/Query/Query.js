@@ -8,6 +8,7 @@ import {
 	Col, 
 	Input, 
 	Row, 
+	Select, 
 	Space, 
 	message, 
 	notification, 
@@ -15,12 +16,28 @@ import {
 import { QuestionCircleOutlined } from '@ant-design/icons';
 
 // import shared and child components
-import Account  from "./Account"
-import Case from "./Case"
-import Email from "./Email"
+import { Account } from "./Account"
+import { Case } from "./Case/Case"
+import { Email } from "./Email"
 
-// destructure child components
+// import services
+import { 
+	accountService,
+	caseService,
+	emailService,
+ } from '_services';
+
+// import helpers
+import { 
+	backend,
+	helpers 
+} from '_helpers';
+
+// destructure imported components and objects
+const { create, list, listCombined, update, ban, bind, hide } = backend;
+const { compare } = helpers;
 const { Search } = Input;
+const { Option } = Select
 
 class Query extends Component {
 	constructor(props) {
@@ -34,9 +51,22 @@ class Query extends Component {
 			dataEmail: [], // for email table
 			dataCase: [], // for case table
 			dataAccount: [], // for account table
+			// all emails
+			emails: [],
+			options: [], // options for email search
+			// all cases
+			cases: [],
+			// all accounts
+			accounts: [],
 		};
 	}
 	
+	componentDidMount() {
+		this.listEmails();
+		this.listCases();
+		this.listAccounts();
+	}
+
 	// data from email table
 	allEmails = [
 		{
@@ -216,51 +246,6 @@ class Query extends Component {
 		},
 	];
 
-	// filter AutoComplete options when input field changes
-	handleChange = data => {
-		const options = this.allEmails
-			.map( item => item.email )
-			.filter( item => item.includes(data) )
-			.map( item => ({ value: item }) );
-		this.setState({ options });
-	}
-
-	// perform a search when the search button is pressed
-	handleSearch = data => {
-		this.setState({ loading: true });
-		setTimeout( () => this.updateTables(data), 500);
-	}
-
-	// update all 3 tables upon a search
-	updateTables = data => {
-		const email = data;
-		const profileID = this.allEmails
-			.find( item => item.email === email )?.profileID;
-		const dataEmail = this.allEmails
-			.filter( item => item.profileID === profileID );
-		const emails = dataEmail.map( item => item.email );
-		const dataCase = this.allCases
-			.filter( item => emails.includes( item.relatedEmail ) )
-		const accounts = dataCase.map( item => item.relatedAccount );
-		const dataAccount = this.allAccounts
-			.filter( item => accounts.includes( item.accountName ) );
-		this.setState({ loading: false });
-		this.setState({ email, dataEmail, dataCase, dataAccount });
-		if (profileID) {
-			message.success("Profile Found");
-			this.setState({ 
-				showHeader: true,
-				showDropdown: true,
-			});
-		} else {
-			message.info("Profile Not Found");
-			this.setState({ 
-				showHeader: false,
-				showDropdown: false,
-			});
-		}
-	}
-
 	// handler for the create profile button
 	handleClickCreate = event => {
 		const autosearch = document.getElementById("autosearch");
@@ -346,44 +331,151 @@ class Query extends Component {
 		this.setState({ dataAccount });
 	}
 
-	// handlers for CUD actions
-	// create api
-  create = (data, dataName, record) => {
-		const dataCopied = data.slice();
-		record.key = Date.now();
-		record.createdAt = new Date().toISOString().split('.')[0].replace('T', ' ');
-		record.updatedAt = new Date().toISOString().split('.')[0].replace('T', ' ');
-		dataCopied.push(record);
-		if (200) message.success('A new record has been created');
-		this.setState({ [ dataName ] : dataCopied });
+	// filter AutoComplete options when input field changes
+	handleChange = data => {
+		const options = this.state.emails
+			.map( item => item.email )
+			.filter( (item, index, array) => array.indexOf(item) === index )
+			.filter( item => item.includes(data) )
+			.map( item => ({ value: item }) );
+		this.setState({ options });
 	}
 
-	// edit api
-  edit = (data, dataName, key, record) => {
-		let dataCopied = data.slice();
-		let originalRecord = dataCopied.find( item => item.key === key);
-		let index = dataCopied.findIndex( item => item.key === key);
-		Object.keys(record).forEach(item => originalRecord[item] = record[item])
-		dataCopied[index] = originalRecord;
-		if (200) message.success('The record has been edited');
-		this.setState({ [ dataName ] : dataCopied });
+	// perform a search when the search button is pressed
+	handleSearch = data => {
+		this.setState({ loading: true });
+		setTimeout( () => this.updateTables(data), 500);
 	}
 
-	// delete api
-  delete = (data, dataName, keys) => {
-		let dataCopied = data.slice();
-		if (Array.isArray(keys)) {
-			dataCopied = dataCopied.filter( 
-				item => !keys.includes(item.key)
-			);
-			if (200) message.success('Multiple records have been deleted');
+	// update all 3 tables upon a search
+	updateTables = data => {
+		const email = data;
+		const profileID = this.state.emails
+			.find( item => item.email === email )?.profile_id;
+		const dataEmail = this.state.emails
+			.filter( item => item.profile_id === profileID );
+		const emails = dataEmail.map( item => item.email );
+		const dataCase = this.state.cases
+			.filter( item => emails.includes( item.email ) )
+//		const accounts = dataCase.map( item => item.accoutname );
+//		const dataAccount = this.state.cases
+//			.filter( item => accounts.includes( item.accountname ) );
+		const dataAccount = this.state.accounts
+			.filter( item => item.profile_id === profileID );
+		console.log(this.state.emails);
+		console.log(this.state.cases);
+		console.log(this.state.accounts);
+		console.log(dataEmail);
+		console.log(dataCase);
+		console.log(dataAccount);
+
+		this.setState({
+			loading: false,
+			email, 
+			dataEmail,
+			dataCase,
+			dataAccount,
+		});
+		if (profileID) {
+			message.success("Profile Found");
+			this.setState({ 
+				showHeader: true,
+				showDropdown: true,
+			});
 		} else {
-			dataCopied = dataCopied.filter( 
-				item => item.key !== keys
-			);
-			if (200) message.success('The record has been deleted');
+			message.info("Profile Not Found");
+			this.setState({ 
+				showHeader: false,
+				showDropdown: false,
+			});
 		}
-		this.setState({ [ dataName ] : dataCopied });
+	}
+
+	// bind versions of CRUD
+	listCases = list.bind(this, caseService, 'cases');
+
+	// email table
+	createEmail = create.bind(this, emailService, 'emails');
+	createEmailSync = record => this.createEmail(record)
+		.then( res => this.listEmails() )
+		.then( res => this.updateData(this.state.email));
+	listEmails = listCombined
+		.bind(this, emailService, 'emails', ['labelname', 'label_color']);
+	updateEmail = update.bind(this, emailService, 'emails');
+	updateEmailSync = (id, record) => this.updateEmail(id, record)
+		.then( res => this.listEmails() )
+		.then( res => { 
+			const email = this.state.email === record.email ? 
+				this.state.email : record.email;
+			this.updateData(email);
+		});
+	hideEmail = hide.bind(this, emailService, 'emails');
+	hideEmailSync = ids => this.hideEmail(ids)
+		.then( res => this.listEmails() )
+		.then( res => this.updateData(this.state.email));
+
+	// account table
+	createAccount = create.bind(this, accountService, 'accounts');
+	createAccountSync = record => this.createAccount(record)
+		.then( res => this.listAccounts() )
+		.then( res => this.updateData(this.state.email));
+	listAccounts = list.bind(this, accountService, 'accounts');
+	updateAccount = update.bind(this, accountService, 'accounts');
+	updateAccountSync = (id, record) => this.updateAccount(id, record)
+		.then( res => this.listAccounts() )
+		.then( res => this.updateData(this.state.email));
+	banAccount = ban.bind(this, accountService, 'accounts');
+	banAccountSync = (id, record) => this.banAccount(id, record)
+		.then( res => this.listAccounts() )
+		.then( res => this.updateData(this.state.email));
+	hideAccount = hide.bind(this, accountService, 'accounts');
+	hideAccountSync = ids => this.hideAccount(ids)
+		.then( res => this.listAccounts() )
+		.then( res => this.updateData(this.state.email));
+
+	// case table
+	createCase = create.bind(this, caseService, 'cases');
+	createCaseSync = record => this.createCase(record)
+		.then( res => this.listCases() )
+		.then( res => this.updateData(this.state.email));
+	listCases = list.bind(this, caseService, 'cases');
+	updateCase = update.bind(this, caseService, 'cases');
+	updateCaseSync = (id, record) => this.updateCase(id, record)
+		.then( res => this.listCases() )
+		.then( res => this.updateData(this.state.email));
+	bindCase = bind.bind(this, caseService, 'cases');
+	bindCaseSync = (id, record) => this.bindCase(id, record)
+		.then( res => this.listCases() )
+		.then( res => this.updateData(this.state.email));
+	hideCase = hide.bind(this, caseService, 'cases');
+	hideCaseSync = ids => this.hideCase(ids)
+		.then( res => this.listCases() )
+		.then( res => this.updateData(this.state.email));
+
+	// refresh all 3 data streams 
+	updateData = data => {
+		console.log(data);
+		const email = data;
+		const profileID = this.state.emails
+			.find( item => item.email === email )?.profile_id;
+		const dataEmail = this.state.emails
+			.filter( item => item.profile_id === profileID );
+		const emails = dataEmail.map( item => item.email );
+		const dataCase = this.state.cases
+			.filter( item => emails.includes( item.email ) )
+//		const accounts = dataCase.map( item => item.accoutname );
+//		const dataAccount = this.state.cases
+//			.filter( item => accounts.includes( item.accountname ) );
+		const dataAccount = this.state.accounts
+			.filter( item => item.profile_id === profileID );
+		console.log(this.state.emails);
+		console.log(dataEmail);
+		this.setState({
+			email, 
+			dataEmail,
+			dataCase,
+			dataAccount,
+		});
 	}
 
 	render(){
@@ -442,9 +534,9 @@ class Query extends Component {
 						showHeader={ this.state.showHeader }
 						showDropdown={ this.state.showDropdown }
 						// api props
-						create={ this.create.bind(this, this.state.dataEmail, 'dataEmail') }
-						edit={ this.edit.bind(this, this.state.dataEmail, 'dataEmail') }
-						delete={ this.delete.bind(this, this.state.dataEmail, 'dataEmail') }
+						create={ this.createEmailSync }
+						edit={ this.updateEmailSync }
+						delete={ this.hideEmailSync }
 					/>
 				</Card>
 				<Card
@@ -463,11 +555,12 @@ class Query extends Component {
 						showHeader={ this.state.showHeader }
 						showDropdown={ this.state.showDropdown }
 						// api props
-						create={ this.create.bind(this, this.state.dataCase, 'dataCase') }
-						edit={ this.edit.bind(this, this.state.dataCase, 'dataCase') }
-						delete={ this.delete.bind(this, this.state.dataCase, 'dataCase') }
 						onClickBan={ this.handleClickBan }
 						onClickUnban={ this.handleClickUnban }
+						create={ this.createCaseSync }
+						edit={ this.updateCaseSync }
+						bind={ this.bindCaseSync }
+						delete={ this.hideCaseSync }
 					/>
 				</Card>
 				<Card
@@ -483,9 +576,10 @@ class Query extends Component {
 						showHeader={ this.state.showHeader }
 						showDropdown={ this.state.showDropdown }
 						// api props
-						create={ this.create.bind(this, this.state.dataAccount, 'dataAccount') }
-						edit={ this.edit.bind(this, this.state.dataAccount, 'dataAccount') }
-						delete={ this.delete.bind(this, this.state.dataAccount, 'dataAccount') }
+						create={ this.createAccountSync }
+						edit={ this.updateAccountSync }
+						ban={ this.banAccountSync }
+						delete={ this.hideAccountSync }
 					/>
 				</Card>
 			</div>
