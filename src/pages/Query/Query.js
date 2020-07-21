@@ -44,7 +44,7 @@ class Query extends Component {
 			showDropdown: false, // for dropdown in each table
 			options: [], // options for email search
 			email : "", // current search
-			profile : "", // current profile
+			profilename : "", // current profile
 			emails: [], // all emails
 			cases: [], // all cases
 			accounts: [], // all accounts
@@ -86,9 +86,16 @@ class Query extends Component {
 
 	// update all 3 tables upon a search
 	updateTables = data => {
-		const profileID = this.updateData(data);
-		this.setState({ loading: false });
-		if (profileID) {
+		const email = data;
+		const profilename = this.state.emails
+			.find( item => item.email === email )?.profilename;
+		this.updateData(profilename);
+		this.setState({ 
+			email,
+			profilename,
+			loading: false,
+		});
+		if (profilename) {
 			message.success("Profile Found");
 			this.setState({ 
 				showHeader: true,
@@ -104,14 +111,9 @@ class Query extends Component {
 	}
 
 	// refresh all 3 data streams 
-	updateData = data => {
-		const email = data;
-		const found = this.state.emails
-			.find( item => item.email === email );
-		const profileID = found?.profile_id;
-		const profile = found?.profilename;
+	updateData = profilename => {
 		const dataEmail = this.state.emails
-			.filter( item => item.profile_id === profileID );
+			.filter( item => item.profilename === profilename );
 		const emails = dataEmail.map( item => item.email );
 		const dataCase = this.state.cases
 			.filter( item => emails.includes( item.email ) )
@@ -119,15 +121,12 @@ class Query extends Component {
 //		const dataAccount = this.state.cases
 //			.filter( item => accounts.includes( item.accountname ) );
 		const dataAccount = this.state.accounts
-			.filter( item => item.profile_id === profileID );
+			.filter( item => item.profilename === profilename );
 		this.setState({
-			email,
-			profile,
 			dataEmail,
 			dataCase,
 			dataAccount,
 		});
-		return profileID;
 	}
 
 	// handlers for profile drawer
@@ -168,59 +167,58 @@ class Query extends Component {
 	createEmail = create.bind(this, emailService, 'emails');
 	createEmailSync = record => this.createEmail(record)
 		.then( res => this.listEmails() )
-		.then( res => this.updateData(this.state.email));
+		.then( res => this.updateData(this.state.profilename));
 	listEmails = listCombined
 		.bind(this, emailService, 'emails', ['labelname', 'label_color']);
 	updateEmail = update.bind(this, emailService, 'emails');
 	updateEmailSync = (id, record) => this.updateEmail(id, record)
 		.then( res => this.listEmails() )
-		.then( res => { 
-			const email = this.state.email === record.email ? 
-				this.state.email : record.email;
-			this.updateData(email);
-		});
+		.then( res => this.listCases() ) // might affect email 
+		.then( res => this.updateData(this.state.profilename) );
 	hideEmail = hide.bind(this, emailService, 'emails');
 	hideEmailSync = ids => this.hideEmail(ids)
 		.then( res => this.listEmails() )
-		.then( res => this.updateData(this.state.email));
+		.then( res => this.updateData(this.state.profilename));
 
 	// account table
 	createAccount = create.bind(this, accountService, 'accounts');
 	createAccountSync = record => this.createAccount(record)
 		.then( res => this.listAccounts() )
-		.then( res => this.updateData(this.state.email));
+		.then( res => this.updateData(this.state.profilename));
 	listAccounts = list.bind(this, accountService, 'accounts');
 	updateAccount = update.bind(this, accountService, 'accounts');
 	updateAccountSync = (id, record) => this.updateAccount(id, record)
 		.then( res => this.listAccounts() )
-		.then( res => this.updateData(this.state.email));
+		.then( res => this.listCases() ) // might affect accountname
+		.then( res => this.updateData(this.state.profilename));
 	banAccount = ban.bind(this, accountService, 'accounts');
 	banAccountSync = (id, record) => this.banAccount(id, record)
 		.then( res => this.listAccounts() )
-		.then( res => this.updateData(this.state.email));
+		.then( res => this.updateData(this.state.profilename));
 	hideAccount = hide.bind(this, accountService, 'accounts');
 	hideAccountSync = ids => this.hideAccount(ids)
 		.then( res => this.listAccounts() )
-		.then( res => this.updateData(this.state.email));
+		.then( res => this.listCases() ) // might delete the foreigh key
+		.then( res => this.updateData(this.state.profilename));
 
 	// case table
 	createCase = create.bind(this, caseService, 'cases');
 	createCaseSync = record => this.createCase(record)
 		.then( res => this.listCases() )
-		.then( res => this.updateData(this.state.email));
+		.then( res => this.updateData(this.state.profilename));
 	listCases = list.bind(this, caseService, 'cases');
 	updateCase = update.bind(this, caseService, 'cases');
 	updateCaseSync = (id, record) => this.updateCase(id, record)
 		.then( res => this.listCases() )
-		.then( res => this.updateData(this.state.email));
+		.then( res => this.updateData(this.state.profilename));
 	bindCase = bind.bind(this, caseService, 'cases');
 	bindCaseSync = (id, record) => this.bindCase(id, record)
 		.then( res => this.listCases() )
-		.then( res => this.updateData(this.state.email));
+		.then( res => this.updateData(this.state.profilename));
 	hideCase = hide.bind(this, caseService, 'cases');
 	hideCaseSync = ids => this.hideCase(ids)
 		.then( res => this.listCases() )
-		.then( res => this.updateData(this.state.email));
+		.then( res => this.updateData(this.state.profilename));
 
 	render(){
 		return (
@@ -285,7 +283,7 @@ class Query extends Component {
 					<Email 
 						// data props
 						data={ this.state.dataEmail }
-						profile={ this.state.profile }
+						profilename={ this.state.profilename }
 						// display props
 						loading={ this.state.loading }
 						tableHeader={ <><strong>Profile</strong></> }
@@ -327,7 +325,7 @@ class Query extends Component {
 					<Account
 						// data props
 						data={ this.state.dataAccount }
-						profile={ this.state.profile }
+						profilename={ this.state.profilename }
 						// display props
 						loading={ this.state.loading }
 						tableHeader={ <><strong>Accounts</strong></> }

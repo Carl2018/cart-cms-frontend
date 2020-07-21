@@ -151,13 +151,13 @@ class Email extends Component {
 			],
 			editable: true,
 			input: disabled => 
-			!this.props.profile ? (<></>) :
+			!this.props.profilename ? (<></>) :
 			(
 				<Select
 					disabled={ disabled }
 				>
-					<Option value={ this.props.profile }>
-						{ this.props.profile }
+					<Option value={ this.props.profilename }>
+						{ this.props.profilename }
 					</Option>
 				</Select>
 			) 
