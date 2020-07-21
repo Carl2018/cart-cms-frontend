@@ -286,6 +286,7 @@ class Case extends Component {
 					delete={ this.props.delete }
 					refreshTable={ this.refreshTable }
 					list={ this.props.list }
+					refreshPage={ this.props.refreshPage }
 				>
 				</TableWrapper>
 			</div>

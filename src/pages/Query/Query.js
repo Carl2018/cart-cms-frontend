@@ -219,12 +219,20 @@ class Query extends Component {
 		.then( res => this.updateData(this.state.profilename));
 	bindCase = bind.bind(this, caseService, 'cases');
 	bindCaseSync = (id, record) => this.bindCase(id, record)
-		.then( res => this.listCases() )
-		.then( res => this.updateData(this.state.profilename));
+		.then( res => { this.listCases(); return res; } )
+		.then( res => { this.updateData(this.state.profilename); return res; });
 	hideCase = hide.bind(this, caseService, 'cases');
 	hideCaseSync = ids => this.hideCase(ids)
 		.then( res => this.listCases() )
 		.then( res => this.updateData(this.state.profilename));
+
+	// refresh the page
+	refreshPage = profilename => {
+		this.listEmails()
+		.then( res => this.listCases())
+		.then( res => this.listAccounts())
+		.then( res => this.updateData(profilename) );
+	}
 
 	render(){
 		return (
@@ -326,6 +334,7 @@ class Query extends Component {
 						edit={ this.updateCaseSync }
 						bind={ this.bindCaseSync }
 						delete={ this.hideCaseSync }
+						refreshPage={ this.refreshPage }
 					/>
 				</Card>
 				<Card

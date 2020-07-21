@@ -370,6 +370,7 @@ class TableWrapper extends Component {
 			record: {},
 			mergeModalKey: Date.now(), 
 		});
+		this.props.refreshPage( record.profilename );
 	}
 
 	// bind versions of CRUD
