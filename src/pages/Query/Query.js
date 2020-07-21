@@ -23,6 +23,7 @@ import { Email } from "./Email"
 import { 
 	accountService,
 	caseService,
+	categoryService,
 	emailService,
 	labelService,
 	profileService,
@@ -58,6 +59,8 @@ class Query extends Component {
 			profiles: [],
 			record: {},
 			labels: [],
+			// for category selections in case table
+			categories: [],
 		};
 	}
 	
@@ -66,6 +69,7 @@ class Query extends Component {
 		this.listCases();
 		this.listAccounts();
 		this.listLabels();
+		this.listCategories();
 	}
 
 	// filter AutoComplete options when input field changes
@@ -149,6 +153,8 @@ class Query extends Component {
 	// bind versions of CRUD
 	// labels
 	listLabels = list.bind(this, labelService, 'labels');
+	// categories
+	listCategories = list.bind(this, categoryService, 'categories');
 
 	// profile drawer
 	createProfile = create.bind(this, profileService, 'profiles');
@@ -307,6 +313,7 @@ class Query extends Component {
 						dataAccount={ this.state.dataAccount }
 						email={ this.state.email }
 						accounts={ this.state.accounts }
+						categories={ this.state.categories }
 						// display props
 						loading={ this.state.loading }
 						tableHeader={ <><strong>Cases</strong></> }

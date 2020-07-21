@@ -13,18 +13,13 @@ import {
 import { TableWrapper } from './TableWrapper'
 
 // import services
-import { 
-	categoryService,
- } from '_services';
 
 // import helpers
 import { 
-	backend,
 	helpers 
 } from '_helpers';
 
 // destructure imported components and objects
-const { list } = backend;
 const { compare } = helpers;
 const { Option } = Select
 
@@ -33,15 +28,10 @@ class Case extends Component {
 		super(props);
 		this.state = {
 			tableWrapperKey: Date.now(),
-			// for category selections
-			categories: [],
-			// options for email search
-			options: [],
 		};
 	}
 	
 	componentDidMount() {
-		this.listCategories();
 	}
 
 	// define columns for TableBody
@@ -149,7 +139,7 @@ class Case extends Component {
 					disabled={ disabled }
 				>
 					{
-						this.state.categories.map( item => (
+						this.props.categories.map( item => (
 							<Option
 								key={ item.id }
 								value={ item.categoryname }
@@ -267,11 +257,9 @@ class Case extends Component {
 	)
 
 	// bind versions of CRUD
-	listCategories = list.bind(this, categoryService, 'categories');
 
 	// refresh table
 	refreshTable = () => {
-		this.listCategories();
 		this.setState({ tableWrapperKey: Date.now() })
 	};
 
