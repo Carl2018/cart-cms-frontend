@@ -311,17 +311,23 @@ class Case extends Component {
 			<div className='Case'>
 				<TableWrapper
 					key={ this.state.tableWrapperKey }
+					// data props
 					data={ this.props.data }
+					// display props
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create a new case'
+					drawerTitle='Create A New Case'
+					loading={ this.props.loading }
+					showHeader={ this.props.showHeader }
+					showDropdown={ this.props.showDropdown }
+					// api props
 					create={ this.props.create }
 					edit={ this.props.edit }
 					bind={ this.props.bind }
 					delete={ this.props.delete }
 					refreshTable={ this.refreshTable }
-					list={ this.list }
+					list={ this.props.list }
 				>
 				</TableWrapper>
 			</div>

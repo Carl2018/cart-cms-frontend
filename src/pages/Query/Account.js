@@ -203,13 +203,13 @@ class Account extends Component {
 			],
 			editable: true,
 			input: disabled => 
-			this.props.data.length === 0 ? (<></>) :
+			!this.props.profile ? (<></>) :
 			(
 				<Select
 					disabled={ disabled }
 				>
-					<Option value={ this.props.data[0].profilename }>
-						{ this.props.data[0].profilename }
+					<Option value={ this.props.profile }>
+						{ this.props.profile }
 					</Option>
 				</Select>
 			) 
