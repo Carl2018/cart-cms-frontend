@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from 'uuid';
 // import components from ant design
 import { FileSearchOutlined } from '@ant-design/icons';
 import { 
-	AutoComplete, 
 	Input, 
 	Select, 
 	Tag, 
@@ -15,9 +14,7 @@ import { TableWrapper } from './TableWrapper'
 
 // import services
 import { 
-	caseService,
 	categoryService,
-	emailService,
  } from '_services';
 
 // import helpers
@@ -27,9 +24,8 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { create, list, update, bind, hide } = backend;
+const { list } = backend;
 const { compare } = helpers;
-const { Search } = Input;
 const { Option } = Select
 
 class Case extends Component {
@@ -37,20 +33,15 @@ class Case extends Component {
 		super(props);
 		this.state = {
 			tableWrapperKey: Date.now(),
-			// populate the table body with data
-			data: [],
 			// for category selections
 			categories: [],
-			// options for profile search
-			emails: [],
+			// options for email search
 			options: [],
 		};
 	}
 	
 	componentDidMount() {
-		this.list();
 		this.listCategories();
-		this.listEmails();
 	}
 
 	// define columns for TableBody
@@ -248,18 +239,20 @@ class Case extends Component {
 				</span>
 			) : 
 			(
-				<AutoComplete
-					onChange={ this.handleChange }
-					onSelect={ this.handleSearch }
-					options={ this.state.options }
+				<Select
+					disabled={ disabled }
 				>
-					<Search
-						onSearch={ this.handleSearch }
-						placeholder="Search Email"
-						size="middle"
-						allowClear
-					/>
-				</AutoComplete>
+					{
+						this.props.dataEmail.map( item => (
+							<Option
+								key={ item.id }
+								value={ item.email }
+							>
+								{ item.email }
+							</Option>
+						))
+					}
+				</Select>
 			)
 		},
 	];
@@ -273,36 +266,12 @@ class Case extends Component {
 		</>
 	)
 
-	// filter AutoComplete options when input field changes
-	handleChange = data => {
-		const options = this.state.emails
-			.map( item => item.email )
-			.filter( (item, index, array) => array.indexOf(item) === index )
-			.filter( item => item.includes(data) )
-			.map( item => ({ value: item }) );
-		this.setState({ options });
-	}
-
-	// perform a search when the search button is pressed
-	handleSearch = data => {
-		console.log("search");
-	}
-
 	// bind versions of CRUD
-	create= create.bind(this, caseService, 'data');
-	createSync = record => this.create(record).then( res => this.list() );
-	list = list.bind(this, caseService, 'data');
-	update = update.bind(this, caseService, 'data');
-	bind = bind.bind(this, caseService, 'data');
-	hide = hide.bind(this, caseService, 'data');
 	listCategories = list.bind(this, categoryService, 'categories');
-	listEmails = list.bind(this, emailService, 'emails');
 
 	// refresh table
 	refreshTable = () => {
-		this.list();
 		this.listCategories();
-		this.listEmails();
 		this.setState({ tableWrapperKey: Date.now() })
 	};
 
@@ -313,6 +282,7 @@ class Case extends Component {
 					key={ this.state.tableWrapperKey }
 					// data props
 					data={ this.props.data }
+					accounts={ this.props.accounts }
 					// display props
 					columns={ this.columns }
 					formItems={ this.formItems }

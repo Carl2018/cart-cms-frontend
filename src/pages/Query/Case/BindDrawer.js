@@ -13,15 +13,10 @@ import {
 // import shared and child components
 
 // import services
-import { 
-	accountService,
- } from '_services';
 
 // import helpers
-import { backend } from '_helpers';
 
 // destructure imported components and objects
-const { list } = backend;
 const { Search } = Input;
 
 class BindDrawer extends Component {
@@ -29,13 +24,11 @@ class BindDrawer extends Component {
 		super(props);
 		this.state = {
 			// for AutoComplete
-			accounts: [],
 			options: [],
 		};
 	}
 
 	componentDidMount() {
-		this.listAccounts();
 	}
 
 	// define form items for TableDrawer
@@ -75,7 +68,7 @@ class BindDrawer extends Component {
 
 	// filter AutoComplete options when input field changes
 	handleChange = data => {
-		const options = this.state.accounts
+		const options = this.props.accounts
 			.map( item => item.accountname )
 			.filter( (item, index, array) => array.indexOf(item) === index )
 			.filter( item => item.includes(data) )
@@ -89,7 +82,6 @@ class BindDrawer extends Component {
 	}
 
 	// bind versions of CRUD
-	listAccounts = list.bind(this, accountService, 'accounts');
 
 	render(){
 		return (

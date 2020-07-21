@@ -284,6 +284,7 @@ class Query extends Component {
 						// data props
 						data={ this.state.dataEmail }
 						profilename={ this.state.profilename }
+						labels={ this.state.labels }
 						// display props
 						loading={ this.state.loading }
 						tableHeader={ <><strong>Profile</strong></> }
@@ -305,6 +306,7 @@ class Query extends Component {
 						dataEmail={ this.state.dataEmail }
 						dataAccount={ this.state.dataAccount }
 						email={ this.state.email }
+						accounts={ this.state.accounts }
 						// display props
 						loading={ this.state.loading }
 						tableHeader={ <><strong>Cases</strong></> }

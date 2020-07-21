@@ -13,18 +13,11 @@ import {
 import { EmailWrapper } from './EmailWrapper'
 
 // import services
-import { 
-	labelService,
-} from '_services';
 
 // import helpers
-import { 
-	backend,
-	helpers 
-} from '_helpers';
+import { helpers } from '_helpers';
 
 // destructure imported components and objects
-const { list } = backend;
 const { compare } = helpers;
 const { Option } = Select;
 
@@ -33,14 +26,10 @@ class Email extends Component {
 		super(props);
 		this.state = {
 			tableWrapperKey: Date.now(),
-			labels: [],
-			// options for profile search
-			options: [],
 		};
 	}
 
 	componentDidMount() {
-		this.listLabels();
 	}
 
 	// define columns for TableBody
@@ -79,7 +68,7 @@ class Email extends Component {
 			sorter: (a, b) => compare(a.labelname, b.labelname),
 			sortDirection: ['ascend', 'descend'],
 			render: labelname => {
-				const labels = this.state.labels.slice();
+				const labels = this.props.labels.slice();
 				const elements = labelname === undefined 
 					|| labelname[0] === null 
 					|| labels.length === 0 
@@ -174,11 +163,9 @@ class Email extends Component {
 	)
 
 	// bind versions of CRUD
-	listLabels = list.bind(this, labelService, 'labels');
 
 	// refresh table
 	refreshTable = () => {
-		this.listLabels();
 		this.setState({ tableWrapperKey: Date.now() })
 	};
 
@@ -189,7 +176,7 @@ class Email extends Component {
 					key={ this.state.tableWrapperKey }
 					// data props
 					data={ this.props.data }
-					labels={ this.state.labels }
+					labels={ this.props.labels }
 					// display props
 					columns={ this.columns }
 					formItems={ this.formItems }

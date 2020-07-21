@@ -459,6 +459,7 @@ class TableWrapper extends Component {
 				<div>
 					<BindDrawer
 						tableDrawerKey={ this.state.bindDrawerKey } 
+						accounts={ this.props.accounts } 
 						visible={ this.state.visibleBind } 
 						onClose={ this.handleCloseBind }
 						record={ this.state.record }
