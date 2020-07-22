@@ -291,6 +291,3 @@ class TableWrapper extends Component {
 }
 
 export default TableWrapper;
-					// data props
-					// display props
-					// api props

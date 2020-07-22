@@ -307,12 +307,14 @@ class InspectDrawer extends Component {
 			type="ghost"
 			style={{ border: "none" }}
 			size="small"
-			onClick={ this.handleClickBind }
+			onClick={ this.onClickBind }
 		>
 			<NodeIndexOutlined />
 			Bind
 		</Button>
 	);
+
+	onClickBind = () => this.props.onClickBind(this.props.dataCase);
 
 	// define status 
 	getStatus = status => {

@@ -20,7 +20,6 @@ class MergeDrawer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			change: false,
 		};
 	}
 	
@@ -28,8 +27,8 @@ class MergeDrawer extends Component {
 	genCheckboxA = () => (
 		<Checkbox
 			type="ghost"
-			checked={ !this.state.change }
-			onClick={ event => this.setState({ change: false}) }
+			checked={ !this.props.change }
+			onClick={ this.props.onClickA }
 		>
 		</Checkbox>
 	);
@@ -38,14 +37,14 @@ class MergeDrawer extends Component {
 	genCheckboxB = () => (
 		<Checkbox
 			type="ghost"
-			checked={ this.state.change }
-			onClick={ event => this.setState({ change: true }) }
+			checked={ this.props.change }
+			onClick={ this.props.onClickB }
 		>
 		</Checkbox>
 	);
 
 	// handler for submit
-	onSubmit = event => this.props.onSubmit(this.state.change);
+	onSubmit = event => this.props.onSubmit();
 
 	render(){
 		return (
@@ -90,7 +89,7 @@ class MergeDrawer extends Component {
 										<Descriptions 
 											column={ 1 }
 											style={{ 
-												background: this.state.change ? "none" : "#fafafa" 
+												background: this.props.change ? "none" : "#fafafa" 
 											}}
 										>
 											<Descriptions.Item label="Profile Name">
@@ -110,7 +109,7 @@ class MergeDrawer extends Component {
 										<Descriptions 
 											column={ 1 }
 											style={{ 
-												background: !this.state.change ? "none" : "#fafafa" 
+												background: !this.props.change ? "none" : "#fafafa" 
 											}}
 										>
 											<Descriptions.Item label="Profile Name">

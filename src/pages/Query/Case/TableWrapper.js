@@ -60,7 +60,8 @@ class TableWrapper extends Component {
 			bindDrawerKey: Date.now(),
 			// accounts in the same profile
 			inProfile: [],
-			// for the merge modal
+			// for the merge drawer
+			change: false,
 			bind: {},
 			merge: {},
 			visibleMerge: false,
@@ -354,6 +355,10 @@ class TableWrapper extends Component {
 	};
 
 	// handlers for merge modal
+	handleClickCheckboxA = event => this.setState({ change: false });
+
+	handleClickCheckboxB = event => this.setState({ change: true});
+
 	handleCloseMerge = event => {
 		this.setState({
 			visibleMerge: false, 
@@ -362,9 +367,8 @@ class TableWrapper extends Component {
 		});
 	}
 
-	handleSubmitMerge = change => {
-		console.log(this.state.merge);
-		console.log(change);
+	handleSubmitMerge = () => {
+		const change = this.state.change;
 		const merge = Object.assign( {}, this.state.merge );
 		const id = merge.profile_id_to;
 		const record = { };
@@ -380,6 +384,7 @@ class TableWrapper extends Component {
 		this.setState({
 			visibleMerge: false, 
 			record: {},
+			change: false,
 			mergeModalKey: Date.now(), 
 		});
 		this.props.refreshPage( record.profilename );
@@ -503,8 +508,11 @@ class TableWrapper extends Component {
 					<MergeDrawer
 						mergeModalKey ={ this.state.mergeModalKey } 
 						visible={ this.state.visibleMerge } 
+						change={ this.state.change } 
 						onClose={ this.handleCloseMerge }
 						record={ this.state.merge }
+						onClickA={ this.handleClickCheckboxA }
+						onClickB={ this.handleClickCheckboxB }
 						onSubmit={ this.handleSubmitMerge }
 					>
 					</MergeDrawer>
@@ -526,6 +534,7 @@ class TableWrapper extends Component {
 						disabled={ this.state.disabledInspect } 
 						// api props
 						onClose={ this.handleCloseInspect }
+						onClickBind={ this.handleClickBind }
 					/>
 				</div>
 			</div>
