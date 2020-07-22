@@ -15,6 +15,8 @@ export const backend = {
     listByEmail,
     update,
     updateMerge,
+    toggleSticktop,
+    incrementCount,
     bind,
     ban,
     hide,
@@ -92,6 +94,42 @@ async function update(service, objectName, id, record) {
 		let data = this.state[objectName].slice();
 		let index = data.findIndex( item => item.id === id);
 		Object.keys(record).forEach(item => data[index][item] = record[item])
+		this.setState({ [objectName]: data });
+		message.success('The record has been edited');
+	} else {
+		message.error(response.en);
+	}
+}
+// interface for toggle sticktop
+async function toggleSticktop(service, objectName, id, record) {
+	// update the record in the backend table
+	let response = null;
+	await service.toggleSticktop({ id, ...record })
+		.then( result => response = result )
+		.catch( error => response = error );
+	// update the frontend data accordingly
+	if (response.code === 200){
+		let data = this.state[objectName].slice();
+		let index = data.findIndex( item => item.id === id);
+		Object.keys(record).forEach(item => data[index][item] = record[item])
+		this.setState({ [objectName]: data });
+		message.success('The record has been edited');
+	} else {
+		message.error(response.en);
+	}
+}
+// interface for increment count
+async function incrementCount(service, objectName, id) {
+	// update the record in the backend table
+	let response = null;
+	await service.incrementCount({ id })
+		.then( result => response = result )
+		.catch( error => response = error );
+	// update the frontend data accordingly
+	if (response.code === 200){
+		let data = this.state[objectName].slice();
+		let index = data.findIndex( item => item.id === id);
+		data[index].copied_count += 1;
 		this.setState({ [objectName]: data });
 		message.success('The record has been edited');
 	} else {

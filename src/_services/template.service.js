@@ -6,6 +6,8 @@ export const templateService = {
     create,
     list,
     update,
+    toggleSticktop,
+    incrementCount,
     hide,
 };
 
@@ -32,6 +34,26 @@ function update(record) {
 			body: JSON.stringify(record)
 		};
     return fetch(`${config.apiUrl}/template/update`, requestOptions)
+			.then(handleResponse);
+}
+
+function toggleSticktop(record) {
+    const requestOptions = { 
+			method: 'PUT', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/template/toggle_sticktop`, requestOptions)
+			.then(handleResponse);
+}
+
+function incrementCount(record) {
+    const requestOptions = { 
+			method: 'PUT', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/template/increment_count`, requestOptions)
 			.then(handleResponse);
 }
 

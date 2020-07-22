@@ -15,7 +15,14 @@ import {
 	SearchableInput,
 } from '_components'
 
-// destructure child components
+// import services
+import { templateService } from '_services';
+
+// import helpers
+import { backend } from '_helpers';
+
+// destructure imported components and objects
+const { list, toggleSticktop, incrementCount } = backend;
 const { Panel } = Collapse;
 
 class Template extends Component {
@@ -23,71 +30,23 @@ class Template extends Component {
 		super(props);
 		this.state = {
 			// for template language
-			templateLang: "Chn",
+			templateLang: "eng",
 			// for search by
 			searchBy: "title",
 			searchProperty: "title",
 			// for Spin
 			loading: false,
 			// for Collapse
-			panels: this.allTemplates,
-			allTemplates: this.allTemplates,
+			panels: [],
+			// for template search
+			templates: [],
 		};
 	}
 	
-	allTemplates = [
-		{
-			key: '1',
-			title: 'change of membership response',
-			bodyEng: '<h2>By doing so, you will lose your privilge as abcdf</h2>',
-			bodyChn: "<h2>QQQQQQQQQQDDDDDDDDDDD</h2>",
-			stickTop: false,
-			copiedCount: 0,
-			updatedAt: 0,
-		},
-		{
-			key: '2',
-			title: 'unban response',
-			bodyEng: `<h2>please behave yourself</h2>
-						<p>or you will be banned permanetly
-						I am not kidding
-						<strong>seriously</strong>
-						I mean it
-						stop laughing</p>
-						`,
-			bodyChn: "<strong>TTTTT</strong><em>AAAAAAAAAAAAAAAAA</em>",
-			stickTop: false,
-			copiedCount: 0,
-			updatedAt: 1,
-		},
-		{
-			key: '3',
-			title: 'change of password response',
-			bodyEng: `<h2>please provide your credentials</h2>
-						<p><em>please please please</em>
-						please please please
-						please please please</p>
-						`,
-			bodyChn: "<strong>ASDASDF</strong><h2>ASDFASDFASDFASDFASDF</h2>",
-			stickTop: false,
-			copiedCount: 0,
-			updatedAt: 2,
-		},
-		{
-			key: '4',
-			title: 'terms and conditions',
-			bodyEng: `<h2>terms and conditions<h2><ol>
-						<li>clause 1</li>
-						<li>clause 2</li>
-						<li>clause 3</li>
-						<li>clause 4</li></ol>
-						`,
-			bodyChn: "<em>ZZZ</em> <strong>ZZZ1234</strong>",
-			stickTop: false,
-			copiedCount: 0,
-			updatedAt: 3,
-		},
-	];
+	componentDidMount() {
+		this.listTemplates();
+		this.listPanels();
+	}
 
 	titleModal = () => (
 		<Row>
@@ -101,12 +60,12 @@ class Template extends Component {
 				<Radio.Group 
 					size="small"
 					buttonStyle="solid"
-					defaultValue="Chn"
+					defaultValue="eng"
 					onChange={this.handleChangeRadioLang} 
 					value={this.state.templateLang}
 				>
-					<Radio.Button value={"Chn"}>CHN</Radio.Button>
-					<Radio.Button value={"Eng"}>ENG</Radio.Button>
+					<Radio.Button value={"eng"}>Eng</Radio.Button>
+					<Radio.Button value={"chn"}>Chn</Radio.Button>
 				</Radio.Group>
 			</Col>
 		</Row>	
@@ -116,24 +75,18 @@ class Template extends Component {
 		const templateLang = event.target.value;
 		this.setState({ templateLang })
 		const searchBy = this.state.searchBy;
-		let searchProperty = searchBy;
-		if (searchProperty === "body") {
-				searchProperty += templateLang;
-				this.setState({ searchProperty })
-		}
+		if (searchBy === "body") 
+				this.setState({ searchProperty: searchBy + '_' + templateLang });
 		message.info("Template Bodies Shown in " + 
-			( templateLang === "Chn" ? "Chinese" : "English" ) );
+			( templateLang === "chn" ? "Chinese" : "English" ) );
 	}
 
 	handleChangeRadioSearchBy = event => {
 		const searchBy = event.target.value;
-		let searchProperty = searchBy;
-		if (searchProperty === "body")
-				searchProperty += this.state.templateLang;
-		this.setState({
-			searchBy,
-			searchProperty,
-		});
+		this.setState({ searchBy });
+		if (searchBy === "body")
+				this.setState({ 
+					searchProperty: searchBy + '_' + this.state.templateLang });
 		message.info("Search Templates by " + searchBy);
 	};
 
@@ -144,7 +97,7 @@ class Template extends Component {
 
 	updateCollapse = data => {
 		const searchProperty = this.state.searchProperty;
-		const panels = this.state.allTemplates
+		const panels = this.state.templates
 			.filter( item => item[searchProperty].includes(data) );
 		this.setState({ 
 			panels,
@@ -159,9 +112,9 @@ class Template extends Component {
 		<Space size="middle">
 			<Switch 
 				checkedChildren="top"
-				checked={ item.stickTop } 
-				defaultChecked={ item.stickTop } 
-				onChange={ this.handleChangeSwitchStickTop.bind(this, item.key) }
+				checked={ (item.sticktop === "t" ? true : false) } 
+				defaultChecked={ (item.sticktop === "t" ? true : false) } 
+				onChange={ this.handleChangeSwitchSticktop.bind(this, item.id) }
 			/>
 			<Button
 				type="ghost"
@@ -175,28 +128,30 @@ class Template extends Component {
 		</div>
 	);
 
-	handleChangeSwitchStickTop = (key, checked) => {
-		let allTemplates = this.state.allTemplates.map( item => {
-			if (item.key === key) {
-				item.stickTop = checked;
-				item.updatedAt = Date.now();
-			}
+	handleChangeSwitchSticktop = (id, checked) => {
+		
+		console.log(id);
+		console.log(checked);
+		const toggle = { t: "f", f: "t" }
+		let templates = this.state.templates.map( item => {
+			item.sticktop = item.id === id ? 
+				toggle[item.sticktop] : item.sticktop;
 			return item;
 		});
-
-		// sort the arrays accordingly
-		allTemplates.sort(this.dynamicSort("stickTop"));
+		templates.sort(this.dynamicSort("sticktop"));
+		console.log(templates);
 
 		let panels = this.state.panels.slice();
-		panels.sort(this.dynamicSort("stickTop"));
+		panels.sort(this.dynamicSort("sticktop"));
+		console.log(panels);
 
 		this.setState({
-			allTemplates,
+			templates,
 			panels,
 		});
 
 		// emphasize the change with background color changes
-		const panel = document.getElementById("panel" + key);
+		const panel = document.getElementById("panel" + id);
 		const bgcolor = panel.style.backgroundColor;
 		panel.style.backgroundColor = "#a9a9a9";
 		setTimeout( () => {
@@ -206,17 +161,14 @@ class Template extends Component {
 
 	handleClickCopy = template => {
 		// copy to clipboard
-		const key = "body" + this.state.templateLang;
-		this.copyToClip( template[key] )
-
+		this.copyToClip( template["body_" + this.state.templateLang] )
 		// keep count
-		const allTemplates = this.state.allTemplates.map( item => {
-			if (item.key  === template.key)
+		const templates = this.state.templates.map( item => {
+			if (item.id === template.id)
 				 item.copiedCount++;	
 			return item;
 		});
-		this.setState({ allTemplates });
-
+		this.setState({ templates });
 		message.success("Template Copied");
 	}
 
@@ -257,19 +209,25 @@ class Template extends Component {
 	}
 
 	onCancel = event => {
-		const sticktops = this.state.allTemplates
-			.filter( item => item.stickTop );
-		const rest = this.state.allTemplates
-			.filter( item => !item.stickTop )
-			.sort( this.dynamicSort("copiedCount") );
+		const sticktops = this.state.templates
+			.filter( item => item.sticktop === 't' );
+		const rest = this.state.templates
+			.filter( item => !item.sticktop === 't' )
+			.sort( this.dynamicSort("copied_count") );
 			
 		this.setState({
-			allTemplates: [...sticktops, ...rest],
+			templates: [...sticktops, ...rest],
 			panels: [...sticktops, ...rest],
 		});
 
 		this.props.onCancel(event);
 	}
+
+	// bind versions of CRUD
+	listTemplates = list.bind(this, templateService, 'templates');
+	listPanels = list.bind(this, templateService, 'panels');
+	toggleSticktop = toggleSticktop.bind(this, templateService, 'templates');
+	incrementCount = incrementCount.bind(this, templateService, 'templates');
 
 	render(){
 		return (
@@ -297,7 +255,7 @@ class Template extends Component {
 								<Radio value={"body"}>Body</Radio>
 							</Radio.Group>
 							<SearchableInput
-								allOptions={ this.allTemplates }
+								allOptions={ this.state.templates }
 								searchProperty={ this.state.searchProperty }
 								onSearch={ this.handleSearch }
 								placeholder={ "Search Templates by " + this.state.searchBy }
@@ -313,14 +271,14 @@ class Template extends Component {
 									{
 										this.state.panels.map( item => (
 											<Panel 
-												id={ "panel"+item.key }
+												id={ "panel"+item.id }
 												header={ item.title }
-												key={ item.key }
+												key={ item.id }
 												extra={ this.genExtraModal(item) }
 											>
 												<RichTextOutput 
-													body={ this.state.templateLang === "Chn" ?
-														item.bodyChn : item.bodyEng }
+													body={ this.state.templateLang === "chn" ?
+														item.body_chn : item.body_eng }
 												/>
 											</Panel>
 										) )
@@ -335,3 +293,8 @@ class Template extends Component {
 }
 
 export default Template;
+		//this.toggleSticktop(1, {sticktop: 't'});
+		//this.incrementCount(1);
+		//console.log(this.state.templates);
+		// copy to clipboard
+

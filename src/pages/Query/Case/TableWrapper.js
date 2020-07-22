@@ -16,7 +16,6 @@ import {
 	DeleteOutlined,
 	EditOutlined, 
 	FileSearchOutlined, 
-	FileTextOutlined, 
 	HistoryOutlined, 
 	NodeIndexOutlined, 
 } from '@ant-design/icons';

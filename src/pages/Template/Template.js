@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 // import components from ant design
 import { CopyOutlined } from '@ant-design/icons';
 import { 
 	Input,
 	Select,
+	Tag,
 } from 'antd';
 
 // import shared and child components
@@ -62,11 +64,51 @@ class Template extends Component {
 			title: 'Category',
 			dataIndex: 'categoryname',
 			key: 'categoryname',
-			sorter: (a, b) => compare(a.body, b.body),
+			sorter: (a, b) => compare(a.categoryname, b.categoryname),
 			sortDirection: ['ascend', 'descend'],
 			width: '30%',
 			setFilter: true
 		},
+		{
+			title: 'Copied Count',
+			dataIndex: 'copied_count',
+			key: 'copied_count',
+			sorter: (a, b) => compare(a.copied_count, b.copied_count),
+			sortDirection: ['ascend', 'descend'],
+			width: '30%',
+			setFilter: true
+		},
+		{
+			title: 'Stick Top',
+			dataIndex: 'sticktop',
+			key: 'sticktop',
+			width: '30%',
+			sorter: (a, b) => compare(a.sticktop, b.sticktop),
+			sortDirection: ['ascend', 'descend'],
+			render: sticktop => {
+				let color = 'default';
+				let text = 'No';
+				switch (sticktop) {
+					case 't' :
+						color = 'blue';
+						text = 'True';
+						break;
+					case 'f' :
+						color = 'default';
+						text = 'No';
+						break;
+					default:
+						color = 'default';
+						text = 'No';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+		}
 	];
 
 	// define form items for TableDrawer
@@ -117,12 +159,12 @@ class Template extends Component {
 			)
 		},
 		{
-			label: 'Body',
-			name: 'body',
+			label: 'Body in English',
+			name: 'body_eng',
 			rules: [
 				{
 					required: true,
-					message: 'body cannot be empty',
+					message: 'Body in English cannot be empty',
 				},
 			],
 			editable: true,
@@ -130,6 +172,25 @@ class Template extends Component {
 				<RichTextInput 
 					disabled={ disabled }
 					record={ record }
+					bodyName={ "body_eng"}
+				/>
+			)
+		},			
+		{
+			label: 'Body in Chinese',
+			name: 'body_chn',
+			rules: [
+				{
+					required: true,
+					message: 'Body in Chinese cannot be empty',
+				},
+			],
+			editable: true,
+			input: (disabled, record) => (
+				<RichTextInput 
+					disabled={ disabled }
+					record={ record }
+					bodyName={ "body_chn"}
 				/>
 			)
 		},			
@@ -155,7 +216,6 @@ class Template extends Component {
 	refreshTable = () => {
 		this.list();
 		this.listCategories();
-		console.log(this.state.categories);
 		this.setState({ tableWrapperKey: Date.now() })
 	};
 

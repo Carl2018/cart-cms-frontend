@@ -11,7 +11,7 @@ class RichTextInput extends Component {
 
   state = {
     //value: RichTextEditor.createEmptyValue()
-		value: RichTextEditor.createValueFromString((this.props.record.body || ""), 'html')
+		value: RichTextEditor.createValueFromString((this.props.record[this.props.bodyName] || ""), 'html')
   }
 
   onChange = (value) => {
