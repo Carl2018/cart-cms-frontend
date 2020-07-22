@@ -26,8 +26,6 @@ import { helpers } from '_helpers';
 
 // destructure imported components and objects
 const { compare } = helpers;
-
-// destructure child components
 const { Item } = Descriptions;
 const { Panel } = Collapse;
 
@@ -286,6 +284,11 @@ class InspectDrawer extends Component {
 		closeNotification(notificationKey);
 	};
 
+	// handlers for process
+	onClickProcess = () => this.props.onClickProcess(this.props.dataCase);
+
+	// handlers for edit 
+	onClickEdit = () => this.props.onClickEdit(this.props.dataCase);
 
 	// handlers for templates
 	handleClickTemplates = event => {
@@ -407,8 +410,8 @@ class InspectDrawer extends Component {
 				offset={ 12 }
 			>
 				<DrawerDropdown 
-					onClickAction={ this.handleClickAction }
-					onClickEdit={ this.handleClickEdit }
+					onClickProcess={ this.onClickProcess }
+					onClickEdit={ this.onClickEdit }
 					onClickUnban={ this.onClickUnban }
 					onClickBan={ this.onClickBan }
 					onClickTemplates={ this.handleClickTemplates }
@@ -416,32 +419,6 @@ class InspectDrawer extends Component {
 			</Col>
 		</Row>	
 	)
-
-	// sorting rules
-	dynamicSort(property) {
-			var sortOrder = 1;
-
-			if(property[0] === "-") {
-					sortOrder = -1;
-					property = property.substr(1);
-			}
-
-			return function (a,b) {
-					if (typeof a[property] === "string") {
-						if(sortOrder === -1){
-								return b[property].localeCompare(a[property]);
-						}else{
-								return a[property].localeCompare(b[property]);
-						}        
-					} else {
-						if(sortOrder === -1){
-								return a[property] - b[property];
-						}else{
-								return b[property] - a[property];
-						}        
-					}
-			}
-	}
 
 	render(){
 		return (

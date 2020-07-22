@@ -534,6 +534,8 @@ class TableWrapper extends Component {
 						// api props
 						onClose={ this.handleCloseInspect }
 						onClickBind={ this.handleClickBind }
+						onClickProcess={ this.handleClickProcess }
+						onClickEdit={ this.handleClickEdit }
 					/>
 				</div>
 			</div>

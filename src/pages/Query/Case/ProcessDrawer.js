@@ -229,7 +229,7 @@ class ProcessDrawer extends Component {
 			<div className='ProcessDrawer'>
 				<Drawer
 					title="Process A Case"
-					width={ 1000 }
+					width={ 900 }
 					bodyStyle={{ paddingBottom: 80 }}
 					visible={ this.props.visible } 
 					onClose={ this.props.onClose }

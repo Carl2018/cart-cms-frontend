@@ -91,7 +91,7 @@ class Template extends Component {
 				switch (sticktop) {
 					case 't' :
 						color = 'blue';
-						text = 'True';
+						text = 'Yes';
 						break;
 					case 'f' :
 						color = 'default';

@@ -113,7 +113,7 @@ async function toggleSticktop(service, objectName, id, record) {
 		let index = data.findIndex( item => item.id === id);
 		Object.keys(record).forEach(item => data[index][item] = record[item])
 		this.setState({ [objectName]: data });
-		message.success('The record has been edited');
+		//message.success('The record has been edited');
 	} else {
 		message.error(response.en);
 	}
@@ -131,7 +131,7 @@ async function incrementCount(service, objectName, id) {
 		let index = data.findIndex( item => item.id === id);
 		data[index].copied_count += 1;
 		this.setState({ [objectName]: data });
-		message.success('The record has been edited');
+		//message.success('The record has been edited');
 	} else {
 		message.error(response.en);
 	}

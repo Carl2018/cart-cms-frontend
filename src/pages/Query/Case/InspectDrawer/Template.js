@@ -2,28 +2,36 @@ import React, { Component } from 'react';
 
 // import components from ant design
 import { 
-	Button, Radio, Switch, Row, Col, Modal, 
-	Collapse, Space, message, Spin, 
+	AutoComplete, 
+	Button, 
+	Col, 
+	Collapse, 
+	Modal, 
+	Input,
+	Radio, 
+	Row, 
+	Space, 
+	Spin, 
+	Switch, 
+	message, 
 } from 'antd';
 import { 
 	CopyOutlined,
 } from '@ant-design/icons';
 
 // import shared and child components
-import { 
-	RichTextOutput,
-	SearchableInput,
-} from '_components'
+import { RichTextOutput } from '_components'
 
 // import services
 import { templateService } from '_services';
 
 // import helpers
-import { backend } from '_helpers';
+import { backend } from "_helpers";
 
 // destructure imported components and objects
 const { list, toggleSticktop, incrementCount } = backend;
 const { Panel } = Collapse;
+const { Search } = Input;
 
 class Template extends Component {
 	constructor(props) {
@@ -38,6 +46,8 @@ class Template extends Component {
 			loading: false,
 			// for Collapse
 			panels: [],
+			// for AutoComplete
+			options: [],
 			// for template search
 			templates: [],
 		};
@@ -72,23 +82,36 @@ class Template extends Component {
 	)
 
 	handleChangeRadioLang = event => {
+		// update template language
 		const templateLang = event.target.value;
 		this.setState({ templateLang })
+		// update search property 
 		const searchBy = this.state.searchBy;
-		if (searchBy === "body") 
+		if (searchBy === "body")
 				this.setState({ searchProperty: searchBy + '_' + templateLang });
 		message.info("Template Bodies Shown in " + 
 			( templateLang === "chn" ? "Chinese" : "English" ) );
 	}
 
 	handleChangeRadioSearchBy = event => {
+		// update search by
 		const searchBy = event.target.value;
 		this.setState({ searchBy });
+		// update search property
+		const templateLang = this.state.templateLang;
 		if (searchBy === "body")
-				this.setState({ 
-					searchProperty: searchBy + '_' + this.state.templateLang });
+				this.setState({ searchProperty: searchBy + '_' + templateLang });
 		message.info("Search Templates by " + searchBy);
 	};
+
+	// filter AutoComplete options when input field changes
+	handleChange = data => {
+		const options = this.state.templates
+			.map( item => item[this.state.searchProperty] )
+			.filter( item => item.includes(data) )
+			.map( item => ({ value: item }) );
+		this.setState({ options });
+	}
 
 	handleSearch = data => {
 		this.setState({ loading: true });
@@ -96,9 +119,11 @@ class Template extends Component {
 	}
 
 	updateCollapse = data => {
+		console.log(data);
 		const searchProperty = this.state.searchProperty;
 		const panels = this.state.templates
 			.filter( item => item[searchProperty].includes(data) );
+		console.log(panels);
 		this.setState({ 
 			panels,
 			loading: false, 
@@ -114,7 +139,7 @@ class Template extends Component {
 				checkedChildren="top"
 				checked={ (item.sticktop === "t" ? true : false) } 
 				defaultChecked={ (item.sticktop === "t" ? true : false) } 
-				onChange={ this.handleChangeSwitchSticktop.bind(this, item.id) }
+				onChange={ this.handleToggleSticktop.bind(this, item.id) }
 			/>
 			<Button
 				type="ghost"
@@ -128,27 +153,19 @@ class Template extends Component {
 		</div>
 	);
 
-	handleChangeSwitchSticktop = (id, checked) => {
+	handleToggleSticktop = (id, checked) => {
 		
-		console.log(id);
-		console.log(checked);
+		// backend
+		const sticktop = checked ? 't' : 'f';
+		this.toggleSticktop(id, {sticktop});
+
+		// frontend
 		const toggle = { t: "f", f: "t" }
-		let templates = this.state.templates.map( item => {
-			item.sticktop = item.id === id ? 
-				toggle[item.sticktop] : item.sticktop;
-			return item;
-		});
-		templates.sort(this.dynamicSort("sticktop"));
-		console.log(templates);
-
-		let panels = this.state.panels.slice();
-		panels.sort(this.dynamicSort("sticktop"));
-		console.log(panels);
-
-		this.setState({
-			templates,
-			panels,
-		});
+		const panels = this.state.panels.slice();
+		const index = panels.findIndex( item => item.id === id );
+		panels[index].sticktop = toggle[ panels[index].sticktop ];
+		panels.sort(this.dynamicSort("-sticktop"));
+		this.setState({ panels });
 
 		// emphasize the change with background color changes
 		const panel = document.getElementById("panel" + id);
@@ -163,12 +180,7 @@ class Template extends Component {
 		// copy to clipboard
 		this.copyToClip( template["body_" + this.state.templateLang] )
 		// keep count
-		const templates = this.state.templates.map( item => {
-			if (item.id === template.id)
-				 item.copiedCount++;	
-			return item;
-		});
-		this.setState({ templates });
+		this.incrementCount( template.id );
 		message.success("Template Copied");
 	}
 
@@ -208,19 +220,15 @@ class Template extends Component {
 			}
 	}
 
+	// handler for click close
 	onCancel = event => {
-		const sticktops = this.state.templates
-			.filter( item => item.sticktop === 't' );
-		const rest = this.state.templates
-			.filter( item => !item.sticktop === 't' )
-			.sort( this.dynamicSort("copied_count") );
-			
-		this.setState({
-			templates: [...sticktops, ...rest],
-			panels: [...sticktops, ...rest],
+		this.listPanels();
+		this.setState({ 
+			templateLang: "eng",
+			searchBy: "title",
+			searchProperty: "title",
 		});
-
-		this.props.onCancel(event);
+		this.props.onCancel();
 	}
 
 	// bind versions of CRUD
@@ -254,12 +262,18 @@ class Template extends Component {
 								<Radio value={"title"}>Title</Radio>
 								<Radio value={"body"}>Body</Radio>
 							</Radio.Group>
-							<SearchableInput
-								allOptions={ this.state.templates }
-								searchProperty={ this.state.searchProperty }
-								onSearch={ this.handleSearch }
-								placeholder={ "Search Templates by " + this.state.searchBy }
-							/>
+							<AutoComplete
+								onChange={ this.handleChange }
+								onSelect={ this.handleSearch }
+								options={ this.state.options }
+							>
+								<Search
+									onSearch={ this.handleSearch }
+									placeholder={ "Search Templates by "+this.state.searchBy }
+									size="middle"
+									allowClear
+								/>
+							</AutoComplete>
 						</Space>
 					</div>
 					<div>
@@ -293,8 +307,3 @@ class Template extends Component {
 }
 
 export default Template;
-		//this.toggleSticktop(1, {sticktop: 't'});
-		//this.incrementCount(1);
-		//console.log(this.state.templates);
-		// copy to clipboard
-

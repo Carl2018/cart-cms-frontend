@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 // import components from ant design
 import { Menu, Dropdown } from 'antd';
 import { 
-	AuditOutlined, 
+	HistoryOutlined, 
 	EditOutlined, 
 	UserAddOutlined,
 	UserDeleteOutlined,
@@ -63,10 +63,10 @@ class DrawerDropdown extends Component {
 		return (
 			<div className='DrawerDropdown'>
 				<Dropdown.Button 
-					onClick={ this.props.onClickAction }
+					onClick={ this.props.onClickProcess }
 					overlay={ this.menu }
 				>
-					<AuditOutlined />Action
+					<HistoryOutlined />Process
 				</Dropdown.Button>
 			</div>
 		);
