@@ -23,7 +23,7 @@ import { TableBody } from '_components'
 import { TableDropdown } from '_components'
 import { TableDrawer } from '_components'
 
-class AccountWrapper extends Component {
+class TableWrapper extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -193,7 +193,7 @@ class AccountWrapper extends Component {
 
 	render(){
 		return (
-			<div className='AccountWrapper'>
+			<div className='TableWrapper'>
 				<Row style={{ margin: this.props.isSmall ? "8px" : "16px" }}>
 					<Col 
 						style={{ 
@@ -254,4 +254,4 @@ class AccountWrapper extends Component {
 	}
 }
 
-export { AccountWrapper };
+export { TableWrapper };

@@ -171,8 +171,7 @@ class Template extends Component {
 			input: (disabled, record) => (
 				<RichTextInput 
 					disabled={ disabled }
-					record={ record }
-					bodyName={ "body_eng"}
+					record={ {body: record.body_eng} }
 				/>
 			)
 		},			
@@ -189,8 +188,7 @@ class Template extends Component {
 			input: (disabled, record) => (
 				<RichTextInput 
 					disabled={ disabled }
-					record={ record }
-					bodyName={ "body_chn"}
+					record={ {body: record.body_chn} }
 				/>
 			)
 		},			

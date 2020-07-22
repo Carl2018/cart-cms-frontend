@@ -10,7 +10,7 @@ import {
 } from 'antd';
 
 // import shared and child components
-import { EmailWrapper } from './EmailWrapper'
+import { TableWrapper } from './TableWrapper'
 
 // import services
 
@@ -172,7 +172,7 @@ class Email extends Component {
 	render(){
 		return (
 			<div className='Email'>
-				<EmailWrapper
+				<TableWrapper
 					key={ this.state.tableWrapperKey }
 					// data props
 					data={ this.props.data }
@@ -192,7 +192,7 @@ class Email extends Component {
 					delete={ this.props.delete }
 					refreshTable={ this.refreshTable }
 				>
-				</EmailWrapper>
+				</TableWrapper>
 			</div>
 		);
 	}

@@ -10,7 +10,7 @@ import {
 } from 'antd';
 
 // import shared and child components
-import { AccountWrapper } from './AccountWrapper';
+import { TableWrapper } from './TableWrapper';
 
 // import services
 
@@ -235,7 +235,7 @@ class Account extends Component {
 	render(){
 		return (
 			<div className='Account'>
-				<AccountWrapper
+				<TableWrapper
 					key={ this.state.tableWrapperKey }
 					// data props
 					data={ this.props.data }
@@ -255,7 +255,7 @@ class Account extends Component {
 					delete={ this.props.delete }
 					refreshTable={ this.refreshTable }
 				>
-				</AccountWrapper>
+				</TableWrapper>
 			</div>
 		);
 	}

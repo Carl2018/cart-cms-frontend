@@ -26,7 +26,7 @@ import { TableDrawer } from '_components'
 // destructure imported components and objects
 const { Option } = Select
 
-class EmailWrapper extends Component {
+class TableWrapper extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -230,7 +230,7 @@ class EmailWrapper extends Component {
 
 	render(){
 		return (
-			<div className='EmailWrapper'>
+			<div className='TableWrapper'>
 				<Row style={{ margin: this.props.isSmall ? "8px" : "16px" }}>
 					<Col 
 						style={{ 
@@ -291,4 +291,4 @@ class EmailWrapper extends Component {
 	}
 }
 
-export { EmailWrapper };
+export { TableWrapper };

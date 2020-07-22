@@ -15,9 +15,9 @@ import { QuestionCircleOutlined } from '@ant-design/icons';
 
 // import shared and child components
 import { ProfileDrawer } from "./ProfileDrawer"
-import { Account } from "./Account"
+import { Account } from "./Account/Account"
 import { Case } from "./Case/Case"
-import { Email } from "./Email"
+import { Email } from "./Email/Email"
 
 // import services
 import { 
