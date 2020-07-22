@@ -96,6 +96,22 @@ class ProcessDrawer extends Component {
 			setFilter: true
 		},
 		{
+			title: 'Created At',
+			dataIndex: 'created_at',
+			sorter: (a, b) => compare(a.created_at, b.created_at),
+			key: 'created_at',
+			width: '20%',
+			setFilter: false
+		},
+		{
+			title: 'Created By',
+			dataIndex: 'alias',
+			sorter: (a, b) => compare(a.alias, b.alias),
+			key: 'alias',
+			width: '20%',
+			setFilter: false
+		},
+		{
 			title: 'Actions',
 			key: 'action',
 			render: (text, record) => (

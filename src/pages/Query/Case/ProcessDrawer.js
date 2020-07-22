@@ -44,8 +44,7 @@ class ProcessDrawer extends Component {
 			key: 'process',
 			sorter: (a, b) => compare(a.process, b.process),
 			sortDirection: ['ascend', 'descend'],
-			width: '30%',
-			//setFilter: true
+			width: '20%',
 			render: process => {
 				let color = 'geekblue';
 				let text = 'Open';
@@ -92,8 +91,24 @@ class ProcessDrawer extends Component {
 			key: 'details',
 			sorter: (a, b) => compare(a.details, b.details),
 			sortDirection: ['ascend', 'descend'],
-			width: '40%',
+			width: '20%',
 			setFilter: true
+		},
+		{
+			title: 'Created At',
+			dataIndex: 'created_at',
+			sorter: (a, b) => compare(a.created_at, b.created_at),
+			key: 'created_at',
+			width: '20%',
+			setFilter: false
+		},
+		{
+			title: 'Created By',
+			dataIndex: 'alias',
+			sorter: (a, b) => compare(a.alias, b.alias),
+			key: 'alias',
+			width: '20%',
+			setFilter: false
 		},
 		{
 			title: 'Actions',

@@ -52,7 +52,6 @@ class Case extends Component {
 			sorter: (a, b) => compare(a.status, b.status),
 			sortDirection: ['ascend', 'descend'],
 			width: '10%',
-			//setFilter: true
 			render: status => {
 				let color = 'geekblue';
 				let text = 'Open';
@@ -271,6 +270,9 @@ class Case extends Component {
 					// data props
 					data={ this.props.data }
 					accounts={ this.props.accounts }
+					dataEmail={ this.props.dataEmail }
+					dataAccount={ this.props.dataAccount }
+					labels={ this.props.labels }
 					// display props
 					columns={ this.columns }
 					formItems={ this.formItems }

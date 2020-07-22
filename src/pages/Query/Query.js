@@ -322,6 +322,7 @@ class Query extends Component {
 						email={ this.state.email }
 						accounts={ this.state.accounts }
 						categories={ this.state.categories }
+						labels={ this.state.labels }
 						// display props
 						loading={ this.state.loading }
 						tableHeader={ <><strong>Cases</strong></> }

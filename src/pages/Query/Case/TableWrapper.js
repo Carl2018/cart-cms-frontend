@@ -15,6 +15,7 @@ import {
 import { 
 	DeleteOutlined,
 	EditOutlined, 
+	FileSearchOutlined, 
 	FileTextOutlined, 
 	HistoryOutlined, 
 	NodeIndexOutlined, 
@@ -27,6 +28,7 @@ import { TableDrawer } from '_components'
 import { ProcessDrawer } from './ProcessDrawer'
 import { BindDrawer } from './BindDrawer'
 import { MergeDrawer } from './MergeDrawer'
+import { InspectDrawer } from './InspectDrawer/InspectDrawer'
 
 // import services
 import { 
@@ -64,6 +66,12 @@ class TableWrapper extends Component {
 			visibleMerge: false,
 			mergeModalKey: Date.now(),
 			profiles: {}, //temp solution
+			// for inspect drawer
+			visibleInspect: false,
+			disabledInspect: false,
+			inspectDrawerKey: Date.now(),
+			queriedEmail: {},
+			accountBound: {},
 		};
 	}
 	
@@ -103,10 +111,10 @@ class TableWrapper extends Component {
 				<Space size='small'>
 					<Button 
 						type='link' 
-						icon={ <FileTextOutlined /> }
-						onClick={ this.handleClickView.bind(this, record) }
+						icon={ <FileSearchOutlined /> }
+						onClick={ this.handleClickInspect.bind(this, record) }
 					>
-						View
+						Inspect
 					</Button>
 					<Dropdown.Button 
 						onClick={ this.handleClickEdit.bind(this, record) }
@@ -139,15 +147,19 @@ class TableWrapper extends Component {
 		},
 	];
 
-	// handlers for actions in TableBody
-	handleClickView = record => {
-		this.setState({
-			visible: true, 
-			disabled: true,
-			record,
-		});
+	// helpers
+	// get email and account related to a specific case
+	getRelatedInfo = record => {
+		const email = typeof record === "string" ? record : record.email;
+		const accountname = typeof record === "string" ? "" : record.accountname;
+		const queriedEmail = this.props.dataEmail
+			.find( item => item.email === email )
+		const accountBound = this.props.dataAccount
+			.find( item => item.accountname === accountname )
+		return { queriedEmail, accountBound };
 	}
 
+	// handlers for actions in TableBody
 	handleClickEdit = record => {
 		this.setState({
 			visible: true, 
@@ -373,6 +385,25 @@ class TableWrapper extends Component {
 		this.props.refreshPage( record.profilename );
 	}
 
+	// handler for inspect drawer
+	handleClickInspect = record => {
+		this.listFiltered({'case_id': record.id});
+		const { queriedEmail, accountBound } = this.getRelatedInfo(record);
+		this.setState({ queriedEmail, accountBound, record }, () => 
+		this.setState({
+			visibleInspect: true, 
+			disabledInspect: true,
+		}) );
+	}
+
+  handleCloseInspect = () => {
+    this.setState({
+			inspectDrawerKey: Date.now(),
+      visibleInspect: false,
+			record: {},
+    });
+  };
+
 	// bind versions of CRUD
 	create= create.bind(this, processService, 'dataProcess');
 	createSync = record => this.create(record)
@@ -477,6 +508,25 @@ class TableWrapper extends Component {
 						onSubmit={ this.handleSubmitMerge }
 					>
 					</MergeDrawer>
+				</div>
+				<div>
+					<InspectDrawer 
+						tableDrawerKey={ this.state.inspectDrawerKey }
+						// data props
+						dataCase={ this.state.record }
+						dataEmail={ this.state.queriedEmail }
+						dataAccount={ this.state.accountBound }
+						dataProcess={ this.state.dataProcess } 
+						allRelatedAccounts={ this.props.dataAccount }
+						labels={ this.props.labels }
+						// display props
+						drawerTitle={ this.props.drawerTitle } 
+						formItems={ this.props.formItems }
+						visible={ this.state.visibleInspect } 
+						disabled={ this.state.disabledInspect } 
+						// api props
+						onClose={ this.handleCloseInspect }
+					/>
 				</div>
 			</div>
 		);

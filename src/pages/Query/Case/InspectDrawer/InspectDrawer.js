@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 // import components from ant design
 import { 
@@ -17,11 +18,14 @@ import { NodeIndexOutlined } from '@ant-design/icons';
 
 // import shared and child components
 import { TableBody } from '_components'
-import ActionDrawer from './ActionDrawer'
-import BindDrawer from './BindDrawer'
 import DrawerDropdown from './DrawerDropdown'
-import EditDrawer from './EditDrawer'
 import Template from './Template'
+
+// import helpers
+import { helpers } from '_helpers';
+
+// destructure imported components and objects
+const { compare } = helpers;
 
 // destructure child components
 const { Item } = Descriptions;
@@ -31,48 +35,85 @@ class InspectDrawer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			// for the action drawer
-			visibleAction: false,
-			formKeyAction: Date.now(),
-			// for the edit drawer
-			visibleEdit: false,
-			formKeyEdit: Date.now(),
-			// for the bind drawer
-			visibleBind: false,
-			formKeyBind: Date.now(),
 			// for the template modal
 			visibleTemplate: false,
 			modalKeyTemplate: Date.now(),
 		};
 	}
 
-	// for action history panel
-	columnsAction = [
+	// for process history panel
+	columnsProcess = [
 		{
-			title: 'Action',
-			dataIndex: 'action',
-			key: 'action',
+			title: 'Process',
+			dataIndex: 'process',
+			key: 'process',
+			sorter: (a, b) => compare(a.process, b.process),
+			sortDirection: ['ascend', 'descend'],
 			width: '25%',
-			setFilter: false
+			render: process => {
+				let color = 'geekblue';
+				let text = 'Open';
+				switch (process) {
+					case 'o' :
+						color = 'geekblue';
+						text = 'Open';
+						break;
+					case 'q' :
+						color = 'purple';
+						text = 'Queried';
+						break;
+					case 'r' :
+						color = 'cyan';
+						text = 'Replied';
+						break;
+					case 'a' :
+						color = 'green';
+						text = 'Approved';
+						break;
+					case 'e' :
+						color = 'red';
+						text = 'Rejected';
+						break;
+					case 'd' :
+						color = 'default';
+						text = 'Deferred';
+						break;
+					default:
+						color = 'geekblue';
+						text = 'Open';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
 		},
 		{
 			title: 'Details',
 			dataIndex: 'details',
+			sorter: (a, b) => compare(a.details, b.details),
+			sortDirection: ['ascend', 'descend'],
 			key: 'details',
 			width: '25%',
 			setFilter: false
 		},
 		{
 			title: 'Created At',
-			dataIndex: 'createdAt',
-			key: 'createdAt',
+			dataIndex: 'created_at',
+			sorter: (a, b) => compare(a.created_at, b.created_at),
+			sortDirection: ['ascend', 'descend'],
+			key: 'created_at',
 			width: '25%',
 			setFilter: false
 		},
 		{
 			title: 'Created By',
-			dataIndex: 'createdBy',
-			key: 'createdBy',
+			dataIndex: 'alias',
+			sorter: (a, b) => compare(a.alias, b.alias),
+			sortDirection: ['ascend', 'descend'],
+			key: 'alias',
 			width: '25%',
 			setFilter: false
 		},
@@ -88,16 +129,16 @@ class InspectDrawer extends Component {
 			setFilter: false
 		},
 		{
-			title: 'Last Contacted At',
-			dataIndex: 'updatedAt',
-			key: 'updatedAt',
+			title: 'Profile Name',
+			dataIndex: 'profilename',
+			key: 'profilename',
 			width: '33%',
 			setFilter: false
 		},
 		{
-			title: 'Created At',
-			dataIndex: 'createdAt',
-			key: 'createdAt',
+			title: 'Description',
+			dataIndex: 'description',
+			key: 'description',
 			width: '33%',
 			setFilter: false
 		},
@@ -107,80 +148,77 @@ class InspectDrawer extends Component {
 	columnsAccount = [
 		{
 			title: 'Candidate ID',
-			dataIndex: 'candidateID',
-			key: 'candidateID',
+			dataIndex: 'candidate_id',
+			key: 'candidate_id',
 			width: '25%',
 			setFilter: false
 		},
 		{
 			title: 'Account Type',
-			dataIndex: 'accountType',
-			key: 'accountType',
+			dataIndex: 'account_type',
+			key: 'account_type',
 			width: '25%',
-			setFilter: false
+			render: account_type => {
+				let color = 'gold';
+				let text = 'Phone';
+				switch (account_type) {
+					case 'f' :
+						color = 'blue';
+						text = 'Facebook';
+						break;
+					case 'p' :
+						color = 'gold';
+						text = 'Phone';
+						break;
+					default:
+						color = 'gold';
+						text = 'Phone';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
 		},
 		{
 			title: 'Account Name',
-			dataIndex: 'accountName',
-			key: 'accountName',
+			dataIndex: 'accountname',
+			key: 'accountname',
 			width: '25%',
 			setFilter: false
 		},
 		{
 			title: 'Status',
-			dataIndex: 'banned',
-			key: 'banned',
-			render: banned => ( banned ? 
-				<Tag color="red">BANNED</Tag> : 
-				<Tag color="blue">UNBANNED</Tag> ),
+			dataIndex: 'status',
+			key: 'status',
 			width: '20%',
+			render: status => {
+				let color = 'green';
+				let text = 'Unbanned';
+				switch (status) {
+					case 'b' :
+						color = 'red';
+						text = 'Banned';
+						break;
+					case 'u' :
+						color = 'green';
+						text = 'Unbanned';
+						break;
+					default:
+						color = 'green';
+						text = 'Unbanned';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
 		},
 	];
-
-	// handlers for action button and action drawer
-	handleClickAction = record => {
-		this.setState({
-			visibleAction: true, 
-		});
-	}
-
-	handleCloseAction = event => {
-		this.setState({
-			visibleAction: false, 
-		});
-	}
-
-	handleSubmitAction = record => {
-		message.success("The action has been peformed successfully");
-		this.setState({
-			visibleAction: false, 
-			formKeyAction: Date.now(),
-		});
-	}
-
-	// handlers for edit button and edit drawer
-	handleClickEdit = record => {
-		this.setState({
-			visibleEdit: true, 
-		});
-	}
-
-	handleCloseEdit = event => {
-		this.setState({
-			visibleEdit: false, 
-		});
-	}
-
-	handleSubmitEdit = record => {
-		// append related info for instant table update
-		record.relatedEmail = this.props.dataEmail?.email;
-		record.relatedAccount = this.props.dataAccount?.accountName;
-		this.props.onSubmit(record);
-		this.setState({
-			visibleEdit: false, 
-			formKeyEdit: Date.now(),
-		});
-	}
 
 	// handlers for unban
 	onClickUnban = () => {
@@ -276,29 +314,84 @@ class InspectDrawer extends Component {
 		</Button>
 	);
 
-	// handlers for bind
-	handleClickBind = event => {
-		event.stopPropagation();
-		if (this.props.dataCase.relatedAccount)
-			message.info("The case has been bound to an account already")
-		else 
-			this.setState({ visibleBind: true });
+	// define status 
+	getStatus = status => {
+		let color = 'geekblue';
+		let text = 'Open';
+		switch (status) {
+			case 'o' :
+				color = 'geekblue';
+				text = 'Open';
+				break;
+			case 'q' :
+				color = 'purple';
+				text = 'Queried';
+				break;
+			case 'r' :
+				color = 'cyan';
+				text = 'Replied';
+				break;
+			case 'a' :
+				color = 'green';
+				text = 'Approved';
+				break;
+			case 'e' :
+				color = 'red';
+				text = 'Rejected';
+				break;
+			case 'd' :
+				color = 'default';
+				text = 'Deferred';
+				break;
+			default:
+				color = 'geekblue';
+				text = 'Open';
+				break;
+		};	
+		return (
+			<Tag color={ color } key={ uuidv4() }>
+				{ text }
+			</Tag>
+		);
 	}
-
-	handleCloseBind = event => {
-		this.setState({
-			visibleBind: false, 
-		});
-	}
-
-	handleSubmitBind = record => {
-		// append related info for instant table update
-		record.relatedEmail = this.props.dataEmail?.email;
-		this.props.onSubmit(record);
-		this.setState({
-			visibleBind: false, 
-			formKeyBind: Date.now(),
-		});
+	// define labels
+	getLabels = labelname => {
+		const labels = this.props.labels.slice();
+		const elements = labelname === undefined 
+			|| labelname[0] === null 
+			|| labels.length === 0 
+			? <></> : 
+			labelname.map( (item, index) => {
+				const label_color = labels
+					.find( label => label.labelname === item ).label_color;
+				let color = 'default';
+				switch (label_color) {
+					case 'l' :
+						color = 'success';
+						break;
+					case 'b' :
+						color = 'processing';
+						break;
+					case 'r' :
+						color = 'error';
+						break;
+					case 'y' :
+						color = 'warning';
+						break;
+					case 'g' :
+						color = 'default';
+						break;
+					default :
+						color = 'default';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ item }
+					</Tag>
+				);
+			});
+		return elements;
 	}
 
 	// define the header for the table drawer
@@ -367,62 +460,35 @@ class InspectDrawer extends Component {
 						<Descriptions 
 							column={ 3 }
 						>
-							<Item label="Case Name"> 
+							<Item
+								label="Case Name" 
+								span = { 2 } 
+							> 
 								{ this.props.dataCase.casename }
 							</Item>
-							<Item label="Status">
-								{ this.props.dataCase.status }
+							<Item
+								label="Created At"
+								span = { 1 } 
+							>
+								{ this.props.dataCase.created_at }
 							</Item>
-							<Item label="Created At">
-								{ this.props.dataCase.createdAt }
+							<Item
+								label="Status"
+								span = { 2 } 
+							>
+								{ this.getStatus( this.props.dataCase.status ) }
+							</Item>
+							<Item 
+								label="Labels"
+								span = { 1 } 
+							>
+								{ this.getLabels( this.props.dataEmail.labelname ) }
 							</Item>
 							<Item 
 								label="Remarks" 
 								span = { 2 } 
 							>
 								{ this.props.dataCase.remarks }
-							</Item>
-							<Item 
-								label="Labels"
-								span = { 1 } 
-							>
-								{ this.props.dataEmail?.labels?.map(tag => {
-									let color = 'blue';
-									switch (tag) {
-										case 'burning' :
-											color = 'magenta';
-											break;
-										case 'hot' :
-											color = 'red';
-											break;
-										case 'temperate' :
-											color = 'orange';
-											break;
-										case 'warm' :
-											color = 'gold';
-											break;
-										case 'agreeable' :
-											color = 'green';
-											break;
-										case 'cold' :
-											color = 'blue';
-											break;
-										case 'icy' :
-											color = 'geekblue';
-											break;
-										case 'freezing' :
-											color = 'purple';
-											break;
-										default :
-											color = 'lime';
-											break;
-									}
-									return (
-										<Tag color={color} key={tag}>
-											{tag.toUpperCase()}
-										</Tag>
-									);
-								})}
 							</Item>
 						</Descriptions>
 					</Card>
@@ -433,13 +499,13 @@ class InspectDrawer extends Component {
 						expandIconPosition="left"
 					>
 							<Panel 
-								header="Action History" 
+								header="Process History" 
 								key="4"
 							>
 								<TableBody
-									columns={ this.columnsAction } 
-									data={ this.props.dataCase.actions ? 
-										this.props.dataCase.actions: [] } 
+									columns={ this.columnsProcess } 
+									data={ this.props.dataProcess ? 
+										this.props.dataProcess : [] } 
 									isSmall={ true }
 									pagination={ false }
 								/>
@@ -472,35 +538,6 @@ class InspectDrawer extends Component {
 						</Collapse>
 				</Drawer>
 				<div>
-					<ActionDrawer
-						visible={ this.state.visibleAction } 
-						onClose={ this.handleCloseAction }
-						formKey={ this.state.formKeyAction }
-						onFinish={ this.handleSubmitAction }
-					>
-					</ActionDrawer>
-				</div>
-				<div>
-					<EditDrawer
-						visible={ this.state.visibleEdit } 
-						onClose={ this.handleCloseEdit }
-						formKey={ this.state.formKeyEdit }
-						onFinish={ this.handleSubmitEdit }
-						record={ this.props.dataCase }
-					>
-					</EditDrawer>
-				</div>
-				<div>
-					<BindDrawer
-						visible={ this.state.visibleBind } 
-						onClose={ this.handleCloseBind }
-						formKey={ this.state.formKeyBind }
-						onFinish={ this.handleSubmitBind }
-						allRelatedAccounts={ this.props.allRelatedAccounts }
-					>
-					</BindDrawer>
-				</div>
-				<div>
 					<Template
 						modalKey={ this.state.modalKeyTemplate }
 						visible={ this.state.visibleTemplate }
@@ -513,4 +550,4 @@ class InspectDrawer extends Component {
 	}
 }
 
-export default InspectDrawer;
+export { InspectDrawer };
