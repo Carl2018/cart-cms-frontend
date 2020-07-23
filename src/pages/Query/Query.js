@@ -198,7 +198,7 @@ class Query extends Component {
 		.then( res => this.listCases() ) // might affect accountname
 		.then( res => this.updateData(this.state.profilename));
 	banAccount = ban.bind(this, accountService, 'accounts');
-	banAccountSync = (id, record) => this.banAccount(id, record)
+	banAccountSync = record => this.banAccount(record)
 		.then( res => this.listAccounts() )
 		.then( res => this.updateData(this.state.profilename));
 	hideAccount = hide.bind(this, accountService, 'accounts');
@@ -336,6 +336,7 @@ class Query extends Component {
 						bind={ this.bindCaseSync }
 						delete={ this.hideCaseSync }
 						refreshPage={ this.refreshPage }
+						ban={ this.banAccountSync }
 					/>
 				</Card>
 				<Card

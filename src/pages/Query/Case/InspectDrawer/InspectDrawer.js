@@ -230,23 +230,27 @@ class InspectDrawer extends Component {
 				Confirm
 			</Button>
 		);
-		notification.open({
-			message: 'About to UNban This Account',
-			description:
-				<> 
-					{"Are you sure to "} 
-					<span style={{color: "#5a9ef8"}}><strong>UNban</strong></span> 
-					{" this account?"}
-				</>,
-			btn,
-			key,
-			duration: 0,
-			onClose: () => message.info("Ban Cancelled"),
-		});
+		if (this.props.dataAccount.status === 'b') {
+			notification.open({
+				message: 'About to UNban This Account',
+				description:
+					<> 
+						{"Are you sure to "} 
+						<span style={{color: "#5a9ef8"}}><strong>UNban</strong></span> 
+						{" this account?"}
+					</>,
+				btn,
+				key,
+				duration: 0,
+				onClose: () => message.info("Ban Cancelled"),
+			});
+		} else {
+			message.info("The account has been unbanned already");
+		}
 	};
 
 	handleClickConfirmUnban = (closeNotification, notificationKey) => {
-		this.props.onClickUnban();
+		this.props.onClickBan(this.props.dataAccount);
 		message.success("the account has been UNbanned successfully");
 		closeNotification(notificationKey);
 	};
@@ -263,23 +267,27 @@ class InspectDrawer extends Component {
 				Confirm
 			</Button>
 		);
-		notification.open({
-			message: 'About to Ban This Account',
-			description:
-				<> 
-					{"Are you sure to "} 
-					<span style={{color: "#ec5f5b"}}><strong>Ban</strong></span> 
-					{" this account?"}
-				</>,
-			btn,
-			key,
-			duration: 0,
-			onClose: () => message.info("Ban Cancelled"),
-		});
+		if (this.props.dataAccount.status === 'u') {
+			notification.open({
+				message: 'About to Ban This Account',
+				description:
+					<> 
+						{"Are you sure to "} 
+						<span style={{color: "#ec5f5b"}}><strong>Ban</strong></span> 
+						{" this account?"}
+					</>,
+				btn,
+				key,
+				duration: 0,
+				onClose: () => message.info("Ban Cancelled"),
+			});
+		} else {
+			message.info("The account has been banned already");
+		}
 	};
 
 	handleClickConfirmBan = (closeNotification, notificationKey) => {
-		this.props.onClickBan();
+		this.props.onClickBan(this.props.dataAccount);
 		message.success("the account has been Banned successfully");
 		closeNotification(notificationKey);
 	};

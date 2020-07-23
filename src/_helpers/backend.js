@@ -175,7 +175,6 @@ async function bind(service, objectName, id, record) {
 }
 // interface for ban
 async function ban(service, objectName, record) {
-		console.log(record);
 	// update the record in the backend table
 	let response = null;
 	await service.ban( record )

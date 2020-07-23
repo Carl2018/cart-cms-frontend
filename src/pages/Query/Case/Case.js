@@ -289,6 +289,7 @@ class Case extends Component {
 					refreshTable={ this.refreshTable }
 					list={ this.props.list }
 					refreshPage={ this.props.refreshPage }
+					onClickBan={ this.props.ban }
 				>
 				</TableWrapper>
 			</div>

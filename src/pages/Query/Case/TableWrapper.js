@@ -225,8 +225,6 @@ class TableWrapper extends Component {
   };
 
 	handleSubmit = record => {
-
-		console.log(record);
 		if (this.state.record.id) // edit the entry
 			this.props.edit(this.state.record.id, record);
 		else // create an entry
@@ -245,6 +243,14 @@ class TableWrapper extends Component {
 				.find( item => item.id === this.state.record.id); 
 			this.setState({ record: newRecord });
 		}
+	}
+
+	// handers for unban and ban in inspect drawer
+	onClickBan = dataAccount => {
+		this.props.onClickBan( dataAccount );
+		// update account stream in inspect drawer
+		const { accountBound } = this.getRelatedInfo(this.state.record);
+		this.setState({ accountBound });
 	}
 
 	// handlers for process button and process drawer
@@ -307,8 +313,16 @@ class TableWrapper extends Component {
 			console.log("no merge");
 			
 			// clear the record if click outside the inspect drawer
-			if (!this.state.visibleInspect)
+			if (!this.state.visibleInspect) {
 				this.setState({ record: {} });
+			} else {
+				// update account stream in inspect drawer
+				const accountBound = this.props.dataAccount
+					.find( item => item.accountname === record.accountname );
+				const newRecord = Object.assign( {}, this.state.record );
+				newRecord.accountname = accountBound.accountname;
+				this.setState({ accountBound, record: newRecord });
+			}
 		} else {
 			this.handleClickMerge();
 			console.log("merge");
@@ -559,6 +573,7 @@ class TableWrapper extends Component {
 						onClickBind={ this.handleClickBind }
 						onClickProcess={ this.handleClickProcess }
 						onClickEdit={ this.handleClickEdit }
+						onClickBan={ this.onClickBan }
 					/>
 				</div>
 			</div>
