@@ -217,9 +217,11 @@ class TableWrapper extends Component {
   handleClose = () => {
     this.setState({
       visible: false,
-			record: {},
 			tableDrawerKey: Date.now(),
     });
+		// clear the record if click outside the inspect drawer
+		if (!this.state.visibleInspect)
+			this.setState({ record: {} });
   };
 
 	handleSubmit = record => {
@@ -231,10 +233,13 @@ class TableWrapper extends Component {
 			this.props.create(record);
 
 		this.setState({
-			record: {},
 			visible: false,
 			tableDrawerKey: Date.now(),
 		});
+
+		// clear the record if click outside the inspect drawer
+		if (!this.state.visibleInspect)
+			this.setState({ record: {} });
 	}
 
 	// handlers for process button and process drawer
@@ -250,9 +255,12 @@ class TableWrapper extends Component {
 	handleCloseProcess = event => {
 		this.setState({
 			visibleProcess: false, 
-			record: {},
 			dataProcess: [],
 		});
+
+		// clear the record if click outside the inspect drawer
+		if (!this.state.visibleInspect)
+			this.setState({ record: {} });
 	}
 
 	// handlers for bind button and bind drawer
@@ -268,9 +276,12 @@ class TableWrapper extends Component {
 	handleCloseBind = event => {
 		this.setState({
 			visibleBind: false, 
-			record: {},
 			bindDrawerKey: Date.now(), 
 		});
+
+		// clear the record if click outside the inspect drawer
+		if (!this.state.visibleInspect)
+			this.setState({ record: {} });
 	}
 
 	handleSubmitBind = record => {
@@ -286,10 +297,13 @@ class TableWrapper extends Component {
 			// close drawer
 			this.setState({
 				visibleBind: false, 
-				record: {},
 				bindDrawerKey: Date.now(), 
 			});
 			console.log("no merge");
+			
+			// clear the record if click outside the inspect drawer
+			if (!this.state.visibleInspect)
+				this.setState({ record: {} });
 		} else {
 			this.handleClickMerge();
 			console.log("merge");
@@ -361,9 +375,11 @@ class TableWrapper extends Component {
 	handleCloseMerge = event => {
 		this.setState({
 			visibleMerge: false, 
-			record: {},
 			mergeModalKey: Date.now(), 
 		});
+		// clear the record if click outside the inspect drawer
+		if (!this.state.visibleInspect)
+			this.setState({ record: {} });
 	}
 
 	handleSubmitMerge = () => {
@@ -382,10 +398,12 @@ class TableWrapper extends Component {
 		this.updateMergeProfile( id, record );
 		this.setState({
 			visibleMerge: false, 
-			record: {},
 			change: false,
 			mergeModalKey: Date.now(), 
 		});
+		// clear the record if click outside the inspect drawer
+		if (!this.state.visibleInspect)
+			this.setState({ record: {} });
 		this.props.refreshPage( record.profilename );
 	}
 
