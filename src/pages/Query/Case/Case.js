@@ -271,8 +271,9 @@ class Case extends Component {
 					data={ this.props.data }
 					dataEmail={ this.props.dataEmail }
 					dataAccount={ this.props.dataAccount }
-					accounts={ this.props.accounts }
 					emails={ this.props.emails }
+					cases={ this.props.cases }
+					accounts={ this.props.accounts }
 					labels={ this.props.labels }
 					// display props
 					columns={ this.columns }

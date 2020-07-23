@@ -219,9 +219,7 @@ class TableWrapper extends Component {
       visible: false,
 			tableDrawerKey: Date.now(),
     });
-		// clear the record if click outside the inspect drawer
-		if (!this.state.visibleInspect)
-			this.setState({ record: {} });
+		this.clearRecord();
   };
 
 	handleSubmit = record => {
@@ -229,28 +227,17 @@ class TableWrapper extends Component {
 			this.props.edit(this.state.record.id, record);
 		else // create an entry
 			this.props.create(record);
-
 		this.setState({
 			visible: false,
 			tableDrawerKey: Date.now(),
 		});
-
-		// clear the record if click outside the inspect drawer
-		if (!this.state.visibleInspect) {
-			this.setState({ record: {} });
-		} else { // update the record stream otherwise
-			const newRecord = this.props.data
-				.find( item => item.id === this.state.record.id); 
-			this.setState({ record: newRecord });
-		}
+		this.clear();
 	}
 
 	// handers for unban and ban in inspect drawer
 	onClickBan = dataAccount => {
 		this.props.onClickBan( dataAccount );
-		// update account stream in inspect drawer
-		const { accountBound } = this.getRelatedInfo(this.state.record);
-		this.setState({ accountBound });
+		this.updateInspectDrawer();
 	}
 
 	// handlers for process button and process drawer
@@ -268,10 +255,7 @@ class TableWrapper extends Component {
 			visibleProcess: false, 
 			dataProcess: [],
 		});
-
-		// clear the record if click outside the inspect drawer
-		if (!this.state.visibleInspect)
-			this.setState({ record: {} });
+		this.clearRecord();
 	}
 
 	// handlers for bind button and bind drawer
@@ -289,43 +273,24 @@ class TableWrapper extends Component {
 			visibleBind: false, 
 			bindDrawerKey: Date.now(), 
 		});
-
-		// clear the record if click outside the inspect drawer
-		if (!this.state.visibleInspect)
-			this.setState({ record: {} });
+		this.clearRecord();
 	}
 
 	handleSubmitBind = record => {
-		// save the bind for a merge
 		const bind = 
 			{ case_id: this.state.record.id, accountname: record.accountname }
 		this.setState({ bind });
 		// check if there is a merge
 		const accounts = this.state.inProfile.map( item => item.accountname );
 		if (accounts.includes(record.accountname)) {
-			// bind
 			this.props.bind(this.state.record.id, bind);
-			// close drawer
 			this.setState({
 				visibleBind: false, 
 				bindDrawerKey: Date.now(), 
 			});
-			console.log("no merge");
-			
-			// clear the record if click outside the inspect drawer
-			if (!this.state.visibleInspect) {
-				this.setState({ record: {} });
-			} else {
-				// update account stream in inspect drawer
-				const accountBound = this.props.dataAccount
-					.find( item => item.accountname === record.accountname );
-				const newRecord = Object.assign( {}, this.state.record );
-				newRecord.accountname = accountBound.accountname;
-				this.setState({ accountBound, record: newRecord });
-			}
+			this.clear();
 		} else {
 			this.handleClickMerge();
-			console.log("merge");
 		}
 	}
 
@@ -396,22 +361,8 @@ class TableWrapper extends Component {
 			visibleMerge: false, 
 			mergeModalKey: Date.now(), 
 		});
-
 		this.props.refreshPage( this.state.merge.profile_to.profilename );
-		// clear the record if click outside the inspect drawer
-		if (!this.state.visibleInspect) {
-			this.setState({ record: {} });
-		} else {
-			// update data streams in the inspect drawer
-			const newRecord = this.props.data
-				.find( item => item.id === this.state.record.id );
-			const accountBound = this.props.accounts
-				.find( item => item.accountname === newRecord.accountname );
-			const queriedEmail = this.props.emails
-				.find( item => item.email === newRecord.email );
-			this.setState({ record: newRecord, queriedEmail, accountBound });
-			console.log(queriedEmail);
-		}
+		this.clear();
 	}
 
 	handleSubmitMerge = () => {
@@ -426,7 +377,6 @@ class TableWrapper extends Component {
 			record.profilename = merge.profile_to.profilename;
 			record.description = merge.profile_to.description;
 		}
-		console.log(record);
 		this.updateMergeProfile( id, record );
 		this.setState({
 			visibleMerge: false, 
@@ -434,18 +384,31 @@ class TableWrapper extends Component {
 			mergeModalKey: Date.now(), 
 		});
 		this.props.refreshPage( record.profilename );
-		// clear the record if click outside the inspect drawer
-		if (!this.state.visibleInspect) {
+		this.clear();
+	}
+
+	// helper to clear
+	clear = () => {
+		this.clearRecord();
+		this.updateInspectDrawer();
+	}
+
+	// helper to clear record
+	clearRecord = () => {
+		if (!this.state.visibleInspect) // clear the record
 			this.setState({ record: {} });
-		} else {
-			// update data streams in the inspect drawer
-			const newRecord = this.props.data
+	}
+
+	// helper to refresh inspect drawer
+	updateInspectDrawer = () => {
+		if (this.state.visibleInspect) { // update the inspect drawer
+			const record = this.props.cases
 				.find( item => item.id === this.state.record.id );
 			const accountBound = this.props.accounts
-				.find( item => item.accountname === newRecord.accountname );
+				.find( item => item.accountname === record.accountname );
 			const queriedEmail = this.props.emails
-				.find( item => item.email === newRecord.email );
-			this.setState({ record: newRecord, queriedEmail, accountBound });
+				.find( item => item.email === record.email );
+			this.setState({ record, queriedEmail, accountBound });
 		}
 	}
 
