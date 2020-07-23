@@ -255,7 +255,8 @@ class TableWrapper extends Component {
 			visibleProcess: false, 
 			dataProcess: [],
 		});
-		this.clearRecord();
+		this.listFiltered({'case_id': this.state.record.id});
+		this.clear();
 	}
 
 	// handlers for bind button and bind drawer
