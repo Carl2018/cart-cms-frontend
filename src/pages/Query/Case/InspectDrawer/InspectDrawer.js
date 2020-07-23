@@ -145,9 +145,9 @@ class InspectDrawer extends Component {
 	// for related account panel
 	columnsAccount = [
 		{
-			title: 'Candidate ID',
-			dataIndex: 'candidate_id',
-			key: 'candidate_id',
+			title: 'Account Name',
+			dataIndex: 'accountname',
+			key: 'accountname',
 			width: '25%',
 			setFilter: false
 		},
@@ -181,9 +181,9 @@ class InspectDrawer extends Component {
 			},
 		},
 		{
-			title: 'Account Name',
-			dataIndex: 'accountname',
-			key: 'accountname',
+			title: 'Candidate ID',
+			dataIndex: 'candidate_id',
+			key: 'candidate_id',
 			width: '25%',
 			setFilter: false
 		},
@@ -446,10 +446,10 @@ class InspectDrawer extends Component {
 								{ this.props.dataCase.casename }
 							</Item>
 							<Item
-								label="Created At"
+								label="Category"
 								span = { 1 } 
 							>
-								{ this.props.dataCase.created_at }
+								{ this.props.dataCase.categoryname}
 							</Item>
 							<Item
 								label="Status"
@@ -468,6 +468,12 @@ class InspectDrawer extends Component {
 								span = { 2 } 
 							>
 								{ this.props.dataCase.remarks }
+							</Item>
+							<Item
+								label="Created At"
+								span = { 1 } 
+							>
+								{ this.props.dataCase.created_at }
 							</Item>
 						</Descriptions>
 					</Card>

@@ -35,10 +35,10 @@ class Account extends Component {
 	// define columns for TableBody
 	columns = [
 		{
-			title: 'Candidate ID',
-			dataIndex: 'candidate_id',
-			key: 'candidate_id',
-			sorter: (a, b) => compare(a.candidate_id, b.candidate_id),
+			title: 'Account Name',
+			dataIndex: 'accountname',
+			key: 'accountname',
+			sorter: (a, b) => compare(a.accountname, b.accountname),
 			sortDirection: ['ascend', 'descend'],
 			width: '20%',
 			setFilter: true
@@ -75,10 +75,10 @@ class Account extends Component {
 			width: '20%',
 		},
 		{
-			title: 'Account Name',
-			dataIndex: 'accountname',
-			key: 'accountname',
-			sorter: (a, b) => compare(a.accountname, b.accountname),
+			title: 'Candidate ID',
+			dataIndex: 'candidate_id',
+			key: 'candidate_id',
+			sorter: (a, b) => compare(a.candidate_id, b.candidate_id),
 			sortDirection: ['ascend', 'descend'],
 			width: '20%',
 			setFilter: true

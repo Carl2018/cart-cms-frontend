@@ -238,8 +238,13 @@ class TableWrapper extends Component {
 		});
 
 		// clear the record if click outside the inspect drawer
-		if (!this.state.visibleInspect)
+		if (!this.state.visibleInspect) {
 			this.setState({ record: {} });
+		} else { // update the record stream otherwise
+			const newRecord = this.props.data
+				.find( item => item.id === this.state.record.id); 
+			this.setState({ record: newRecord });
+		}
 	}
 
 	// handlers for process button and process drawer
