@@ -251,7 +251,6 @@ class InspectDrawer extends Component {
 
 	handleClickConfirmUnban = (closeNotification, notificationKey) => {
 		this.props.onClickBan(this.props.dataAccount);
-		message.success("the account has been UNbanned successfully");
 		closeNotification(notificationKey);
 	};
 
@@ -288,7 +287,6 @@ class InspectDrawer extends Component {
 
 	handleClickConfirmBan = (closeNotification, notificationKey) => {
 		this.props.onClickBan(this.props.dataAccount);
-		message.success("the account has been Banned successfully");
 		closeNotification(notificationKey);
 	};
 
@@ -314,15 +312,19 @@ class InspectDrawer extends Component {
 
 	// define the bind button
 	genExtra = () => (
-		<Button
-			type="ghost"
-			style={{ border: "none" }}
-			size="small"
-			onClick={ this.onClickBind }
+		<div
+			onClick={ event => event.stopPropagation() }
 		>
-			<NodeIndexOutlined />
-			Bind
-		</Button>
+			<Button
+				type="ghost"
+				style={{ border: "none" }}
+				size="small"
+				onClick={ this.onClickBind }
+			>
+				<NodeIndexOutlined />
+				Bind
+			</Button>
+		</div>
 	);
 
 	onClickBind = () => this.props.onClickBind(this.props.dataCase);

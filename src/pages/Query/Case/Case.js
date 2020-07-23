@@ -269,9 +269,10 @@ class Case extends Component {
 					key={ this.state.tableWrapperKey }
 					// data props
 					data={ this.props.data }
-					accounts={ this.props.accounts }
 					dataEmail={ this.props.dataEmail }
 					dataAccount={ this.props.dataAccount }
+					accounts={ this.props.accounts }
+					emails={ this.props.emails }
 					labels={ this.props.labels }
 					// display props
 					columns={ this.columns }

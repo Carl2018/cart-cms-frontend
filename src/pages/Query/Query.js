@@ -320,6 +320,7 @@ class Query extends Component {
 						dataEmail={ this.state.dataEmail }
 						dataAccount={ this.state.dataAccount }
 						email={ this.state.email }
+						emails={ this.state.emails }
 						accounts={ this.state.accounts }
 						categories={ this.state.categories }
 						labels={ this.state.labels }
