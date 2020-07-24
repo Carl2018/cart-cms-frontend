@@ -84,7 +84,10 @@ class Template extends Component {
 	handleChangeRadioLang = event => {
 		// update template language
 		const templateLang = event.target.value;
-		this.setState({ templateLang })
+		this.setState({ 
+			templateLang,
+			options: [],
+		});
 		// update search property 
 		const searchBy = this.state.searchBy;
 		if (searchBy === "body")
@@ -96,11 +99,16 @@ class Template extends Component {
 	handleChangeRadioSearchBy = event => {
 		// update search by
 		const searchBy = event.target.value;
-		this.setState({ searchBy });
+		this.setState({ 
+			searchBy,
+			options: [],
+		});
 		// update search property
 		const templateLang = this.state.templateLang;
 		if (searchBy === "body")
 				this.setState({ searchProperty: searchBy + '_' + templateLang });
+		else
+				this.setState({ searchProperty: searchBy });
 		message.info("Search Templates by " + searchBy);
 	};
 
@@ -161,8 +169,13 @@ class Template extends Component {
 
 		// frontend
 		const toggle = { t: "f", f: "t" }
+		const templates = this.state.templates.slice();
+		let index = templates.findIndex( item => item.id === id );
+		templates[index].sticktop = toggle[ templates[index].sticktop ];
+		templates.sort(this.dynamicSort("-sticktop"));
+		this.setState({ templates });
 		const panels = this.state.panels.slice();
-		const index = panels.findIndex( item => item.id === id );
+		index = panels.findIndex( item => item.id === id );
 		panels[index].sticktop = toggle[ panels[index].sticktop ];
 		panels.sort(this.dynamicSort("-sticktop"));
 		this.setState({ panels });
@@ -266,6 +279,7 @@ class Template extends Component {
 								onChange={ this.handleChange }
 								onSelect={ this.handleSearch }
 								options={ this.state.options }
+								style={{ width: 320 }}
 							>
 								<Search
 									onSearch={ this.handleSearch }

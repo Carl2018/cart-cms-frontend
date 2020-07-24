@@ -228,6 +228,7 @@ class Query extends Component {
 
 	// refresh the page
 	refreshPage = profilename => {
+		this.setState({ profilename });
 		this.listEmails()
 		.then( res => this.listCases())
 		.then( res => this.listAccounts())
