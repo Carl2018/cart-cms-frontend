@@ -1,4 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
+import { config } from 'config';
 
 //import config from 'config';
 import { handleResponse } from '_helpers';
@@ -21,7 +22,7 @@ function signin(username, password) {
     };
 
     //return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
-    return fetch(`/users/authenticate`, requestOptions)
+    return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
         .then(handleResponse)
         .then(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
