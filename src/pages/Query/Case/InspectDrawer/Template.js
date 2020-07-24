@@ -23,7 +23,10 @@ import {
 import { RichTextOutput } from '_components'
 
 // import services
-import { templateService } from '_services';
+import { 
+	categoryService,
+	templateService,
+} from '_services';
 
 // import helpers
 import { backend } from "_helpers";
@@ -48,6 +51,7 @@ class Template extends Component {
 			panels: [],
 			// for AutoComplete
 			options: [],
+			categories: [],
 			// for template search
 			templates: [],
 		};
@@ -56,6 +60,7 @@ class Template extends Component {
 	componentDidMount() {
 		this.listTemplates();
 		this.listPanels();
+		this.listCategories();
 	}
 
 	titleModal = () => (
@@ -114,10 +119,19 @@ class Template extends Component {
 
 	// filter AutoComplete options when input field changes
 	handleChange = data => {
-		const options = this.state.templates
-			.map( item => item[this.state.searchProperty] )
-			.filter( item => item.includes(data) )
-			.map( item => ({ value: item }) );
+		const options = this.state.categories
+			.map( item => { return {label: item.categoryname, options: []}; });
+		options.push( {label:'Uncategorized', options:[]} );
+		console.log(options);
+		this.state.templates
+			.filter( item => item[this.state.searchProperty].includes(data) )
+			.forEach( item => {
+				options.forEach( option => {
+					if (option.label === item.categoryname)
+						option.options.push( {value: item[this.state.searchProperty]} );
+				})
+			});
+		console.log(options);
 		this.setState({ options });
 	}
 
@@ -127,11 +141,9 @@ class Template extends Component {
 	}
 
 	updateCollapse = data => {
-		console.log(data);
 		const searchProperty = this.state.searchProperty;
 		const panels = this.state.templates
 			.filter( item => item[searchProperty].includes(data) );
-		console.log(panels);
 		this.setState({ 
 			panels,
 			loading: false, 
@@ -247,6 +259,7 @@ class Template extends Component {
 	// bind versions of CRUD
 	listTemplates = list.bind(this, templateService, 'templates');
 	listPanels = list.bind(this, templateService, 'panels');
+	listCategories= list.bind(this, categoryService, 'categories');
 	toggleSticktop = toggleSticktop.bind(this, templateService, 'templates');
 	incrementCount = incrementCount.bind(this, templateService, 'templates');
 
