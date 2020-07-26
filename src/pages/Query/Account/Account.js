@@ -133,6 +133,7 @@ class Account extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Candidate ID must be unique" }
 				/>
 			)
 		},
@@ -149,6 +150,7 @@ class Account extends Component {
 			input: disabled => (
 				<Select
 					disabled={ disabled }
+					placeholder={ "Account type" }
 				>
 					<Option value="f">facebook</Option>
 					<Option value="p">phone</Option>
@@ -170,6 +172,7 @@ class Account extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Account name" }
 				/>
 			)
 		},			
@@ -207,6 +210,7 @@ class Account extends Component {
 			(
 				<Select
 					disabled={ disabled }
+					placeholder={ "Profile must be the current searched profile" }
 				>
 					<Option value={ this.props.profilename }>
 						{ this.props.profilename }
@@ -243,7 +247,7 @@ class Account extends Component {
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create A New Account'
+					drawerTitle='An Account'
 					loading={ this.props.loading }
 					isSmall={ this.props.isSmall }
 					showHeader={ this.props.showHeader }

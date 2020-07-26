@@ -144,6 +144,7 @@ class Email extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Email must be unique" }
 				/>
 			)
 		},
@@ -172,7 +173,7 @@ class Email extends Component {
 				>
 					<Search
 						onSearch={ this.handleSearch }
-						placeholder="Search Profile"
+						placeholder="Search an existing profile"
 						size="middle"
 						allowClear
 					/>
@@ -233,6 +234,7 @@ class Email extends Component {
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
 					dropdownName='Create Profile'
+					drawerTitle='An Email'
 					create={ this.createSync }
 					edit={ this.updateSync }
 					delete={ this.hide }

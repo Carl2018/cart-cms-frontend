@@ -38,6 +38,7 @@ class SecondaryDrawer extends Component {
 				(
 					<Select
 						disabled={ disabled || record.process ? true : false }
+						placeholder={ "Process" }
 					>
 						{ !record.process ? <></> :
 							<Option value="o">Open</Option>
@@ -66,6 +67,7 @@ class SecondaryDrawer extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Details" }
 				/>
 			)
 		},			

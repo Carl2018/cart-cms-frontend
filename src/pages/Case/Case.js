@@ -156,6 +156,7 @@ class Case extends Component {
 			input: disabled => (
 				<Select
 					disabled={ disabled }
+					placeholder={ "Category" }
 				>
 					{
 						this.state.categories.map( item => (
@@ -185,6 +186,7 @@ class Case extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Case name" }
 				/>
 			)
 		},
@@ -204,6 +206,7 @@ class Case extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Remarks" }
 				/>
 			)
 		},			
@@ -255,7 +258,7 @@ class Case extends Component {
 				>
 					<Search
 						onSearch={ this.handleSearch }
-						placeholder="Search Email"
+						placeholder="Search an exiting email"
 						size="middle"
 						allowClear
 					/>
@@ -315,7 +318,7 @@ class Case extends Component {
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create a new case'
+					drawerTitle='A Case'
 					create={ this.createSync }
 					edit={ this.update }
 					bind={ this.bind }

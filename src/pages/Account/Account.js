@@ -159,6 +159,7 @@ class Account extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Candidate ID must be unique" }
 				/>
 			)
 		},
@@ -175,6 +176,7 @@ class Account extends Component {
 			input: disabled => (
 				<Select
 					disabled={ disabled }
+					placeholder={ "Account type" }
 				>
 					<Option value="f">facebook</Option>
 					<Option value="p">phone</Option>
@@ -196,6 +198,7 @@ class Account extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Account name must be unique" }
 				/>
 			)
 		},			
@@ -243,7 +246,7 @@ class Account extends Component {
 				>
 					<Search
 						onSearch={ this.handleSearch }
-						placeholder="Search Profile"
+						placeholder="Search an existing profile"
 						size="middle"
 						allowClear
 					/>
@@ -302,7 +305,7 @@ class Account extends Component {
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create a new account'
+					drawerTitle='An Account'
 					create={ this.createSync }
 					edit={ this.update }
 					ban={ this.ban }

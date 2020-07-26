@@ -73,6 +73,7 @@ class Category extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Category name must be unique" }
 				/>
 			)
 		},
@@ -92,6 +93,7 @@ class Category extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Category description" }
 				/>
 			)
 		},			
@@ -126,7 +128,7 @@ class Category extends Component {
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create a New Category'
+					drawerTitle='A Category'
 					create={ this.create }
 					edit={ this.update }
 					delete={ this.hide }

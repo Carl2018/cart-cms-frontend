@@ -52,7 +52,7 @@ class BindDrawer extends Component {
 				>
 					<Search
 						onSearch={ this.handleSearch }
-						placeholder="Search Email"
+						placeholder="Search an existing email"
 						size="middle"
 						allowClear
 					/>

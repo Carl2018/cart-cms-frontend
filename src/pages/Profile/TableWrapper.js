@@ -54,6 +54,7 @@ class TableWrapper extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Email must be unique" }
 				/>
 			)
 		},

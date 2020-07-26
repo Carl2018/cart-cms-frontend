@@ -56,7 +56,11 @@ class TableDrawer extends Component {
 				key={ this.props.tableDrawerKey } 
 			>
 				<Drawer
-					title={ this.props.drawerTitle || 'Create' }
+					title={ Object.keys(this.props.record).length === 0 ? 
+						`Create ${this.props.drawerTitle}` :
+						this.props.disabled ? `View ${this.props.drawerTitle}` :
+						`Edit ${this.props.drawerTitle}`
+				 	}
 					width={ this.props.drawerWidth || 618 }
 					bodyStyle={{ paddingBottom: 80 }}
 					visible={ this.props.visible }

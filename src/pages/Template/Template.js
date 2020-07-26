@@ -126,6 +126,7 @@ class Template extends Component {
 			input: disabled => (
 				<Select
 					disabled={ disabled }
+					placeholder={ "Category" }
 				>
 					{
 						this.state.categories.map( item => (
@@ -155,6 +156,7 @@ class Template extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Title" }
 				/>
 			)
 		},
@@ -226,7 +228,7 @@ class Template extends Component {
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create a New Template'
+					drawerTitle='A Template'
 					create={ this.createSync }
 					edit={ this.update }
 					delete={ this.hide }

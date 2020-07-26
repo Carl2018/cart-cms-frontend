@@ -136,6 +136,7 @@ class Case extends Component {
 			input: disabled => (
 				<Select
 					disabled={ disabled }
+					placeholder={ "Category" }
 				>
 					{
 						this.props.categories.map( item => (
@@ -165,6 +166,7 @@ class Case extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Case name" }
 				/>
 			)
 		},
@@ -184,6 +186,7 @@ class Case extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Remarks" }
 				/>
 			)
 		},			
@@ -230,6 +233,7 @@ class Case extends Component {
 			(
 				<Select
 					disabled={ disabled }
+					placeholder={ "Choose an email from the current searched profile" }
 				>
 					{
 						this.props.dataEmail.map( item => (
@@ -279,7 +283,7 @@ class Case extends Component {
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create A New Case'
+					drawerTitle='A Case'
 					loading={ this.props.loading }
 					showHeader={ this.props.showHeader }
 					showDropdown={ this.props.showDropdown }

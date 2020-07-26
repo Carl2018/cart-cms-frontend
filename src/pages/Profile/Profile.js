@@ -130,6 +130,7 @@ class Profile extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Profile name must be unique" }
 				/>
 			)
 		},
@@ -148,6 +149,7 @@ class Profile extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Profile description" }
 				/>
 			)
 		},
@@ -165,6 +167,7 @@ class Profile extends Component {
 				<Select
 					disabled={ disabled }
 					mode="multiple"
+					placeholder={ "Labels" }
 				>
 					{
 						this.state.labels.map( item => (
@@ -214,7 +217,7 @@ class Profile extends Component {
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create a New Profile'
+					drawerTitle='A Profile'
 					create={ this.createSync }
 					edit={ this.updateSync }
 					delete={ this.hide }

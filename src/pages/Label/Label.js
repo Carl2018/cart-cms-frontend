@@ -140,6 +140,7 @@ class Label extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Label name must be unique" }
 				/>
 			)
 		},
@@ -156,6 +157,7 @@ class Label extends Component {
 			input: disabled => (
 				<Select
 					disabled={ disabled }
+					placeholder={ "Label color" }
 				>
 					<Option value="l">Green</Option>
 					<Option value="b">Blue</Option>
@@ -196,7 +198,7 @@ class Label extends Component {
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create a New Label'
+					drawerTitle='A Label'
 					create={ this.create }
 					edit={ this.update }
 					delete={ this.hide }

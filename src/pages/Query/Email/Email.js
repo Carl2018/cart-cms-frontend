@@ -126,6 +126,7 @@ class Email extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Email must be unique" }
 				/>
 			)
 		},
@@ -144,6 +145,7 @@ class Email extends Component {
 			(
 				<Select
 					disabled={ disabled }
+					placeholder={ "Profile must be the current searched profile" }
 				>
 					<Option value={ this.props.profilename }>
 						{ this.props.profilename }
@@ -181,7 +183,7 @@ class Email extends Component {
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create A New Email'
+					drawerTitle='An Email'
 					loading={ this.props.loading }
 					isSmall={ this.props.isSmall }
 					showHeader={ this.props.showHeader }
