@@ -4,6 +4,7 @@ import { handleResponse } from '_helpers';
 
 export const processService = {
     create,
+    retrieve,
     list,
     update,
 };
@@ -18,11 +19,25 @@ function create(record) {
 			.then(handleResponse);
 }
 
-function list(filters) {
+function retrieve(params) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/process/retrieve`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+    const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader(),
+		};
+    return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function list(params) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/process/list`);
-		Object.keys(filters).forEach( key => 
-			url.searchParams.append(key, filters[key]) );
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
 		// call the api
     const requestOptions = { 
 			method: 'GET', 

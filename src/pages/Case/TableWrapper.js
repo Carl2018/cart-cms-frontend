@@ -39,7 +39,7 @@ import {
 import { backend } from '_helpers';
 
 // destructure imported components and objects
-const { create, list, listFiltered, listByEmail, update, updateMerge } = backend;
+const { createSync, list, listFiltered, listByEmail, updateSync, updateMerge } = backend;
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -373,17 +373,17 @@ class TableWrapper extends Component {
 	}
 
 	// bind versions of CRUD
-	create= create.bind(this, processService, 'dataProcess');
-	createSync = record => this.create(record)
-		.then( res => this.props.list())
-		.then( res => {
-			const newRecord = this.state.record;
-			newRecord.status = record.process;
-			this.setState({ record: newRecord });
-		});
+	config = {
+		service: processService,
+		create: "create",
+		retrieve: "retrieve",
+		update: "update",
+		dataName: "dataProcess",
+	};
+	createSync = createSync.bind(this, this.config);
 	listFiltered = listFiltered.bind(this, processService, 'dataProcess');
 	listByEmail = listByEmail.bind(this, accountService, 'inProfile');
-	update = update.bind(this, processService, 'dataProcess');
+	updateSync = updateSync.bind(this, this.config);
 	listProfiles = list.bind(this, profileService, 'profiles');
 	updateMergeProfile = updateMerge.bind(this, profileService, 'profiles');
 
@@ -452,7 +452,7 @@ class TableWrapper extends Component {
 						onClose={ this.handleCloseProcess }
 						record={ this.state.record }
 						create={ this.createSync }
-						edit={ this.update }
+						edit={ this.updateSync }
 					>
 					</ProcessDrawer>
 				</div>

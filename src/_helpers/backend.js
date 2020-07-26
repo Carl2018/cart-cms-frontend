@@ -9,11 +9,13 @@ const { getCurrentDatetime } = helpers;
 
 export const backend = {
     create,
+    createSync,
     list,
     listCombined,
     listFiltered,
     listByEmail,
     update,
+    updateSync,
     updateMerge,
     toggleSticktop,
     incrementCount,
@@ -38,6 +40,28 @@ async function create(service, objectName, record) {
 		record.updated_at = getCurrentDatetime();
 		data.push(record);
 		this.setState({ [objectName]: data });
+		message.success('A record has been created');
+	} else {
+		message.error(response.en);
+	}
+}
+// interface for create sync
+async function createSync(config, record) {
+	const { service, create, retrieve, dataName } = config;
+	// insert the record into the backend table
+	let response = null;
+	await service[create](record)
+		.then( result => response = result )
+		.catch( error => response = error );
+	// update the frontend data accordingly
+	if (response.code === 200){
+		let data = this.state[dataName].slice();
+		let entry = {};
+		await service[retrieve]({id: response.entry.id})
+			.then( result => entry = result.entry )
+			.catch( error => response = error );
+		data = [ entry, ...data ];
+		this.setState({ [dataName]: data });
 		message.success('A record has been created');
 	} else {
 		message.error(response.en);
@@ -95,6 +119,29 @@ async function update(service, objectName, id, record) {
 		let index = data.findIndex( item => item.id === id);
 		Object.keys(record).forEach(item => data[index][item] = record[item])
 		this.setState({ [objectName]: data });
+		message.success('The record has been edited');
+	} else {
+		message.error(response.en);
+	}
+}
+// interface for update sync
+async function updateSync(config, id, record) {
+	const { service, update, retrieve, dataName } = config;
+	// update the record in the backend table
+	let response = null;
+	await service[update]({ id, ...record })
+		.then( result => response = result )
+		.catch( error => response = error );
+	// update the frontend data accordingly
+	if (response.code === 200){
+		const data = this.state[dataName].slice();
+		const index = data.findIndex( item => item.id === id);
+		let entry = {};
+		await service[retrieve]({id})
+			.then( result => entry = result.entry )
+			.catch( error => response = error );
+		data[index] = entry;
+		this.setState({ [dataName]: data });
 		message.success('The record has been edited');
 	} else {
 		message.error(response.en);
