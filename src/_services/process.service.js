@@ -19,7 +19,7 @@ function create(record) {
 			.then(handleResponse);
 }
 
-function retrieve(params) {
+function retrieve(params={}) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/process/retrieve`);
 		Object.keys(params).forEach( key => 
@@ -33,7 +33,7 @@ function retrieve(params) {
 			.then(handleResponse);
 }
 
-function list(params) {
+function list(params={}) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/process/list`);
 		Object.keys(params).forEach( key => 

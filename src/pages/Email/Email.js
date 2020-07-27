@@ -26,7 +26,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { create, list, listCombined, update, hide } = backend;
+const { createSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
 const { Search } = Input;
 
@@ -45,7 +45,7 @@ class Email extends Component {
 	}
 
 	componentDidMount() {
-		this.list();
+		this.listSync();
 		this.listLabels();
 		this.listProfiles();
 	}
@@ -207,18 +207,38 @@ class Email extends Component {
 	}
 
 	// bind versions of CRUD
-	create = create.bind(this, emailService, 'data');
-	createSync = record => this.create(record).then( res => this.list() );
-	list = listCombined.bind(this, emailService, 'data', ['labelname', 'label_color']);
-	update = update.bind(this, emailService, 'data');
-	updateSync = (id, record) => this.update(id, record).then( res => this.list() );
-	hide = hide.bind(this, emailService, 'data');
-	listLabels = list.bind(this, labelService, 'labels');
-	listProfiles = list.bind(this, profileService, 'profiles');
+	config = {
+		service: emailService,
+		create: "create",
+		retrieve: "retrieve",
+		list: "list",
+		update: "update",
+		hide: "hide",
+		dataName: "data",
+	};
+	createSync = createSync.bind(this, this.config);
+	listSync = listSync.bind(this, this.config);
+	update = updateSync.bind(this, this.config);
+	updateSync = (id, record) => this.update(id, record)
+		.then( res => this.listSync() );
+	hideSync = hideSync.bind(this, this.config);
+
+	configLabel = {
+		service: labelService,
+		list: "list",
+		dataName: "labels",
+	};
+	listLabels = listSync.bind(this, this.configLabel);
+	configProfile = {
+		service: profileService,
+		list: "list",
+		dataName: "profiles",
+	};
+	listProfiles = listSync.bind(this, this.configProfile);
 
 	// refresh table
 	refreshTable = () => {
-		this.list();
+		this.listSync();
 		this.listLabels();
 		this.listProfiles();
 		this.setState({ tableWrapperKey: Date.now() })
@@ -229,18 +249,21 @@ class Email extends Component {
 			<div className='Email'>
 				<TableWrapper
 					key={ this.state.tableWrapperKey }
+					// data props
 					data={ this.state.data }
+					labels={ this.state.labels }
+					// display props
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
 					dropdownName='Create Profile'
 					drawerTitle='An Email'
+					isSmall={ this.props.isSmall }
+					// api props
 					create={ this.createSync }
 					edit={ this.updateSync }
-					delete={ this.hide }
+					delete={ this.hideSync }
 					refreshTable={ this.refreshTable }
-					isSmall={ this.props.isSmall }
-					labels={ this.state.labels }
 				>
 				</TableWrapper>
 			</div>

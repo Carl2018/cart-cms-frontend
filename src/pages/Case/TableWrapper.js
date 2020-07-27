@@ -39,7 +39,7 @@ import {
 import { backend } from '_helpers';
 
 // destructure imported components and objects
-const { createSync, list, listFiltered, listByEmail, updateSync, updateMerge } = backend;
+const { createSync, listSync, updateSync } = backend;
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -57,7 +57,7 @@ class TableWrapper extends Component {
 			visibleBind: false,
 			bindDrawerKey: Date.now(),
 			// accounts in the same profile
-			inProfile: [],
+			accounts: [],
 			// for the merge modal
 			bind: {},
 			merge: {},
@@ -212,7 +212,6 @@ class TableWrapper extends Component {
 
 	handleSubmit = record => {
 
-		console.log(record);
 		if (this.state.record.id) // edit the entry
 			this.props.edit(this.state.record.id, record);
 		else // create an entry
@@ -228,7 +227,7 @@ class TableWrapper extends Component {
 	// handlers for process button and process drawer
 	handleClickProcess = record => {
 		// get process history
-		this.listFiltered({'case_id': record.id});
+		this.listSync({'case_id': record.id});
 		this.setState({
 			visibleProcess: true, 
 			record, 
@@ -246,7 +245,7 @@ class TableWrapper extends Component {
 	// handlers for bind button and bind drawer
 	handleClickBind = record => {
 		// get all accounts in the same profile
-		this.listByEmail({email: record.email});
+		this.listAccounts({email: record.email});
 		this.setState({
 			visibleBind: true, 
 			record, 
@@ -267,7 +266,7 @@ class TableWrapper extends Component {
 			{ case_id: this.state.record.id, accountname: record.accountname }
 		this.setState({ bind });
 		// check if there is a merge
-		const accounts = this.state.inProfile.map( item => item.accountname );
+		const accounts = this.state.accounts.map( item => item.accountname );
 		if (accounts.includes(record.accountname)) {
 			// bind
 			this.props.bind(this.state.record.id, bind);
@@ -277,10 +276,8 @@ class TableWrapper extends Component {
 				record: {},
 				bindDrawerKey: Date.now(), 
 			});
-			console.log("no merge");
 		} else {
 			this.handleClickMerge();
-			console.log("merge");
 		}
 	}
 
@@ -325,7 +322,6 @@ class TableWrapper extends Component {
 	};
 
 	handleClickConfirmMerge = (closeNotification, notificationKey) => {
-		console.log('merge completed');
 		// call merge api
 		const id = this.state.record.id;
 		const bind = Object.assign({}, this.state.bind);
@@ -351,8 +347,6 @@ class TableWrapper extends Component {
 	}
 
 	handleSubmitMerge = change => {
-		console.log(this.state.merge);
-		console.log(change);
 		const merge = Object.assign( {}, this.state.merge );
 		const id = merge.profile_id_to;
 		const record = { };
@@ -363,7 +357,6 @@ class TableWrapper extends Component {
 			record.profilename = merge.profile_to.profilename;
 			record.description = merge.profile_to.description;
 		}
-		console.log(record);
 		this.updateMergeProfile( id, record );
 		this.setState({
 			visibleMerge: false, 
@@ -377,15 +370,30 @@ class TableWrapper extends Component {
 		service: processService,
 		create: "create",
 		retrieve: "retrieve",
+		list: "list",
 		update: "update",
 		dataName: "dataProcess",
 	};
 	createSync = createSync.bind(this, this.config);
-	listFiltered = listFiltered.bind(this, processService, 'dataProcess');
-	listByEmail = listByEmail.bind(this, accountService, 'inProfile');
+	listSync = listSync.bind(this, this.config);
 	updateSync = updateSync.bind(this, this.config);
-	listProfiles = list.bind(this, profileService, 'profiles');
-	updateMergeProfile = updateMerge.bind(this, profileService, 'profiles');
+
+	configAccount = {
+		service: accountService,
+		list: "listByEmail",
+		dataName: "accounts",
+	};
+	listAccounts = listSync.bind(this, this.configAccount);
+
+	configProfile = {
+		service: profileService,
+		retrieve: "retrieve",
+		list: "list",
+		update: "updateMerge",
+		dataName: "profiles",
+	};
+	listProfiles = listSync.bind(this, this.configProfile);
+	updateMergeProfile = updateSync.bind(this, this.configProfile);
 
 	render(){
 		return (

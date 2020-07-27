@@ -26,7 +26,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { create, list, update, ban, hide } = backend;
+const { createSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
 const { Search } = Input;
 const { Option } = Select;
@@ -45,7 +45,7 @@ class Account extends Component {
 	}
 	
 	componentDidMount() {
-		this.list();
+		this.listSync();
 		this.listProfiles();
 	}
 
@@ -145,13 +145,13 @@ class Account extends Component {
 	// define form items for TableDrawer
 	formItems = [
 		{
-			label: 'Candidate ID',
-			name: 'candidate_id',
+			label: 'Account Name',
+			name: 'accountname',
 			rules: [
 				{
 					required: true,
-					message: 'candidate_id cannot be empty',
-				}
+					message: 'accountname cannot be empty',
+				},
 			],
 			editable: true,
 			input: disabled => (
@@ -159,10 +159,10 @@ class Account extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
-					placeholder={ "Candidate ID must be unique" }
+					placeholder={ "Account name must be unique" }
 				/>
 			)
-		},
+		},			
 		{
 			label: 'Account Type',
 			name: 'account_type',
@@ -184,13 +184,13 @@ class Account extends Component {
 			)
 		},
 		{
-			label: 'Account Name',
-			name: 'accountname',
+			label: 'Candidate ID',
+			name: 'candidate_id',
 			rules: [
 				{
 					required: true,
-					message: 'accountname cannot be empty',
-				},
+					message: 'candidate_id cannot be empty',
+				}
 			],
 			editable: true,
 			input: disabled => (
@@ -198,10 +198,10 @@ class Account extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
-					placeholder={ "Account name must be unique" }
+					placeholder={ "Candidate ID must be unique" }
 				/>
 			)
-		},			
+		},
 		{
 			label: 'Status',
 			name: 'status',
@@ -280,19 +280,32 @@ class Account extends Component {
 	}
 
 	// bind versions of CRUD
-	create= create.bind(this, accountService, 'data');
-	createSync = record => this.create(record).then( res => this.list() );
-	list = list.bind(this, accountService, 'data');
-	update = update.bind(this, accountService, 'data');
-	ban = ban.bind(this, accountService, 'data');
-	hide = hide.bind(this, accountService, 'data');
-	listProfiles = list.bind(this, profileService, 'profiles');
+	config = {
+		service: accountService,
+		create: "create",
+		retrieve: "retrieve",
+		list: "list",
+		update: "update",
+		hide: "hide",
+		dataName: "data",
+	};
+	createSync = createSync.bind(this, this.config);
+	listSync = listSync.bind(this, this.config);
+	updateSync = updateSync.bind(this, this.config);
+	hideSync = hideSync.bind(this, this.config);
+	ban = updateSync.bind(this, {...this.config, update: "ban"});
+
+	configProfile = {
+		service: profileService,
+		list: "list",
+		dataName: "profiles",
+	};
+	listProfiles = listSync.bind(this, this.configProfile);
 
 	// refresh table
 	refreshTable = () => {
-		this.list();
+		this.listSync();
 		this.listProfiles();
-		console.log(this.state.profiles);
 		this.setState({ tableWrapperKey: Date.now() })
 	};
 
@@ -301,17 +314,20 @@ class Account extends Component {
 			<div className='Account'>
 				<TableWrapper
 					key={ this.state.tableWrapperKey }
+					// data props
 					data={ this.state.data }
+					// display props
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
 					drawerTitle='An Account'
-					create={ this.createSync }
-					edit={ this.update }
-					ban={ this.ban }
-					delete={ this.hide }
-					refreshTable={ this.refreshTable }
 					isSmall={ this.props.isSmall }
+					// api props
+					create={ this.createSync }
+					edit={ this.updateSync }
+					delete={ this.hideSync }
+					ban={ this.ban }
+					refreshTable={ this.refreshTable }
 				>
 				</TableWrapper>
 			</div>

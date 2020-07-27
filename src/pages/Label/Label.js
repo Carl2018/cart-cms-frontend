@@ -22,7 +22,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { create, list, update, hide } = backend;
+const { createSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
 const { Option } = Select;
 
@@ -37,7 +37,7 @@ class Label extends Component {
 	}
 	
 	componentDidMount() {
-		this.list();
+		this.listSync();
 	}
 
 	// define columns for TableBody
@@ -178,14 +178,23 @@ class Label extends Component {
 	)
 
 	// bind versions of CRUD
-	create= create.bind(this, labelService, 'data');
-	list = list.bind(this, labelService, 'data');
-	update = update.bind(this, labelService, 'data');
-	hide = hide.bind(this, labelService, 'data');
+	config = {
+		service: labelService,
+		create: "create",
+		retrieve: "retrieve",
+		list: "list",
+		update: "update",
+		hide: "hide",
+		dataName: "data",
+	};
+	createSync = createSync.bind(this, this.config);
+	listSync = listSync.bind(this, this.config);
+	updateSync = updateSync.bind(this, this.config);
+	hideSync = hideSync.bind(this, this.config);
 
 	// refresh table
 	refreshTable = () => {
-		this.list();
+		this.listSync();
 		this.setState({ tableWrapperKey: Date.now() })
 	};
 
@@ -194,14 +203,17 @@ class Label extends Component {
 			<div className='Label'>
 				<TableWrapper
 					key={ this.state.tableWrapperKey }
+					// data props
 					data={ this.state.data }
+					// display props
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
 					drawerTitle='A Label'
-					create={ this.create }
-					edit={ this.update }
-					delete={ this.hide }
+					// api props
+					create={ this.createSync }
+					edit={ this.updateSync }
+					delete={ this.hideSync }
 					refreshTable={ this.refreshTable }
 				>
 				</TableWrapper>

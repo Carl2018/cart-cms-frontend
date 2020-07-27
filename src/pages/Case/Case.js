@@ -27,7 +27,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { create, list, update, bind, hide } = backend;
+const { createSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
 const { Search } = Input;
 const { Option } = Select
@@ -48,7 +48,7 @@ class Case extends Component {
 	}
 	
 	componentDidMount() {
-		this.list();
+		this.listSync();
 		this.listCategories();
 		this.listEmails();
 	}
@@ -292,18 +292,37 @@ class Case extends Component {
 	}
 
 	// bind versions of CRUD
-	create= create.bind(this, caseService, 'data');
-	createSync = record => this.create(record).then( res => this.list() );
-	list = list.bind(this, caseService, 'data');
-	update = update.bind(this, caseService, 'data');
-	bind = bind.bind(this, caseService, 'data');
-	hide = hide.bind(this, caseService, 'data');
-	listCategories = list.bind(this, categoryService, 'categories');
-	listEmails = list.bind(this, emailService, 'emails');
+	config = {
+		service: caseService,
+		create: "create",
+		retrieve: "retrieve",
+		list: "list",
+		update: "update",
+		hide: "hide",
+		dataName: "data",
+	};
+	createSync = createSync.bind(this, this.config);
+	listSync = listSync.bind(this, this.config);
+	updateSync = updateSync.bind(this, this.config);
+	hideSync = hideSync.bind(this, this.config);
+	bindSync = updateSync.bind(this, {...this.config, update: "bind"});
+
+	configCategory = {
+		service: categoryService,
+		list: "list",
+		dataName: "categories",
+	};
+	listCategories = listSync.bind(this, this.configCategory);
+	configEmail= {
+		service: emailService,
+		list: "list",
+		dataName: "emails",
+	};
+	listEmails = listSync.bind(this, this.configEmail);
 
 	// refresh table
 	refreshTable = () => {
-		this.list();
+		this.listSync();
 		this.listCategories();
 		this.listEmails();
 		this.setState({ tableWrapperKey: Date.now() })
@@ -314,17 +333,19 @@ class Case extends Component {
 			<div className='Case'>
 				<TableWrapper
 					key={ this.state.tableWrapperKey }
+					// data props
 					data={ this.state.data }
+					// display props
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
 					drawerTitle='A Case'
+					// api props
 					create={ this.createSync }
-					edit={ this.update }
-					bind={ this.bind }
-					delete={ this.hide }
+					edit={ this.updateSync }
+					bind={ this.bindSync }
+					delete={ this.hideSync }
 					refreshTable={ this.refreshTable }
-					list={ this.list }
 				>
 				</TableWrapper>
 			</div>

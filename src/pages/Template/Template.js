@@ -28,7 +28,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { create, list, update, hide } = backend;
+const { createSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
 const { Option } = Select
 
@@ -45,7 +45,7 @@ class Template extends Component {
 	}
 	
 	componentDidMount() {
-		this.list();
+		this.listSync();
 		this.listCategories();
 	}
 
@@ -205,16 +205,30 @@ class Template extends Component {
 	)
 
 	// bind versions of CRUD
-	create= create.bind(this, templateService, 'data');
-	createSync = record => this.create(record).then( res => this.list() );
-	list = list.bind(this, templateService, 'data');
-	update = update.bind(this, templateService, 'data');
-	hide = hide.bind(this, templateService, 'data');
-	listCategories = list.bind(this, categoryService, 'categories');
+	config = {
+		service: templateService,
+		create: "create",
+		retrieve: "retrieve",
+		list: "list",
+		update: "update",
+		hide: "hide",
+		dataName: "data",
+	};
+	createSync = createSync.bind(this, this.config);
+	listSync = listSync.bind(this, this.config);
+	updateSync = updateSync.bind(this, this.config);
+	hideSync = hideSync.bind(this, this.config);
+
+	configCategory = {
+		service: categoryService,
+		list: "list",
+		dataName: "categories",
+	};
+	listCategories = listSync.bind(this, this.configCategory);
 
 	// refresh table
 	refreshTable = () => {
-		this.list();
+		this.listSync();
 		this.listCategories();
 		this.setState({ tableWrapperKey: Date.now() })
 	};
@@ -224,16 +238,19 @@ class Template extends Component {
 			<div className='Template'>
 				<TableWrapper
 					key={ this.state.tableWrapperKey }
+					// data props
 					data={ this.state.data }
+					// display props
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
 					drawerTitle='A Template'
-					create={ this.createSync }
-					edit={ this.update }
-					delete={ this.hide }
-					refreshTable={ this.refreshTable }
 					drawerWidth={ 900 }
+					// api props
+					create={ this.createSync }
+					edit={ this.updateSync }
+					delete={ this.hideSync }
+					refreshTable={ this.refreshTable }
 				>
 				</TableWrapper>
 			</div>
