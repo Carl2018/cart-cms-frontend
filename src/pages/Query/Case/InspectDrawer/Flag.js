@@ -108,7 +108,7 @@ class Flag extends Component {
 		if (response.code === 200)
 			message.info("Flags found");
 		else {
-			message.success("The account is free from flags for this interval");
+			message.success("The account has not been reported for this interval");
 			this.setState({ flags: [] });
 		}
 		this.setState({ loading: false });
@@ -145,37 +145,35 @@ class Flag extends Component {
 					onCancel={ this.onCancel }
 					footer={ null }
 				>
-					<Card>
-						<div
-							style={{ margin: "16px 4px" }}
-						>
-							<Space size="middle" >
-								<Input.Group compact>
-									<Input
-										placeholder="Interval in Days"
-										onChange={ this.handleChange }
-										style={{ width: 160 }}
-									/>
-									<Search
-										placeholder="Candidate ID"
-										onSearch={ this.handleSearch }
-										style={{ width: 200 }}
-									/>
-								</Input.Group>
-							</Space>
-						</div>
-						<div>
-							<Spin spinning={ this.state.loading }>
-								<div>
-									<TableBody
-										columns={ this.columns } 
-										data={ this.state.flags }
-										isSmall={ true }
-									/>
-								</div>
-							</Spin>
-						</div>
-					</Card>
+					<div
+						style={{ margin: "0px 4px 32px 4px" }}
+					>
+						<Space size="middle" >
+							<Input.Group compact>
+								<Input
+									placeholder="Interval in Days"
+									onChange={ this.handleChange }
+									style={{ width: 160 }}
+								/>
+								<Search
+									placeholder="Candidate ID"
+									onSearch={ this.handleSearch }
+									style={{ width: 200 }}
+								/>
+							</Input.Group>
+						</Space>
+					</div>
+					<div>
+						<Spin spinning={ this.state.loading }>
+							<div>
+								<TableBody
+									columns={ this.columns } 
+									data={ this.state.flags }
+									isSmall={ true }
+								/>
+							</div>
+						</Spin>
+					</div>
 				</Modal>
 			</div>
 		);
