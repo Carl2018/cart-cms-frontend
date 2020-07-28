@@ -37,12 +37,24 @@ async function createSync(config, record) {
 	return response; // for process drawer
 }
 // interface for list sync
+//async function listSync(config, params) {
+//	const { service, list, dataName } = config;
+//	await service[list](params)
+//		.then( ({ entry: data }) => 
+//			this.setState({ [dataName]: data }, () => {return;} ) 
+//		);
+//}
+// interface for list sync
 async function listSync(config, params) {
 	const { service, list, dataName } = config;
+	let response = null;
 	await service[list](params)
-		.then( ({ entry: data }) => 
-			this.setState({ [dataName]: data }, () => {return;} ) 
-		);
+		.then( result => {
+			response = result;
+			this.setState({ [dataName]: result.entry });
+		})
+		.catch( error => response = error );
+	return response;
 }
 // interface for update sync
 async function updateSync(config, id, record) {

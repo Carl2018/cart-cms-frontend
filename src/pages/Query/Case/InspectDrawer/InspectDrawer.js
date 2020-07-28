@@ -20,6 +20,7 @@ import { NodeIndexOutlined } from '@ant-design/icons';
 import { TableBody } from '_components'
 import DrawerDropdown from './DrawerDropdown'
 import Template from './Template'
+import Flag from './Flag'
 
 // import helpers
 import { helpers } from '_helpers';
@@ -36,6 +37,9 @@ class InspectDrawer extends Component {
 			// for the template modal
 			visibleTemplate: false,
 			modalKeyTemplate: Date.now(),
+			// for the flag modal
+			visibleFlag: false,
+			modalKeyFlag: Date.now(),
 		};
 	}
 
@@ -310,6 +314,20 @@ class InspectDrawer extends Component {
 		});
 	}
 
+	// handlers for flags
+	handleClickFlags = event => {
+		this.setState({
+			visibleFlag: true,
+		});
+	}
+
+	handleCloseFlag = event => {
+		this.setState({
+			visibleFlag: false,
+			modalKeyFlag: Date.now(),
+		});
+	}
+
 	// define the bind button
 	genExtra = () => (
 		<div
@@ -425,6 +443,7 @@ class InspectDrawer extends Component {
 					onClickUnban={ this.onClickUnban }
 					onClickBan={ this.onClickBan }
 					onClickTemplates={ this.handleClickTemplates }
+					onClickFlags={ this.handleClickFlags }
 				/>
 			</Col>
 		</Row>	
@@ -539,6 +558,14 @@ class InspectDrawer extends Component {
 						onCancel={ this.handleCloseTemplate }
 					>
 					</Template>
+				</div>
+				<div>
+					<Flag
+						modalKey={ this.state.modalKeyFlag }
+						visible={ this.state.visibleFlag }
+						onCancel={ this.handleCloseFlag }
+					>
+					</Flag>
 				</div>
 			</div>
 		);

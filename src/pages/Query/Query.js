@@ -108,6 +108,9 @@ class Query extends Component {
 		} else {
 			message.info("Profile Not Found");
 			this.setState({ 
+				dataEmail: [], 
+				dataCase: [], 
+				dataAccount: [], 
 				showHeader: false,
 				showDropdown: false,
 			});

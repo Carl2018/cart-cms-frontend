@@ -5,6 +5,7 @@ import { handleResponse } from '_helpers';
 export const caseService = {
     create,
     retrieve,
+    retrieveFlag,
     list,
     update,
     bind,
@@ -38,6 +39,20 @@ function retrieve(params={}) {
 function list(params={}) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/case/list`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function retrieveFlag(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/case/retrieve_flag`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
