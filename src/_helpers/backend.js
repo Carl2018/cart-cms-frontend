@@ -14,6 +14,10 @@ async function createSync(config, record) {
 	const { service, create, retrieve, dataName } = config;
 	// insert the record into the backend table
 	let response = null;
+	// strip spaces
+	for (let key in record) 
+		record[key] = typeof record[key] === 'string' ? 
+			record[key].trim() : record[key];
 	await service[create](record)
 		.then( result => response = result )
 		.catch( error => response = error );
@@ -45,6 +49,10 @@ async function updateSync(config, id, record) {
 	const { service, update, retrieve, dataName, editSuccessMsg } = config;
 	// update the record in the backend table
 	let response = null;
+	// strip spaces
+	for (let key in record) 
+		record[key] = typeof record[key] === 'string' ? 
+			record[key].trim() : record[key];
 	await service[update]({ id, ...record })
 		.then( result => response = result )
 		.catch( error => response = error );

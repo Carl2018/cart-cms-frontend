@@ -54,6 +54,7 @@ class TableWrapper extends Component {
 			// for the process drawer
 			visibleProcess: false,
 			dataProcess: [],
+			processDrawerKey: Date.now(),
 			// for the bind drawer
 			visibleBind: false,
 			bindDrawerKey: Date.now(),
@@ -252,6 +253,7 @@ class TableWrapper extends Component {
 
 	handleCloseProcess = event => {
 		this.setState({
+			processDrawerKey: Date.now(), 
 			visibleProcess: false, 
 			dataProcess: [],
 		});
@@ -535,6 +537,7 @@ class TableWrapper extends Component {
 				</div>
 				<div>
 					<ProcessDrawer
+						tableDrawerKey={ this.state.processDrawerKey } 
 						data={ this.state.dataProcess } 
 						visible={ this.state.visibleProcess } 
 						onClose={ this.handleCloseProcess }

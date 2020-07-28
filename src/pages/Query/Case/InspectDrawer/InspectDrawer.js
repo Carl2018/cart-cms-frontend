@@ -417,7 +417,7 @@ class InspectDrawer extends Component {
 			</Col>
 			<Col
 				span={ 2 }
-				offset={ 12 }
+				offset={ 11 }
 			>
 				<DrawerDropdown 
 					onClickProcess={ this.onClickProcess }
