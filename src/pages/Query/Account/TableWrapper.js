@@ -120,7 +120,7 @@ class TableWrapper extends Component {
 		});
 	}
 
-	handleClickBan = record => this.props.ban(record);
+	handleClickBan = record => this.props.ban(record.id, record);
 
 	handleClickDelete = record => this.props.delete(record.id);
 

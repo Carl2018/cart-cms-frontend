@@ -313,6 +313,7 @@ class Case extends Component {
 		dataName: "categories",
 	};
 	listCategories = listSync.bind(this, this.configCategory);
+
 	configEmail= {
 		service: emailService,
 		list: "list",
@@ -342,6 +343,7 @@ class Case extends Component {
 					drawerTitle='A Case'
 					// api props
 					create={ this.createSync }
+					list={ this.listSync }
 					edit={ this.updateSync }
 					bind={ this.bindSync }
 					delete={ this.hideSync }

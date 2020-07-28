@@ -104,7 +104,7 @@ class Home extends React.Component {
 										<Col span={4}>
 												<Statistic
 													title="Created"
-													value={10}
+													value={84}
 												/>
 										</Col>
 										<Col span={4}>
@@ -116,28 +116,28 @@ class Home extends React.Component {
 										<Col span={4}>
 												<Statistic
 													title="Approved"
-													value={91}
-													suffix="/ 100"
+													value={98}
+													suffix="/ 112"
 												/>
 										</Col>
 										<Col span={4}>
 												<Statistic
 													title="Rejected"
-													value={8}
-													suffix="/ 100"
+													value={12}
+													suffix="/ 112"
 												/>	
 										</Col>
 										<Col span={4}>
 												<Statistic
 													title="Deferred"
-													value={1}
-													suffix="/ 100"
+													value={2}
+													suffix="/ 112"
 												/>
 										</Col>
 										<Col span={4}>
 												<Statistic
 													title="Settled"
-													value={100}
+													value={112}
 												/>
 										</Col>
 									</Row>

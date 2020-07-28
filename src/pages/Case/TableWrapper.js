@@ -374,7 +374,19 @@ class TableWrapper extends Component {
 		update: "update",
 		dataName: "dataProcess",
 	};
-	createSync = createSync.bind(this, this.config);
+	create = createSync.bind(this, this.config);
+	createSync = async record => {
+		// update process table in process drawer
+		const response = await this.create(record);
+		// update case table
+		this.props.list();
+		// update case info in process drawer
+		if (response.code === 200) {
+			const newRecord = Object.assign({}, this.state.record);
+			newRecord.status = record.process;
+			this.setState({ record: newRecord });
+		}
+	}
 	listSync = listSync.bind(this, this.config);
 	updateSync = updateSync.bind(this, this.config);
 
