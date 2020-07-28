@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 // import components from ant design
 import { 
-	Card,
 	Col,
 	Input,
 	Modal,
