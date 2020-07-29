@@ -21,7 +21,7 @@ import {
 // import shared and child components
 import { TableBody } from '_components'
 import { TableDropdown } from '_components'
-import { TableDrawer } from '_components'
+import { TableDrawer } from './TableDrawer'
 
 class TableWrapper extends Component {
 	constructor(props) {

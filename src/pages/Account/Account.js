@@ -7,6 +7,7 @@ import {
 	AutoComplete, 
 	Input, 
 	Select, 
+	Spin, 
 	Tag, 
 } from 'antd';
 
@@ -41,6 +42,7 @@ class Account extends Component {
 			// options for profile search
 			profiles: [],
 			options: [],
+			spinning: false,
 		};
 	}
 	
@@ -144,25 +146,25 @@ class Account extends Component {
 
 	// define form items for TableDrawer
 	formItems = [
-		{
-			label: 'Account Name',
-			name: 'accountname',
-			rules: [
-				{
-					required: true,
-					message: 'accountname cannot be empty',
-				},
-			],
-			editable: true,
-			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
-					disabled={ disabled }
-					placeholder={ "Account name must be unique" }
-				/>
-			)
-		},			
+//		{
+//			label: 'Account Name',
+//			name: 'accountname',
+//			rules: [
+//				{
+//					required: true,
+//					message: 'accountname cannot be empty',
+//				},
+//			],
+//			editable: true,
+//			input: disabled => (
+//				<Input
+//					maxLength={255}
+//					allowClear
+//					disabled={ disabled }
+//					placeholder={ "Account name must be unique" }
+//				/>
+//			)
+//		},			
 		{
 			label: 'Account Type',
 			name: 'account_type',
@@ -183,25 +185,25 @@ class Account extends Component {
 				</Select>
 			)
 		},
-		{
-			label: 'Candidate ID',
-			name: 'candidate_id',
-			rules: [
-				{
-					required: true,
-					message: 'candidate_id cannot be empty',
-				}
-			],
-			editable: true,
-			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
-					disabled={ disabled }
-					placeholder={ "Candidate ID must be unique" }
-				/>
-			)
-		},
+//		{
+//			label: 'Candidate ID',
+//			name: 'candidate_id',
+//			rules: [
+//				{
+//					required: true,
+//					message: 'candidate_id cannot be empty',
+//				}
+//			],
+//			editable: true,
+//			input: disabled => (
+//				<Input
+//					maxLength={255}
+//					allowClear
+//					disabled={ disabled }
+//					placeholder={ "Candidate ID must be unique" }
+//				/>
+//			)
+//		},
 		{
 			label: 'Status',
 			name: 'status',
@@ -294,6 +296,11 @@ class Account extends Component {
 	updateSync = updateSync.bind(this, this.config);
 	hideSync = hideSync.bind(this, this.config);
 	ban = updateSync.bind(this, {...this.config, update: "ban"});
+	banSync = async (id, record) => {
+		this.setState({ spinning: true });
+		await this.ban(id, record);
+		this.setState({ spinning: false });
+	}
 
 	configProfile = {
 		service: profileService,
@@ -312,24 +319,26 @@ class Account extends Component {
 	render(){
 		return (
 			<div className='Account'>
-				<TableWrapper
-					key={ this.state.tableWrapperKey }
-					// data props
-					data={ this.state.data }
-					// display props
-					columns={ this.columns }
-					formItems={ this.formItems }
-					tableHeader={ this.tableHeader }
-					drawerTitle='An Account'
-					isSmall={ this.props.isSmall }
-					// api props
-					create={ this.createSync }
-					edit={ this.updateSync }
-					delete={ this.hideSync }
-					ban={ this.ban }
-					refreshTable={ this.refreshTable }
-				>
-				</TableWrapper>
+				<Spin spinning={ this.state.spinning }>
+					<TableWrapper
+						key={ this.state.tableWrapperKey }
+						// data props
+						data={ this.state.data }
+						// display props
+						columns={ this.columns }
+						formItems={ this.formItems }
+						tableHeader={ this.tableHeader }
+						drawerTitle='An Account'
+						isSmall={ this.props.isSmall }
+						// api props
+						create={ this.createSync }
+						edit={ this.updateSync }
+						delete={ this.hideSync }
+						ban={ this.banSync }
+						refreshTable={ this.refreshTable }
+					>
+					</TableWrapper>
+				</Spin>
 			</div>
 		);
 	}

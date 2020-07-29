@@ -6,6 +6,7 @@ export const caseService = {
     create,
     retrieve,
     retrieveFlag,
+		retrieveCandidateId,
     list,
     update,
     bind,
@@ -53,6 +54,20 @@ function list(params={}) {
 function retrieveFlag(params={}) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/case/retrieve_flag`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function retrieveCandidateId(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/case/retrieve_candidate_id`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
