@@ -262,11 +262,11 @@ class Template extends Component {
 		list: "list",
 		update: "toggleSticktop",
 		dataName: "templates",
-		editSuccessMsg: "Template Coplied",
+		editSuccessMsg: "Template has been fixed to top",
 	};
 	listTemplates = listSync.bind(this, this.configTemplate);
 	toggleSticktop = updateSync.bind(this, this.configTemplate);
-	incrementCount = updateSync.bind(this, {...this.configTemplate, update:"incrementCount"});
+	incrementCount = updateSync.bind(this, {...this.configTemplate, update:"incrementCount", editSuccessMsg: "Template Coplied"});
 
 	configPanel = {
 		service: templateService,

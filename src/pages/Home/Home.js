@@ -11,10 +11,7 @@ import {
 	Statistic, 
 } from 'antd';
 
-import { 
-	authenticationService,
-	userService ,
-} from '_services';
+import { authenticationService } from '_services';
 
 const data = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June'],
@@ -70,13 +67,10 @@ class Home extends React.Component {
 
         this.state = {
             currentUser: authenticationService.currentUserValue,
-            users: null
         };
     }
 
     componentDidMount() {
-        userService.list().then(users => this.setState({ users }));
-        //userService.getAll().then(users => this.setState({ users }));
     }
 
     render() {
