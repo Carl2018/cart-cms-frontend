@@ -8,6 +8,7 @@ import {
 	Collapse, 
 	Modal, 
 	Input,
+	Pagination,
 	Radio, 
 	Row, 
 	Space, 
@@ -29,10 +30,14 @@ import {
 } from '_services';
 
 // import helpers
-import { backend } from "_helpers";
+import { 
+	backend, 
+	helpers, 
+} from "_helpers";
 
 // destructure imported components and objects
 const { listSync, updateSync } = backend;
+const { dynamicSort } = helpers;
 const { Panel } = Collapse;
 const { Search } = Input;
 
@@ -54,12 +59,17 @@ class Template extends Component {
 			categories: [],
 			// for template search
 			templates: [],
+			// for pagination
+			currentPage: 1,
+			currentPanels: [],
+			pageSize: 5,
+			// for toggle
+			emphasized: 0,
 		};
 	}
 	
 	componentDidMount() {
-		this.listTemplates();
-		this.listPanels();
+		this.listSync();
 		this.listCategories();
 	}
 
@@ -122,7 +132,6 @@ class Template extends Component {
 		const options = this.state.categories
 			.map( item => { return {label: item.categoryname, options: []}; });
 		options.push( {label:'Uncategorized', options:[]} );
-		console.log(options);
 		this.state.templates
 			.filter( item => item[this.state.searchProperty].includes(data) )
 			.forEach( item => {
@@ -131,7 +140,6 @@ class Template extends Component {
 						option.options.push( {value: item[this.state.searchProperty]} );
 				})
 			});
-		console.log(options);
 		this.setState({ options });
 	}
 
@@ -144,7 +152,11 @@ class Template extends Component {
 		const searchProperty = this.state.searchProperty;
 		const panels = this.state.templates
 			.filter( item => item[searchProperty].includes(data) );
+		panels.sort(dynamicSort("-sticktop"));
+		const currentPanels = panels.slice(0, this.state.pageSize);
 		this.setState({ 
+			currentPage: 1,
+			currentPanels,
 			panels,
 			loading: false, 
 		});
@@ -180,25 +192,28 @@ class Template extends Component {
 		this.toggleSticktop(id, {sticktop});
 
 		// frontend
-		const toggle = { t: "f", f: "t" }
 		const templates = this.state.templates.slice();
 		let index = templates.findIndex( item => item.id === id );
-		templates[index].sticktop = toggle[ templates[index].sticktop ];
-		templates.sort(this.dynamicSort("-sticktop"));
+		templates[index].sticktop = sticktop;
+		templates.sort(dynamicSort("-sticktop"));
+		console.log(templates);
 		this.setState({ templates });
 		const panels = this.state.panels.slice();
 		index = panels.findIndex( item => item.id === id );
-		panels[index].sticktop = toggle[ panels[index].sticktop ];
-		panels.sort(this.dynamicSort("-sticktop"));
-		this.setState({ panels });
+		panels[index].sticktop = sticktop;
+		panels.sort(dynamicSort("-sticktop"));
+		const currentPage = this.state.currentPage;
+		const pageSize = this.state.pageSize;
+		const currentPanels = panels
+			.slice(pageSize*(currentPage - 1), pageSize*currentPage);
+		this.setState({ 
+			panels,
+			currentPanels,
+		});
 
 		// emphasize the change with background color changes
-		const panel = document.getElementById("panel" + id);
-		const bgcolor = panel.style.backgroundColor;
-		panel.style.backgroundColor = "#a9a9a9";
-		setTimeout( () => {
-			panel.style.backgroundColor = bgcolor;
-			}, 500 );
+		this.setState({ emphasized: id });
+		setTimeout( () => this.setState({ emphasized: 0 }), 500 );
 	}
 
 	handleClickCopy = template => {
@@ -219,40 +234,37 @@ class Template extends Component {
 		document.removeEventListener("copy", listener);
 	};
 
-	dynamicSort(property) {
-			var sortOrder = 1;
-
-			if(property[0] === "-") {
-					sortOrder = -1;
-					property = property.substr(1);
-			}
-
-			return function (a,b) {
-					if (typeof a[property] === "string") {
-						if(sortOrder === -1){
-								return b[property].localeCompare(a[property]);
-						}else{
-								return a[property].localeCompare(b[property]);
-						}        
-					} else {
-						if(sortOrder === -1){
-								return a[property] - b[property];
-						}else{
-								return b[property] - a[property];
-						}        
-					}
-			}
-	}
-
 	// handler for click close
 	onCancel = event => {
-		this.listPanels();
+		this.listSync();
 		this.setState({ 
+			currentPage: 1,
 			templateLang: "eng",
 			searchBy: "title",
 			searchProperty: "title",
 		});
 		this.props.onCancel();
+	}
+
+	// handler for page change
+	handleChangePage = currentPage => {
+		const pageSize = this.state.pageSize
+		const currentPanels = this.state.panels
+			.slice(pageSize*(currentPage - 1), pageSize*currentPage);
+		this.setState({ 
+			currentPage,
+			currentPanels,
+		});
+	}
+
+	// handler for show size change
+	handleShowSizeChange = (page, pageSize) => {
+		const currentPanels = this.state.panels.slice(0, pageSize);
+		this.setState({ 
+			currentPage: 1,
+			currentPanels,
+			pageSize,
+		});
 	}
 
 	// bind versions of CRUD
@@ -265,15 +277,25 @@ class Template extends Component {
 		editSuccessMsg: "Template has been fixed to top",
 	};
 	listTemplates = listSync.bind(this, this.configTemplate);
+	listSync = async () => {
+		const response = await this.listTemplates(); 
+		if (response.code === 200) {
+			const panels = response.entry;
+			const currentPanels = panels.slice(0, this.state.pageSize);
+			this.setState({ 
+				panels,
+				currentPanels,
+			});
+		}
+	}
 	toggleSticktop = updateSync.bind(this, this.configTemplate);
-	incrementCount = updateSync.bind(this, {...this.configTemplate, update:"incrementCount", editSuccessMsg: "Template Coplied"});
-
-	configPanel = {
-		service: templateService,
-		list: "list",
-		dataName: "panels",
-	};
-	listPanels = listSync.bind(this, this.configPanel);
+	incrementCount = updateSync.bind(this, 
+		{
+			...this.configTemplate, 
+			update:"incrementCount", 
+			editSuccessMsg: "Template Coplied"
+		}
+	);
 
 	configCategory = {
 		service: categoryService,
@@ -283,6 +305,7 @@ class Template extends Component {
 	listCategories= listSync.bind(this, this.configCategory);
 
 	render(){
+		const emphasized = this.state.emphasized;
 		return (
 			<div className="Template">
 				<Modal
@@ -329,12 +352,14 @@ class Template extends Component {
 								accordion
 							>
 									{
-										this.state.panels.map( item => (
+										this.state.currentPanels.map( item => (
 											<Panel 
 												id={ "panel"+item.id }
 												header={ item.title }
 												key={ item.id }
 												extra={ this.genExtraModal(item) }
+												style={{ backgroundColor: emphasized === item.id ? 
+													"#a9a9a9" : "transparent" }}
 											>
 												<RichTextOutput 
 													body={ this.state.templateLang === "chn" ?
@@ -344,6 +369,27 @@ class Template extends Component {
 										) )
 									}
 							</Collapse>
+							<Row>
+								<Col
+									span={ 12 }
+									offset={ 12 }
+									style={{ textAlign: "right" }}
+								>
+									<Pagination
+										defaultCurrent={1}
+										size={ "small" }
+										style={{ marginTop: "20px" }}
+										pageSize={ this.state.pageSize }
+										showSizeChanger={ true }
+										pageSizeOptions={ [1, 5, 10] }
+										onShowSizeChange={ this.handleShowSizeChange }
+										showQuickJumper
+										total={ this.state.panels.length }
+										current={ this.state.currentPage }
+										onChange = { this.handleChangePage }
+									/>
+								</Col>
+							</Row>
 						</Spin>
 					</div>
 				</Modal>

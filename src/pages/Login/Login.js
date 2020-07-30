@@ -38,7 +38,7 @@ class Login extends React.Component {
 		};
 
 		onFinish = ({ username, password }) => {
-				authenticationService.login(username, password)
+				authenticationService.signin(username, password)
 						.then(
 								user => {
 										const { from } = this.props.location.state || { from: { pathname: "/" } };
