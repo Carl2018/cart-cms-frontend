@@ -1,4 +1,5 @@
 //import config from 'config';
+import { config } from 'config';
 import { authHeader } from '_helpers';
 import { handleResponse } from '_helpers';
 
@@ -8,7 +9,7 @@ export const userService = {
 
 function list() {
     const requestOptions = { method: 'GET', headers: authHeader() };
-    return fetch(`http://localhost:8080/api/user/list`, requestOptions)
+    return fetch(`${config.apiUrl}/user/list`, requestOptions)
 			.then(handleResponse)
 			.then(data => {
 					return data;
