@@ -15,7 +15,7 @@ function getAll() {
 
 function list() {
     const requestOptions = { method: 'GET', headers: authHeader() };
-    return fetch(`http://localhost:8080/api/user/list`, requestOptions)
+    return fetch(`${config.apiUrl}/user/list`, requestOptions)
 			.then(handleResponse)
 			.then(data => {
 					return data;

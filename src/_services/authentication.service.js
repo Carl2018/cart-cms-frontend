@@ -47,7 +47,7 @@ function login(username, password) {
     };
 
     //return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
-    return fetch(`http://localhost:8080/api/user/signin`, requestOptions)
+    return fetch(`${config.apiUrl}/user/signin`, requestOptions)
 			.then(handleResponse)
 			.then(user => {
 					// store user details and jwt token in local storage to keep user logged in between page refreshes
