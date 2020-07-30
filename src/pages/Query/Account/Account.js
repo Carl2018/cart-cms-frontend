@@ -4,8 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 // import components from ant design
 import { TeamOutlined } from '@ant-design/icons';
 import { 
-	Input, 
 	Select, 
+	Spin, 
 	Tag, 
 } from 'antd';
 
@@ -26,6 +26,7 @@ class Account extends Component {
 		super(props);
 		this.state = {
 			tableWrapperKey: Date.now(),
+			spinning: false,
 		};
 	}
 	
@@ -118,24 +119,25 @@ class Account extends Component {
 
 	// define form items for TableDrawer
 	formItems = [
-		{
-			label: 'Candidate ID',
-			name: 'candidate_id',
-			rules: [
-				{
-					required: true,
-					message: 'candidate_id cannot be empty',
-				}
-			],
-			editable: true,
-			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
-					disabled={ disabled }
-				/>
-			)
-		},
+//		{
+//			label: 'Candidate ID',
+//			name: 'candidate_id',
+//			rules: [
+//				{
+//					required: true,
+//					message: 'candidate_id cannot be empty',
+//				}
+//			],
+//			editable: true,
+//			input: disabled => (
+//				<Input
+//					maxLength={255}
+//					allowClear
+//					disabled={ disabled }
+//					placeholder={ "Candidate ID must be unique" }
+//				/>
+//			)
+//		},
 		{
 			label: 'Account Type',
 			name: 'account_type',
@@ -149,30 +151,32 @@ class Account extends Component {
 			input: disabled => (
 				<Select
 					disabled={ disabled }
+					placeholder={ "Account type" }
 				>
 					<Option value="f">facebook</Option>
 					<Option value="p">phone</Option>
 				</Select>
 			)
 		},
-		{
-			label: 'Account Name',
-			name: 'accountname',
-			rules: [
-				{
-					required: true,
-					message: 'accountname cannot be empty',
-				},
-			],
-			editable: true,
-			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
-					disabled={ disabled }
-				/>
-			)
-		},			
+//		{
+//			label: 'Account Name',
+//			name: 'accountname',
+//			rules: [
+//				{
+//					required: true,
+//					message: 'accountname cannot be empty',
+//				},
+//			],
+//			editable: true,
+//			input: disabled => (
+//				<Input
+//					maxLength={255}
+//					allowClear
+//					disabled={ disabled }
+//					placeholder={ "Account name" }
+//				/>
+//			)
+//		},			
 		{
 			label: 'Status',
 			name: 'status',
@@ -207,6 +211,7 @@ class Account extends Component {
 			(
 				<Select
 					disabled={ disabled }
+					placeholder={ "Profile must be the current searched profile" }
 				>
 					<Option value={ this.props.profilename }>
 						{ this.props.profilename }
@@ -226,6 +231,11 @@ class Account extends Component {
 	)
 
 	// bind versions of CRUD
+	banSync = async (id, record) => {
+		this.setState({ spinning: true });
+		await this.props.ban(id, record);
+		this.setState({ spinning: false });
+	}
 
 	// refresh table
 	refreshTable = () => {
@@ -235,27 +245,29 @@ class Account extends Component {
 	render(){
 		return (
 			<div className='Account'>
-				<TableWrapper
-					key={ this.state.tableWrapperKey }
-					// data props
-					data={ this.props.data }
-					// display props
-					columns={ this.columns }
-					formItems={ this.formItems }
-					tableHeader={ this.tableHeader }
-					drawerTitle='Create A New Account'
-					loading={ this.props.loading }
-					isSmall={ this.props.isSmall }
-					showHeader={ this.props.showHeader }
-					showDropdown={ this.props.showDropdown }
-					// api props
-					create={ this.props.create }
-					edit={ this.props.edit }
-					ban={ this.props.ban }
-					delete={ this.props.delete }
-					refreshTable={ this.refreshTable }
-				>
-				</TableWrapper>
+				<Spin spinning={ this.state.spinning }>
+					<TableWrapper
+						key={ this.state.tableWrapperKey }
+						// data props
+						data={ this.props.data }
+						// display props
+						columns={ this.columns }
+						formItems={ this.formItems }
+						tableHeader={ this.tableHeader }
+						drawerTitle='An Account'
+						loading={ this.props.loading }
+						isSmall={ this.props.isSmall }
+						showHeader={ this.props.showHeader }
+						showDropdown={ this.props.showDropdown }
+						// api props
+						create={ this.props.create }
+						edit={ this.props.edit }
+						ban={ this.banSync }
+						delete={ this.props.delete }
+						refreshTable={ this.refreshTable }
+					>
+					</TableWrapper>
+				</Spin>
 			</div>
 		);
 	}

@@ -25,7 +25,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { create, list, listCombined, update, hide } = backend;
+const { createSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
 const { Option } = Select
 
@@ -41,7 +41,7 @@ class Profile extends Component {
 	}
 	
 	componentDidMount() {
-		this.list();
+		this.listSync();
 		this.listLabels();
 	}
 
@@ -130,6 +130,7 @@ class Profile extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Profile name must be unique" }
 				/>
 			)
 		},
@@ -148,6 +149,7 @@ class Profile extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Profile description" }
 				/>
 			)
 		},
@@ -165,6 +167,7 @@ class Profile extends Component {
 				<Select
 					disabled={ disabled }
 					mode="multiple"
+					placeholder={ "Labels" }
 				>
 					{
 						this.state.labels.map( item => (
@@ -190,17 +193,30 @@ class Profile extends Component {
 	)
 
 	// bind versions of CRUD
-	create= create.bind(this, profileService, 'data');
-	createSync = record => this.create(record).then( res => this.list() );
-	list = listCombined.bind(this, profileService, 'data', ['labelname', 'label_color']);
-	update = update.bind(this, profileService, 'data');
-	updateSync = (id, record) => this.update(id, record).then( res => this.list() );
-	hide = hide.bind(this, profileService, 'data');
-	listLabels = list.bind(this, labelService, 'labels');
+	config = {
+		service: profileService,
+		create: "create",
+		retrieve: "retrieve",
+		list: "list",
+		update: "update",
+		hide: "hide",
+		dataName: "data",
+	};
+	createSync = createSync.bind(this, this.config);
+	listSync = listSync.bind(this, this.config);
+	updateSync = updateSync.bind(this, this.config);
+	hideSync = hideSync.bind(this, this.config);
+
+	configLabel = {
+		service: labelService,
+		list: "list",
+		dataName: "labels",
+	};
+	listLabels = listSync.bind(this, this.configLabel);
 
 	// refresh table
 	refreshTable = () => {
-		this.list();
+		this.listSync();
 		this.listLabels();
 		this.setState({ tableWrapperKey: Date.now() })
 	};
@@ -210,14 +226,17 @@ class Profile extends Component {
 			<div className='Profile'>
 				<TableWrapper
 					key={ this.state.tableWrapperKey }
+					// data props
 					data={ this.state.data }
+					// display props
 					columns={ this.columns }
 					formItems={ this.formItems }
 					tableHeader={ this.tableHeader }
-					drawerTitle='Create a New Profile'
+					drawerTitle='A Profile'
+					// api props
 					create={ this.createSync }
 					edit={ this.updateSync }
-					delete={ this.hide }
+					delete={ this.hideSync }
 					refreshTable={ this.refreshTable }
 				>
 				</TableWrapper>

@@ -40,7 +40,7 @@ import {
 import { backend } from '_helpers';
 
 // destructure imported components and objects
-const { create, list, listFiltered, listByEmail, update, updateMerge } = backend;
+const { createSync, listSync, updateSync } = backend;
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -54,11 +54,12 @@ class TableWrapper extends Component {
 			// for the process drawer
 			visibleProcess: false,
 			dataProcess: [],
+			processDrawerKey: Date.now(),
 			// for the bind drawer
 			visibleBind: false,
 			bindDrawerKey: Date.now(),
 			// accounts in the same profile
-			inProfile: [],
+			accounts: [],
 			// for the merge drawer
 			change: false,
 			bind: {},
@@ -222,11 +223,11 @@ class TableWrapper extends Component {
 		this.clearRecord();
   };
 
-	handleSubmit = record => {
+	handleSubmit = async record => {
 		if (this.state.record.id) // edit the entry
-			this.props.edit(this.state.record.id, record);
+			await this.props.edit(this.state.record.id, record);
 		else // create an entry
-			this.props.create(record);
+			await this.props.create(record);
 		this.setState({
 			visible: false,
 			tableDrawerKey: Date.now(),
@@ -235,15 +236,15 @@ class TableWrapper extends Component {
 	}
 
 	// handers for unban and ban in inspect drawer
-	onClickBan = dataAccount => {
-		this.props.onClickBan( dataAccount );
+	onClickBan = async dataAccount => {
+		await this.props.onClickBan( dataAccount.id, dataAccount );
 		this.updateInspectDrawer();
 	}
 
 	// handlers for process button and process drawer
 	handleClickProcess = record => {
 		// get process history
-		this.listFiltered({'case_id': record.id});
+		this.listSync({'case_id': record.id});
 		this.setState({
 			visibleProcess: true, 
 			record, 
@@ -252,17 +253,18 @@ class TableWrapper extends Component {
 
 	handleCloseProcess = event => {
 		this.setState({
+			processDrawerKey: Date.now(), 
 			visibleProcess: false, 
 			dataProcess: [],
 		});
-		this.listFiltered({'case_id': this.state.record.id});
+		this.listSync({'case_id': this.state.record.id});
 		this.clear();
 	}
 
 	// handlers for bind button and bind drawer
 	handleClickBind = record => {
 		// get all accounts in the same profile
-		this.listByEmail({email: record.email});
+		this.listAccounts({email: record.email});
 		this.setState({
 			visibleBind: true, 
 			record, 
@@ -277,14 +279,14 @@ class TableWrapper extends Component {
 		this.clearRecord();
 	}
 
-	handleSubmitBind = record => {
+	handleSubmitBind = async record => {
 		const bind = 
 			{ case_id: this.state.record.id, accountname: record.accountname }
 		this.setState({ bind });
 		// check if there is a merge
-		const accounts = this.state.inProfile.map( item => item.accountname );
+		const accounts = this.state.accounts.map( item => item.accountname );
 		if (accounts.includes(record.accountname)) {
-			this.props.bind(this.state.record.id, bind);
+			await this.props.bind(this.state.record.id, bind);
 			this.setState({
 				visibleBind: false, 
 				bindDrawerKey: Date.now(), 
@@ -335,12 +337,12 @@ class TableWrapper extends Component {
 		});
 	};
 
-	handleClickConfirmMerge = (closeNotification, notificationKey) => {
+	handleClickConfirmMerge = async (closeNotification, notificationKey) => {
 		console.log('merge completed');
 		// call merge api
 		const id = this.state.record.id;
 		const bind = Object.assign({}, this.state.bind);
-		this.props.bind(id, bind)
+		await this.props.bind(id, bind)
 			.then( entry => this.setState({ merge: entry }) );
 		// set state
 		this.setState({ 
@@ -357,16 +359,16 @@ class TableWrapper extends Component {
 
 	handleClickCheckboxB = event => this.setState({ change: true});
 
-	handleCloseMerge = event => {
+	handleCloseMerge = async event => {
 		this.setState({
 			visibleMerge: false, 
 			mergeModalKey: Date.now(), 
 		});
-		this.props.refreshPage( this.state.merge.profile_to.profilename );
+		await this.props.refreshPage( this.state.merge.profile_to.profilename );
 		this.clear();
 	}
 
-	handleSubmitMerge = () => {
+	handleSubmitMerge = async () => {
 		const change = this.state.change;
 		const merge = Object.assign( {}, this.state.merge );
 		const id = merge.profile_id_to;
@@ -378,13 +380,13 @@ class TableWrapper extends Component {
 			record.profilename = merge.profile_to.profilename;
 			record.description = merge.profile_to.description;
 		}
-		this.updateMergeProfile( id, record );
+		await this.updateMergeProfile( id, record );
 		this.setState({
 			visibleMerge: false, 
 			change: false,
 			mergeModalKey: Date.now(), 
 		});
-		this.props.refreshPage( record.profilename );
+		await this.props.refreshPage( record.profilename );
 		this.clear();
 	}
 
@@ -415,7 +417,7 @@ class TableWrapper extends Component {
 
 	// handler for inspect drawer
 	handleClickInspect = record => {
-		this.listFiltered({'case_id': record.id});
+		this.listSync({'case_id': record.id});
 		const { queriedEmail, accountBound } = this.getRelatedInfo(record);
 		this.setState({ queriedEmail, accountBound, record }, () => 
 		this.setState({
@@ -433,19 +435,47 @@ class TableWrapper extends Component {
   };
 
 	// bind versions of CRUD
-	create= create.bind(this, processService, 'dataProcess');
-	createSync = record => this.create(record)
-		.then( res => this.props.list())
-		.then( res => {
-			const newRecord = this.state.record;
+	configProcess = {
+		service: processService,
+		create: "create",
+		retrieve: "retrieve",
+		list: "list",
+		update: "update",
+		dataName: "dataProcess",
+	};
+	create = createSync.bind(this, this.configProcess);
+	createSync = async record => {
+		// update process table in process drawer
+		const response = await this.create(record);
+		// update case table
+		await this.props.list();
+		this.props.updateDataCase();
+		// update case info in process drawer
+		if (response.code === 200) {
+			const newRecord = Object.assign({}, this.state.record);
 			newRecord.status = record.process;
 			this.setState({ record: newRecord });
-		});
-	listFiltered = listFiltered.bind(this, processService, 'dataProcess');
-	listByEmail = listByEmail.bind(this, accountService, 'inProfile');
-	update = update.bind(this, processService, 'dataProcess');
-	listProfiles = list.bind(this, profileService, 'profiles');
-	updateMergeProfile = updateMerge.bind(this, profileService, 'profiles');
+		}
+	}
+	listSync = listSync.bind(this, this.configProcess);
+	updateSync = updateSync.bind(this, this.configProcess);
+
+	configAccount = {
+		service: accountService,
+		list: "listByEmail",
+		dataName: "accounts",
+	};
+	listAccounts = listSync.bind(this, this.configAccount);
+
+	configProfile = {
+		service: profileService,
+		retrieve: "retrieve",
+		list: "list",
+		update: "updateMerge",
+		dataName: "profiles",
+	};
+	listProfiles = listSync.bind(this, this.configProfile);
+	updateMergeProfile = updateSync.bind(this, this.configProfile);
 
 	render(){
 		return (
@@ -507,12 +537,13 @@ class TableWrapper extends Component {
 				</div>
 				<div>
 					<ProcessDrawer
+						tableDrawerKey={ this.state.processDrawerKey } 
 						data={ this.state.dataProcess } 
 						visible={ this.state.visibleProcess } 
 						onClose={ this.handleCloseProcess }
 						record={ this.state.record }
 						create={ this.createSync }
-						edit={ this.update }
+						edit={ this.updateSync }
 					>
 					</ProcessDrawer>
 				</div>

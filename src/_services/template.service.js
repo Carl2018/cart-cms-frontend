@@ -4,6 +4,7 @@ import { handleResponse } from '_helpers';
 
 export const templateService = {
     create,
+    retrieve,
     list,
     update,
     toggleSticktop,
@@ -21,9 +22,31 @@ function create(record) {
 			.then(handleResponse);
 }
 
-function list() {
-    const requestOptions = { method: 'GET', headers: authHeader() };
-    return fetch(`${config.apiUrl}/template/list`, requestOptions)
+function retrieve(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/template/retrieve`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function list(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/template/list`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
 			.then(handleResponse);
 }
 

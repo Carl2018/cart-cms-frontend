@@ -1,217 +1,110 @@
 // import components from ant design
 import { message } from 'antd';
 
-// import helpers
-import { helpers } from './helpers';
-
-// destructure imported components and objects
-const { getCurrentDatetime } = helpers;
-
 export const backend = {
-    create,
-    list,
-    listCombined,
-    listFiltered,
-    listByEmail,
-    update,
-    updateMerge,
-    toggleSticktop,
-    incrementCount,
-    bind,
-    ban,
-    hide,
+    createSync,
+    listSync,
+    updateSync,
+    hideSync,
 };
 
-// create apis
-// interface for create
-async function create(service, objectName, record) {
+// sync version
+// interface for create sync
+async function createSync(config, record) {
+	const { service, create, retrieve, dataName } = config;
 	// insert the record into the backend table
 	let response = null;
-	await service.create(record)
+	// strip spaces
+	for (let key in record) 
+		record[key] = typeof record[key] === 'string' ? 
+			record[key].trim() : record[key];
+	await service[create](record)
 		.then( result => response = result )
 		.catch( error => response = error );
 	// update the frontend data accordingly
 	if (response.code === 200){
-		const data = this.state[objectName].slice();
-		record.id = response.entry.id;
-		record.created_at = getCurrentDatetime();
-		record.updated_at = getCurrentDatetime();
-		data.push(record);
-		this.setState({ [objectName]: data });
+		let data = this.state[dataName].slice();
+		let entry = {};
+		await service[retrieve]({id: response.entry.id})
+			.then( result => entry = result.entry )
+			.catch( error => entry = error );
+		data = [ entry, ...data ];
+		this.setState({ [dataName]: data });
 		message.success('A record has been created');
 	} else {
 		message.error(response.en);
 	}
+	return response; // for process drawer
 }
-
-// list apis
-// interface for list
-async function list(service, objectName) {
-	await service.list()
-		.then( ({ entry: data }) => 
-			this.setState({ [objectName]: data }, () => {return;} ) 
-		);
+// interface for list sync
+//async function listSync(config, params) {
+//	const { service, list, dataName } = config;
+//	await service[list](params)
+//		.then( ({ entry: data }) => 
+//			this.setState({ [dataName]: data }, () => {return;} ) 
+//		);
+//}
+// interface for list sync
+async function listSync(config, params) {
+	const { service, list, dataName } = config;
+	let response = null;
+	await service[list](params)
+		.then( result => {
+			response = result;
+			this.setState({ [dataName]: result.entry });
+		})
+		.catch( error => response = error );
+	return response;
 }
-// interface for list with combined attributes
-async function listCombined(service, objectName, keys) {
-	await service.list()
-		.then( ({ entry: data }) => {
-			const ids = data.map( item => item.id );
-			ids.forEach( (item, index, array) => {
-				const first = array.indexOf(item);
-				if (first === index) {
-					keys.forEach( key => data[index][key] = [ data[index][key] ] );
-				} else {
-					keys.forEach( key => data[first][key].push(data[index][key]) )
-					data[index] = null;
-				}
-			});
-			data = data.filter( item => item !== null )
-			this.setState({ [objectName]: data }, () => {return;} );
-		});
-}
-// interface for list with filter
-async function listFiltered(service, objectName, filters) {
-	service.list(filters)
-		.then( ({ entry: data }) => this.setState({ [objectName]: data }) );
-}
-// interface for list by email
-async function listByEmail(service, objectName, filters) {
-	service.listByEmail(filters)
-		.then( ({ entry: data }) => this.setState({ [objectName]: data }) );
-}
-
-// update apis
-// interface for update
-async function update(service, objectName, id, record) {
+// interface for update sync
+async function updateSync(config, id, record) {
+	const { service, update, retrieve, dataName, editSuccessMsg } = config;
 	// update the record in the backend table
 	let response = null;
-	await service.update({ id, ...record })
+	// strip spaces
+	for (let key in record) 
+		record[key] = typeof record[key] === 'string' ? 
+			record[key].trim() : record[key];
+	await service[update]({ id, ...record })
 		.then( result => response = result )
 		.catch( error => response = error );
 	// update the frontend data accordingly
 	if (response.code === 200){
-		let data = this.state[objectName].slice();
-		let index = data.findIndex( item => item.id === id);
-		Object.keys(record).forEach(item => data[index][item] = record[item])
-		this.setState({ [objectName]: data });
-		message.success('The record has been edited');
+		let data = this.state[dataName].slice();
+		const index = data.findIndex( item => item.id === id);
+		let entry = {};
+		await service[retrieve]({id})
+			.then( result => entry = result.entry )
+			.catch( error => entry = error );
+		// data[index] = entry;
+		data = [ entry, ...data.slice(0,index), ...data.slice(index+1) ];
+		this.setState({ [dataName]: data });
+		if (editSuccessMsg)
+			message.success(editSuccessMsg);
+		else
+			message.success('The record has been edited');
+		return response.entry; // for merge
 	} else {
 		message.error(response.en);
 	}
 }
-// interface for toggle sticktop
-async function toggleSticktop(service, objectName, id, record) {
-	// update the record in the backend table
-	let response = null;
-	await service.toggleSticktop({ id, ...record })
-		.then( result => response = result )
-		.catch( error => response = error );
-	// update the frontend data accordingly
-	if (response.code === 200){
-		let data = this.state[objectName].slice();
-		let index = data.findIndex( item => item.id === id);
-		Object.keys(record).forEach(item => data[index][item] = record[item])
-		this.setState({ [objectName]: data });
-		//message.success('The record has been edited');
-	} else {
-		message.error(response.en);
-	}
-}
-// interface for increment count
-async function incrementCount(service, objectName, id) {
-	// update the record in the backend table
-	let response = null;
-	await service.incrementCount({ id })
-		.then( result => response = result )
-		.catch( error => response = error );
-	// update the frontend data accordingly
-	if (response.code === 200){
-		let data = this.state[objectName].slice();
-		let index = data.findIndex( item => item.id === id);
-		data[index].copied_count += 1;
-		this.setState({ [objectName]: data });
-		//message.success('The record has been edited');
-	} else {
-		message.error(response.en);
-	}
-}
-// interface for update after merge
-async function updateMerge(service, objectName, id, record) {
-	// update the record in the backend table
-	let response = null;
-	await service.updateMerge({ id, ...record })
-		.then( result => response = result )
-		.catch( error => response = error );
-	// update the frontend data accordingly
-	if (response.code === 200){
-		let data = this.state[objectName].slice();
-		let index = data.findIndex( item => item.id === id);
-		Object.keys(record).forEach(item => data[index][item] = record[item])
-		this.setState({ [objectName]: data });
-		message.success('The record has been edited');
-	} else {
-		message.error(response.en);
-	}
-}
-// interface for bind
-async function bind(service, objectName, id, record) {
-	// update the record in the backend table
-	let response = null;
-	await service.bind({ id, ...record })
-		.then( result => response = result )
-		.catch( error => response = error );
-	// update the frontend data accordingly
-	if (response.code === 200){
-		let data = this.state[objectName].slice();
-		let index = data.findIndex( item => item.id === id);
-		Object.keys(record).forEach(item => data[index][item] = record[item])
-		this.setState({ [objectName]: data });
-		message.success('The case has been bound to an account');
-		return response.entry;
-	} else {
-		message.error(response.en);
-	}
-}
-// interface for ban
-async function ban(service, objectName, record) {
-	// update the record in the backend table
-	let response = null;
-	await service.ban( record )
-		.then( result => response = result )
-		.catch( error => response = error );
-	// update the frontend data accordingly
-	if (response.code === 200){
-		const toggle = { u: 'b', b: 'u' };
-		let data = this.state[objectName].slice();
-		let index = data.findIndex( item => item.id === record.id);
-		data[index].status = toggle[data[index].status];
-		this.setState({ [objectName]: data });
-		data[index].status === 'u' ?
-			message.success('The account has been unbanned') :
-			message.success('The account has been banned');
-	} else {
-		message.error(response.en);
-	}
-}
-
-// hide apis
-// interface for hide
-async function hide(service, objectName, ids) {
+// interface for hide sync
+async function hideSync(config, ids) {
+	const { service, hide, dataName } = config;
 	// convert to array if ids is a string
 	ids = Array.isArray(ids) ? ids : [ ids ];
 
 	// hide the record in the backend table
 	let response = null;
-	await service.hide(ids)
+	await service[hide](ids)
 		.then( result => response = result )
 		.catch( error => { response = error; console.log(error) } );
 	// hide the frontend data accordingly
 	if (response.code === 200){
-		let data = this.state[objectName].slice(); 
+		let data = this.state[dataName].slice(); 
 		data = data.filter( item => !ids.includes(item.id) );
+		this.setState({ [dataName]: data });
 		message.success('The records have been deleted');
-		this.setState({ [objectName]: data });
 	} else {
 			message.error(response.en);
 		}

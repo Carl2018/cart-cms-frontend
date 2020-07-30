@@ -7,6 +7,7 @@ import {
 	AutoComplete, 
 	Input, 
 	Select, 
+	Spin, 
 	Tag, 
 } from 'antd';
 
@@ -26,7 +27,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { create, list, update, ban, hide } = backend;
+const { createSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
 const { Search } = Input;
 const { Option } = Select;
@@ -41,11 +42,12 @@ class Account extends Component {
 			// options for profile search
 			profiles: [],
 			options: [],
+			spinning: false,
 		};
 	}
 	
 	componentDidMount() {
-		this.list();
+		this.listSync();
 		this.listProfiles();
 	}
 
@@ -144,24 +146,25 @@ class Account extends Component {
 
 	// define form items for TableDrawer
 	formItems = [
-		{
-			label: 'Candidate ID',
-			name: 'candidate_id',
-			rules: [
-				{
-					required: true,
-					message: 'candidate_id cannot be empty',
-				}
-			],
-			editable: true,
-			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
-					disabled={ disabled }
-				/>
-			)
-		},
+//		{
+//			label: 'Account Name',
+//			name: 'accountname',
+//			rules: [
+//				{
+//					required: true,
+//					message: 'accountname cannot be empty',
+//				},
+//			],
+//			editable: true,
+//			input: disabled => (
+//				<Input
+//					maxLength={255}
+//					allowClear
+//					disabled={ disabled }
+//					placeholder={ "Account name must be unique" }
+//				/>
+//			)
+//		},			
 		{
 			label: 'Account Type',
 			name: 'account_type',
@@ -175,30 +178,32 @@ class Account extends Component {
 			input: disabled => (
 				<Select
 					disabled={ disabled }
+					placeholder={ "Account type" }
 				>
 					<Option value="f">facebook</Option>
 					<Option value="p">phone</Option>
 				</Select>
 			)
 		},
-		{
-			label: 'Account Name',
-			name: 'accountname',
-			rules: [
-				{
-					required: true,
-					message: 'accountname cannot be empty',
-				},
-			],
-			editable: true,
-			input: disabled => (
-				<Input
-					maxLength={255}
-					allowClear
-					disabled={ disabled }
-				/>
-			)
-		},			
+//		{
+//			label: 'Candidate ID',
+//			name: 'candidate_id',
+//			rules: [
+//				{
+//					required: true,
+//					message: 'candidate_id cannot be empty',
+//				}
+//			],
+//			editable: true,
+//			input: disabled => (
+//				<Input
+//					maxLength={255}
+//					allowClear
+//					disabled={ disabled }
+//					placeholder={ "Candidate ID must be unique" }
+//				/>
+//			)
+//		},
 		{
 			label: 'Status',
 			name: 'status',
@@ -243,7 +248,7 @@ class Account extends Component {
 				>
 					<Search
 						onSearch={ this.handleSearch }
-						placeholder="Search Profile"
+						placeholder="Search an existing profile"
 						size="middle"
 						allowClear
 					/>
@@ -277,40 +282,63 @@ class Account extends Component {
 	}
 
 	// bind versions of CRUD
-	create= create.bind(this, accountService, 'data');
-	createSync = record => this.create(record).then( res => this.list() );
-	list = list.bind(this, accountService, 'data');
-	update = update.bind(this, accountService, 'data');
-	ban = ban.bind(this, accountService, 'data');
-	hide = hide.bind(this, accountService, 'data');
-	listProfiles = list.bind(this, profileService, 'profiles');
+	config = {
+		service: accountService,
+		create: "create",
+		retrieve: "retrieve",
+		list: "list",
+		update: "update",
+		hide: "hide",
+		dataName: "data",
+	};
+	createSync = createSync.bind(this, this.config);
+	listSync = listSync.bind(this, this.config);
+	updateSync = updateSync.bind(this, this.config);
+	hideSync = hideSync.bind(this, this.config);
+	ban = updateSync.bind(this, {...this.config, update: "ban"});
+	banSync = async (id, record) => {
+		this.setState({ spinning: true });
+		await this.ban(id, record);
+		this.setState({ spinning: false });
+	}
+
+	configProfile = {
+		service: profileService,
+		list: "list",
+		dataName: "profiles",
+	};
+	listProfiles = listSync.bind(this, this.configProfile);
 
 	// refresh table
 	refreshTable = () => {
-		this.list();
+		this.listSync();
 		this.listProfiles();
-		console.log(this.state.profiles);
 		this.setState({ tableWrapperKey: Date.now() })
 	};
 
 	render(){
 		return (
 			<div className='Account'>
-				<TableWrapper
-					key={ this.state.tableWrapperKey }
-					data={ this.state.data }
-					columns={ this.columns }
-					formItems={ this.formItems }
-					tableHeader={ this.tableHeader }
-					drawerTitle='Create a new account'
-					create={ this.createSync }
-					edit={ this.update }
-					ban={ this.ban }
-					delete={ this.hide }
-					refreshTable={ this.refreshTable }
-					isSmall={ this.props.isSmall }
-				>
-				</TableWrapper>
+				<Spin spinning={ this.state.spinning }>
+					<TableWrapper
+						key={ this.state.tableWrapperKey }
+						// data props
+						data={ this.state.data }
+						// display props
+						columns={ this.columns }
+						formItems={ this.formItems }
+						tableHeader={ this.tableHeader }
+						drawerTitle='An Account'
+						isSmall={ this.props.isSmall }
+						// api props
+						create={ this.createSync }
+						edit={ this.updateSync }
+						delete={ this.hideSync }
+						ban={ this.banSync }
+						refreshTable={ this.refreshTable }
+					>
+					</TableWrapper>
+				</Spin>
 			</div>
 		);
 	}

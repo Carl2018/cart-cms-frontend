@@ -226,7 +226,10 @@ class ProcessDrawer extends Component {
 
 	render(){
 		return (
-			<div className='ProcessDrawer'>
+			<div 
+				className='ProcessDrawer'
+				key={ this.props.tableDrawerKey }
+			>
 				<Drawer
 					title="Process A Case"
 					width={ 900 }

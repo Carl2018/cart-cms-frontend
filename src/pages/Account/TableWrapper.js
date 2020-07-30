@@ -21,7 +21,7 @@ import {
 // import shared and child components
 import { TableBody } from '_components'
 import { TableDropdown } from '_components'
-import { TableDrawer } from '_components'
+import { TableDrawer } from './TableDrawer'
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -120,7 +120,7 @@ class TableWrapper extends Component {
 		});
 	}
 
-	handleClickBan = record => this.props.ban(record);
+	handleClickBan = record => this.props.ban(record.id, record);
 
 	handleClickDelete = record => this.props.delete(record.id);
 

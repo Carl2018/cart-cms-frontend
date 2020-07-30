@@ -4,6 +4,9 @@ import { handleResponse } from '_helpers';
 
 export const caseService = {
     create,
+    retrieve,
+    retrieveFlag,
+		retrieveCandidateId,
     list,
     update,
     bind,
@@ -20,9 +23,59 @@ function create(record) {
 			.then(handleResponse);
 }
 
-function list() {
-    const requestOptions = { method: 'GET', headers: authHeader() };
-    return fetch(`${config.apiUrl}/case/list`, requestOptions)
+function retrieve(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/case/retrieve`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function list(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/case/list`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function retrieveFlag(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/case/retrieve_flag`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function retrieveCandidateId(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/case/retrieve_candidate_id`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
 			.then(handleResponse);
 }
 

@@ -8,6 +8,7 @@ import {
 	UserAddOutlined,
 	UserDeleteOutlined,
 	CopyOutlined,
+	FlagOutlined,
 } from '@ant-design/icons';
 
 // import shared and child components
@@ -55,6 +56,14 @@ class DrawerDropdown extends Component {
 				onClick={ this.props.onClickTemplates}
 			>
 				Templates
+			</Menu.Item>
+			<Menu.Item 
+				key='5' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <FlagOutlined /> }
+				onClick={ this.props.onClickFlags }
+			>
+				Flags
 			</Menu.Item>
 		</Menu>
 	);

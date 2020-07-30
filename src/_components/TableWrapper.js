@@ -208,6 +208,7 @@ class TableWrapper extends Component {
 						disabled={ this.state.disabled } 
 						onSubmit={ this.handleSubmit }
 						drawerWidth={ this.props.drawerWidth }
+						drawerTitle={ this.props.drawerTitle }
 						formLayout={ this.props.formLayout }
 					/>
 				</div>

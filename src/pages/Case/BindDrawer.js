@@ -21,7 +21,7 @@ import {
 import { backend } from '_helpers';
 
 // destructure imported components and objects
-const { list } = backend;
+const { listSync } = backend;
 const { Search } = Input;
 
 class BindDrawer extends Component {
@@ -89,7 +89,12 @@ class BindDrawer extends Component {
 	}
 
 	// bind versions of CRUD
-	listAccounts = list.bind(this, accountService, 'accounts');
+	config = {
+		service: accountService,
+		list: "list",
+		dataName: "accounts",
+	};
+	listAccounts = listSync.bind(this, this.config);
 
 	render(){
 		return (

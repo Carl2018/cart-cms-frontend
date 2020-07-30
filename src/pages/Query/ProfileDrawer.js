@@ -40,6 +40,7 @@ class ProfileDrawer extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Profile name must be unique" }
 				/>
 			)
 		},
@@ -58,6 +59,7 @@ class ProfileDrawer extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Profile description" }
 				/>
 			)
 		},
@@ -75,6 +77,7 @@ class ProfileDrawer extends Component {
 				<Select
 					disabled={ disabled }
 					mode="multiple"
+					placeholder={ "Labels" }
 				>
 					{
 						this.props.labels.map( item => (
@@ -105,6 +108,7 @@ class ProfileDrawer extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
+					placeholder={ "Email must be unique" }
 				/>
 			)
 		},
@@ -115,6 +119,7 @@ class ProfileDrawer extends Component {
 			<div className='ProfileDrawer'>
 				<TableDrawer 
 					tableDrawerKey={ this.props.tableDrawerKey }
+					drawerTitle={ "A Profile" }
 					record={ this.props.record }
 					visible={ this.props.visible } 
 					formItems={ this.formItems }

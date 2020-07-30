@@ -33,7 +33,7 @@ import {
 import { backend } from '_helpers';
 
 // destructure imported components and objects
-const { create, list, listCombined, update, ban, bind, hide } = backend;
+const { createSync, listSync, updateSync, hideSync } = backend;
 const { Search } = Input;
 
 class Query extends Component {
@@ -108,33 +108,16 @@ class Query extends Component {
 		} else {
 			message.info("Profile Not Found");
 			this.setState({ 
+				dataEmail: [], 
+				dataCase: [], 
+				dataAccount: [], 
 				showHeader: false,
 				showDropdown: false,
 			});
 		}
 	}
 
-	// refresh all 3 data streams 
-	updateData = profilename => {
-		const dataEmail = this.state.emails
-			.filter( item => item.profilename === profilename );
-		const emails = dataEmail.map( item => item.email );
-		const dataCase = this.state.cases
-			.filter( item => emails.includes( item.email ) )
-//		const accounts = dataCase.map( item => item.accoutname );
-//		const dataAccount = this.state.cases
-//			.filter( item => accounts.includes( item.accountname ) );
-		const dataAccount = this.state.accounts
-			.filter( item => item.profilename === profilename );
-		this.setState({
-			dataEmail,
-			dataCase,
-			dataAccount,
-		});
-	}
-
 	// handlers for profile drawer
-
 	handleClickProfile = event => {
 		this.setState(
 			{record: { email: this.state.email }},
@@ -150,14 +133,62 @@ class Query extends Component {
 		});
 	};
 
+	// update streams
+	// update dataEmail
+	updateDataEmail = (profilename=this.state.profilename) => {
+		const dataEmail = this.state.emails
+			.filter( item => item.profilename === profilename );
+		this.setState({ dataEmail });
+		return dataEmail;
+	}
+
+	// update dataEmail AND dataCase
+	updateDataCase = (profilename=this.state.profilename)=> {
+		const dataEmail = this.updateDataEmail( profilename );
+		const emails = dataEmail.map( item => item.email );
+		const dataCase = this.state.cases
+			.filter( item => emails.includes( item.email ) )
+		this.setState({ dataCase });
+	}
+
+	// update dataAccount
+	updateDataAccount = (profilename=this.state.profilename) => {
+		const dataAccount = this.state.accounts
+			.filter( item => item.profilename === profilename );
+		this.setState({ dataAccount });
+	}
+
+	// update all 3 data streams 
+	updateData = (profilename=this.state.profilename) => {
+		this.updateDataCase( profilename );
+		this.updateDataAccount( profilename );
+	}
+
 	// bind versions of CRUD
 	// labels
-	listLabels = list.bind(this, labelService, 'labels');
+	configLabel = {
+		service: labelService,
+		list: "list",
+		dataName: "labels",
+	};
+	listLabels = listSync.bind(this, this.configLabel);
+
 	// categories
-	listCategories = list.bind(this, categoryService, 'categories');
+	configCategory = {
+		service: categoryService,
+		list: "list",
+		dataName: "categories",
+	};
+	listCategories = listSync.bind(this, this.configCategory);
 
 	// profile drawer
-	createProfile = create.bind(this, profileService, 'profiles');
+	configProfile = {
+		service: profileService,
+		create: "create",
+		retrieve: "retrieve",
+		dataName: "profiles",
+	};
+	createProfile = createSync.bind(this, this.configProfile);
 	createProfileSync = record => this.createProfile(record)
 		.then( res => this.listEmails() )
 		.then( res => this.handleSearch(record.email))
@@ -170,69 +201,109 @@ class Query extends Component {
 		});
 
 	// email table
-	createEmail = create.bind(this, emailService, 'emails');
-	createEmailSync = record => this.createEmail(record)
-		.then( res => this.listEmails() )
-		.then( res => this.updateData(this.state.profilename));
-	listEmails = listCombined
-		.bind(this, emailService, 'emails', ['labelname', 'label_color']);
-	updateEmail = update.bind(this, emailService, 'emails');
-	updateEmailSync = (id, record) => this.updateEmail(id, record)
-		.then( res => this.listEmails() )
-		.then( res => this.listCases() ) // might affect email 
-		.then( res => this.updateData(this.state.profilename) );
-	hideEmail = hide.bind(this, emailService, 'emails');
-	hideEmailSync = ids => this.hideEmail(ids)
-		.then( res => this.listEmails() )
-		.then( res => this.updateData(this.state.profilename));
-
-	// account table
-	createAccount = create.bind(this, accountService, 'accounts');
-	createAccountSync = record => this.createAccount(record)
-		.then( res => this.listAccounts() )
-		.then( res => this.updateData(this.state.profilename));
-	listAccounts = list.bind(this, accountService, 'accounts');
-	updateAccount = update.bind(this, accountService, 'accounts');
-	updateAccountSync = (id, record) => this.updateAccount(id, record)
-		.then( res => this.listAccounts() )
-		.then( res => this.listCases() ) // might affect accountname
-		.then( res => this.updateData(this.state.profilename));
-	banAccount = ban.bind(this, accountService, 'accounts');
-	banAccountSync = record => this.banAccount(record)
-		.then( res => this.listAccounts() )
-		.then( res => this.updateData(this.state.profilename));
-	hideAccount = hide.bind(this, accountService, 'accounts');
-	hideAccountSync = ids => this.hideAccount(ids)
-		.then( res => this.listAccounts() )
-		.then( res => this.listCases() ) // might delete the foreigh key
-		.then( res => this.updateData(this.state.profilename));
+	configEmail = {
+		service: emailService,
+		create: "create",
+		retrieve: "retrieve",
+		list: "list",
+		update: "update",
+		hide: "hide",
+		dataName: "emails",
+	};
+	createEmail = createSync.bind(this, this.configEmail);
+	createEmailSync = async record => {
+		await this.createEmail(record);
+		this.updateDataEmail();
+	}
+	listEmails = listSync.bind(this, this.configEmail);
+	updateEmail = updateSync.bind(this, this.configEmail);
+	updateEmailSync = async (id, record) => {
+		await this.updateEmail(id, record);
+		await this.listEmails(); // might affect profile
+		await this.listCases(); // might affect queried email
+		this.updateDataCase();
+	}
+	hideEmail = hideSync.bind(this, this.configEmail);
+	hideEmailSync = async ids => {
+		await this.hideEmail(ids);
+		await this.listCases(); // do not actually need this line
+		this.updateDataCase();
+	}
 
 	// case table
-	createCase = create.bind(this, caseService, 'cases');
-	createCaseSync = record => this.createCase(record)
-		.then( res => this.listCases() )
-		.then( res => this.updateData(this.state.profilename));
-	listCases = list.bind(this, caseService, 'cases');
-	updateCase = update.bind(this, caseService, 'cases');
-	updateCaseSync = (id, record) => this.updateCase(id, record)
-		.then( res => this.listCases() )
-		.then( res => this.updateData(this.state.profilename));
-	bindCase = bind.bind(this, caseService, 'cases');
-	bindCaseSync = (id, record) => this.bindCase(id, record)
-		.then( res => { this.listCases(); return res; } )
-		.then( res => { this.updateData(this.state.profilename); return res; });
-	hideCase = hide.bind(this, caseService, 'cases');
-	hideCaseSync = ids => this.hideCase(ids)
-		.then( res => this.listCases() )
-		.then( res => this.updateData(this.state.profilename));
+	configCase = {
+		service: caseService,
+		create: "create",
+		retrieve: "retrieve",
+		list: "list",
+		update: "update",
+		hide: "hide",
+		dataName: "cases",
+	};
+	createCase = createSync.bind(this, this.configCase);
+	createCaseSync = async record => {
+		await this.createCase(record);
+		this.updateDataCase();
+	}
+	listCases = listSync.bind(this, this.configCase);
+	updateCase = updateSync.bind(this, this.configCase);
+	updateCaseSync = async (id, record) => {
+		await this.updateCase(id, record);
+		this.updateDataCase();
+	}
+	hideCase = hideSync.bind(this, this.configCase);
+	hideCaseSync = async ids => {
+		await this.hideCase(ids);
+		this.updateDataCase();
+	}
+	bindCase = updateSync.bind(this, {...this.configCase, update: 'bind'});
+	bindCaseSync = async (id, record) => {
+		const merge = await this.bindCase(id, record);
+		this.updateDataCase();
+		return merge;
+	}
+
+	// account table
+	configAccount = {
+		service: accountService,
+		create: "create",
+		retrieve: "retrieve",
+		list: "list",
+		update: "update",
+		hide: "hide",
+		dataName: "accounts",
+	};
+	createAccount = createSync.bind(this, this.configAccount);
+	createAccountSync = async record => {
+		await this.createAccount(record);
+		this.updateDataAccount();
+	}
+	listAccounts = listSync.bind(this, this.configAccount);
+	updateAccount = updateSync.bind(this, this.configAccount);
+	updateAccountSync = async (id, record) => {
+		await this.updateAccount(id, record);
+		await this.listCases(); // might affect account bound
+		this.updateData();
+	}
+	hideAccount = hideSync.bind(this, this.configAccount);
+	hideAccountSync = async ids => {
+		await this.hideAccount(ids);
+		await this.listCases();
+		this.updateData();
+	}
+	banAccount = updateSync.bind(this,{...this.configAccount, update: "ban"});
+	banAccountSync = async (id, record) => {
+		await this.banAccount(id, record);
+		this.updateDataAccount();
+	}
 
 	// refresh the page
-	refreshPage = profilename => {
+	refreshPage = async (profilename=this.state.profilename) => {
 		this.setState({ profilename });
-		this.listEmails()
-		.then( res => this.listCases())
-		.then( res => this.listAccounts())
-		.then( res => this.updateData(profilename) );
+		await this.listEmails();
+		await this.listCases();
+		await this.listAccounts();
+		this.updateData(profilename); 
 	}
 
 	render(){
@@ -338,6 +409,7 @@ class Query extends Component {
 						edit={ this.updateCaseSync }
 						bind={ this.bindCaseSync }
 						delete={ this.hideCaseSync }
+						updateDataCase={ this.updateDataCase }
 						refreshPage={ this.refreshPage }
 						ban={ this.banAccountSync }
 					/>

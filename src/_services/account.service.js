@@ -4,6 +4,7 @@ import { handleResponse } from '_helpers';
 
 export const accountService = {
     create,
+    retrieve,
     list,
     listByEmail,
     update,
@@ -21,9 +22,31 @@ function create(record) {
 			.then(handleResponse);
 }
 
-function list() {
-    const requestOptions = { method: 'GET', headers: authHeader() };
-    return fetch(`${config.apiUrl}/account/list`, requestOptions)
+function retrieve(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/account/retrieve`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function list(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/account/list`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
 			.then(handleResponse);
 }
 

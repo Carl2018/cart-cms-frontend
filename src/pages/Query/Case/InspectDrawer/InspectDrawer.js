@@ -10,6 +10,7 @@ import {
 	Descriptions, 
 	Drawer, 
 	Row, 
+	Spin, 
 	Tag, 
 	message, 
 	notification,
@@ -20,6 +21,7 @@ import { NodeIndexOutlined } from '@ant-design/icons';
 import { TableBody } from '_components'
 import DrawerDropdown from './DrawerDropdown'
 import Template from './Template'
+import Flag from './Flag'
 
 // import helpers
 import { helpers } from '_helpers';
@@ -36,6 +38,11 @@ class InspectDrawer extends Component {
 			// for the template modal
 			visibleTemplate: false,
 			modalKeyTemplate: Date.now(),
+			// for the flag modal
+			visibleFlag: false,
+			modalKeyFlag: Date.now(),
+			// for Spin
+			spinning: false,
 		};
 	}
 
@@ -249,8 +256,10 @@ class InspectDrawer extends Component {
 		}
 	};
 
-	handleClickConfirmUnban = (closeNotification, notificationKey) => {
-		this.props.onClickBan(this.props.dataAccount);
+	handleClickConfirmUnban = async (closeNotification, notificationKey) => {
+		this.setState({ spinning: true });
+		await this.props.onClickBan(this.props.dataAccount);
+		this.setState({ spinning: false });
 		closeNotification(notificationKey);
 	};
 
@@ -285,8 +294,10 @@ class InspectDrawer extends Component {
 		}
 	};
 
-	handleClickConfirmBan = (closeNotification, notificationKey) => {
-		this.props.onClickBan(this.props.dataAccount);
+	handleClickConfirmBan = async (closeNotification, notificationKey) => {
+		this.setState({ spinning: true });
+		await this.props.onClickBan(this.props.dataAccount);
+		this.setState({ spinning: false });
 		closeNotification(notificationKey);
 	};
 
@@ -307,6 +318,20 @@ class InspectDrawer extends Component {
 		this.setState({
 			visibleTemplate: false,
 			modalKeyTemplate: Date.now(),
+		});
+	}
+
+	// handlers for flags
+	handleClickFlags = event => {
+		this.setState({
+			visibleFlag: true,
+		});
+	}
+
+	handleCloseFlag = event => {
+		this.setState({
+			visibleFlag: false,
+			modalKeyFlag: Date.now(),
 		});
 	}
 
@@ -417,7 +442,7 @@ class InspectDrawer extends Component {
 			</Col>
 			<Col
 				span={ 2 }
-				offset={ 12 }
+				offset={ 11 }
 			>
 				<DrawerDropdown 
 					onClickProcess={ this.onClickProcess }
@@ -425,6 +450,7 @@ class InspectDrawer extends Component {
 					onClickUnban={ this.onClickUnban }
 					onClickBan={ this.onClickBan }
 					onClickTemplates={ this.handleClickTemplates }
+					onClickFlags={ this.handleClickFlags }
 				/>
 			</Col>
 		</Row>	
@@ -443,56 +469,57 @@ class InspectDrawer extends Component {
 					visible={ this.props.visible }
 					onClose={ this.props.onClose }
 				>
-					<Card
-						style={{ marginBottom: "16px", background: "#fafafa" }}
-					>
-						<Descriptions 
-							column={ 3 }
+					<Spin spinning={ this.state.spinning }>
+						<Card
+							style={{ marginBottom: "16px", background: "#fafafa" }}
 						>
-							<Item
-								label="Case Name" 
-								span = { 2 } 
-							> 
-								{ this.props.dataCase.casename }
-							</Item>
-							<Item
-								label="Category"
-								span = { 1 } 
+							<Descriptions 
+								column={ 3 }
 							>
-								{ this.props.dataCase.categoryname}
-							</Item>
-							<Item
-								label="Status"
-								span = { 2 } 
-							>
-								{ this.getStatus( this.props.dataCase.status ) }
-							</Item>
-							<Item 
-								label="Labels"
-								span = { 1 } 
-							>
-								{ this.getLabels( this.props.dataEmail.labelname ) }
-							</Item>
-							<Item 
-								label="Remarks" 
-								span = { 2 } 
-							>
-								{ this.props.dataCase.remarks }
-							</Item>
-							<Item
-								label="Created At"
-								span = { 1 } 
-							>
-								{ this.props.dataCase.created_at }
-							</Item>
-						</Descriptions>
-					</Card>
-					<Collapse 
-						defaultActiveKey={
-							this.props.disabled ? ['1', '2', '3'] : ['1']
-						} 
-						expandIconPosition="left"
-					>
+								<Item
+									label="Case Name" 
+									span = { 2 } 
+								> 
+									{ this.props.dataCase.casename }
+								</Item>
+								<Item
+									label="Category"
+									span = { 1 } 
+								>
+									{ this.props.dataCase.categoryname}
+								</Item>
+								<Item
+									label="Status"
+									span = { 2 } 
+								>
+									{ this.getStatus( this.props.dataCase.status ) }
+								</Item>
+								<Item 
+									label="Labels"
+									span = { 1 } 
+								>
+									{ this.getLabels( this.props.dataEmail.labelname ) }
+								</Item>
+								<Item 
+									label="Remarks" 
+									span = { 2 } 
+								>
+									{ this.props.dataCase.remarks }
+								</Item>
+								<Item
+									label="Created At"
+									span = { 1 } 
+								>
+									{ this.props.dataCase.created_at }
+								</Item>
+							</Descriptions>
+						</Card>
+						<Collapse 
+							defaultActiveKey={
+								this.props.disabled ? ['1', '2', '3'] : ['1']
+							} 
+							expandIconPosition="left"
+						>
 							<Panel 
 								header="Process History" 
 								key="4"
@@ -531,6 +558,7 @@ class InspectDrawer extends Component {
 								/>
 							</Panel>
 						</Collapse>
+					</Spin>
 				</Drawer>
 				<div>
 					<Template
@@ -539,6 +567,14 @@ class InspectDrawer extends Component {
 						onCancel={ this.handleCloseTemplate }
 					>
 					</Template>
+				</div>
+				<div>
+					<Flag
+						modalKey={ this.state.modalKeyFlag }
+						visible={ this.state.visibleFlag }
+						onCancel={ this.handleCloseFlag }
+					>
+					</Flag>
 				</div>
 			</div>
 		);

@@ -32,7 +32,7 @@ import {
 import { backend } from "_helpers";
 
 // destructure imported components and objects
-const { list, toggleSticktop, incrementCount } = backend;
+const { listSync, updateSync } = backend;
 const { Panel } = Collapse;
 const { Search } = Input;
 
@@ -206,7 +206,6 @@ class Template extends Component {
 		this.copyToClip( template["body_" + this.state.templateLang] )
 		// keep count
 		this.incrementCount( template.id );
-		message.success("Template Copied");
 	}
 
 	copyToClip(str) {
@@ -257,11 +256,31 @@ class Template extends Component {
 	}
 
 	// bind versions of CRUD
-	listTemplates = list.bind(this, templateService, 'templates');
-	listPanels = list.bind(this, templateService, 'panels');
-	listCategories= list.bind(this, categoryService, 'categories');
-	toggleSticktop = toggleSticktop.bind(this, templateService, 'templates');
-	incrementCount = incrementCount.bind(this, templateService, 'templates');
+	configTemplate = {
+		service: templateService,
+		retrieve: "retrieve",
+		list: "list",
+		update: "toggleSticktop",
+		dataName: "templates",
+		editSuccessMsg: "Template has been fixed to top",
+	};
+	listTemplates = listSync.bind(this, this.configTemplate);
+	toggleSticktop = updateSync.bind(this, this.configTemplate);
+	incrementCount = updateSync.bind(this, {...this.configTemplate, update:"incrementCount", editSuccessMsg: "Template Coplied"});
+
+	configPanel = {
+		service: templateService,
+		list: "list",
+		dataName: "panels",
+	};
+	listPanels = listSync.bind(this, this.configPanel);
+
+	configCategory = {
+		service: categoryService,
+		list: "list",
+		dataName: "categories",
+	};
+	listCategories= listSync.bind(this, this.configCategory);
 
 	render(){
 		return (
