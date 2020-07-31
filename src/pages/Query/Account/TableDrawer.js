@@ -81,6 +81,7 @@ class TableDrawer extends Component {
 			this.formRef.current.setFieldsValue({
 				candidate_id: response.entry.candidate_id,
 				status: response.entry.status,
+				account_type: response.entry.account_type,
 			});
 			message.success("Candidate ID found");
 		} else {
@@ -182,6 +183,28 @@ class TableDrawer extends Component {
 								>
 									<Option value="u">Unbanned</Option>
 									<Option value="b">Banned</Option>
+								</Select>
+							</Form.Item>
+							<Form.Item
+								key={ "account_type" }
+								label={ "Account Type" }
+								name={ "account_type" }
+								rules={[  
+									{
+										required: true,
+										message: 'Account Type cannot be empty',
+									}
+								]}
+								initialValue={ this.props.record.account_type}
+							>
+								<Select
+									disabled
+									placeholder={ "Use the search above to autofill this field" }
+								>
+									<Option value="f">Facebook</Option>
+									<Option value="p">Phone</Option>
+									<Option value="a">Apple</Option>
+									<Option value="g">Google</Option>
 								</Select>
 							</Form.Item>
 							{ this.props.formItems.map( item => 

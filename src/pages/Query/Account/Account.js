@@ -62,6 +62,14 @@ class Account extends Component {
 						color = 'gold';
 						text = 'Phone';
 						break;
+					case 'a' :
+						color = 'red';
+						text = 'Apple';
+						break;
+					case 'g' :
+						color = 'green';
+						text = 'Google';
+						break;
 					default:
 						color = 'gold';
 						text = 'Phone';
@@ -138,32 +146,34 @@ class Account extends Component {
 //				/>
 //			)
 //		},
-		{
-			label: 'Account Type',
-			name: 'account_type',
-			rules: [
-				{
-					required: true,
-					message: 'account_type cannot be empty',
-				}
-			],
-			editable: true,
-			input: disabled => (
-				<Select
-					disabled={ disabled }
-					placeholder={ "Account type" }
-					showSearch
-					optionFilterProp="children"
-					filterOption={(input, option) =>
-						option.children.trim().toLowerCase()
-							.indexOf(input.trim().toLowerCase()) >= 0
-					}
-				>
-					<Option value="f">facebook</Option>
-					<Option value="p">phone</Option>
-				</Select>
-			)
-		},
+//		{
+//			label: 'Account Type',
+//			name: 'account_type',
+//			rules: [
+//				{
+//					required: true,
+//					message: 'account_type cannot be empty',
+//				}
+//			],
+//			editable: true,
+//			input: disabled => (
+//				<Select
+//					disabled={ disabled }
+//					placeholder={ "Account type" }
+//					showSearch
+//					optionFilterProp="children"
+//					filterOption={(input, option) =>
+//						option.children.trim().toLowerCase()
+//							.indexOf(input.trim().toLowerCase()) >= 0
+//					}
+//				>
+//					<Option value="f">Facebook</Option>
+//					<Option value="p">Phone</Option>
+//					<Option value="a">Apple</Option>
+//					<Option value="g">Google</Option>
+//				</Select>
+//			)
+//		},
 //		{
 //			label: 'Account Name',
 //			name: 'accountname',

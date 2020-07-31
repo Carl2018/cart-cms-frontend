@@ -6,7 +6,6 @@ import { TeamOutlined } from '@ant-design/icons';
 import { 
 	AutoComplete, 
 	Input, 
-	Select, 
 	Spin, 
 	Tag, 
 } from 'antd';
@@ -29,7 +28,6 @@ import {
 // destructure imported components and objects
 const { createSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
-const { Option } = Select;
 
 class Account extends Component {
 	constructor(props) {
@@ -78,6 +76,14 @@ class Account extends Component {
 					case 'p' :
 						color = 'gold';
 						text = 'Phone';
+						break;
+					case 'a' :
+						color = 'red';
+						text = 'Apple';
+						break;
+					case 'g' :
+						color = 'green';
+						text = 'Google';
 						break;
 					default:
 						color = 'gold';
@@ -164,32 +170,34 @@ class Account extends Component {
 //				/>
 //			)
 //		},			
-		{
-			label: 'Account Type',
-			name: 'account_type',
-			rules: [
-				{
-					required: true,
-					message: 'account_type cannot be empty',
-				}
-			],
-			editable: true,
-			input: disabled => (
-				<Select
-					disabled={ disabled }
-					placeholder={ "Account type" }
-					showSearch
-					optionFilterProp="children"
-					filterOption={(input, option) =>
-						option.children.trim().toLowerCase()
-							.indexOf(input.trim().toLowerCase()) >= 0
-					}
-				>
-					<Option value="f">facebook</Option>
-					<Option value="p">phone</Option>
-				</Select>
-			)
-		},
+//		{
+//			label: 'Account Type',
+//			name: 'account_type',
+//			rules: [
+//				{
+//					required: true,
+//					message: 'account_type cannot be empty',
+//				}
+//			],
+//			editable: true,
+//			input: disabled => (
+//				<Select
+//					disabled={ disabled }
+//					placeholder={ "Account type" }
+//					showSearch
+//					optionFilterProp="children"
+//					filterOption={(input, option) =>
+//						option.children.trim().toLowerCase()
+//							.indexOf(input.trim().toLowerCase()) >= 0
+//					}
+//				>
+//					<Option value="f">Facebook</Option>
+//					<Option value="p">Phone</Option>
+//					<Option value="a">Apple</Option>
+//					<Option value="g">Google</Option>
+//				</Select>
+//			)
+//		},
 //		{
 //			label: 'Candidate ID',
 //			name: 'candidate_id',

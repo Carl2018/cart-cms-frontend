@@ -175,6 +175,14 @@ class InspectDrawer extends Component {
 						color = 'gold';
 						text = 'Phone';
 						break;
+					case 'a' :
+						color = 'red';
+						text = 'Apple';
+						break;
+					case 'g' :
+						color = 'green';
+						text = 'Google';
+						break;
 					default:
 						color = 'gold';
 						text = 'Phone';
