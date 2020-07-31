@@ -22,7 +22,6 @@ import { backend } from '_helpers';
 
 // destructure imported components and objects
 const { listSync } = backend;
-const { Search } = Input;
 
 class BindDrawer extends Component {
 	constructor(props) {
@@ -54,11 +53,9 @@ class BindDrawer extends Component {
 			(
 				<AutoComplete
 					onChange={ this.handleChange }
-					onSelect={ this.handleSearch }
 					options={ this.state.options }
 				>
-					<Search
-						onSearch={ this.handleSearch }
+					<Input
 						placeholder="Search Email"
 						size="middle"
 						allowClear
@@ -78,14 +75,11 @@ class BindDrawer extends Component {
 		const options = this.state.accounts
 			.map( item => item.accountname )
 			.filter( (item, index, array) => array.indexOf(item) === index )
-			.filter( item => item.includes(data) )
+			.filter( item => item.trim().toLowerCase()
+				.includes(data.trim().toLowerCase()) 
+			)
 			.map( item => ({ value: item }) );
 		this.setState({ options });
-	}
-
-	// perform a search when the search button is pressed
-	handleSearch = data => {
-		console.log("search");
 	}
 
 	// bind versions of CRUD

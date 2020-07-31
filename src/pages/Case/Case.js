@@ -29,7 +29,6 @@ import {
 // destructure imported components and objects
 const { createSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
-const { Search } = Input;
 const { Option } = Select
 
 class Case extends Component {
@@ -157,6 +156,12 @@ class Case extends Component {
 				<Select
 					disabled={ disabled }
 					placeholder={ "Category" }
+					showSearch
+					optionFilterProp="children"
+					filterOption={(input, option) =>
+						option.children.trim().toLowerCase()
+							.indexOf(input.trim().toLowerCase()) >= 0
+					}
 				>
 					{
 						this.state.categories.map( item => (
@@ -253,11 +258,9 @@ class Case extends Component {
 			(
 				<AutoComplete
 					onChange={ this.handleChange }
-					onSelect={ this.handleSearch }
 					options={ this.state.options }
 				>
-					<Search
-						onSearch={ this.handleSearch }
+					<Input
 						placeholder="Search an exiting email"
 						size="middle"
 						allowClear
@@ -281,14 +284,11 @@ class Case extends Component {
 		const options = this.state.emails
 			.map( item => item.email )
 			.filter( (item, index, array) => array.indexOf(item) === index )
-			.filter( item => item.includes(data) )
+			.filter( item => item.trim().toLowerCase()
+				.includes(data.trim().toLowerCase()) 
+			)
 			.map( item => ({ value: item }) );
 		this.setState({ options });
-	}
-
-	// perform a search when the search button is pressed
-	handleSearch = data => {
-		console.log("search");
 	}
 
 	// bind versions of CRUD

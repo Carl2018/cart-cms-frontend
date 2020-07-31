@@ -74,6 +74,12 @@ class TableWrapper extends Component {
 				<Select
 					disabled={ disabled }
 					mode="multiple"
+					showSearch
+					optionFilterProp="children"
+					filterOption={(input, option) =>
+						option.children.trim().toLowerCase()
+							.indexOf(input.trim().toLowerCase()) >= 0
+					}
 				>
 					{
 						this.props.labels.map( item => (

@@ -58,6 +58,7 @@ class TableWrapper extends Component {
 			bindDrawerKey: Date.now(),
 			// accounts in the same profile
 			accounts: [],
+			allAccounts: [],
 			// for the merge modal
 			bind: {},
 			merge: {},
@@ -69,6 +70,7 @@ class TableWrapper extends Component {
 	
 	componentDidMount() {
 		this.listProfiles();
+		this.listAllAccounts();
 	}
 
 	// customised menu for bind, process, process history
@@ -265,9 +267,23 @@ class TableWrapper extends Component {
 		const bind = 
 			{ case_id: this.state.record.id, accountname: record.accountname }
 		this.setState({ bind });
+		// check if the accountname is valid
+		const accountname = record.accountname.trim().toLowerCase();
+		const allAccounts = this.state.allAccounts
+			.map( item => item.accountname.trim().toLowerCase() );
+		if (!allAccounts.includes( accountname )) {
+			this.setState({
+				visibleBind: false, 
+				record: {},
+				bindDrawerKey: Date.now(), 
+			});
+			message.error(`Account name #${record.accountname}# does not exist`);
+			return;
+		}
 		// check if there is a merge
-		const accounts = this.state.accounts.map( item => item.accountname );
-		if (accounts.includes(record.accountname)) {
+		const accounts = this.state.accounts
+			.map( item => item.accountname.trim().toLowerCase() );
+		if (accounts.includes( accountname )) {
 			// bind
 			this.props.bind(this.state.record.id, bind);
 			// close drawer
@@ -396,6 +412,11 @@ class TableWrapper extends Component {
 		dataName: "accounts",
 	};
 	listAccounts = listSync.bind(this, this.configAccount);
+	listAllAccounts = listSync.bind(this, {
+		...this.configAccount, 
+		list: "list",
+		dataName: "allAccounts",
+	});
 
 	configProfile = {
 		service: profileService,

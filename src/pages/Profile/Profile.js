@@ -168,6 +168,12 @@ class Profile extends Component {
 					disabled={ disabled }
 					mode="multiple"
 					placeholder={ "Labels" }
+					showSearch
+					optionFilterProp="children"
+					filterOption={(input, option) =>
+						option.children.trim().toLowerCase()
+							.indexOf(input.trim().toLowerCase()) >= 0
+					}
 				>
 					{
 						this.state.labels.map( item => (

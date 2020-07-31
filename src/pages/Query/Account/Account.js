@@ -152,6 +152,12 @@ class Account extends Component {
 				<Select
 					disabled={ disabled }
 					placeholder={ "Account type" }
+					showSearch
+					optionFilterProp="children"
+					filterOption={(input, option) =>
+						option.children.trim().toLowerCase()
+							.indexOf(input.trim().toLowerCase()) >= 0
+					}
 				>
 					<Option value="f">facebook</Option>
 					<Option value="p">phone</Option>
@@ -212,6 +218,12 @@ class Account extends Component {
 				<Select
 					disabled={ disabled }
 					placeholder={ "Profile must be the current searched profile" }
+					showSearch
+					optionFilterProp="children"
+					filterOption={(input, option) =>
+						option.children.trim().toLowerCase()
+							.indexOf(input.trim().toLowerCase()) >= 0
+					}
 				>
 					<Option value={ this.props.profilename }>
 						{ this.props.profilename }

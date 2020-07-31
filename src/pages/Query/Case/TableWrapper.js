@@ -283,9 +283,23 @@ class TableWrapper extends Component {
 		const bind = 
 			{ case_id: this.state.record.id, accountname: record.accountname }
 		this.setState({ bind });
+		// check if the accountname is valid
+		const accountname = record.accountname.trim().toLowerCase();
+		const allAccounts = this.props.accounts
+			.map( item => item.accountname.trim().toLowerCase() );
+		if (!allAccounts.includes( accountname )) {
+			this.setState({
+				visibleBind: false, 
+				record: {},
+				bindDrawerKey: Date.now(), 
+			});
+			message.error(`Account name #${record.accountname}# does not exist`);
+			return;
+		}
 		// check if there is a merge
-		const accounts = this.state.accounts.map( item => item.accountname );
-		if (accounts.includes(record.accountname)) {
+		const accounts = this.state.accounts
+			.map( item => item.accountname.trim().toLowerCase() );
+		if (accounts.includes( accountname )) {
 			await this.props.bind(this.state.record.id, bind);
 			this.setState({
 				visibleBind: false, 

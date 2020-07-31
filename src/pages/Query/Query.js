@@ -77,7 +77,9 @@ class Query extends Component {
 		const options = this.state.emails
 			.map( item => item.email )
 			.filter( (item, index, array) => array.indexOf(item) === index )
-			.filter( item => item.includes(data) )
+			.filter( item => item.trim().toLowerCase()
+				.includes(data.trim().toLowerCase()) 
+			)
 			.map( item => ({ value: item }) );
 		this.setState({ options });
 	}
@@ -85,7 +87,7 @@ class Query extends Component {
 	// perform a search when the search button is pressed
 	handleSearch = data => {
 		this.setState({ loading: true });
-		setTimeout( () => this.updateTables(data), 500);
+		setTimeout( () => this.updateTables(data.trim().toLowerCase()), 500);
 	}
 
 	// update all 3 tables upon a search

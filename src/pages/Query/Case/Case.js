@@ -137,6 +137,12 @@ class Case extends Component {
 				<Select
 					disabled={ disabled }
 					placeholder={ "Category" }
+					showSearch
+					optionFilterProp="children"
+					filterOption={(input, option) =>
+						option.children.trim().toLowerCase()
+							.indexOf(input.trim().toLowerCase()) >= 0
+					}
 				>
 					{
 						this.props.categories.map( item => (
@@ -234,6 +240,12 @@ class Case extends Component {
 				<Select
 					disabled={ disabled }
 					placeholder={ "Choose an email from the current searched profile" }
+					showSearch
+					optionFilterProp="children"
+					filterOption={(input, option) =>
+						option.children.trim().toLowerCase()
+							.indexOf(input.trim().toLowerCase()) >= 0
+					}
 				>
 					{
 						this.props.dataEmail.map( item => (

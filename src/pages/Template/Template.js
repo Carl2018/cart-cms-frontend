@@ -127,6 +127,12 @@ class Template extends Component {
 				<Select
 					disabled={ disabled }
 					placeholder={ "Category" }
+					showSearch
+					optionFilterProp="children"
+					filterOption={(input, option) =>
+						option.children.trim().toLowerCase()
+							.indexOf(input.trim().toLowerCase()) >= 0
+					}
 				>
 					{
 						this.state.categories.map( item => (
@@ -156,7 +162,7 @@ class Template extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
-					placeholder={ "Title" }
+					placeholder={ "Title must be unique" }
 				/>
 			)
 		},

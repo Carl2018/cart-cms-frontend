@@ -132,15 +132,23 @@ class Template extends Component {
 		const searchProperty = this.state.searchProperty;
 		let options = [];
 		if (searchProperty === "categoryname" ) {
-			options = this.state.categories
-				.map( item => { return { value: item.categoryname }; } );
-			options.push( { value:'Uncategorized' });
+			const categories = this.state.categories
+				.map( item => item.categoryname );
+			categories.push( "Uncategorized" );
+			options = categories
+				.filter( (item, index, array) => array.indexOf(item) === index )
+				.filter( item => item.trim().toLowerCase()
+					.includes(data.trim().toLowerCase()) 
+				)
+				.map( item => ({ value: item }) );
 		} else {
 			options = this.state.categories
 				.map( item => { return {label: item.categoryname, options: []}; });
 			options.push( {label:'Uncategorized', options:[]} );
 			this.state.templates
-				.filter( item => item[this.state.searchProperty].includes(data) )
+				.filter( item => item[searchProperty].trim().toLowerCase()
+					.includes(data.trim().toLowerCase())
+				)
 				.forEach( item => {
 					options.forEach( option => {
 						if (option.label === item.categoryname)
@@ -155,13 +163,13 @@ class Template extends Component {
 
 	handleSearch = data => {
 		this.setState({ loading: true });
-		setTimeout( () => this.updateCollapse(data) , 1000 );
+		setTimeout( () => this.updateCollapse(data.trim().toLowerCase()) , 500 );
 	}
 
 	updateCollapse = data => {
 		const searchProperty = this.state.searchProperty;
 		const panels = this.state.templates
-			.filter( item => item[searchProperty].includes(data) );
+			.filter( item => item[searchProperty].trim().toLowerCase().includes(data) );
 		panels.sort(dynamicSort("-sticktop"));
 		const currentPanels = panels.slice(0, this.state.pageSize);
 		this.setState({ 

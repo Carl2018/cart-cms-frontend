@@ -146,6 +146,12 @@ class Email extends Component {
 				<Select
 					disabled={ disabled }
 					placeholder={ "Profile must be the current searched profile" }
+					showSearch
+					optionFilterProp="children"
+					filterOption={(input, option) =>
+						option.children.trim().toLowerCase()
+							.indexOf(input.trim().toLowerCase()) >= 0
+					}
 				>
 					<Option value={ this.props.profilename }>
 						{ this.props.profilename }

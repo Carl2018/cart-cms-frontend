@@ -39,6 +39,12 @@ class SecondaryDrawer extends Component {
 					<Select
 						disabled={ disabled || record.process ? true : false }
 						placeholder={ "Process" }
+						showSearch
+						optionFilterProp="children"
+						filterOption={(input, option) =>
+							option.children.trim().toLowerCase()
+								.indexOf(input.trim().toLowerCase()) >= 0
+						}
 					>
 						{ !record.process ? <></> :
 							<Option value="o">Open</Option>
