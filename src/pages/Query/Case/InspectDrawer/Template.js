@@ -129,17 +129,27 @@ class Template extends Component {
 
 	// filter AutoComplete options when input field changes
 	handleChange = data => {
-		const options = this.state.categories
-			.map( item => { return {label: item.categoryname, options: []}; });
-		options.push( {label:'Uncategorized', options:[]} );
-		this.state.templates
-			.filter( item => item[this.state.searchProperty].includes(data) )
-			.forEach( item => {
-				options.forEach( option => {
-					if (option.label === item.categoryname)
-						option.options.push( {value: item[this.state.searchProperty]} );
-				})
-			});
+		const searchProperty = this.state.searchProperty;
+		let options = [];
+		if (searchProperty === "categoryname" ) {
+			options = this.state.categories
+				.map( item => { return { value: item.categoryname }; } );
+			options.push( { value:'Uncategorized' });
+		} else {
+			options = this.state.categories
+				.map( item => { return {label: item.categoryname, options: []}; });
+			options.push( {label:'Uncategorized', options:[]} );
+			this.state.templates
+				.filter( item => item[this.state.searchProperty].includes(data) )
+				.forEach( item => {
+					options.forEach( option => {
+						if (option.label === item.categoryname)
+							option.options.push( {value: item[searchProperty]} );
+					})
+				});
+			// remove empty category
+			options = options.filter( item => item.options.length !== 0 );
+		}
 		this.setState({ options });
 	}
 
@@ -328,6 +338,7 @@ class Template extends Component {
 								value={this.state.searchBy}
 							>
 								<Radio value={"title"}>Title</Radio>
+								<Radio value={"categoryname"}>Category</Radio>
 								<Radio value={"body"}>Body</Radio>
 							</Radio.Group>
 							<AutoComplete
@@ -381,7 +392,7 @@ class Template extends Component {
 										style={{ marginTop: "20px" }}
 										pageSize={ this.state.pageSize }
 										showSizeChanger={ true }
-										pageSizeOptions={ [1, 5, 10] }
+										pageSizeOptions={ [5, 10] }
 										onShowSizeChange={ this.handleShowSizeChange }
 										showQuickJumper
 										total={ this.state.panels.length }
