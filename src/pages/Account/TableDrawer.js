@@ -17,7 +17,16 @@ import React, { Component } from 'react';
 */
 
 // import styling from ant design
-import { Drawer, Button, Form, Divider, Input, Spin, message } from 'antd';
+import { 
+	Button, 
+	Divider, 
+	Drawer, 
+	Form, 
+	Input, 
+	Select, 
+	Spin, 
+	message 
+} from 'antd';
 
 // import shared components
 
@@ -29,6 +38,7 @@ import { backend } from '_helpers';
 
 // destructure imported components and objects
 const { listSync } = backend;
+const { Option } = Select;
 
 class TableDrawer extends Component {
 	constructor(props) {
@@ -70,6 +80,7 @@ class TableDrawer extends Component {
 		if (response.code === 200) {
 			this.formRef.current.setFieldsValue({
 				candidate_id: response.entry.candidate_id,
+				status: response.entry.status,
 			});
 			message.success("Candidate ID found");
 		} else {
@@ -149,9 +160,29 @@ class TableDrawer extends Component {
 								<Input
 									maxLength={255}
 									allowClear
-									disabled={ this.props.disabled }
-									placeholder={ "Candidate ID must be unique" }
+									disabled
+									placeholder={ "Use the search above to autofill this field" }
 								/>
+							</Form.Item>
+							<Form.Item
+								key={ "status" }
+								label={ "Status" }
+								name={ "status" }
+								rules={[  
+									{
+										required: true,
+										message: 'status cannot be empty',
+									}
+								]}
+								initialValue={ this.props.record.status }
+							>
+								<Select
+									disabled
+									placeholder={ "Use the search above to autofill this field" }
+								>
+									<Option value="u">Unbanned</Option>
+									<Option value="b">Banned</Option>
+								</Select>
 							</Form.Item>
 							{ this.props.formItems.map( item => 
 								item.editable || this.props.disabled ? (

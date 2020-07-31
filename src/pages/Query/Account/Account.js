@@ -183,25 +183,25 @@ class Account extends Component {
 //				/>
 //			)
 //		},			
-		{
-			label: 'Status',
-			name: 'status',
-			rules: [
-				{
-					required: true,
-					message: 'Status cannot be empty',
-				},
-			],
-			editable: false,
-			input: disabled => (
-				<Select
-					disabled={ disabled }
-				>
-					<Option value="u">Unbanned</Option>
-					<Option value="b">Banned</Option>
-				</Select>
-			)
-		},			
+//		{
+//			label: 'Status',
+//			name: 'status',
+//			rules: [
+//				{
+//					required: true,
+//					message: 'Status cannot be empty',
+//				},
+//			],
+//			editable: false,
+//			input: disabled => (
+//				<Select
+//					disabled={ disabled }
+//				>
+//					<Option value="u">Unbanned</Option>
+//					<Option value="b">Banned</Option>
+//				</Select>
+//			)
+//		},			
 		{
 			label: 'Profile',
 			name: 'profilename',
