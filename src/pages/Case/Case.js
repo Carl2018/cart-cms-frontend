@@ -121,7 +121,7 @@ class Case extends Component {
 			setFilter: true
 		},
 		{
-			title: 'Queried Email',
+			title: 'Inquirer Email',
 			dataIndex: 'email',
 			key: 'email',
 			sorter: (a, b) => compare(a.email, b.email),
@@ -239,7 +239,7 @@ class Case extends Component {
 			)
 		},
 		{
-			label: 'Queried Email',
+			label: 'Inquirer Email',
 			name: 'email',
 			rules: [
 				{

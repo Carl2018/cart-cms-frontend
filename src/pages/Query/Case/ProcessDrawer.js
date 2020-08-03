@@ -251,7 +251,7 @@ class ProcessDrawer extends Component {
 							<Descriptions.Item label="Category">
 								{ this.props.record.categoryname }
 							</Descriptions.Item>
-							<Descriptions.Item label="Queried Email">
+							<Descriptions.Item label="Inquirer Email">
 								{ this.props.record.email }
 							</Descriptions.Item>
 							<Descriptions.Item label="Account Bound">

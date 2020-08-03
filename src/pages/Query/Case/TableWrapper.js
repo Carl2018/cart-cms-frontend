@@ -327,8 +327,7 @@ class TableWrapper extends Component {
 			description:
 			(<>
 				<div>
-					{`The account you have entered is bound to a different profile 
-					from the one that the queried email is bound to.`}
+					{`The account you have entered is bound to a different profile.`}
 				</div>
 				<div>
 					{`If you proceed to bind the case to this account, 

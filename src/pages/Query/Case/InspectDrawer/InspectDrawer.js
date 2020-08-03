@@ -541,7 +541,7 @@ class InspectDrawer extends Component {
 								/>
 							</Panel>
 							<Panel 
-								header="Related Email" 
+								header="Inquirer Email" 
 								key="2"
 							>
 								<TableBody
@@ -553,7 +553,7 @@ class InspectDrawer extends Component {
 								/>
 							</Panel>
 							<Panel 
-								header="Related Account" 
+								header="Account Bound" 
 								key="3"
 								extra={ this.genExtra() }
 							>
