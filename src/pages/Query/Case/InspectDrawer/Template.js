@@ -381,6 +381,7 @@ class Template extends Component {
 													"#a9a9a9" : "transparent" }}
 											>
 												<RichTextOutput 
+													lang={ this.state.templateLang }
 													body={ this.state.templateLang === "chn" ?
 														item.body_chn : item.body_eng }
 												/>
