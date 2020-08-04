@@ -5,6 +5,8 @@ import { handleResponse } from '_helpers';
 export const accountService = {
     create,
     retrieve,
+		retrieveCandidateId,
+    retrieveFlag,
     list,
     listByEmail,
     update,
@@ -25,6 +27,34 @@ function create(record) {
 function retrieve(params={}) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/account/retrieve`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function retrieveCandidateId(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/account/retrieve_candidate_id`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function retrieveFlag(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/account/retrieve_flag`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api

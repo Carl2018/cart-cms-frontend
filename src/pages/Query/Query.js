@@ -9,6 +9,7 @@ import {
 	Input, 
 	Row, 
 	Space, 
+	Spin, 
 	message, 
 } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
@@ -40,7 +41,7 @@ class Query extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			loading: false, // for Spin
+			spinning: false, // for Spin
 			showHeader: false, // for header in each table
 			showDropdown: false, // for dropdown in each table
 			options: [], // options for email search
@@ -65,11 +66,14 @@ class Query extends Component {
 	}
 	
 	componentDidMount() {
-		this.listEmails();
-		this.listCases();
-		this.listAccounts();
-		this.listLabels();
-		this.listCategories();
+		this.setState({ spinning: true }, async () => {
+			await this.listEmails();
+			await this.listCases();
+			await this.listAccounts();
+			await this.listLabels();
+			await this.listCategories();
+			this.setState({ spinning: false });
+		});
 	}
 
 	// filter AutoComplete options when input field changes
@@ -86,8 +90,9 @@ class Query extends Component {
 
 	// perform a search when the search button is pressed
 	handleSearch = data => {
-		this.setState({ loading: true });
-		setTimeout( () => this.updateTables(data.trim().toLowerCase()), 500);
+		this.setState({ spinning: true }, () => {
+			this.updateTables(data.trim().toLowerCase());
+		});
 	}
 
 	// update all 3 tables upon a search
@@ -99,7 +104,7 @@ class Query extends Component {
 		this.setState({ 
 			email,
 			profilename,
-			loading: false,
+			spinning: false,
 		});
 		if (profilename) {
 			message.success("Profile Found");
@@ -221,14 +226,20 @@ class Query extends Component {
 	updateEmail = updateSync.bind(this, this.configEmail);
 	updateEmailSync = async (id, record) => {
 		await this.updateEmail(id, record);
-		await this.listEmails(); // might affect profile
-		await this.listCases(); // might affect queried email
+		await this.setState({ spinning: true }, async () => {
+			await this.listEmails(); // might affect profile
+			await this.listCases(); // might affect queried email
+			this.setState({ spinning: false });
+		});
 		this.updateDataCase();
 	}
 	hideEmail = hideSync.bind(this, this.configEmail);
 	hideEmailSync = async ids => {
 		await this.hideEmail(ids);
-		await this.listCases(); // do not actually need this line
+		await this.setState({ spinning: true }, async () => {
+			await this.listCases(); // do not actually need this line
+			this.setState({ spinning: false });
+		});
 		this.updateDataCase();
 	}
 
@@ -284,13 +295,19 @@ class Query extends Component {
 	updateAccount = updateSync.bind(this, this.configAccount);
 	updateAccountSync = async (id, record) => {
 		await this.updateAccount(id, record);
-		await this.listCases(); // might affect account bound
+		await this.setState({ spinning: true }, async () => {
+			await this.listCases(); // might affect account bound
+			this.setState({ spinning: false });
+		});
 		this.updateData();
 	}
 	hideAccount = hideSync.bind(this, this.configAccount);
 	hideAccountSync = async ids => {
 		await this.hideAccount(ids);
-		await this.listCases();
+		await this.setState({ spinning: true }, async () => {
+			await this.listCases();
+			this.setState({ spinning: false });
+		});
 		this.updateData();
 	}
 	banAccount = updateSync.bind(this,{...this.configAccount, update: "ban"});
@@ -300,142 +317,143 @@ class Query extends Component {
 	}
 
 	// refresh the page
-	refreshPage = async (profilename=this.state.profilename) => {
-		this.setState({ profilename });
-		await this.listEmails();
-		await this.listCases();
-		await this.listAccounts();
-		this.updateData(profilename); 
+	refreshPage = (profilename=this.state.profilename) => {
+		this.setState({ profilename, spinning: true }, async () => {
+			await this.listEmails();
+			await this.listCases();
+			await this.listAccounts();
+			this.updateData(profilename); 
+			this.setState({ spinning: false });
+		});
 	}
 
 	render(){
 		return (
 			<div className='Query'>
-				<Row style={{ margin: "16px" }}>
-					<Col 
-						style={{ fontSize: '24px', textAlign: 'left' }}
-						span={ 12 } 
-					>
-						<Space size="large">
-							<QuestionCircleOutlined />
-							<strong>Queries</strong>
-						</Space>
-					</Col>
-				</Row>
-				<Row style={{ margin: "16px" }}>
-					<Col 
-						style={{ fontSize: '24px', textAlign: 'left' }}
-						span={ 12 } 
-					>
-						<Space size="large">
-							<AutoComplete
-								id={ "autosearch" }
-								onChange={ this.handleChange }
-								onSelect={ this.handleSearch }
-								options={ this.state.options }
-								style={{ width: 320 }}
-							>
-								<Search
-									onSearch={ this.handleSearch }
-									placeholder="Search Profile by Email"
+				<Spin spinning={ this.state.spinning }>
+					<Row style={{ margin: "16px" }}>
+						<Col 
+							style={{ fontSize: '24px', textAlign: 'left' }}
+							span={ 12 } 
+						>
+							<Space size="large">
+								<QuestionCircleOutlined />
+								<strong>Queries</strong>
+							</Space>
+						</Col>
+					</Row>
+					<Row style={{ margin: "16px" }}>
+						<Col 
+							style={{ fontSize: '24px', textAlign: 'left' }}
+							span={ 12 } 
+						>
+							<Space size="large">
+								<AutoComplete
+									id={ "autosearch" }
+									onChange={ this.handleChange }
+									onSelect={ this.handleSearch }
+									options={ this.state.options }
+									style={{ width: 320 }}
+								>
+									<Search
+										onSearch={ this.handleSearch }
+										placeholder="Search Profile by Email"
+										size="middle"
+										allowClear
+									/>
+								</AutoComplete>
+								<Button
 									size="middle"
-									allowClear
-								/>
-							</AutoComplete>
-							<Button
-								size="middle"
-								onClick={ this.handleClickProfile }
-							>
-								Create Profile
-							</Button>
-						</Space>
-					</Col>
-				</Row>
-				<div>
-					<ProfileDrawer
-						tableDrawerKey={ this.state.profileDrawerKey }
-						// data props
-						record={ this.state.record }
-						labels={ this.state.labels }
-						// display props
-						visible={ this.state.visibleProfile } 
-						// api aprops
-						onSubmit={ this.createProfileSync }
-						onClose={ this.handleCloseProfile }
+									onClick={ this.handleClickProfile }
+								>
+									Create Profile
+								</Button>
+							</Space>
+						</Col>
+					</Row>
+					<div>
+						<ProfileDrawer
+							tableDrawerKey={ this.state.profileDrawerKey }
+							// data props
+							record={ this.state.record }
+							labels={ this.state.labels }
+							// display props
+							visible={ this.state.visibleProfile } 
+							// api aprops
+							onSubmit={ this.createProfileSync }
+							onClose={ this.handleCloseProfile }
+						>
+						</ProfileDrawer>
+					</div>
+					<Card
+						style={{ margin: "16px" }}
 					>
-					</ProfileDrawer>
-				</div>
-				<Card
-					style={{ margin: "16px" }}
-				>
-					<Email 
-						// data props
-						data={ this.state.dataEmail }
-						profilename={ this.state.profilename }
-						labels={ this.state.labels }
-						// display props
-						loading={ this.state.loading }
-						tableHeader={ <><strong>Profile</strong></> }
-						isSmall={ true }
-						showHeader={ this.state.showHeader }
-						showDropdown={ this.state.showDropdown }
-						// api props
-						create={ this.createEmailSync }
-						edit={ this.updateEmailSync }
-						delete={ this.hideEmailSync }
-					/>
-				</Card>
-				<Card
-					style={{ margin: "16px" }}
-				>
-					<Case
-						// data props
-						data={ this.state.dataCase }
-						dataEmail={ this.state.dataEmail }
-						dataAccount={ this.state.dataAccount }
-						email={ this.state.email }
-						emails={ this.state.emails }
-						cases={ this.state.cases }
-						accounts={ this.state.accounts }
-						categories={ this.state.categories }
-						labels={ this.state.labels }
-						// display props
-						loading={ this.state.loading }
-						tableHeader={ <><strong>Cases</strong></> }
-						isSmall={ true }
-						showHeader={ this.state.showHeader }
-						showDropdown={ this.state.showDropdown }
-						// api props
-						create={ this.createCaseSync }
-						list={ this.listCases }
-						edit={ this.updateCaseSync }
-						bind={ this.bindCaseSync }
-						delete={ this.hideCaseSync }
-						updateDataCase={ this.updateDataCase }
-						refreshPage={ this.refreshPage }
-						ban={ this.banAccountSync }
-					/>
-				</Card>
-				<Card
-					style={{ margin: "16px" }}
-				>
-					<Account
-						// data props
-						data={ this.state.dataAccount }
-						profilename={ this.state.profilename }
-						// display props
-						loading={ this.state.loading }
-						tableHeader={ <><strong>Accounts</strong></> }
-						isSmall={ true }
-						showHeader={ this.state.showHeader }
-						showDropdown={ this.state.showDropdown }
-						// api props
-						create={ this.createAccountSync }
-						edit={ this.updateAccountSync }
-						ban={ this.banAccountSync }
-						delete={ this.hideAccountSync }
-					/>
-				</Card>
+						<Email 
+							// data props
+							data={ this.state.dataEmail }
+							profilename={ this.state.profilename }
+							labels={ this.state.labels }
+							// display props
+							tableHeader={ <><strong>Profile</strong></> }
+							isSmall={ true }
+							showHeader={ this.state.showHeader }
+							showDropdown={ this.state.showDropdown }
+							// api props
+							create={ this.createEmailSync }
+							edit={ this.updateEmailSync }
+							delete={ this.hideEmailSync }
+						/>
+					</Card>
+					<Card
+						style={{ margin: "16px" }}
+					>
+						<Case
+							// data props
+							data={ this.state.dataCase }
+							dataEmail={ this.state.dataEmail }
+							dataAccount={ this.state.dataAccount }
+							email={ this.state.email }
+							emails={ this.state.emails }
+							cases={ this.state.cases }
+							accounts={ this.state.accounts }
+							categories={ this.state.categories }
+							labels={ this.state.labels }
+							// display props
+							tableHeader={ <><strong>Cases</strong></> }
+							isSmall={ true }
+							showHeader={ this.state.showHeader }
+							showDropdown={ this.state.showDropdown }
+							// api props
+							create={ this.createCaseSync }
+							list={ this.listCases }
+							edit={ this.updateCaseSync }
+							bind={ this.bindCaseSync }
+							delete={ this.hideCaseSync }
+							updateDataCase={ this.updateDataCase }
+							refreshPage={ this.refreshPage }
+							ban={ this.banAccountSync }
+						/>
+					</Card>
+					<Card
+						style={{ margin: "16px" }}
+					>
+						<Account
+							// data props
+							data={ this.state.dataAccount }
+							profilename={ this.state.profilename }
+							// display props
+							tableHeader={ <><strong>Accounts</strong></> }
+							isSmall={ true }
+							showHeader={ this.state.showHeader }
+							showDropdown={ this.state.showDropdown }
+							// api props
+							create={ this.createAccountSync }
+							edit={ this.updateAccountSync }
+							ban={ this.banAccountSync }
+							delete={ this.hideAccountSync }
+						/>
+					</Card>
+				</Spin>
 			</div>
 		);
 	}

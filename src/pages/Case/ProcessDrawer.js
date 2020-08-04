@@ -8,6 +8,7 @@ import {
 	Descriptions, 
 	Drawer, 
 	Space, 
+	Spin, 
 	Tag, 
 } from 'antd';
 import { 
@@ -33,6 +34,7 @@ class ProcessDrawer extends Component {
 			record: {}, // for loading a record into the form in drawer
 			disabled: false, // for disabling the input fields in drawer
 			tableDrawerKey: Date.now(), //for refreshing the drawer
+			spinning: false,
 		};
 	}
 	
@@ -159,15 +161,18 @@ class ProcessDrawer extends Component {
 
 	// handlers for click submit
 	handleSubmit = record => {
-		if (this.state.record.id)  // edit the entry
-			this.props.edit(this.state.record.id, record);
-		else // create an entry
-			this.props.create({case_id: this.props.record.id, ...record});
+		this.setState({ spinning: true }, () => {
+			if (this.state.record.id)  // edit the entry
+				this.props.edit(this.state.record.id, record);
+			else // create an entry
+				this.props.create({case_id: this.props.record.id, ...record});
 
-		this.setState({
-			record: {},
-			visible: false,
-			tableDrawerKey: Date.now(),
+			this.setState({
+				record: {},
+				visible: false,
+				spinning: false,
+				tableDrawerKey: Date.now(),
+			});
 		});
 	}
 
@@ -228,58 +233,60 @@ class ProcessDrawer extends Component {
 	render(){
 		return (
 			<div className='ProcessDrawer'>
-				<Drawer
-					title="Process A Case"
-					width={ 1000 }
-					bodyStyle={{ paddingBottom: 80 }}
-					visible={ this.props.visible } 
-					onClose={ this.props.onClose }
-				>
-					<Card
-						title="Case Info"
-						style={{ marginBottom: "16px", background: "#fafafa" }}
-					>	
-						<Descriptions>
-							<Descriptions.Item label="Case Name">
-								{ this.props.record.casename }
-							</Descriptions.Item>
-							<Descriptions.Item label="Status">
-								{ this.genStatus() } 
-							</Descriptions.Item>
-							<Descriptions.Item label="Category">
-								{ this.props.record.categoryname }
-							</Descriptions.Item>
-							<Descriptions.Item label="Queried Email">
-								{ this.props.record.email }
-							</Descriptions.Item>
-							<Descriptions.Item label="Account Bound">
-								{ this.props.record.accountname }
-							</Descriptions.Item>
-						</Descriptions>
-					</Card>
-					<Card
-						title="Process History"
-						style={{ marginBottom: "16px" }}
-						extra={ this.genExtra() }
-					>	
-						<TableBody 
-							data={ this.props.data } 
-							columns={ this.columns } 
-							isSmall={ true }
-							showHeader={ true }
-						/>
-					</Card>
-					<div>
-						<SecondaryDrawer
-							tableDrawerKey={ this.state.tableDrawerKey }
-							record={ this.state.record }
-							visible={ this.state.visible } 
-							onSubmit={ this.handleSubmit }
-							onClose={ this.handleClose }
-						>
-						</SecondaryDrawer>
-					</div>
-				</Drawer>
+				<Spin spinning={ this.state.spinning }>
+					<Drawer
+						title="Process A Case"
+						width={ 1000 }
+						bodyStyle={{ paddingBottom: 80 }}
+						visible={ this.props.visible } 
+						onClose={ this.props.onClose }
+					>
+						<Card
+							title="Case Info"
+							style={{ marginBottom: "16px", background: "#fafafa" }}
+						>	
+							<Descriptions>
+								<Descriptions.Item label="Case Name">
+									{ this.props.record.casename }
+								</Descriptions.Item>
+								<Descriptions.Item label="Status">
+									{ this.genStatus() } 
+								</Descriptions.Item>
+								<Descriptions.Item label="Category">
+									{ this.props.record.categoryname }
+								</Descriptions.Item>
+								<Descriptions.Item label="Queried Email">
+									{ this.props.record.email }
+								</Descriptions.Item>
+								<Descriptions.Item label="Account Bound">
+									{ this.props.record.accountname }
+								</Descriptions.Item>
+							</Descriptions>
+						</Card>
+						<Card
+							title="Process History"
+							style={{ marginBottom: "16px" }}
+							extra={ this.genExtra() }
+						>	
+							<TableBody 
+								data={ this.props.data } 
+								columns={ this.columns } 
+								isSmall={ true }
+								showHeader={ true }
+							/>
+						</Card>
+						<div>
+							<SecondaryDrawer
+								tableDrawerKey={ this.state.tableDrawerKey }
+								record={ this.state.record }
+								visible={ this.state.visible } 
+								onSubmit={ this.handleSubmit }
+								onClose={ this.handleClose }
+							>
+							</SecondaryDrawer>
+						</div>
+					</Drawer>
+				</Spin>
 			</div>
 		);
 	}

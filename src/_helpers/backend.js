@@ -11,6 +11,7 @@ export const backend = {
 // sync version
 // interface for create sync
 async function createSync(config, record) {
+	this.setState({ spinning: true });
 	const { service, create, retrieve, dataName } = config;
 	// insert the record into the backend table
 	let response = null;
@@ -34,16 +35,9 @@ async function createSync(config, record) {
 	} else {
 		message.error(response.en);
 	}
+	this.setState({ spinning: false });
 	return response; // for process drawer
 }
-// interface for list sync
-//async function listSync(config, params) {
-//	const { service, list, dataName } = config;
-//	await service[list](params)
-//		.then( ({ entry: data }) => 
-//			this.setState({ [dataName]: data }, () => {return;} ) 
-//		);
-//}
 // interface for list sync
 async function listSync(config, params) {
 	const { service, list, dataName } = config;
@@ -58,6 +52,7 @@ async function listSync(config, params) {
 }
 // interface for update sync
 async function updateSync(config, id, record) {
+	this.setState({ spinning: true });
 	const { service, update, retrieve, dataName, editSuccessMsg } = config;
 	// update the record in the backend table
 	let response = null;
@@ -83,13 +78,16 @@ async function updateSync(config, id, record) {
 			message.success(editSuccessMsg);
 		else
 			message.success('The record has been edited');
+		this.setState({ spinning: false });
 		return response.entry; // for merge
 	} else {
 		message.error(response.en);
+	this.setState({ spinning: false });
 	}
 }
 // interface for hide sync
 async function hideSync(config, ids) {
+	this.setState({ spinning: true });
 	const { service, hide, dataName } = config;
 	// convert to array if ids is a string
 	ids = Array.isArray(ids) ? ids : [ ids ];
@@ -108,4 +106,5 @@ async function hideSync(config, ids) {
 	} else {
 			message.error(response.en);
 		}
+	this.setState({ spinning: false });
 }

@@ -31,7 +31,7 @@ import {
 // import shared components
 
 // import services
-import { caseService } from '_services';
+import { accountService } from '_services';
 
 // import helpers
 import { backend } from '_helpers';
@@ -82,6 +82,8 @@ class TableDrawer extends Component {
 				candidate_id: response.entry.candidate_id,
 				status: response.entry.status,
 				account_type: response.entry.account_type,
+				region: response.entry.region,
+				physical_region: response.entry.physical_region,
 			});
 			message.success("Candidate ID found");
 		} else {
@@ -91,7 +93,7 @@ class TableDrawer extends Component {
 
 	// bind versions of CRUD
 	config = {
-		service: caseService,
+		service: accountService,
 		list: "retrieveCandidateId",
 		dataName: "candidates",
 	};
@@ -206,6 +208,44 @@ class TableDrawer extends Component {
 									<Option value="a">Apple</Option>
 									<Option value="g">Google</Option>
 								</Select>
+							</Form.Item>
+							<Form.Item
+								key={ "region" }
+								label={ "Region" }
+								name={ "region" }
+								rules={[  
+									{
+										required: true,
+										message: 'region cannot be empty',
+									}
+								]}
+								initialValue={ this.props.record.region }
+							>
+								<Input
+									maxLength={255}
+									allowClear
+									disabled
+									placeholder={ "Use the search above to autofill this field" }
+								/>
+							</Form.Item>
+							<Form.Item
+								key={ "physical_region" }
+								label={ "Physical Region" }
+								name={ "physical_region" }
+								rules={[  
+									{
+										required: true,
+										message: 'physical_region cannot be empty',
+									}
+								]}
+								initialValue={ this.props.record.physical_region }
+							>
+								<Input
+									maxLength={255}
+									allowClear
+									disabled
+									placeholder={ "Use the search above to autofill this field" }
+								/>
 							</Form.Item>
 							{ this.props.formItems.map( item => 
 								item.editable || this.props.disabled ? (

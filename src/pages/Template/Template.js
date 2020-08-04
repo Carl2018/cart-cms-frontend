@@ -6,6 +6,7 @@ import { CopyOutlined } from '@ant-design/icons';
 import { 
 	Input,
 	Select,
+	Spin,
 	Tag,
 } from 'antd';
 
@@ -41,12 +42,16 @@ class Template extends Component {
 			data: [],
 			// for category selections
 			categories: [],
+			spinning: false,
 		};
 	}
 	
 	componentDidMount() {
-		this.listSync();
-		this.listCategories();
+		this.setState({ spinning: true }, async () => {
+			await this.listSync();
+			await this.listCategories();
+			this.setState({ spinning: false });
+		});
 	}
 
 	// define columns for TableBody
@@ -234,31 +239,36 @@ class Template extends Component {
 
 	// refresh table
 	refreshTable = () => {
-		this.listSync();
-		this.listCategories();
-		this.setState({ tableWrapperKey: Date.now() })
+		this.setState({ spinning: true }, async () => {
+			await this.listSync();
+			await this.listCategories();
+			this.setState({ spinning: false });
+			this.setState({ tableWrapperKey: Date.now() })
+		});
 	};
 
 	render(){
 		return (
 			<div className='Template'>
-				<TableWrapper
-					key={ this.state.tableWrapperKey }
-					// data props
-					data={ this.state.data }
-					// display props
-					columns={ this.columns }
-					formItems={ this.formItems }
-					tableHeader={ this.tableHeader }
-					drawerTitle='A Template'
-					drawerWidth={ 900 }
-					// api props
-					create={ this.createSync }
-					edit={ this.updateSync }
-					delete={ this.hideSync }
-					refreshTable={ this.refreshTable }
-				>
-				</TableWrapper>
+				<Spin spinning={ this.state.spinning }>
+					<TableWrapper
+						key={ this.state.tableWrapperKey }
+						// data props
+						data={ this.state.data }
+						// display props
+						columns={ this.columns }
+						formItems={ this.formItems }
+						tableHeader={ this.tableHeader }
+						drawerTitle='A Template'
+						drawerWidth={ 900 }
+						// api props
+						create={ this.createSync }
+						edit={ this.updateSync }
+						delete={ this.hideSync }
+						refreshTable={ this.refreshTable }
+					>
+					</TableWrapper>
+				</Spin>
 			</div>
 		);
 	}

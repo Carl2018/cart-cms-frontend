@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { 
 	Input,
 	Select, 
+	Spin,
 	Tag, 
 } from 'antd';
 import { ContactsOutlined } from '@ant-design/icons';
@@ -37,12 +38,16 @@ class Profile extends Component {
 			// populate the table body with data
 			data: [],
 			labels: [],
+			spinning: false,
 		};
 	}
 	
 	componentDidMount() {
-		this.listSync();
-		this.listLabels();
+		this.setState({ spinning: true }, async () => {
+			await this.listSync();
+			await this.listLabels();
+			this.setState({ spinning: false });
+		});
 	}
 
 	// define columns for TableBody
@@ -222,30 +227,35 @@ class Profile extends Component {
 
 	// refresh table
 	refreshTable = () => {
-		this.listSync();
-		this.listLabels();
-		this.setState({ tableWrapperKey: Date.now() })
+		this.setState({ spinning: true }, async () => {
+			await this.listSync();
+			await this.listLabels();
+			this.setState({ spinning: false });
+			this.setState({ tableWrapperKey: Date.now() })
+		});
 	};
 
 	render(){
 		return (
 			<div className='Profile'>
-				<TableWrapper
-					key={ this.state.tableWrapperKey }
-					// data props
-					data={ this.state.data }
-					// display props
-					columns={ this.columns }
-					formItems={ this.formItems }
-					tableHeader={ this.tableHeader }
-					drawerTitle='A Profile'
-					// api props
-					create={ this.createSync }
-					edit={ this.updateSync }
-					delete={ this.hideSync }
-					refreshTable={ this.refreshTable }
-				>
-				</TableWrapper>
+				<Spin spinning={ this.state.spinning }>
+					<TableWrapper
+						key={ this.state.tableWrapperKey }
+						// data props
+						data={ this.state.data }
+						// display props
+						columns={ this.columns }
+						formItems={ this.formItems }
+						tableHeader={ this.tableHeader }
+						drawerTitle='A Profile'
+						// api props
+						create={ this.createSync }
+						edit={ this.updateSync }
+						delete={ this.hideSync }
+						refreshTable={ this.refreshTable }
+					>
+					</TableWrapper>
+				</Spin>
 			</div>
 		);
 	}

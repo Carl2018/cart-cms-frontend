@@ -6,6 +6,7 @@ import { MailOutlined } from '@ant-design/icons';
 import { 
 	AutoComplete, 
 	Input, 
+	Spin,
 	Tag, 
 } from 'antd';
 
@@ -40,13 +41,17 @@ class Email extends Component {
 			// options for profile search
 			profiles: [],
 			options: [],
+			spinning: false,
 		};
 	}
 
 	componentDidMount() {
-		this.listSync();
-		this.listLabels();
-		this.listProfiles();
+		this.setState({ spinning: true }, async () => {
+			await this.listSync();
+			await this.listLabels();
+			await this.listProfiles();
+			this.setState({ spinning: false });
+		});
 	}
 
 	// define columns for TableBody
@@ -232,34 +237,39 @@ class Email extends Component {
 
 	// refresh table
 	refreshTable = () => {
-		this.listSync();
-		this.listLabels();
-		this.listProfiles();
-		this.setState({ tableWrapperKey: Date.now() })
+		this.setState({ spinning: true }, async () => {
+			await this.listSync();
+			await this.listLabels();
+			await this.listProfiles();
+			this.setState({ spinning: false });
+			this.setState({ tableWrapperKey: Date.now() })
+		});
 	};
 
 	render(){
 		return (
 			<div className='Email'>
-				<TableWrapper
-					key={ this.state.tableWrapperKey }
-					// data props
-					data={ this.state.data }
-					labels={ this.state.labels }
-					// display props
-					columns={ this.columns }
-					formItems={ this.formItems }
-					tableHeader={ this.tableHeader }
-					dropdownName='Create Profile'
-					drawerTitle='An Email'
-					isSmall={ this.props.isSmall }
-					// api props
-					create={ this.createSync }
-					edit={ this.updateSync }
-					delete={ this.hideSync }
-					refreshTable={ this.refreshTable }
-				>
-				</TableWrapper>
+				<Spin spinning={ this.state.spinning }>
+					<TableWrapper
+						key={ this.state.tableWrapperKey }
+						// data props
+						data={ this.state.data }
+						labels={ this.state.labels }
+						// display props
+						columns={ this.columns }
+						formItems={ this.formItems }
+						tableHeader={ this.tableHeader }
+						dropdownName='Create Profile'
+						drawerTitle='An Email'
+						isSmall={ this.props.isSmall }
+						// api props
+						create={ this.createSync }
+						edit={ this.updateSync }
+						delete={ this.hideSync }
+						refreshTable={ this.refreshTable }
+					>
+					</TableWrapper>
+				</Spin>
 			</div>
 		);
 	}

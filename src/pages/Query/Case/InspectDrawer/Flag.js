@@ -15,7 +15,7 @@ import {
 import { TableBody } from '_components'
 
 // import services
-import { caseService } from '_services';
+import { accountService } from '_services';
 
 // import helpers
 import { backend } from "_helpers";
@@ -125,7 +125,7 @@ class Flag extends Component {
 
 	// bind versions of CRUD
 	configFlag = {
-		service: caseService,
+		service: accountService,
 		list: "retrieveFlag",
 		dataName: "flags",
 	};

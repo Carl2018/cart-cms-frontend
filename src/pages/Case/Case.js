@@ -7,6 +7,7 @@ import {
 	AutoComplete, 
 	Input, 
 	Select, 
+	Spin,
 	Tag, 
 } from 'antd';
 
@@ -43,13 +44,17 @@ class Case extends Component {
 			// options for profile search
 			emails: [],
 			options: [],
+			spinning: false,
 		};
 	}
 	
 	componentDidMount() {
-		this.listSync();
-		this.listCategories();
-		this.listEmails();
+		this.setState({ spinning: true }, async () => {
+			await this.listSync();
+			await this.listCategories();
+			await this.listEmails();
+			this.setState({ spinning: false });
+		});
 	}
 
 	// define columns for TableBody
@@ -323,33 +328,38 @@ class Case extends Component {
 
 	// refresh table
 	refreshTable = () => {
-		this.listSync();
-		this.listCategories();
-		this.listEmails();
-		this.setState({ tableWrapperKey: Date.now() })
+		this.setState({ spinning: true }, async () => {
+			await this.listSync();
+			await this.listCategories();
+			await this.listEmails();
+			this.setState({ spinning: false });
+			this.setState({ tableWrapperKey: Date.now() })
+		});
 	};
 
 	render(){
 		return (
 			<div className='Case'>
-				<TableWrapper
-					key={ this.state.tableWrapperKey }
-					// data props
-					data={ this.state.data }
-					// display props
-					columns={ this.columns }
-					formItems={ this.formItems }
-					tableHeader={ this.tableHeader }
-					drawerTitle='A Case'
-					// api props
-					create={ this.createSync }
-					list={ this.listSync }
-					edit={ this.updateSync }
-					bind={ this.bindSync }
-					delete={ this.hideSync }
-					refreshTable={ this.refreshTable }
-				>
-				</TableWrapper>
+				<Spin spinning={ this.state.spinning }>
+					<TableWrapper
+						key={ this.state.tableWrapperKey }
+						// data props
+						data={ this.state.data }
+						// display props
+						columns={ this.columns }
+						formItems={ this.formItems }
+						tableHeader={ this.tableHeader }
+						drawerTitle='A Case'
+						// api props
+						create={ this.createSync }
+						list={ this.listSync }
+						edit={ this.updateSync }
+						bind={ this.bindSync }
+						delete={ this.hideSync }
+						refreshTable={ this.refreshTable }
+					>
+					</TableWrapper>
+				</Spin>
 			</div>
 		);
 	}

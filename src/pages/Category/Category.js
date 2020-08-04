@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 
 // import components from ant design
-import { Input } from 'antd';
+import { 
+	Input,
+	Spin,
+} from 'antd';
 import { HddOutlined } from '@ant-design/icons';
 
 // import shared and child components
@@ -27,11 +30,15 @@ class Category extends Component {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
 			data: [],
+			spinning: false,
 		};
 	}
 	
 	componentDidMount() {
-		this.listSync();
+		this.setState({ spinning: true }, async () => {
+			await this.listSync();
+			this.setState({ spinning: false });
+		});
 	}
 
 	// define columns for TableBody
@@ -124,29 +131,34 @@ class Category extends Component {
 
 	// refresh table
 	refreshTable = () => {
-		this.listSync();
-		this.setState({ tableWrapperKey: Date.now() })
+		this.setState({ spinning: true }, async () => {
+			await this.listSync();
+			this.setState({ spinning: false });
+			this.setState({ tableWrapperKey: Date.now() })
+		});
 	};
 
 	render(){
 		return (
 			<div className='Category'>
-				<TableWrapper
-					key={ this.state.tableWrapperKey }
-					// data props
-					data={ this.state.data }
-					// display props
-					columns={ this.columns }
-					formItems={ this.formItems }
-					tableHeader={ this.tableHeader }
-					drawerTitle='A Category'
-					// api props
-					create={ this.createSync }
-					edit={ this.updateSync }
-					delete={ this.hideSync }
-					refreshTable={ this.refreshTable }
-				>
-				</TableWrapper>
+				<Spin spinning={ this.state.spinning }>
+					<TableWrapper
+						key={ this.state.tableWrapperKey }
+						// data props
+						data={ this.state.data }
+						// display props
+						columns={ this.columns }
+						formItems={ this.formItems }
+						tableHeader={ this.tableHeader }
+						drawerTitle='A Category'
+						// api props
+						create={ this.createSync }
+						edit={ this.updateSync }
+						delete={ this.hideSync }
+						refreshTable={ this.refreshTable }
+					>
+					</TableWrapper>
+				</Spin>
 			</div>
 		);
 	}

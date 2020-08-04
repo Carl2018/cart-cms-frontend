@@ -7,6 +7,7 @@ import {
 	Select, 
 	Spin, 
 	Tag, 
+	message, 
 } from 'antd';
 
 // import shared and child components
@@ -99,20 +100,24 @@ class Account extends Component {
 			sorter: (a, b) => compare(a.status, b.status),
 			sortDirection: ['ascend', 'descend'],
 			render: status => {
-				let color = 'green';
-				let text = 'Unbanned';
+				let color = 'default';
+				let text = 'Unknown';
 				switch (status) {
-					case 'b' :
+					case 'h' :
 						color = 'red';
-						text = 'Banned';
+						text = 'Hard Banned';
+						break;
+					case 's' :
+						color = 'orange';
+						text = 'Soft Banned';
 						break;
 					case 'u' :
 						color = 'green';
 						text = 'Unbanned';
 						break;
 					default:
-						color = 'green';
-						text = 'Unbanned';
+						color = 'default';
+						text = 'Unknown';
 						break;
 				};	
 				return (
@@ -123,95 +128,19 @@ class Account extends Component {
 			},
 			width: '10%',
 		},
+		{
+			title: 'Region',
+			dataIndex: 'region',
+			key: 'region',
+			sorter: (a, b) => compare(a.region, b.region),
+			sortDirection: ['ascend', 'descend'],
+			width: '10%',
+			setFilter: true
+		},
 	];
 
 	// define form items for TableDrawer
 	formItems = [
-//		{
-//			label: 'Candidate ID',
-//			name: 'candidate_id',
-//			rules: [
-//				{
-//					required: true,
-//					message: 'candidate_id cannot be empty',
-//				}
-//			],
-//			editable: true,
-//			input: disabled => (
-//				<Input
-//					maxLength={255}
-//					allowClear
-//					disabled={ disabled }
-//					placeholder={ "Candidate ID must be unique" }
-//				/>
-//			)
-//		},
-//		{
-//			label: 'Account Type',
-//			name: 'account_type',
-//			rules: [
-//				{
-//					required: true,
-//					message: 'account_type cannot be empty',
-//				}
-//			],
-//			editable: true,
-//			input: disabled => (
-//				<Select
-//					disabled={ disabled }
-//					placeholder={ "Account type" }
-//					showSearch
-//					optionFilterProp="children"
-//					filterOption={(input, option) =>
-//						option.children.trim().toLowerCase()
-//							.indexOf(input.trim().toLowerCase()) >= 0
-//					}
-//				>
-//					<Option value="f">Facebook</Option>
-//					<Option value="p">Phone</Option>
-//					<Option value="a">Apple</Option>
-//					<Option value="g">Google</Option>
-//				</Select>
-//			)
-//		},
-//		{
-//			label: 'Account Name',
-//			name: 'accountname',
-//			rules: [
-//				{
-//					required: true,
-//					message: 'accountname cannot be empty',
-//				},
-//			],
-//			editable: true,
-//			input: disabled => (
-//				<Input
-//					maxLength={255}
-//					allowClear
-//					disabled={ disabled }
-//					placeholder={ "Account name" }
-//				/>
-//			)
-//		},			
-//		{
-//			label: 'Status',
-//			name: 'status',
-//			rules: [
-//				{
-//					required: true,
-//					message: 'Status cannot be empty',
-//				},
-//			],
-//			editable: false,
-//			input: disabled => (
-//				<Select
-//					disabled={ disabled }
-//				>
-//					<Option value="u">Unbanned</Option>
-//					<Option value="b">Banned</Option>
-//				</Select>
-//			)
-//		},			
 		{
 			label: 'Profile',
 			name: 'profilename',
@@ -255,7 +184,11 @@ class Account extends Component {
 	// bind versions of CRUD
 	banSync = async (id, record) => {
 		this.setState({ spinning: true });
-		await this.props.ban(id, record);
+		if (record.status !== "u")
+			await this.props.ban(id, record);
+		else
+			message.info("The ban button has been temporarily disabled");
+
 		this.setState({ spinning: false });
 	}
 

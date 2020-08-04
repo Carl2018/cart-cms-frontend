@@ -208,20 +208,24 @@ class InspectDrawer extends Component {
 			key: 'status',
 			width: '20%',
 			render: status => {
-				let color = 'green';
-				let text = 'Unbanned';
+				let color = 'default';
+				let text = 'Unknown';
 				switch (status) {
-					case 'b' :
+					case 'h' :
 						color = 'red';
-						text = 'Banned';
+						text = 'Hard Banned';
+						break;
+					case 's' :
+						color = 'orange';
+						text = 'Soft Banned';
 						break;
 					case 'u' :
 						color = 'green';
 						text = 'Unbanned';
 						break;
 					default:
-						color = 'green';
-						text = 'Unbanned';
+						color = 'default';
+						text = 'Unknown';
 						break;
 				};	
 				return (
@@ -245,7 +249,7 @@ class InspectDrawer extends Component {
 				Confirm
 			</Button>
 		);
-		if (this.props.dataAccount.status === 'b') {
+		if (this.props.dataAccount.status !== 'u') {
 			notification.open({
 				message: 'About to UNban This Account',
 				description:
@@ -304,7 +308,8 @@ class InspectDrawer extends Component {
 
 	handleClickConfirmBan = async (closeNotification, notificationKey) => {
 		this.setState({ spinning: true });
-		await this.props.onClickBan(this.props.dataAccount);
+		message.info("The ban button has been temporarily disabled");
+		//await this.props.onClickBan(this.props.dataAccount);
 		this.setState({ spinning: false });
 		closeNotification(notificationKey);
 	};

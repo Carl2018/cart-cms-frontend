@@ -8,6 +8,7 @@ import {
 	Input, 
 	Spin, 
 	Tag, 
+	message,
 } from 'antd';
 
 // import shared and child components
@@ -44,8 +45,11 @@ class Account extends Component {
 	}
 	
 	componentDidMount() {
-		this.listSync();
-		this.listProfiles();
+		this.setState({ spinning: true }, async () => {
+			await this.listSync();
+			await this.listProfiles();
+			this.setState({ spinning: false });
+		});
 	}
 
 	// define columns for TableBody
@@ -114,20 +118,24 @@ class Account extends Component {
 			sorter: (a, b) => compare(a.status, b.status),
 			sortDirection: ['ascend', 'descend'],
 			render: status => {
-				let color = 'green';
-				let text = 'Unbanned';
+				let color = 'default';
+				let text = 'Unknown';
 				switch (status) {
-					case 'b' :
+					case 'h' :
 						color = 'red';
-						text = 'Banned';
+						text = 'Hard Banned';
+						break;
+					case 's' :
+						color = 'orange';
+						text = 'Soft Banned';
 						break;
 					case 'u' :
 						color = 'green';
 						text = 'Unbanned';
 						break;
 					default:
-						color = 'green';
-						text = 'Unbanned';
+						color = 'default';
+						text = 'Unknown';
 						break;
 				};	
 				return (
@@ -139,103 +147,27 @@ class Account extends Component {
 			width: '10%',
 		},
 		{
+			title: 'Region',
+			dataIndex: 'region',
+			key: 'region',
+			sorter: (a, b) => compare(a.region, b.region),
+			sortDirection: ['ascend', 'descend'],
+			width: '10%',
+			setFilter: true
+		},
+		{
 			title: 'Profile',
 			dataIndex: 'profilename',
 			key: 'profilename',
 			sorter: (a, b) => compare(a.profilename, b.profilename),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '10%',
 			setFilter: true
 		},
 	];
 
 	// define form items for TableDrawer
 	formItems = [
-//		{
-//			label: 'Account Name',
-//			name: 'accountname',
-//			rules: [
-//				{
-//					required: true,
-//					message: 'accountname cannot be empty',
-//				},
-//			],
-//			editable: true,
-//			input: disabled => (
-//				<Input
-//					maxLength={255}
-//					allowClear
-//					disabled={ disabled }
-//					placeholder={ "Account name must be unique" }
-//				/>
-//			)
-//		},			
-//		{
-//			label: 'Account Type',
-//			name: 'account_type',
-//			rules: [
-//				{
-//					required: true,
-//					message: 'account_type cannot be empty',
-//				}
-//			],
-//			editable: true,
-//			input: disabled => (
-//				<Select
-//					disabled={ disabled }
-//					placeholder={ "Account type" }
-//					showSearch
-//					optionFilterProp="children"
-//					filterOption={(input, option) =>
-//						option.children.trim().toLowerCase()
-//							.indexOf(input.trim().toLowerCase()) >= 0
-//					}
-//				>
-//					<Option value="f">Facebook</Option>
-//					<Option value="p">Phone</Option>
-//					<Option value="a">Apple</Option>
-//					<Option value="g">Google</Option>
-//				</Select>
-//			)
-//		},
-//		{
-//			label: 'Candidate ID',
-//			name: 'candidate_id',
-//			rules: [
-//				{
-//					required: true,
-//					message: 'candidate_id cannot be empty',
-//				}
-//			],
-//			editable: true,
-//			input: disabled => (
-//				<Input
-//					maxLength={255}
-//					allowClear
-//					disabled={ disabled }
-//					placeholder={ "Candidate ID must be unique" }
-//				/>
-//			)
-//		},
-//		{
-//			label: 'Status',
-//			name: 'status',
-//			rules: [
-//				{
-//					required: true,
-//					message: 'Status cannot be empty',
-//				},
-//			],
-//			editable: false,
-//			input: disabled => (
-//				<Select
-//					disabled={ disabled }
-//				>
-//					<Option value="u">Unbanned</Option>
-//					<Option value="b">Banned</Option>
-//				</Select>
-//			)
-//		},			
 		{
 			label: 'Profile',
 			name: 'profilename',
@@ -306,7 +238,11 @@ class Account extends Component {
 	ban = updateSync.bind(this, {...this.config, update: "ban"});
 	banSync = async (id, record) => {
 		this.setState({ spinning: true });
-		await this.ban(id, record);
+		if (record.status !== "u")
+			await this.ban(id, record);
+		else
+			message.info("The ban button has been temporarily disabled");
+
 		this.setState({ spinning: false });
 	}
 
@@ -319,9 +255,12 @@ class Account extends Component {
 
 	// refresh table
 	refreshTable = () => {
-		this.listSync();
-		this.listProfiles();
-		this.setState({ tableWrapperKey: Date.now() })
+		this.setState({ spinning: true }, async () => {
+			await this.listSync();
+			await this.listProfiles();
+			this.setState({ spinning: false });
+			this.setState({ tableWrapperKey: Date.now() })
+		});
 	};
 
 	render(){
