@@ -18,7 +18,7 @@ class RichTextOutput extends Component {
 
 		const styleChn = {
 			...styleCommon,
-			fontFamily: "arial-unicode-ms",
+			fontFamily: "Microsoft Jhenghei, PingFang TC",
 		};
 
     return (

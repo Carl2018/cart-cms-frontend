@@ -73,6 +73,24 @@ class Template extends Component {
 		this.listCategories();
 	}
 
+	// attach styles to clipboard to override default
+	styleEng = `<div style="
+		background-color: transparent;
+		color: #000;
+		font-size: 12px;
+		font-family: Helvetica, sans-serif;
+		line-height: 1.6em;
+	">`;
+
+	styleChn = `<div style="
+		background-color: transparent;
+		color: #000;
+		font-size: 12px;
+		font-family: Microsoft Jhenghei, Pingfang TC;
+		line-height: 1.6em;
+	">`;
+
+	// generate title for modal
 	titleModal = () => (
 		<Row>
 			<Col span={ 8 }>
@@ -242,9 +260,14 @@ class Template extends Component {
 	}
 
 	copyToClip(str) {
+		let copyString = null;
+		if (this.state.templateLang === 'eng')
+			copyString = this.styleEng + str + '</div>';
+		else
+			copyString = this.styleChn + str + '</div>';
 		function listener(e) {
-			e.clipboardData.setData("text/html", str);
-			e.clipboardData.setData("text/plain", str);
+			e.clipboardData.setData("text/html", copyString);
+			e.clipboardData.setData("text/plain", copyString);
 			e.preventDefault();
 		}
 		document.addEventListener("copy", listener);
