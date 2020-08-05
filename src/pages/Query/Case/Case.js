@@ -37,12 +37,12 @@ class Case extends Component {
 	// define columns for TableBody
 	columns = [
 		{
-			title: 'Case Name',
-			dataIndex: 'casename',
-			key: 'casename',
-			sorter: (a, b) => compare(a.casename, b.casename),
+			title: 'Case ID',
+			dataIndex: 'id',
+			key: 'id',
+			sorter: (a, b) => compare(a.id, b.id),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '15%',
 			setFilter: true
 		},
 		{
@@ -98,7 +98,7 @@ class Case extends Component {
 			key: 'categoryname',
 			sorter: (a, b) => compare(a.categoryname, b.categoryname),
 			sortDirection: ['ascend', 'descend'],
-			width: '10%',
+			width: '15%',
 			setFilter: true
 		},
 		{
@@ -158,12 +158,12 @@ class Case extends Component {
 			)
 		},
 		{
-			label: 'Case Name',
-			name: 'casename',
+			label: 'Case ID',
+			name: 'case_id',
 			rules: [
 				{
 					required: true,
-					message: 'casename cannot be empty',
+					message: 'case_id cannot be empty',
 				}
 			],
 			editable: true,
@@ -171,8 +171,8 @@ class Case extends Component {
 				<Input
 					maxLength={255}
 					allowClear
-					disabled={ disabled }
-					placeholder={ "Case name" }
+					disabled
+					placeholder={ "Case ID" }
 				/>
 			)
 		},
@@ -181,8 +181,8 @@ class Case extends Component {
 			name: 'remarks',
 			rules: [
 				{
-					required: true,
-					message: 'remarks cannot be empty',
+					required: false,
+					message: 'remarks can be empty',
 				},
 			],
 			editable: true,
@@ -192,7 +192,7 @@ class Case extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
-					placeholder={ "Remarks" }
+					placeholder={ disabled ? "" : "Remarks" }
 				/>
 			)
 		},			
@@ -230,7 +230,7 @@ class Case extends Component {
 			],
 			editable: true,
 			input: (disabled, record) => 
-			record.email ?
+			record.id ?
 			(
 				<span style={{ marginLeft: "15px" }}>
 					{ record.email }
@@ -287,6 +287,7 @@ class Case extends Component {
 					data={ this.props.data }
 					dataEmail={ this.props.dataEmail }
 					dataAccount={ this.props.dataAccount }
+					emailId={ this.props.emailId }
 					emails={ this.props.emails }
 					cases={ this.props.cases }
 					accounts={ this.props.accounts }
@@ -301,6 +302,7 @@ class Case extends Component {
 					showDropdown={ this.props.showDropdown }
 					// api props
 					create={ this.props.create }
+					retrieveNextId={ this.props.retrieveNextId }
 					edit={ this.props.edit }
 					bind={ this.props.bind }
 					delete={ this.props.delete }

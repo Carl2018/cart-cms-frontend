@@ -34,7 +34,13 @@ import {
 import { backend } from '_helpers';
 
 // destructure imported components and objects
-const { createSync, listSync, updateSync, hideSync } = backend;
+const { 
+	createSync, 
+	retrieveSync, 
+	listSync, 
+	updateSync, 
+	hideSync, 
+} = backend;
 const { Search } = Input;
 
 class Query extends Component {
@@ -45,7 +51,8 @@ class Query extends Component {
 			showHeader: false, // for header in each table
 			showDropdown: false, // for dropdown in each table
 			options: [], // options for email search
-			email : "", // current search
+			email : "", // current email search
+			emailId : "", // current email id search
 			profilename : "", // current profile
 			emails: [], // all emails
 			cases: [], // all cases
@@ -98,11 +105,14 @@ class Query extends Component {
 	// update all 3 tables upon a search
 	updateTables = data => {
 		const email = data;
-		const profilename = this.state.emails
-			.find( item => item.email === email )?.profilename;
+		const found = this.state.emails
+			.find( item => item.email === email );
+		const profilename = found?.profilename;
+		const emailId = found?.id;
 		this.updateData(profilename);
 		this.setState({ 
 			email,
+			emailId,
 			profilename,
 			spinning: false,
 		});
@@ -255,10 +265,15 @@ class Query extends Component {
 	};
 	createCase = createSync.bind(this, this.configCase);
 	createCaseSync = async record => {
-		await this.createCase(record);
+		const response = await this.createCase(record);
 		this.updateDataCase();
+		return response; // for add button in case table
 	}
 	listCases = listSync.bind(this, this.configCase);
+	retrieveNextId = retrieveSync.bind(this, {
+		...this.configCase,
+		retrieve: "retrieveNextId",
+	});
 	updateCase = updateSync.bind(this, this.configCase);
 	updateCaseSync = async (id, record) => {
 		await this.updateCase(id, record);
@@ -413,6 +428,7 @@ class Query extends Component {
 							dataEmail={ this.state.dataEmail }
 							dataAccount={ this.state.dataAccount }
 							email={ this.state.email }
+							emailId={ this.state.emailId }
 							emails={ this.state.emails }
 							cases={ this.state.cases }
 							accounts={ this.state.accounts }
@@ -426,6 +442,7 @@ class Query extends Component {
 							// api props
 							create={ this.createCaseSync }
 							list={ this.listCases }
+							retrieveNextId={ this.retrieveNextId }
 							edit={ this.updateCaseSync }
 							bind={ this.bindCaseSync }
 							delete={ this.hideCaseSync }

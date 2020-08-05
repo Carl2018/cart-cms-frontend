@@ -247,8 +247,8 @@ class ProcessDrawer extends Component {
 							style={{ marginBottom: "16px", background: "#fafafa" }}
 						>	
 							<Descriptions>
-								<Descriptions.Item label="Case Name">
-									{ this.props.record.casename }
+								<Descriptions.Item label="Case ID">
+									{ this.props.record.id }
 								</Descriptions.Item>
 								<Descriptions.Item label="Status">
 									{ this.genStatus() } 
@@ -259,8 +259,17 @@ class ProcessDrawer extends Component {
 								<Descriptions.Item label="Inquirer Email">
 									{ this.props.record.email }
 								</Descriptions.Item>
-								<Descriptions.Item label="Account Bound">
+								<Descriptions.Item 
+									label="Account Bound"
+									span={ 2 }
+								>
 									{ this.props.record.accountname }
+								</Descriptions.Item>
+								<Descriptions.Item 
+									label="Remarks"
+									span={ 3 }
+								>
+									{ this.props.record.remarks }
 								</Descriptions.Item>
 							</Descriptions>
 						</Card>

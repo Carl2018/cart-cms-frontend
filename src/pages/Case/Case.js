@@ -28,7 +28,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { createSync, listSync, updateSync, hideSync } = backend;
+const { createSync, retrieveSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
 const { Option } = Select
 
@@ -60,12 +60,12 @@ class Case extends Component {
 	// define columns for TableBody
 	columns = [
 		{
-			title: 'Case Name',
-			dataIndex: 'casename',
-			key: 'casename',
-			sorter: (a, b) => compare(a.casename, b.casename),
+			title: 'Case ID',
+			dataIndex: 'id',
+			key: 'id',
+			sorter: (a, b) => compare(a.id, b.id),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '15%',
 			setFilter: true
 		},
 		{
@@ -122,7 +122,7 @@ class Case extends Component {
 			key: 'categoryname',
 			sorter: (a, b) => compare(a.categoryname, b.categoryname),
 			sortDirection: ['ascend', 'descend'],
-			width: '10%',
+			width: '15%',
 			setFilter: true
 		},
 		{
@@ -182,12 +182,12 @@ class Case extends Component {
 			)
 		},
 		{
-			label: 'Case Name',
-			name: 'casename',
+			label: 'Case ID',
+			name: 'case_id',
 			rules: [
 				{
 					required: true,
-					message: 'casename cannot be empty',
+					message: 'case_id cannot be empty',
 				}
 			],
 			editable: true,
@@ -195,8 +195,8 @@ class Case extends Component {
 				<Input
 					maxLength={255}
 					allowClear
-					disabled={ disabled }
-					placeholder={ "Case name" }
+					disabled
+					placeholder={ "Case ID" }
 				/>
 			)
 		},
@@ -205,8 +205,8 @@ class Case extends Component {
 			name: 'remarks',
 			rules: [
 				{
-					required: true,
-					message: 'remarks cannot be empty',
+					required: false,
+					message: 'remarks can be empty',
 				},
 			],
 			editable: true,
@@ -216,7 +216,7 @@ class Case extends Component {
 					maxLength={255}
 					allowClear
 					disabled={ disabled }
-					placeholder={ "Remarks" }
+					placeholder={ disabled ? "" : "Remarks" }
 				/>
 			)
 		},			
@@ -307,6 +307,10 @@ class Case extends Component {
 		dataName: "data",
 	};
 	createSync = createSync.bind(this, this.config);
+	retrieveNextId = retrieveSync.bind(this, {
+		...this.config,
+		retrieve: "retrieveNextId",
+	});
 	listSync = listSync.bind(this, this.config);
 	updateSync = updateSync.bind(this, this.config);
 	hideSync = hideSync.bind(this, this.config);
@@ -352,6 +356,7 @@ class Case extends Component {
 						drawerTitle='A Case'
 						// api props
 						create={ this.createSync }
+						retrieveNextId={ this.retrieveNextId }
 						list={ this.listSync }
 						edit={ this.updateSync }
 						bind={ this.bindSync }

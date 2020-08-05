@@ -50,6 +50,7 @@ class TableWrapper extends Component {
 			visible: false, // for opening or closing the TableDrawer
 			record: {}, // for loading a record into the form in TableDrawer
 			disabled: false, // for disabling the input fields in TableDrawer
+			isCreate: false, 
 			// for the process drawer
 			visibleProcess: false,
 			dataProcess: [],
@@ -146,7 +147,7 @@ class TableWrapper extends Component {
 		this.setState({
 			visible: true, 
 			disabled: true,
-			record,
+			record: {...record, case_id: record.id},
 		});
 	}
 
@@ -154,7 +155,7 @@ class TableWrapper extends Component {
 		this.setState({
 			visible: true, 
 			disabled: false,
-			record,
+			record: {...record, case_id: record.id},
 		});
 	}
 
@@ -163,11 +164,14 @@ class TableWrapper extends Component {
 	handleSelectChange = selectedRowKeys => this.setState({ selectedRowKeys });
 
 	// handlers for actions in TableDropdown
-  handleClickAdd = event => {
+  handleClickAdd = async event => {
+		const response = await this.props.retrieveNextId()
+		const case_id = response?.entry?.AUTO_INCREMENT;
     this.setState({
       visible: true,
 			disabled: false,
-			record: {},
+			isCreate: true,
+			record: {case_id},
     });
   };
 
@@ -207,6 +211,7 @@ class TableWrapper extends Component {
   handleClose = () => {
     this.setState({
       visible: false,
+			isCreate: false,
 			record: {},
 			tableDrawerKey: Date.now(),
     });
@@ -481,6 +486,7 @@ class TableWrapper extends Component {
 						record={ this.state.record }
 						formItems={ this.props.formItems }
 						disabled={ this.state.disabled } 
+						isCreate={ this.state.isCreate } 
 						onSubmit={ this.handleSubmit }
 						drawerWidth={ this.props.drawerWidth }
 						formLayout={ this.props.formLayout }

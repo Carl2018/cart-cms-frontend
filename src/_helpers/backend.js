@@ -3,6 +3,7 @@ import { message } from 'antd';
 
 export const backend = {
     createSync,
+    retrieveSync,
     listSync,
     updateSync,
     hideSync,
@@ -37,6 +38,15 @@ async function createSync(config, record) {
 	}
 	this.setState({ spinning: false });
 	return response; // for process drawer
+}
+// interface for retrieve sync
+async function retrieveSync(config, params) {
+	const { service, retrieve } = config;
+	let response = null;
+	await service[retrieve](params)
+		.then( result => response = result )
+		.catch( error => response = error );
+	return response;
 }
 // interface for list sync
 async function listSync(config, params) {

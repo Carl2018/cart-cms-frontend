@@ -155,14 +155,14 @@ class InspectDrawer extends Component {
 			title: 'Account Name',
 			dataIndex: 'accountname',
 			key: 'accountname',
-			width: '25%',
+			width: '20%',
 			setFilter: false
 		},
 		{
 			title: 'Account Type',
 			dataIndex: 'account_type',
 			key: 'account_type',
-			width: '25%',
+			width: '20%',
 			render: account_type => {
 				let color = 'gold';
 				let text = 'Phone';
@@ -199,14 +199,14 @@ class InspectDrawer extends Component {
 			title: 'Candidate ID',
 			dataIndex: 'candidate_id',
 			key: 'candidate_id',
-			width: '25%',
+			width: '20%',
 			setFilter: false
 		},
 		{
 			title: 'Status',
 			dataIndex: 'status',
 			key: 'status',
-			width: '20%',
+			width: '10%',
 			render: status => {
 				let color = 'default';
 				let text = 'Unknown';
@@ -234,6 +234,20 @@ class InspectDrawer extends Component {
 					</Tag>
 				);
 			},
+		},
+		{
+			title: 'Region',
+			dataIndex: 'region',
+			key: 'region',
+			width: '10%',
+			setFilter: false
+		},
+		{
+			title: 'Physical Region',
+			dataIndex: 'physical_region',
+			key: 'physical_region',
+			width: '20%',
+			setFilter: false
 		},
 	];
 
@@ -490,10 +504,10 @@ class InspectDrawer extends Component {
 								column={ 3 }
 							>
 								<Item
-									label="Case Name" 
+									label="Case ID" 
 									span = { 2 } 
 								> 
-									{ this.props.dataCase.casename }
+									{ this.props.dataCase.id }
 								</Item>
 								<Item
 									label="Category"

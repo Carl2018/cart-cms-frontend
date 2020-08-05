@@ -5,6 +5,7 @@ import { handleResponse } from '_helpers';
 export const caseService = {
     create,
     retrieve,
+    retrieveNextId,
     list,
     update,
     bind,
@@ -24,6 +25,20 @@ function create(record) {
 function retrieve(params={}) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/case/retrieve`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function retrieveNextId(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/case/retrieve_next_id`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
