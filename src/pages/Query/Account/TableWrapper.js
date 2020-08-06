@@ -88,7 +88,7 @@ class TableWrapper extends Component {
 					>
 						<Dropdown.Button 
 							type='link' 
-							danger={ record.status !== 'u' ? false : true }
+							// danger={ record.status !== 'u' ? false : true }
 							overlay={ this.getMenu(record) }
 							//onClick={ this.handleClickBan.bind(this, record) }
 						>

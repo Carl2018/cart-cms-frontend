@@ -93,6 +93,14 @@ class TableWrapper extends Component {
 			>
 				Process
 			</Menu.Item>
+			<Menu.Item 
+				key='3' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <FileTextOutlined /> }
+				onClick={ this.handleClickView.bind(this, record) }
+			>
+				View
+			</Menu.Item>
 		</Menu>
 	);
 	
@@ -104,13 +112,6 @@ class TableWrapper extends Component {
 			key: 'action',
 			render: (text, record) => (
 				<Space size='small'>
-					<Button 
-						type='link' 
-						icon={ <FileTextOutlined /> }
-						onClick={ this.handleClickView.bind(this, record) }
-					>
-						View
-					</Button>
 					<Dropdown.Button 
 						onClick={ this.handleClickEdit.bind(this, record) }
 						type='link' 
@@ -400,11 +401,11 @@ class TableWrapper extends Component {
 		// update process table in process drawer
 		const response = await this.create(record);
 		// update case table
-		this.props.list();
+		await this.props.list();
 		// update case info in process drawer
 		if (response.code === 200) {
-			const newRecord = Object.assign({}, this.state.record);
-			newRecord.status = record.process;
+			const newRecord = this.props.data
+				.find( item => item.id === this.state.record.id );
 			this.setState({ record: newRecord });
 		}
 	}

@@ -98,7 +98,7 @@ class Case extends Component {
 			key: 'categoryname',
 			sorter: (a, b) => compare(a.categoryname, b.categoryname),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			width: '10%',
 			setFilter: true
 		},
 		{
@@ -107,7 +107,7 @@ class Case extends Component {
 			key: 'email',
 			sorter: (a, b) => compare(a.email, b.email),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '15%',
 			setFilter: true
 		},
 		{
@@ -116,7 +116,16 @@ class Case extends Component {
 			key: 'accountname',
 			sorter: (a, b) => compare(a.accountname, b.accountname),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '15%',
+			setFilter: true
+		},
+		{
+			title: 'Last Touch',
+			dataIndex: 'last_processed_by',
+			key: 'last_processed_by',
+			sorter: (a, b) => compare(a.last_processed_by, b.last_processed_by),
+			sortDirection: ['ascend', 'descend'],
+			width: '15%',
 			setFilter: true
 		},
 	];

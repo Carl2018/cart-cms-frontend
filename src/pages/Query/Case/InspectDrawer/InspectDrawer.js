@@ -531,17 +531,23 @@ class InspectDrawer extends Component {
 								>
 									{ this.getLabels( this.props.dataEmail.labelname ) }
 								</Item>
-								<Item 
-									label="Remarks" 
-									span = { 2 } 
-								>
-									{ this.props.dataCase.remarks }
-								</Item>
 								<Item
 									label="Created At"
-									span = { 1 } 
+									span = { 2 } 
 								>
 									{ this.props.dataCase.created_at }
+								</Item>
+								<Item 
+									label="Last Touch" 
+									span = { 1 } 
+								>
+									{ this.props.dataCase.last_processed_by }
+								</Item>
+								<Item 
+									label="Remarks" 
+									span = { 3 } 
+								>
+									{ this.props.dataCase.remarks }
 								</Item>
 							</Descriptions>
 						</Card>

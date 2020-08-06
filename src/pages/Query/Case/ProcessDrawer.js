@@ -265,9 +265,12 @@ class ProcessDrawer extends Component {
 								>
 									{ this.props.record.accountname }
 								</Descriptions.Item>
+								<Descriptions.Item label="Last Touch">
+									{ this.props.record.last_processed_by }
+								</Descriptions.Item>
 								<Descriptions.Item 
 									label="Remarks"
-									span={ 3 }
+									span={ 2 }
 								>
 									{ this.props.record.remarks }
 								</Descriptions.Item>

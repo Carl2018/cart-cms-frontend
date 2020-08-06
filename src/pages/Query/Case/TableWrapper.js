@@ -483,8 +483,8 @@ class TableWrapper extends Component {
 		this.props.updateDataCase();
 		// update case info in process drawer
 		if (response.code === 200) {
-			const newRecord = Object.assign({}, this.state.record);
-			newRecord.status = record.process;
+			const newRecord = this.props.cases
+				.find( item => item.id === this.state.record.id );
 			this.setState({ record: newRecord });
 		}
 	}
