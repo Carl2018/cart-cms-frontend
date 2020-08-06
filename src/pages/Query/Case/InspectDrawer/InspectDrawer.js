@@ -263,7 +263,9 @@ class InspectDrawer extends Component {
 				Confirm
 			</Button>
 		);
-		if (this.props.dataAccount.status !== 'u') {
+		if (!this.props.dataAccount) {
+			message.error("The case is not bound to any account");
+		} else if (this.props.dataAccount.status !== 'u') {
 			notification.open({
 				message: 'About to UNban This Account',
 				description:
@@ -301,7 +303,9 @@ class InspectDrawer extends Component {
 				Confirm
 			</Button>
 		);
-		if (this.props.dataAccount.status === 'u') {
+		if (!this.props.dataAccount) {
+			message.error("The case is not bound to any account");
+		} else if (this.props.dataAccount.status === 'u') {
 			notification.open({
 				message: 'About to Ban This Account',
 				description:

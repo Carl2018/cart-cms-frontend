@@ -75,7 +75,7 @@ class Template extends Component {
 			setFilter: true
 		},
 		{
-			title: 'Copied Count',
+			title: 'Copied',
 			dataIndex: 'copied_count',
 			key: 'copied_count',
 			sorter: (a, b) => compare(a.copied_count, b.copied_count),
@@ -84,7 +84,7 @@ class Template extends Component {
 			setFilter: true
 		},
 		{
-			title: 'Stick Top',
+			title: 'Top',
 			dataIndex: 'sticktop',
 			key: 'sticktop',
 			width: '30%',

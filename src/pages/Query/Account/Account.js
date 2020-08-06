@@ -42,7 +42,7 @@ class Account extends Component {
 			key: 'accountname',
 			sorter: (a, b) => compare(a.accountname, b.accountname),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '15%',
 			setFilter: true
 		},
 		{
@@ -82,7 +82,7 @@ class Account extends Component {
 					</Tag>
 				);
 			},
-			width: '20%',
+			width: '15%',
 		},
 		{
 			title: 'Candidate ID',
@@ -90,7 +90,7 @@ class Account extends Component {
 			key: 'candidate_id',
 			sorter: (a, b) => compare(a.candidate_id, b.candidate_id),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '15%',
 			setFilter: true
 		},
 		{
@@ -135,6 +135,15 @@ class Account extends Component {
 			sorter: (a, b) => compare(a.region, b.region),
 			sortDirection: ['ascend', 'descend'],
 			width: '10%',
+			setFilter: true
+		},
+		{
+			title: 'Physicla Region',
+			dataIndex: 'physical_region',
+			key: 'physical_region',
+			sorter: (a, b) => compare(a.physical_region, b.physical_region),
+			sortDirection: ['ascend', 'descend'],
+			width: '15%',
 			setFilter: true
 		},
 	];

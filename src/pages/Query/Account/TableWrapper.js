@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 import { 
 	Button, 
 	Col, 
+	Dropdown,
+	Menu,
 	Popconfirm, 
 	Row, 
 	Space, 
@@ -35,6 +37,36 @@ class TableWrapper extends Component {
 		};
 	}
 	
+	// customised menu for bind, process, process history
+	getMenu = record => (
+		<Menu >
+			<Menu.Item 
+				key='1' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <FileTextOutlined /> }
+				onClick={ this.handleClickView.bind(this, record) }
+			>
+				View
+			</Menu.Item>
+			<Menu.Item 
+				key='2' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <EditOutlined /> }
+				onClick={ this.handleClickEdit.bind(this, record) }
+			>
+				Edit
+			</Menu.Item>
+		</Menu>
+	);
+	
+	getBanButton(status) {
+		if (status !== 'u')
+			return (<div><UserAddOutlined /> Unban</div>);
+		else
+			return (<div><UserDeleteOutlined /> Ban</div>);
+		
+	}
+
 	// define columns in TableBody
 	columns = [
 		...this.props.columns,
@@ -43,20 +75,6 @@ class TableWrapper extends Component {
 			key: 'action',
 			render: (text, record) => (
 				<Space size='small'>
-					<Button 
-						type='link' 
-						icon={ <FileTextOutlined /> }
-						onClick={ this.handleClickView.bind(this, record) }
-					>
-						View
-					</Button>
-					<Button 
-						type='link' 
-						icon={ <EditOutlined /> }
-						onClick={ this.handleClickEdit.bind(this, record) }
-					>
-						Edit
-					</Button>
 					<Popconfirm
 						title={ record.status !== 'u' ?
 							'Are you sure to Unban this account ?'
@@ -68,16 +86,14 @@ class TableWrapper extends Component {
 						cancelText='Cancel'
 						placement='left'
 					>
-						<Button 
+						<Dropdown.Button 
 							type='link' 
 							danger={ record.status !== 'u' ? false : true }
-							icon={ record.status !== 'u' ? 
-								<UserAddOutlined /> : <UserDeleteOutlined />
-							}
+							overlay={ this.getMenu(record) }
 							//onClick={ this.handleClickBan.bind(this, record) }
 						>
-							{ record.status !== 'u' ? "Unban" : "Ban" }
-						</Button>
+							{ this.getBanButton(record.status) }
+						</Dropdown.Button>
 					</Popconfirm>
 					<Popconfirm
 						title='Are you sure to delete this record?'

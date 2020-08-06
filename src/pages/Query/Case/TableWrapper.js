@@ -100,6 +100,14 @@ class TableWrapper extends Component {
 			>
 				Process
 			</Menu.Item>
+			<Menu.Item 
+				key='3' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <EditOutlined /> }
+				onClick={ this.handleClickEdit.bind(this, record) }
+			>
+				Edit
+			</Menu.Item>
 		</Menu>
 	);
 	
@@ -111,19 +119,12 @@ class TableWrapper extends Component {
 			key: 'action',
 			render: (text, record) => (
 				<Space size='small'>
-					<Button 
-						type='link' 
-						icon={ <FileSearchOutlined /> }
-						onClick={ this.handleClickInspect.bind(this, record) }
-					>
-						Inspect
-					</Button>
 					<Dropdown.Button 
-						onClick={ this.handleClickEdit.bind(this, record) }
+						onClick={ this.handleClickInspect.bind(this, record) }
 						type='link' 
 						overlay={ this.getMenu(record) }
 					>
-						<EditOutlined /> Edit
+						<FileSearchOutlined /> Inspect
 					</Dropdown.Button>
 					<Popconfirm
 						title='Are you sure to delete this record?'

@@ -184,7 +184,8 @@ class TableDrawer extends Component {
 									placeholder={ "Use the search above to autofill this field" }
 								>
 									<Option value="u">Unbanned</Option>
-									<Option value="b">Banned</Option>
+									<Option value="h">Hard Banned</Option>
+									<Option value="s">Soft Banned</Option>
 								</Select>
 							</Form.Item>
 							<Form.Item
