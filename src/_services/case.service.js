@@ -9,6 +9,7 @@ export const caseService = {
     list,
     update,
     bind,
+    unbind,
     hide,
 };
 
@@ -81,6 +82,16 @@ function bind(record) {
 			body: JSON.stringify(record)
 		};
     return fetch(`${config.apiUrl}/case/bind`, requestOptions)
+			.then(handleResponse);
+}
+
+function unbind(record) {
+    const requestOptions = { 
+			method: 'PUT', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/case/unbind`, requestOptions)
 			.then(handleResponse);
 }
 

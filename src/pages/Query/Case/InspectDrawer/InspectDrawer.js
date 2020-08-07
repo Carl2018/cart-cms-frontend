@@ -15,7 +15,10 @@ import {
 	message, 
 	notification,
 } from 'antd';
-import { NodeIndexOutlined } from '@ant-design/icons';
+import { 
+	ApiOutlined,
+	NodeIndexOutlined,
+} from '@ant-design/icons';
 
 // import shared and child components
 import { TableBody } from '_components'
@@ -371,19 +374,38 @@ class InspectDrawer extends Component {
 		<div
 			onClick={ event => event.stopPropagation() }
 		>
-			<Button
-				type="ghost"
-				style={{ border: "none" }}
-				size="small"
-				onClick={ this.onClickBind }
-			>
-				<NodeIndexOutlined />
-				Bind
-			</Button>
+			{
+				this.props.dataCase.accountname === "Unbound" ?
+					(
+						<Button
+							type="ghost"
+							style={{ border: "none" }}
+							size="small"
+							onClick={ this.onClickBind }
+						>
+							<NodeIndexOutlined />
+							Bind
+						</Button>
+					)
+				:
+					(
+						<Button
+							type="ghost"
+							style={{ border: "none" }}
+							size="small"
+							onClick={ this.onClickUnbind }
+						>
+							<ApiOutlined />
+							Unbind
+						</Button>
+					)
+			}
 		</div>
 	);
 
 	onClickBind = () => this.props.onClickBind(this.props.dataCase);
+
+	onClickUnbind = () => this.props.onClickUnbind(this.props.dataCase);
 
 	// define status 
 	getStatus = status => {

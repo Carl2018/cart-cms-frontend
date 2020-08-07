@@ -314,6 +314,7 @@ class Case extends Component {
 					retrieveNextId={ this.props.retrieveNextId }
 					edit={ this.props.edit }
 					bind={ this.props.bind }
+					unbind={ this.props.unbind }
 					delete={ this.props.delete }
 					refreshTable={ this.refreshTable }
 					list={ this.props.list }

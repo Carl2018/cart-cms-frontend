@@ -324,6 +324,7 @@ class Case extends Component {
 	updateSync = updateSync.bind(this, this.config);
 	hideSync = hideSync.bind(this, this.config);
 	bindSync = updateSync.bind(this, {...this.config, update: "bind"});
+	unbindSync = updateSync.bind(this, {...this.config, update: "unbind"});
 
 	configCategory = {
 		service: categoryService,
@@ -369,6 +370,7 @@ class Case extends Component {
 						list={ this.listSync }
 						edit={ this.updateSync }
 						bind={ this.bindSync }
+						unbind={ this.unbindSync }
 						delete={ this.hideSync }
 						refreshTable={ this.refreshTable }
 					>

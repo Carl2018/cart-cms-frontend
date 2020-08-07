@@ -290,6 +290,11 @@ class Query extends Component {
 		this.updateDataCase();
 		return merge;
 	}
+	unbindCase = updateSync.bind(this, {...this.configCase, update: 'unbind'});
+	unbindCaseSync = async (id, record) => {
+		await this.unbindCase(id, record);
+		this.updateDataCase();
+	}
 
 	// account table
 	configAccount = {
@@ -445,6 +450,7 @@ class Query extends Component {
 							retrieveNextId={ this.retrieveNextId }
 							edit={ this.updateCaseSync }
 							bind={ this.bindCaseSync }
+							unbind={ this.unbindCaseSync }
 							delete={ this.hideCaseSync }
 							updateDataCase={ this.updateDataCase }
 							refreshPage={ this.refreshPage }

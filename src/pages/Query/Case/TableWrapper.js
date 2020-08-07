@@ -18,6 +18,7 @@ import {
 	FileSearchOutlined, 
 	HistoryOutlined, 
 	NodeIndexOutlined, 
+	ApiOutlined, 
 } from '@ant-design/icons';
 
 // import shared and child components
@@ -84,16 +85,32 @@ class TableWrapper extends Component {
 	// customised menu for bind, process, process history
 	getMenu = record => (
 		<Menu >
+			{
+				record.accountname === "Unbound" ?
+					(
+						<Menu.Item 
+							key='1' 
+							style={{ color:'#5a9ef8' }} 
+							icon={ <NodeIndexOutlined /> }
+							onClick={ this.handleClickBind.bind(null, record) }
+						>
+							Bind
+						</Menu.Item>
+					)
+				:
+					(
+						<Menu.Item 
+							key='2' 
+							style={{ color:'#5a9ef8' }} 
+							icon={ <ApiOutlined /> }
+							onClick={ this.onClickUnbind.bind(null, record) }
+						>
+							Unbind
+						</Menu.Item>
+					)
+			}
 			<Menu.Item 
-				key='1' 
-				style={{ color:'#5a9ef8' }} 
-				icon={ <NodeIndexOutlined /> }
-				onClick={ this.handleClickBind.bind(null, record) }
-			>
-				Bind
-			</Menu.Item>
-			<Menu.Item 
-				key='2' 
+				key='3' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <HistoryOutlined /> }
 				onClick={ this.handleClickProcess.bind(null, record) }
@@ -101,7 +118,7 @@ class TableWrapper extends Component {
 				Process
 			</Menu.Item>
 			<Menu.Item 
-				key='3' 
+				key='4' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <EditOutlined /> }
 				onClick={ this.handleClickEdit.bind(this, record) }
@@ -385,6 +402,16 @@ class TableWrapper extends Component {
 		closeNotification(notificationKey);
 	};
 
+	// handlers for unbind button
+	onClickUnbind = async record => {
+		if (record.accountname !== "Unbound") {
+			await this.props.unbind(record.id, { case_id: record.id });
+			this.clear();
+		} else {
+			message.info("The case is not bound to any account");
+		}
+	}
+
 	// handlers for merge modal
 	handleClickCheckboxA = event => this.setState({ change: false });
 
@@ -621,6 +648,7 @@ class TableWrapper extends Component {
 						// api props
 						onClose={ this.handleCloseInspect }
 						onClickBind={ this.handleClickBind }
+						onClickUnbind={ this.onClickUnbind }
 						onClickProcess={ this.handleClickProcess }
 						onClickEdit={ this.handleClickEdit }
 						onClickBan={ this.onClickBan }
