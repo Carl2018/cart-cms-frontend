@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { TagOutlined } from '@ant-design/icons';
 import { 
 	Input, 
-	Select, 
 	Spin,
 	Tag, 
 } from 'antd';
@@ -25,7 +24,6 @@ import {
 // destructure imported components and objects
 const { createSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
-const { Option } = Select;
 
 class Label extends Component {
 	constructor(props) {
@@ -63,31 +61,7 @@ class Label extends Component {
 			sorter: (a, b) => compare(a.label_color, b.label_color),
 			sortDirection: ['ascend', 'descend'],
 			width: '20%',
-			//setFilter: true,
-			render: label_color => {
-				let text = 'Gray';
-				switch (label_color) {
-					case 'l' :
-						text = 'Green';
-						break;
-					case 'b' :
-						text = 'Blue';
-						break;
-					case 'r' :
-						text = 'Red';
-						break;
-					case 'y' :
-						text = 'Gold';
-						break;
-					case 'g' :
-						text = 'Gray';
-						break;
-					default :
-						text = 'Gray';
-						break;
-				};	
-				return (<>{ text }</>);
-			}
+			setFilter: true,
 		},
 		{
 			title: 'Label',
@@ -95,35 +69,12 @@ class Label extends Component {
 			dataIndex: 'labelname',
 			sorter: (a, b) => compare(a.labelname, b.labelname),
 			sortDirection: ['ascend', 'descend'],
-			render: (labelname, record) => {
-				let label_color= record.label_color;
-				let color = 'default';
-				switch (label_color) {
-					case 'l' :
-						color = 'success';
-						break;
-					case 'b' :
-						color = 'processing';
-						break;
-					case 'r' :
-						color = 'error';
-						break;
-					case 'y' :
-						color = 'warning';
-						break;
-					case 'g' :
-						color = 'default';
-						break;
-					default :
-						color = 'default';
-						break;
-				};	
-				return (
-					<Tag color={ color } key={ uuidv4() }>
-						{ labelname }
-					</Tag>
-				);
-			},
+			render: (labelname, record) => 
+			(
+				<Tag color={ record.label_color } key={ uuidv4() }>
+					{ labelname }
+				</Tag>
+			),
 			width: '20%',
 		},
 	];
@@ -160,16 +111,12 @@ class Label extends Component {
 			],
 			editable: true,
 			input: disabled => (
-				<Select
+				<Input
+					maxLength={255}
+					allowClear
 					disabled={ disabled }
-					placeholder={ "Label color" }
-				>
-					<Option value="l">Green</Option>
-					<Option value="b">Blue</Option>
-					<Option value="r">Red</Option>
-					<Option value="y">Gold</Option>
-					<Option value="g">Gray</Option>
-				</Select>
+					placeholder={ "Label color format: #fff or #ffffff" }
+				/>
 			)
 		},			
 	];

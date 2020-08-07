@@ -98,29 +98,8 @@ class Email extends Component {
 					labelname.map( (item, index) => {
 						const label_color = labels
 							.find( label => label.labelname === item ).label_color;
-						let color = 'default';
-						switch (label_color) {
-							case 'l' :
-								color = 'success';
-								break;
-							case 'b' :
-								color = 'processing';
-								break;
-							case 'r' :
-								color = 'error';
-								break;
-							case 'y' :
-								color = 'warning';
-								break;
-							case 'g' :
-								color = 'default';
-								break;
-							default :
-								color = 'default';
-								break;
-						};	
 						return (
-							<Tag color={ color } key={ uuidv4() }>
+							<Tag color={ label_color } key={ uuidv4() }>
 								{ item }
 							</Tag>
 						);
