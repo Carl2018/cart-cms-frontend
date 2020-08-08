@@ -106,7 +106,8 @@ class TableDrawer extends Component {
 				key={ this.props.tableDrawerKey } 
 			>
 				<Drawer
-					title={ Object.keys(this.props.record).length === 0 ? 
+					title={ Object.keys(this.props.record).length === 0 
+						|| this.props.isCreate ? 
 						`Create ${this.props.drawerTitle}` :
 						this.props.disabled ? `View ${this.props.drawerTitle}` :
 						`Edit ${this.props.drawerTitle}`

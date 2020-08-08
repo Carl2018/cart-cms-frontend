@@ -119,23 +119,31 @@ class Email extends Component {
 				}
 			],
 			editable: true,
-			input: disabled => 
+			input: (disabled, record) => 
 			!this.props.profilename ? (<></>) :
 			(
-				<Select
-					disabled={ disabled }
-					placeholder={ "Profile must be the current searched profile" }
-					showSearch
-					optionFilterProp="children"
-					filterOption={(input, option) =>
-						option.children.trim().toLowerCase()
-							.indexOf(input.trim().toLowerCase()) >= 0
-					}
-				>
-					<Option value={ this.props.profilename }>
-						{ this.props.profilename }
-					</Option>
-				</Select>
+				record.id ?
+				(
+					<span style={{ marginLeft: "15px" }}>
+						{ record.profilename }
+					</span>
+				) : 
+				( 
+					<Select
+						disabled={ disabled }
+						placeholder={ "Profile must be the current searched profile" }
+						showSearch
+						optionFilterProp="children"
+						filterOption={(input, option) =>
+							option.children.trim().toLowerCase()
+								.indexOf(input.trim().toLowerCase()) >= 0
+						}
+					>
+						<Option value={ this.props.profilename }>
+							{ this.props.profilename }
+						</Option>
+					</Select>
+				) 
 			) 
 		},
 	];
@@ -164,6 +172,7 @@ class Email extends Component {
 					// data props
 					data={ this.props.data }
 					labels={ this.props.labels }
+					profilename={ this.props.profilename }
 					// display props
 					columns={ this.columns }
 					formItems={ this.formItems }

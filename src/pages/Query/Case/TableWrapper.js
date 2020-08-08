@@ -265,6 +265,7 @@ class TableWrapper extends Component {
 		
 		this.setState({
 			visible: false,
+			isCreate: false,
 			tableDrawerKey: Date.now(),
 		});
 		this.clear();

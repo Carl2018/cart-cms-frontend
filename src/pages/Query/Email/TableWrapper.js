@@ -33,6 +33,7 @@ class TableWrapper extends Component {
 			selectedRowKeys: [], // for selecting rows in TableBody
 			tableDrawerKey: Date.now(), // for refreshing the TableDrawer
 			visible: false, // for opening or closing the TableDrawer
+			isCreate: false,
 			record: {}, // for loading a record into the form in TableDrawer
 			disabled: false, // for disabling the input fields in TableDrawer
 			formItems: this.props.formItems,
@@ -169,11 +170,13 @@ class TableWrapper extends Component {
 
 	// handlers for actions in TableDropdown
   handleClickAdd = event => {
+		const profilename = this.props.profilename;
 		this.setState({formItems: this.props.formItems}, () =>
 			this.setState({
 				visible: true,
 				disabled: false,
-				record: {},
+				isCreate: true,
+				record: { profilename },
 			})
 		);
   }
@@ -214,6 +217,7 @@ class TableWrapper extends Component {
   handleClose = () => {
     this.setState({
       visible: false,
+			isCreate: false,
 			record: {},
 			tableDrawerKey: Date.now(),
     });
@@ -230,6 +234,7 @@ class TableWrapper extends Component {
 		this.setState({
 			record: {},
 			visible: false,
+			isCreate: false,
 			tableDrawerKey: Date.now(),
 		});
 	}
@@ -283,6 +288,7 @@ class TableWrapper extends Component {
 						tableDrawerKey={ this.state.tableDrawerKey }
 						drawerTitle={ this.props.drawerTitle } 
 						visible={ this.state.visible } 
+						isCreate={ this.state.isCreate } 
 						onClose={ this.handleClose }
 						record={ this.state.record }
 						formItems={ this.state.formItems }
