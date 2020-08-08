@@ -608,6 +608,8 @@ class InspectDrawer extends Component {
 				</div>
 				<div>
 					<Flag
+						dataAccount={ this.props.dataAccount }
+						allRelatedAccounts={ this.props.allRelatedAccounts }
 						modalKey={ this.state.modalKeyFlag }
 						visible={ this.state.visibleFlag }
 						onCancel={ this.handleCloseFlag }

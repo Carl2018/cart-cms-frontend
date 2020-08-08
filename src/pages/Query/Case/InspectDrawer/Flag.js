@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 
 // import components from ant design
 import { 
+	AutoComplete,
 	Col,
+	InputNumber,
 	Input,
 	Modal,
 	Row,
@@ -33,8 +35,11 @@ class Flag extends Component {
 			// for TableBody
 			flags: [],
 			// for search
-			interval: "",
+			interval: 1,
 			candidateId: "",
+			// for AutoComplete
+			open: false,
+			options: [],
 		};
 	}
 	
@@ -88,15 +93,32 @@ class Flag extends Component {
 		</Row>	
 	)
 
-	handleChange= event=> this.setState({ interval: event.target.value });
+	getOptions = () => {
+		const options = this.props.allRelatedAccounts.map( item => {
+			return { value: item.candidate_id };
+		});
+		return options;
+	}
+
+	handleChangeOption = data => {
+		this.setState({ 
+			open: true,
+			options: this.getOptions(),
+		});
+	}
+
+	handleChange = value => {
+		if (!isFinite(value)) {
+			message.error("Days should be a number");
+			this.setState({ interval: 1 });
+			return;
+		}
+		this.setState({ interval: Math.round(value) });
+	}
 
 	handleSearch = async value => {
 		const interval = this.state.interval;
 		const candidateId = value;
-		if (!isFinite(interval)) {
-			message.error("Days should be a number");
-			return;
-		}
 		if (!isFinite(candidateId)) {
 			message.error("Candidate ID should be a number");
 			return;
@@ -117,7 +139,7 @@ class Flag extends Component {
 	onCancel = event => {
 		this.setState({ 
 			flags: [],
-			interval: "",
+			interval: 1,
 			candidateId: "",
 		});
 		this.props.onCancel();
@@ -148,18 +170,36 @@ class Flag extends Component {
 						style={{ margin: "0px 4px 32px 4px" }}
 					>
 						<Space size="middle" >
-							<Input.Group compact>
-								<Input
+								<span>
+									Interval(days):
+								</span>
+								<InputNumber
 									placeholder="Interval in Days"
 									onChange={ this.handleChange }
+									value={ this.state.interval }
 									style={{ width: 160 }}
+									min={ 1 }
 								/>
-								<Search
-									placeholder="Candidate ID"
-									onSearch={ this.handleSearch }
-									style={{ width: 200 }}
-								/>
-							</Input.Group>
+								<span>
+									Candidate ID:
+								</span>
+								<AutoComplete
+									options={ this.state.options }
+									defaultValue={ this.props.dataAccount?.candidate_id }
+									open={ this.state.open }
+									onFocus={ this.handleChangeOption.bind(this, "") }
+									onBlur ={ () => this.setState({ open: false }) }
+									onChange ={ this.handleChangeOption }
+								>
+									<Search
+										placeholder="Candidate ID"
+										onSearch={ data => {
+											this.setState({ open: false }, 
+												() => this.handleSearch(data));
+										}}
+										style={{ width: 200 }}
+									/>
+								</AutoComplete>
 						</Space>
 					</div>
 					<div>
