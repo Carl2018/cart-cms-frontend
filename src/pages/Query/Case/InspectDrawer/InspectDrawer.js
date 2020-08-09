@@ -25,6 +25,7 @@ import { TableBody } from '_components'
 import DrawerDropdown from './DrawerDropdown'
 import Template from './Template'
 import Flag from './Flag'
+import Conversation from './Conversation'
 
 // import helpers
 import { helpers } from '_helpers';
@@ -44,6 +45,9 @@ class InspectDrawer extends Component {
 			// for the flag modal
 			visibleFlag: false,
 			modalKeyFlag: Date.now(),
+			// for the conversation modal
+			visibleConversation: false,
+			modalKeyConversation: Date.now(),
 			// for Spin
 			spinning: false,
 		};
@@ -369,6 +373,20 @@ class InspectDrawer extends Component {
 		});
 	}
 
+	// handlers for conversations
+	handleClickConversations = event => {
+		this.setState({
+			visibleConversation: true,
+		});
+	}
+
+	handleCloseConversation = event => {
+		this.setState({
+			visibleConversation: false,
+			modalKeyConversation: Date.now(),
+		});
+	}
+
 	// define the bind button
 	genExtra = () => (
 		<div
@@ -483,6 +501,7 @@ class InspectDrawer extends Component {
 					onClickBan={ this.onClickBan }
 					onClickTemplates={ this.handleClickTemplates }
 					onClickFlags={ this.handleClickFlags }
+					onClickConversations={ this.handleClickConversations }
 				/>
 			</Col>
 		</Row>	
@@ -615,6 +634,16 @@ class InspectDrawer extends Component {
 						onCancel={ this.handleCloseFlag }
 					>
 					</Flag>
+				</div>
+				<div>
+					<Conversation
+						dataAccount={ this.props.dataAccount }
+						allRelatedAccounts={ this.props.allRelatedAccounts }
+						modalKey={ this.state.modalKeyConversation }
+						visible={ this.state.visibleConversation }
+						onCancel={ this.handleCloseConversation }
+					>
+					</Conversation>
 				</div>
 			</div>
 		);

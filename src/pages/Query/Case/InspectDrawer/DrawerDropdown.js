@@ -9,6 +9,7 @@ import {
 	UserDeleteOutlined,
 	CopyOutlined,
 	FlagOutlined,
+	CommentOutlined,
 } from '@ant-design/icons';
 
 // import shared and child components
@@ -64,6 +65,14 @@ class DrawerDropdown extends Component {
 				onClick={ this.props.onClickFlags }
 			>
 				Flags
+			</Menu.Item>
+			<Menu.Item 
+				key='6' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <CommentOutlined /> }
+				onClick={ this.props.onClickConversations }
+			>
+				Conversations
 			</Menu.Item>
 		</Menu>
 	);
