@@ -137,7 +137,7 @@ class InspectDrawer extends Component {
 			setFilter: false
 		},
 		{
-			title: 'Profile Name',
+			title: 'Profile ID',
 			dataIndex: 'profilename',
 			key: 'profilename',
 			width: '33%',

@@ -66,7 +66,7 @@ class Email extends Component {
 			setFilter: true
 		},
 		{
-			title: 'Profile Name',
+			title: 'Profile ID',
 			dataIndex: 'profilename',
 			key: 'profilename',
 			sorter: (a, b) => compare(a.profilename, b.profilename),
@@ -132,7 +132,7 @@ class Email extends Component {
 			)
 		},
 		{
-			label: 'Profile',
+			label: 'Profile ID',
 			name: 'profilename',
 			rules: [
 				{

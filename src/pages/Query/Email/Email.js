@@ -40,16 +40,16 @@ class Email extends Component {
 			key: 'email',
 			sorter: (a, b) => compare(a.email, b.email),
 			sortDirection: ['ascend', 'descend'],
-			width: '10%',
+			width: '25%',
 			setFilter: true
 		},
 		{
-			title: 'Profile Name',
+			title: 'Profile ID',
 			dataIndex: 'profilename',
 			key: 'profilename',
 			sorter: (a, b) => compare(a.profilename, b.profilename),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '15%',
 			setFilter: true
 		},
 		{
@@ -110,7 +110,7 @@ class Email extends Component {
 			)
 		},
 		{
-			label: 'Profile',
+			label: 'Profile ID',
 			name: 'profilename',
 			rules: [
 				{

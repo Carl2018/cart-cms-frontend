@@ -151,7 +151,7 @@ class Account extends Component {
 	// define form items for TableDrawer
 	formItems = [
 		{
-			label: 'Profile',
+			label: 'Profile ID',
 			name: 'profilename',
 			rules: [
 				{

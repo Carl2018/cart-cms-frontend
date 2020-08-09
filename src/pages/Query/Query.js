@@ -135,9 +135,11 @@ class Query extends Component {
 	}
 
 	// handlers for profile drawer
-	handleClickProfile = event => {
+	handleClickProfile = async event => {
+		const response = await this.retrieveNextIdProfile()
+		const profile_id = response?.entry?.AUTO_INCREMENT;
 		this.setState(
-			{record: { email: this.state.email }},
+			{record: { email: this.state.email, profile_id }},
 			() => this.setState({ visibleProfile: true })
 		)
 	}
@@ -216,6 +218,11 @@ class Query extends Component {
 				record: {},
 			});
 		});
+	retrieveNextIdProfile = retrieveSync.bind(this, {
+		...this.configProfile,
+		retrieve: "retrieveNextId",
+	});
+
 
 	// email table
 	configEmail = {

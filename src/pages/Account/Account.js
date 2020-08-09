@@ -156,7 +156,7 @@ class Account extends Component {
 			setFilter: true
 		},
 		{
-			title: 'Profile',
+			title: 'Profile ID',
 			dataIndex: 'profilename',
 			key: 'profilename',
 			sorter: (a, b) => compare(a.profilename, b.profilename),
@@ -169,7 +169,7 @@ class Account extends Component {
 	// define form items for TableDrawer
 	formItems = [
 		{
-			label: 'Profile',
+			label: 'Profile ID',
 			name: 'profilename',
 			rules: [
 				{

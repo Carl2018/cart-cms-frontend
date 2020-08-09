@@ -26,12 +26,12 @@ class ProfileDrawer extends Component {
 	// define form items for TableDrawer
 	formItems = [
 		{
-			label: 'Profile Name',
-			name: 'profilename',
+			label: 'Profile ID',
+			name: 'profile_id',
 			rules: [
 				{
 					required: true,
-					message: 'Profile name cannot be empty',
+					message: 'profile_id cannot be empty',
 				}
 			],
 			editable: true,
@@ -39,8 +39,8 @@ class ProfileDrawer extends Component {
 				<Input
 					maxLength={255}
 					allowClear
-					disabled={ disabled }
-					placeholder={ "Profile name must be unique" }
+					disabled
+					placeholder={ "Profile ID" }
 				/>
 			)
 		},
@@ -49,7 +49,6 @@ class ProfileDrawer extends Component {
 			name: 'description',
 			rules: [
 				{
-					required: true,
 					message: 'Profile description cannot be empty',
 				}
 			],

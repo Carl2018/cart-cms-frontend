@@ -26,7 +26,13 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { createSync, listSync, updateSync, hideSync } = backend;
+const { 
+	createSync, 
+	retrieveSync, 
+	listSync, 
+	updateSync, 
+	hideSync 
+} = backend;
 const { compare } = helpers;
 const { Option } = Select
 
@@ -53,12 +59,12 @@ class Profile extends Component {
 	// define columns for TableBody
 	columns = [
 		{
-			title: 'Profile Name',
+			title: 'Profile ID',
 			dataIndex: 'profilename',
 			key: 'profilename',
 			sorter: (a, b) => compare(a.profilename, b.profilename),
 			sortDirection: ['ascend', 'descend'],
-			width: '30%',
+			width: '20%',
 			setFilter: true
 		},
 		{
@@ -93,19 +99,19 @@ class Profile extends Component {
 					});
 				return elements;
 			},
-			width: '20%',
+			width: '30%',
 		},
 	];
 
 	// define form items for TableDrawer
 	formItems = [
 		{
-			label: 'Profile Name',
-			name: 'profilename',
+			label: 'Profile ID',
+			name: 'profile_id',
 			rules: [
 				{
 					required: true,
-					message: 'Profile name cannot be empty',
+					message: 'profile_id cannot be empty',
 				}
 			],
 			editable: true,
@@ -113,8 +119,8 @@ class Profile extends Component {
 				<Input
 					maxLength={255}
 					allowClear
-					disabled={ disabled }
-					placeholder={ "Profile name must be unique" }
+					disabled
+					placeholder={ "Profile ID" }
 				/>
 			)
 		},
@@ -123,8 +129,7 @@ class Profile extends Component {
 			name: 'description',
 			rules: [
 				{
-					required: true,
-					message: 'Profile description cannot be empty',
+					message: 'Profile description can be empty',
 				}
 			],
 			editable: true,
@@ -194,6 +199,10 @@ class Profile extends Component {
 	};
 	createSync = createSync.bind(this, this.config);
 	listSync = listSync.bind(this, this.config);
+	retrieveNextId = retrieveSync.bind(this, {
+		...this.config,
+		retrieve: "retrieveNextId",
+	});
 	updateSync = updateSync.bind(this, this.config);
 	hideSync = hideSync.bind(this, this.config);
 
@@ -229,6 +238,7 @@ class Profile extends Component {
 						drawerTitle='A Profile'
 						// api props
 						create={ this.createSync }
+						retrieveNextId={ this.retrieveNextId }
 						edit={ this.updateSync }
 						delete={ this.hideSync }
 						refreshTable={ this.refreshTable }

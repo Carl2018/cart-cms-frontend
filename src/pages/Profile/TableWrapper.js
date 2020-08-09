@@ -29,6 +29,7 @@ class TableWrapper extends Component {
 			selectedRowKeys: [], // for selecting rows in TableBody
 			tableDrawerKey: Date.now(), // for refreshing the TableDrawer
 			visible: false, // for opening or closing the TableDrawer
+			isCreate: false,
 			record: {}, // for loading a record into the form in TableDrawer
 			disabled: false, // for disabling the input fields in TableDrawer
 			formItems: this.props.formItems,
@@ -112,7 +113,7 @@ class TableWrapper extends Component {
 			this.setState({
 				visible: true, 
 				disabled: true,
-				record,
+				record: {...record, profile_id: record.id},
 			})
 		);
 	}
@@ -122,7 +123,7 @@ class TableWrapper extends Component {
 			this.setState({
 				visible: true, 
 				disabled: false,
-				record,
+				record: {...record, profile_id: record.id},
 			})
 		);
 	}
@@ -132,12 +133,15 @@ class TableWrapper extends Component {
 	handleSelectChange = selectedRowKeys => this.setState({ selectedRowKeys });
 
 	// handlers for actions in TableDropdown
-  handleClickAdd = event => {
+  handleClickAdd = async event => {
+		const response = await this.props.retrieveNextId()
+		const profile_id = response?.entry?.AUTO_INCREMENT;
 		this.setState({formItems: this.formItems}, () =>
 			this.setState({
 				visible: true,
 				disabled: false,
-				record: {},
+				isCreate: true,
+				record: {profile_id},
 			})
 		);
   }
@@ -178,6 +182,7 @@ class TableWrapper extends Component {
   handleClose = () => {
     this.setState({
       visible: false,
+			isCreate: false,
 			record: {},
 			tableDrawerKey: Date.now(),
     });
@@ -194,6 +199,7 @@ class TableWrapper extends Component {
 		this.setState({
 			record: {},
 			visible: false,
+			isCreate: false,
 			tableDrawerKey: Date.now(),
 		});
 	}
@@ -247,6 +253,7 @@ class TableWrapper extends Component {
 						tableDrawerKey={ this.state.tableDrawerKey }
 						drawerTitle={ this.props.drawerTitle } 
 						visible={ this.state.visible } 
+						isCreate={ this.state.isCreate } 
 						onClose={ this.handleClose }
 						record={ this.state.record }
 						formItems={ this.state.formItems }
