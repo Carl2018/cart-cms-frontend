@@ -146,6 +146,21 @@ class Account extends Component {
 			width: '15%',
 			setFilter: true
 		},
+		{
+			title: 'DB',
+			dataIndex: 'db',
+			key: 'db',
+			sorter: (a, b) => compare(a.db, b.db),
+			sortDirection: ['ascend', 'descend'],
+			width: '10%',
+			render: db => {
+				return (
+					<span>
+						{ db === 'ea' ? "Asia" : "NA" }
+					</span>
+				);
+			},
+		},
 	];
 
 	// define form items for TableDrawer

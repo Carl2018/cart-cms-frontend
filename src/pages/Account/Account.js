@@ -100,7 +100,7 @@ class Account extends Component {
 					</Tag>
 				);
 			},
-			width: '20%',
+			width: '10%',
 		},
 		{
 			title: 'Candidate ID',
@@ -154,6 +154,30 @@ class Account extends Component {
 			sortDirection: ['ascend', 'descend'],
 			width: '10%',
 			setFilter: true
+		},
+		{
+			title: 'Physical Region',
+			dataIndex: 'physical_region',
+			key: 'physical_region',
+			sorter: (a, b) => compare(a.physical_region, b.physical_region),
+			sortDirection: ['ascend', 'descend'],
+			width: '10%',
+			setFilter: true
+		},
+		{
+			title: 'DB',
+			dataIndex: 'db',
+			key: 'db',
+			sorter: (a, b) => compare(a.db, b.db),
+			sortDirection: ['ascend', 'descend'],
+			width: '10%',
+			render: db => {
+				return (
+					<span>
+						{ db === 'ea' ? "Asia" : "NA" }
+					</span>
+				);
+			},
 		},
 		{
 			title: 'Profile ID',
@@ -276,7 +300,7 @@ class Account extends Component {
 						formItems={ this.formItems }
 						tableHeader={ this.tableHeader }
 						drawerTitle='An Account'
-						isSmall={ this.props.isSmall }
+						isSmall={ true }
 						// api props
 						create={ this.createSync }
 						edit={ this.updateSync }

@@ -84,6 +84,7 @@ class TableDrawer extends Component {
 				account_type: response.entry.account_type,
 				region: response.entry.region,
 				physical_region: response.entry.physical_region,
+				db: response.entry.db,
 			});
 			message.success("Candidate ID found");
 		} else {
@@ -248,6 +249,26 @@ class TableDrawer extends Component {
 									disabled
 									placeholder={ "Use the search above to autofill this field" }
 								/>
+							</Form.Item>
+							<Form.Item
+								key={ "db" }
+								label={ "DB" }
+								name={ "db" }
+								rules={[  
+									{
+										required: true,
+										message: 'db cannot be empty',
+									}
+								]}
+								initialValue={ this.props.record.db }
+							>
+								<Select
+									disabled
+									placeholder={ "Use the search above to autofill this field" }
+								>
+									<Option value="ea">Asia</Option>
+									<Option value="na">NA</Option>
+								</Select>
 							</Form.Item>
 							{ this.props.formItems.map( item => 
 								item.editable || this.props.disabled ? (

@@ -4,6 +4,8 @@ import React, { Component } from 'react';
 import { 
 	Button, 
 	Col, 
+	Dropdown, 
+	Menu, 
 	Popconfirm, 
 	Row, 
 	Space, 
@@ -35,6 +37,20 @@ class TableWrapper extends Component {
 		};
 	}
 	
+	// customised menu for bind, process, process history
+	getMenu = record => (
+		<Menu >
+			<Menu.Item 
+				key='1' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <FileTextOutlined /> }
+				onClick={ this.handleClickView.bind(this, record) }
+			>
+				View
+			</Menu.Item>
+		</Menu>
+	);
+	
 	// define columns in TableBody
 	columns = [
 		...this.props.columns,
@@ -43,20 +59,13 @@ class TableWrapper extends Component {
 			key: 'action',
 			render: (text, record) => (
 				<Space size='small'>
-					<Button 
-						type='link' 
-						icon={ <FileTextOutlined /> }
-						onClick={ this.handleClickView.bind(this, record) }
-					>
-						View
-					</Button>
-					<Button 
-						type='link' 
-						icon={ <EditOutlined /> }
+					<Dropdown.Button 
 						onClick={ this.handleClickEdit.bind(this, record) }
+						type='link' 
+						overlay={ this.getMenu(record) }
 					>
-						Edit
-					</Button>
+						<EditOutlined /> Edit
+					</Dropdown.Button>
 					<Popconfirm
 						title={ record.status !== 'u' ?
 							'Are you sure to Unban this account ?'
