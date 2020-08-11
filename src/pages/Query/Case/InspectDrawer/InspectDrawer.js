@@ -108,6 +108,7 @@ class InspectDrawer extends Component {
 			sorter: (a, b) => compare(a.details, b.details),
 			sortDirection: ['ascend', 'descend'],
 			key: 'details',
+			ellipsis: true,
 			width: '25%',
 			setFilter: false
 		},
@@ -138,6 +139,7 @@ class InspectDrawer extends Component {
 			dataIndex: 'email',
 			key: 'email',
 			width: '34%',
+			ellipsis: true,
 			setFilter: false
 		},
 		{
@@ -151,6 +153,7 @@ class InspectDrawer extends Component {
 			title: 'Description',
 			dataIndex: 'description',
 			key: 'description',
+			ellipsis: true,
 			width: '33%',
 			setFilter: false
 		},

@@ -49,7 +49,8 @@ class Category extends Component {
 			key: 'categoryname',
 			sorter: (a, b) => compare(a.categoryname, b.categoryname),
 			sortDirection: ['ascend', 'descend'],
-			width: '40%',
+			width: '30%',
+			ellipsis: true,
 			setFilter: true
 		},
 		{
@@ -58,7 +59,8 @@ class Category extends Component {
 			key: 'description',
 			sorter: (a, b) => compare(a.description, b.description),
 			sortDirection: ['ascend', 'descend'],
-			width: '40%',
+			width: '30%',
+			ellipsis: true,
 			setFilter: true
 		},
 	];

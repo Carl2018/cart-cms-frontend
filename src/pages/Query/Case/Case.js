@@ -42,7 +42,7 @@ class Case extends Component {
 			key: 'id',
 			sorter: (a, b) => compare(a.id, b.id),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			width: '8%',
 			setFilter: true
 		},
 		{
@@ -98,7 +98,8 @@ class Case extends Component {
 			key: 'categoryname',
 			sorter: (a, b) => compare(a.categoryname, b.categoryname),
 			sortDirection: ['ascend', 'descend'],
-			width: '10%',
+			ellipsis: true,
+			width: '15%',
 			setFilter: true
 		},
 		{
@@ -107,6 +108,7 @@ class Case extends Component {
 			key: 'email',
 			sorter: (a, b) => compare(a.email, b.email),
 			sortDirection: ['ascend', 'descend'],
+			ellipsis: true,
 			width: '15%',
 			setFilter: true
 		},
@@ -116,6 +118,7 @@ class Case extends Component {
 			key: 'accountname',
 			sorter: (a, b) => compare(a.accountname, b.accountname),
 			sortDirection: ['ascend', 'descend'],
+			ellipsis: true,
 			width: '15%',
 			setFilter: true
 		},
@@ -125,7 +128,8 @@ class Case extends Component {
 			key: 'last_processed_by',
 			sorter: (a, b) => compare(a.last_processed_by, b.last_processed_by),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			ellipsis: true,
+			width: '12%',
 			setFilter: true
 		},
 	];

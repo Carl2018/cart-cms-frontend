@@ -62,7 +62,8 @@ class Template extends Component {
 			key: 'title',
 			sorter: (a, b) => compare(a.title, b.title),
 			sortDirection: ['ascend', 'descend'],
-			width: '40%',
+			width: '20%',
+			ellipsis: true,
 			setFilter: true
 		},
 		{
@@ -71,7 +72,8 @@ class Template extends Component {
 			key: 'categoryname',
 			sorter: (a, b) => compare(a.categoryname, b.categoryname),
 			sortDirection: ['ascend', 'descend'],
-			width: '30%',
+			width: '20%',
+			ellipsis: true,
 			setFilter: true
 		},
 		{
@@ -80,14 +82,14 @@ class Template extends Component {
 			key: 'copied_count',
 			sorter: (a, b) => compare(a.copied_count, b.copied_count),
 			sortDirection: ['ascend', 'descend'],
-			width: '30%',
+			width: '10%',
 			setFilter: true
 		},
 		{
 			title: 'Top',
 			dataIndex: 'sticktop',
 			key: 'sticktop',
-			width: '30%',
+			width: '10%',
 			sorter: (a, b) => compare(a.sticktop, b.sticktop),
 			sortDirection: ['ascend', 'descend'],
 			render: sticktop => {

@@ -82,7 +82,7 @@ class Account extends Component {
 					</Tag>
 				);
 			},
-			width: '15%',
+			width: '10%',
 		},
 		{
 			title: 'Candidate ID',
@@ -90,7 +90,7 @@ class Account extends Component {
 			key: 'candidate_id',
 			sorter: (a, b) => compare(a.candidate_id, b.candidate_id),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			width: '12%',
 			setFilter: true
 		},
 		{
@@ -126,7 +126,7 @@ class Account extends Component {
 					</Tag>
 				);
 			},
-			width: '10%',
+			width: '8%',
 		},
 		{
 			title: 'Region',
@@ -134,16 +134,16 @@ class Account extends Component {
 			key: 'region',
 			sorter: (a, b) => compare(a.region, b.region),
 			sortDirection: ['ascend', 'descend'],
-			width: '10%',
+			width: '8%',
 			setFilter: true
 		},
 		{
-			title: 'Physicla Region',
+			title: 'Physical Region',
 			dataIndex: 'physical_region',
 			key: 'physical_region',
 			sorter: (a, b) => compare(a.physical_region, b.physical_region),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			width: '12%',
 			setFilter: true
 		},
 		{
@@ -152,7 +152,7 @@ class Account extends Component {
 			key: 'db',
 			sorter: (a, b) => compare(a.db, b.db),
 			sortDirection: ['ascend', 'descend'],
-			width: '10%',
+			width: '7%',
 			render: db => {
 				return (
 					<span>

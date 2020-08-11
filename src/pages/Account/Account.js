@@ -60,7 +60,7 @@ class Account extends Component {
 			key: 'accountname',
 			sorter: (a, b) => compare(a.accountname, b.accountname),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '10%',
 			setFilter: true
 		},
 		{
@@ -108,7 +108,7 @@ class Account extends Component {
 			key: 'candidate_id',
 			sorter: (a, b) => compare(a.candidate_id, b.candidate_id),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '10%',
 			setFilter: true
 		},
 		{

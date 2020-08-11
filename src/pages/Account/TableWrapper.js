@@ -48,9 +48,25 @@ class TableWrapper extends Component {
 			>
 				View
 			</Menu.Item>
+			<Menu.Item 
+				key='2' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <EditOutlined /> }
+				onClick={ this.handleClickEdit.bind(this, record) }
+			>
+				Edit
+			</Menu.Item>
 		</Menu>
 	);
 	
+	getBanButton(status) {
+		if (status !== 'u')
+			return (<div><UserAddOutlined /> Unban</div>);
+		else
+			return (<div><UserDeleteOutlined /> Ban</div>);
+		
+	}
+
 	// define columns in TableBody
 	columns = [
 		...this.props.columns,
@@ -59,13 +75,6 @@ class TableWrapper extends Component {
 			key: 'action',
 			render: (text, record) => (
 				<Space size='small'>
-					<Dropdown.Button 
-						onClick={ this.handleClickEdit.bind(this, record) }
-						type='link' 
-						overlay={ this.getMenu(record) }
-					>
-						<EditOutlined /> Edit
-					</Dropdown.Button>
 					<Popconfirm
 						title={ record.status !== 'u' ?
 							'Are you sure to Unban this account ?'
@@ -77,16 +86,14 @@ class TableWrapper extends Component {
 						cancelText='Cancel'
 						placement='left'
 					>
-						<Button 
+						<Dropdown.Button 
 							type='link' 
-							danger={ record.status !== 'u' ? false : true }
-							icon={ record.status !== 'u' ? 
-								<UserAddOutlined /> : <UserDeleteOutlined />
-							}
+							// danger={ record.status !== 'u' ? false : true }
+							overlay={ this.getMenu(record) }
 							//onClick={ this.handleClickBan.bind(this, record) }
 						>
-							{ record.status !== 'u' ? "Unban" : "Ban" }
-						</Button>
+							{ this.getBanButton(record.status) }
+						</Dropdown.Button>
 					</Popconfirm>
 					<Popconfirm
 						title='Are you sure to delete this record?'
@@ -107,7 +114,7 @@ class TableWrapper extends Component {
 					</Popconfirm>
 				</Space>
 			),
-			width: '10%',
+			width: '20%',
 			setFilter: false
 		},
 	];

@@ -40,7 +40,8 @@ class Email extends Component {
 			key: 'email',
 			sorter: (a, b) => compare(a.email, b.email),
 			sortDirection: ['ascend', 'descend'],
-			width: '25%',
+			ellipsis: true,
+			width: '15%',
 			setFilter: true
 		},
 		{
@@ -49,7 +50,7 @@ class Email extends Component {
 			key: 'profilename',
 			sorter: (a, b) => compare(a.profilename, b.profilename),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			width: '10%',
 			setFilter: true
 		},
 		{
@@ -58,7 +59,8 @@ class Email extends Component {
 			key: 'description',
 			sorter: (a, b) => compare(a.description, b.description),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			ellipsis: true,
+			width: '15%',
 			setFilter: true
 		},
 		{
