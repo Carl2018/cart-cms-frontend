@@ -229,6 +229,10 @@ class ProcessDrawer extends Component {
 	}
 
 	render(){
+		const categoryname = this.props.record.categoryname;
+		const email = this.props.record.email;
+		const accountname = this.props.record.accountname;
+		const last_processed_by = this.props.record.last_processed_by;
 		return (
 			<div 
 				className='ProcessDrawer'
@@ -254,23 +258,42 @@ class ProcessDrawer extends Component {
 									{ this.genStatus() } 
 								</Descriptions.Item>
 								<Descriptions.Item label="Category">
-									{ this.props.record.categoryname }
+									{ 
+										categoryname && categoryname.length > 20 ?
+										categoryname.slice(0,20) + '...' : categoryname
+									}
 								</Descriptions.Item>
-								<Descriptions.Item label="Inquirer Email">
-									{ this.props.record.email }
-								</Descriptions.Item>
-								<Descriptions.Item 
-									label="Account Bound"
+								<Descriptions.Item
 									span={ 2 }
+									label="Inquirer Email"
 								>
-									{ this.props.record.accountname }
+									{ 
+										email && email.length > 20 ?
+										email.slice(0,20) + '...' : email
+									}
 								</Descriptions.Item>
 								<Descriptions.Item label="Last Touch">
-									{ this.props.record.last_processed_by }
+									{ 
+										last_processed_by && last_processed_by.length > 15 ?
+										last_processed_by.slice(0,15) + '...' : 
+										last_processed_by
+									}
+								</Descriptions.Item>
+								<Descriptions.Item
+									span={ 2 }
+									label="Account Bound"
+								>
+									{ 
+										accountname && accountname.length > 20 ?
+										accountname.slice(0,20) + '...' : accountname
+									}
+								</Descriptions.Item>
+								<Descriptions.Item label="Created At">
+									{ this.props.record.created_at }
 								</Descriptions.Item>
 								<Descriptions.Item 
 									label="Remarks"
-									span={ 2 }
+									span={ 3 }
 								>
 									{ this.props.record.remarks }
 								</Descriptions.Item>

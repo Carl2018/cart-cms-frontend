@@ -169,27 +169,6 @@ class TableDrawer extends Component {
 								/>
 							</Form.Item>
 							<Form.Item
-								key={ "status" }
-								label={ "Status" }
-								name={ "status" }
-								rules={[  
-									{
-										required: true,
-										message: 'status cannot be empty',
-									}
-								]}
-								initialValue={ this.props.record.status }
-							>
-								<Select
-									disabled
-									placeholder={ "Use the search above to autofill this field" }
-								>
-									<Option value="u">Unbanned</Option>
-									<Option value="h">Hard Banned</Option>
-									<Option value="s">Soft Banned</Option>
-								</Select>
-							</Form.Item>
-							<Form.Item
 								key={ "account_type" }
 								label={ "Account Type" }
 								name={ "account_type" }
@@ -209,6 +188,27 @@ class TableDrawer extends Component {
 									<Option value="p">Phone</Option>
 									<Option value="a">Apple</Option>
 									<Option value="g">Google</Option>
+								</Select>
+							</Form.Item>
+							<Form.Item
+								key={ "status" }
+								label={ "Status" }
+								name={ "status" }
+								rules={[  
+									{
+										required: true,
+										message: 'status cannot be empty',
+									}
+								]}
+								initialValue={ this.props.record.status }
+							>
+								<Select
+									disabled
+									placeholder={ "Use the search above to autofill this field" }
+								>
+									<Option value="u">Unbanned</Option>
+									<Option value="h">Hard Banned</Option>
+									<Option value="s">Soft Banned</Option>
 								</Select>
 							</Form.Item>
 							<Form.Item

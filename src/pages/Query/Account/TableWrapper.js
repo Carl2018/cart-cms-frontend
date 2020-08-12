@@ -115,7 +115,8 @@ class TableWrapper extends Component {
 					</Popconfirm>
 				</Space>
 			),
-			width: '20%',
+			fixed: 'right',
+			width: 200,
 			setFilter: false
 		},
 	];
@@ -252,6 +253,7 @@ class TableWrapper extends Component {
 						selectedRowKeys={ this.state.selectedRowKeys }
 						onSelectChange={ this.handleSelectChange }
 						isSmall={ this.props.isSmall }
+						scroll={ this.props.scroll }
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
 					/>

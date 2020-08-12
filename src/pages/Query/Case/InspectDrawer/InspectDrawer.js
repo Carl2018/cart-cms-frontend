@@ -108,7 +108,6 @@ class InspectDrawer extends Component {
 			sorter: (a, b) => compare(a.details, b.details),
 			sortDirection: ['ascend', 'descend'],
 			key: 'details',
-			ellipsis: true,
 			width: '25%',
 			setFilter: false
 		},
@@ -166,6 +165,15 @@ class InspectDrawer extends Component {
 			dataIndex: 'accountname',
 			key: 'accountname',
 			width: '20%',
+			ellipsis: true,
+			setFilter: false
+		},
+		{
+			title: 'Candidate ID',
+			dataIndex: 'candidate_id',
+			key: 'candidate_id',
+			ellipsis: true,
+			width: '20%',
 			setFilter: false
 		},
 		{
@@ -206,13 +214,6 @@ class InspectDrawer extends Component {
 			},
 		},
 		{
-			title: 'Candidate ID',
-			dataIndex: 'candidate_id',
-			key: 'candidate_id',
-			width: '20%',
-			setFilter: false
-		},
-		{
 			title: 'Status',
 			dataIndex: 'status',
 			key: 'status',
@@ -249,6 +250,7 @@ class InspectDrawer extends Component {
 			title: 'Region',
 			dataIndex: 'region',
 			key: 'region',
+			ellipsis: true,
 			width: '10%',
 			setFilter: false
 		},
@@ -256,6 +258,7 @@ class InspectDrawer extends Component {
 			title: 'Physical Region',
 			dataIndex: 'physical_region',
 			key: 'physical_region',
+			ellipsis: true,
 			width: '20%',
 			setFilter: false
 		},
@@ -511,6 +514,9 @@ class InspectDrawer extends Component {
 	)
 
 	render(){
+		const categoryname = this.props.dataCase.categoryname;
+		const last_processed_by = this.props.dataCase.last_processed_by;
+		const remarks = this.props.dataCase.remarks;
 		return (
 			<div 
 				className='InspectDrawer'
@@ -532,27 +538,24 @@ class InspectDrawer extends Component {
 							>
 								<Item
 									label="Case ID" 
-									span = { 2 } 
+									span = { 1 } 
 								> 
 									{ this.props.dataCase.id }
+								</Item>
+								<Item
+									label="Status"
+									span = { 1 } 
+								>
+									{ this.getStatus( this.props.dataCase.status ) }
 								</Item>
 								<Item
 									label="Category"
 									span = { 1 } 
 								>
-									{ this.props.dataCase.categoryname}
-								</Item>
-								<Item
-									label="Status"
-									span = { 2 } 
-								>
-									{ this.getStatus( this.props.dataCase.status ) }
-								</Item>
-								<Item 
-									label="Labels"
-									span = { 1 } 
-								>
-									{ this.getLabels( this.props.dataEmail.labelname ) }
+									{ 
+										categoryname && categoryname.length > 20 ?
+										categoryname.slice(0,20) + '...' : categoryname
+									}
 								</Item>
 								<Item
 									label="Created At"
@@ -564,13 +567,23 @@ class InspectDrawer extends Component {
 									label="Last Touch" 
 									span = { 1 } 
 								>
-									{ this.props.dataCase.last_processed_by }
+									{ 
+										last_processed_by && last_processed_by.length > 15 ?
+										last_processed_by.slice(0,15) + '...' : 
+										last_processed_by
+									}
+								</Item>
+								<Item 
+									label="Labels"
+									span = { 3 } 
+								>
+									{ this.getLabels( this.props.dataEmail.labelname ) }
 								</Item>
 								<Item 
 									label="Remarks" 
 									span = { 3 } 
 								>
-									{ this.props.dataCase.remarks }
+									{ remarks }
 								</Item>
 							</Descriptions>
 						</Card>

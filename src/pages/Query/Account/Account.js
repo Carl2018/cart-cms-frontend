@@ -42,7 +42,20 @@ class Account extends Component {
 			key: 'accountname',
 			sorter: (a, b) => compare(a.accountname, b.accountname),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			fixed: 'left',
+			ellipsis: true,
+			width: 180,
+			setFilter: true
+		},
+		{
+			title: 'Candidate ID',
+			dataIndex: 'candidate_id',
+			key: 'candidate_id',
+			sorter: (a, b) => compare(a.candidate_id, b.candidate_id),
+			sortDirection: ['ascend', 'descend'],
+			fixed: 'left',
+			ellipsis: true,
+			width: 140,
 			setFilter: true
 		},
 		{
@@ -82,16 +95,7 @@ class Account extends Component {
 					</Tag>
 				);
 			},
-			width: '10%',
-		},
-		{
-			title: 'Candidate ID',
-			dataIndex: 'candidate_id',
-			key: 'candidate_id',
-			sorter: (a, b) => compare(a.candidate_id, b.candidate_id),
-			sortDirection: ['ascend', 'descend'],
-			width: '12%',
-			setFilter: true
+			width: 120,
 		},
 		{
 			title: 'Status',
@@ -126,7 +130,7 @@ class Account extends Component {
 					</Tag>
 				);
 			},
-			width: '8%',
+			width: 100,
 		},
 		{
 			title: 'Region',
@@ -134,7 +138,8 @@ class Account extends Component {
 			key: 'region',
 			sorter: (a, b) => compare(a.region, b.region),
 			sortDirection: ['ascend', 'descend'],
-			width: '8%',
+			ellipsis: true,
+			width: 120,
 			setFilter: true
 		},
 		{
@@ -143,7 +148,8 @@ class Account extends Component {
 			key: 'physical_region',
 			sorter: (a, b) => compare(a.physical_region, b.physical_region),
 			sortDirection: ['ascend', 'descend'],
-			width: '12%',
+			ellipsis: true,
+			width: 120,
 			setFilter: true
 		},
 		{
@@ -152,7 +158,7 @@ class Account extends Component {
 			key: 'db',
 			sorter: (a, b) => compare(a.db, b.db),
 			sortDirection: ['ascend', 'descend'],
-			width: '7%',
+			width: 120,
 			render: db => {
 				return (
 					<span>
@@ -245,6 +251,7 @@ class Account extends Component {
 						drawerTitle='An Account'
 						loading={ this.props.loading }
 						isSmall={ this.props.isSmall }
+						scroll={ { x:1600 } }
 						showHeader={ this.props.showHeader }
 						showDropdown={ this.props.showDropdown }
 						// api props

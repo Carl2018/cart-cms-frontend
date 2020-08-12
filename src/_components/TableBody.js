@@ -151,6 +151,7 @@ class TableBody extends Component {
 							dataSource={ data } 
 							rowSelection={ rowSelection } 
 							size={ this.props.isSmall ? "small" : "default" }
+							scroll={ this.props.scroll }
 							rowKey={ "id" }
 							pagination={ this.props.pagination }
 							showHeader={ this.props.showHeader }
@@ -162,6 +163,7 @@ class TableBody extends Component {
 							columns={ columns } 
 							dataSource={ data } 
 							size={ this.props.isSmall ? "small" : "default" }
+							scroll={ this.props.scroll }
 							rowKey={ "id" }
 							pagination={ this.props.pagination }
 							showHeader={ this.props.showHeader }

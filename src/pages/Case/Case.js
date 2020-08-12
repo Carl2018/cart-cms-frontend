@@ -65,7 +65,7 @@ class Case extends Component {
 			key: 'id',
 			sorter: (a, b) => compare(a.id, b.id),
 			sortDirection: ['ascend', 'descend'],
-			width: '8%',
+			width: 120,
 			setFilter: true
 		},
 		{
@@ -74,7 +74,7 @@ class Case extends Component {
 			key: 'status',
 			sorter: (a, b) => compare(a.status, b.status),
 			sortDirection: ['ascend', 'descend'],
-			width: '10%',
+			width: 80,
 			//setFilter: true
 			render: status => {
 				let color = 'geekblue';
@@ -123,7 +123,7 @@ class Case extends Component {
 			sorter: (a, b) => compare(a.categoryname, b.categoryname),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: '15%',
+			width: 160,
 			setFilter: true
 		},
 		{
@@ -133,7 +133,7 @@ class Case extends Component {
 			sorter: (a, b) => compare(a.email, b.email),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: '20%',
+			width: 200,
 			setFilter: true
 		},
 		{
@@ -143,7 +143,7 @@ class Case extends Component {
 			sorter: (a, b) => compare(a.accountname, b.accountname),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: '15%',
+			width: 200,
 			setFilter: true
 		},
 		{
@@ -153,7 +153,7 @@ class Case extends Component {
 			sorter: (a, b) => compare(a.last_processed_by, b.last_processed_by),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: '12%',
+			width: 120,
 			setFilter: true
 		},
 	];
@@ -367,7 +367,6 @@ class Case extends Component {
 						columns={ this.columns }
 						formItems={ this.formItems }
 						tableHeader={ this.tableHeader }
-						isSmall={ true }
 						drawerTitle='A Case'
 						// api props
 						create={ this.createSync }
