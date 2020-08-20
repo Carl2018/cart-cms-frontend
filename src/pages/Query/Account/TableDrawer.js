@@ -75,7 +75,10 @@ class TableDrawer extends Component {
 	// handler for candidate id search
 	handleSearch = async data => {
 		this.setState({ spnning: true });
-		const response = await this.listSync({accountname: data });
+		const response = await this.listSync({
+			accountname: data,
+			db: this.formRef.current.getFieldValue('db'),
+		});
 		this.setState({ spnning: false });
 		if (response.code === 200) {
 			this.formRef.current.setFieldsValue({
@@ -84,12 +87,22 @@ class TableDrawer extends Component {
 				account_type: response.entry.account_type,
 				region: response.entry.region,
 				physical_region: response.entry.physical_region,
-				db: response.entry.db,
 			});
 			message.success("Candidate ID found");
 		} else {
 			message.error("Candidate ID not found");
 		}
+	}
+
+	// handle db change
+	handleChange = value => {
+		this.formRef.current.setFieldsValue({
+			candidate_id: null,
+			status: null,
+			account_type: null,
+			region: null,
+			physical_region: null,
+		});
 	}
 
 	// bind versions of CRUD
@@ -130,6 +143,26 @@ class TableDrawer extends Component {
 							onFinishFailed={ this.onFinishFailed }
 						>
 
+							<Form.Item
+								key={ "db" }
+								label={ "DB" }
+								name={ "db" }
+								rules={[  
+									{
+										required: true,
+										message: 'db cannot be empty',
+									}
+								]}
+								initialValue={ this.props.record.db || "ea" }
+							>
+								<Select
+									disabled={ this.props.disabled }
+									onChange={ this.handleChange }
+								>
+									<Option value="ea">Asia</Option>
+									<Option value="na">NA</Option>
+								</Select>
+							</Form.Item>
 							<Form.Item
 								key={ "accountname" }
 								label={ "Account Name" }
@@ -249,26 +282,6 @@ class TableDrawer extends Component {
 									disabled
 									placeholder={ "Use the search above to autofill this field" }
 								/>
-							</Form.Item>
-							<Form.Item
-								key={ "db" }
-								label={ "DB" }
-								name={ "db" }
-								rules={[  
-									{
-										required: true,
-										message: 'db cannot be empty',
-									}
-								]}
-								initialValue={ this.props.record.db }
-							>
-								<Select
-									disabled
-									placeholder={ "Use the search above to autofill this field" }
-								>
-									<Option value="ea">Asia</Option>
-									<Option value="na">NA</Option>
-								</Select>
 							</Form.Item>
 							{ this.props.formItems.map( item => 
 								item.editable || this.props.disabled ? (
