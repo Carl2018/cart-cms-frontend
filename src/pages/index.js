@@ -1,4 +1,5 @@
 export * from './Account/Account';
+export * from './Candidate/Candidate';
 export * from './Case/Case';
 export * from './Category/Category';
 export * from './Email/Email';

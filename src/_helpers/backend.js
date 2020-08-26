@@ -82,7 +82,10 @@ async function updateSync(config, id, record) {
 			.then( result => entry = result.entry )
 			.catch( error => entry = error );
 		// data[index] = entry;
-		data = [ entry, ...data.slice(0,index), ...data.slice(index+1) ];
+		if (entry)
+			data = [ entry, ...data.slice(0,index), ...data.slice(index+1) ];
+		else
+			data = [ ...data.slice(0,index), ...data.slice(index+1) ];
 		this.setState({ [dataName]: data });
 		if (editSuccessMsg)
 			message.success(editSuccessMsg);

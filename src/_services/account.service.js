@@ -8,10 +8,14 @@ export const accountService = {
 		retrieveCandidateId,
     retrieveFlag,
     retrieveConversation,
+    retrieve_candidate,
     list,
     listByEmail,
+    list_candidates,
+    search_candidates,
     update,
     ban,
+    ban_candidate,
     hide,
 };
 
@@ -81,6 +85,20 @@ function retrieveConversation(params={}) {
 			.then(handleResponse);
 }
 
+function retrieve_candidate(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/account/retrieve_candidate`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
 function list(params={}) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/account/list`);
@@ -105,6 +123,34 @@ function listByEmail(filters) {
 			.then(handleResponse);
 }
 
+function list_candidates(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/account/list_candidates`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function search_candidates(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/account/search_candidates`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
 function update(record) {
     const requestOptions = { 
 			method: 'PUT', 
@@ -122,6 +168,16 @@ function ban(record) {
 			body: JSON.stringify(record)
 		};
     return fetch(`${config.apiUrl}/account/ban`, requestOptions)
+			.then(handleResponse);
+}
+
+function ban_candidate(record) {
+    const requestOptions = { 
+			method: 'PUT', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/account/ban_candidate`, requestOptions)
 			.then(handleResponse);
 }
 

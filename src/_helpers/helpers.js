@@ -1,6 +1,6 @@
 export const helpers = {
     compare,
-    getCurrentDatetime,
+    toDatetime,
 		dynamicSort,
 };
 
@@ -10,8 +10,8 @@ function compare(a, b) {
 		if (a <  b) return -1;
 }
 
-function getCurrentDatetime() {
-	const today = new Date();
+function toDatetime(timestamp=null) {
+	const today = timestamp ? new Date(timestamp) : new Date();
 	const date = today.getFullYear()+'-'
 		+padZero( today.getMonth()+1 )+'-'
 		+padZero( today.getDate() );

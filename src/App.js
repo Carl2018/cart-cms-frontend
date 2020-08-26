@@ -7,6 +7,7 @@ import {
 	Login,
 	Home,
 	Query,
+	Candidate,
 	Case,
 	Account,
 	Email,
@@ -36,6 +37,7 @@ import {
   FileSearchOutlined,
   HddOutlined,
   HomeOutlined,
+  IdcardOutlined,
   LogoutOutlined,
   MailOutlined,
   MenuFoldOutlined,
@@ -160,6 +162,14 @@ class App extends Component {
 								</Item>
 								<Item 
 									key="2" 
+									icon={<IdcardOutlined />}
+								>
+									<Link to="/candidate">
+										Candidates
+									</Link>
+								</Item>
+								<Item 
+									key="3" 
 									icon={<FileSearchOutlined />}
 								>
 									<Link to="/case">
@@ -167,7 +177,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="3" 
+									key="4" 
 									icon={<TeamOutlined />}
 								>
 									<Link to="/account">
@@ -175,7 +185,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="4" 
+									key="5" 
 									icon={<MailOutlined />}
 								>
 									<Link to="/email">
@@ -183,7 +193,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="5" 
+									key="6" 
 									icon={<ContactsOutlined />}
 								>
 									<Link to="/profile">
@@ -191,7 +201,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="6" 
+									key="7" 
 									icon={<TagOutlined />}
 								>
 									<Link to="/label">
@@ -199,7 +209,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="7" 
+									key="8" 
 									icon={<CopyOutlined />}
 								>
 									<Link to="/template">
@@ -207,7 +217,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="8" 
+									key="9" 
 									icon={<HddOutlined />}
 								>
 									<Link to="/category">
@@ -265,6 +275,7 @@ class App extends Component {
 									<Route path="/login" component={ Login } />
 									<PrivateRoute exact path="/" component={ Home } />
 									<PrivateRoute path="/query" component={ Query }/>
+									<PrivateRoute path="/candidate" component={ Candidate }/>
 									<PrivateRoute path="/case" component={ Case }/>
 									<PrivateRoute path="/account" component={ Account }/>
 									<PrivateRoute path="/email" component={ Email }/>
