@@ -34,6 +34,7 @@ class Candidate extends Component {
 			// populate the table body with data
 			data: [],
 			spinning: false,
+			db: 'ea',
 		};
 	}
 	
@@ -174,6 +175,13 @@ class Candidate extends Component {
 		</>
 	)
 
+	// handler for change db
+	handleChangeDb = db => {
+		this.setState({ db }, async () => {
+			await this.listSync();
+		});	
+	}
+
 	// bind versions of CRUD
 	config = {
 		service: accountService,
@@ -182,12 +190,19 @@ class Candidate extends Component {
 		update: "ban_candidate",
 		dataName: "data",
 	};
-	listSync = listSync.bind(this, this.config);
+	list = listSync.bind(this, this.config);
+	listSync = () => {
+		this.setState( { spinning: true }, async () => {
+			await this.list({ db: this.state.db });
+			this.setState({ spinning: false });
+		});
+	}
 	ban = updateSync.bind(this, this.config);
 	softBanSync = async record => {
 		const body = {
 			candidate_id: record.id,
 			ban_type: "S",
+			db: this.state.db,
 		}
 		await this.ban(record.id, body);
 	}
@@ -195,6 +210,7 @@ class Candidate extends Component {
 		const body = {
 			candidate_id: record.id,
 			ban_type: "H",
+			db: this.state.db,
 		}
 		await this.ban(record.id, body);
 	}
@@ -203,6 +219,7 @@ class Candidate extends Component {
 			candidate_id: id,
 			ban_type: "B",
 			blacklist_type: record.blacklist_type,
+			db: this.state.db,
 		}
 		await this.ban(id, body);
 	}
@@ -212,7 +229,7 @@ class Candidate extends Component {
 	});
 	searchCandidatesSync = params => {
 		this.setState( { spinning: true }, async () => {
-			await this.searchCandidates(params);
+			await this.searchCandidates({...params, db: this.state.db});
 			this.setState({ spinning: false });
 		});
 	}
@@ -246,6 +263,7 @@ class Candidate extends Component {
 						hardBanSync={ this.hardBanSync }
 						blacklistSync={ this.blacklistSync }
 						searchCandidatesSync={ this.searchCandidatesSync }
+						onChangeDb={ this.handleChangeDb }
 					>
 					</TableWrapper>
 				</Spin>

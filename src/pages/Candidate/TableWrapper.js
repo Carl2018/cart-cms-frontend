@@ -9,6 +9,7 @@ import {
 	Menu, 
 	Popconfirm, 
 	Row, 
+	Select, 
 	Space, 
 } from 'antd';
 import { EyeInvisibleOutlined, UserDeleteOutlined, ExceptionOutlined } from '@ant-design/icons';
@@ -18,6 +19,7 @@ import { TableBody } from '_components'
 import { TableDrawer } from '_components'
 
 const { Search } = Input; 
+const { Option } = Select; 
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -147,13 +149,26 @@ class TableWrapper extends Component {
 						style={{ fontSize: '24px', textAlign: 'left' }}
 						span={ 12 } 
 					>
-							<Search
-								onSearch={ this.handleSearch }
-								placeholder="Search Candidate by Message Keywords"
-								style={{ width: 400 }}
-								size="middle"
-								allowClear
-							/>
+							<Space>
+								<span style={{ fontSize: "16px", marginLeft: "8px" }} >
+									Database:
+								</span>
+								<Select
+									defaultValue="ea"
+									onChange={ this.props.onChangeDb  }
+									style={{ marginRight: "16px" }}
+								>
+									<Option value="ea">Asia</Option>
+									<Option value="na">NA</Option>
+								</Select>
+								<Search
+									onSearch={ this.handleSearch }
+									placeholder="Search Candidate by Message Keywords"
+									style={{ width: 400 }}
+									size="middle"
+									allowClear
+								/>
+							</Space>
 					</Col>
 				</Row>
 				<div>
