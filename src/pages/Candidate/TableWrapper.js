@@ -7,6 +7,7 @@ import {
 	Dropdown, 
 	Input, 
 	Menu, 
+	Pagination, 
 	Popconfirm, 
 	Row, 
 	Select, 
@@ -104,10 +105,13 @@ class TableWrapper extends Component {
 
 	// handler for search
 	handleSearch = data => {
-		if (data)
+		if (data) {
 			this.props.searchCandidatesSync({ keywords: data });
-		else
-			this.props.listSync();
+		} else {
+			const page = 1;
+			const size = 10;
+			this.props.onChangePage(page, size);
+		}
 	}
 
 	// handlers for actions in TableDrawer
@@ -178,8 +182,23 @@ class TableWrapper extends Component {
 						isSmall={ this.props.isSmall }
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
+						pagination={ this.props.pagination }
 					/>
 				</div>
+				{ this.props.pagination ? <></> :
+					<div style={{marginTop: "16px", textAlign: "right" }} >
+						<Pagination
+							showSizeChanger
+							showQuickJumper
+							current={ this.props.currentPage }
+							pageSize={ this.props.pageSize }
+							pageSizeOptions={ [10, 20, 50] }
+							total={ this.props.total }
+							onChange={ this.props.onChangePage }
+							onShowSizeChange={ this.props.onChangeSize }
+						/>
+					</div>
+				}
 				<div>
 					<TableDrawer 
 						tableDrawerKey={ this.state.tableDrawerKey }

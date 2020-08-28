@@ -35,12 +35,17 @@ class Candidate extends Component {
 			data: [],
 			spinning: false,
 			db: 'ea',
+			// pagination
+			pagination: false,
+			currentPage: 1,
+			pageSize: 10,
+			total: 5000,
 		};
 	}
 	
 	componentDidMount() {
 		this.setState({ spinning: true }, async () => {
-			await this.listSync();
+			await this.listSync(0, 10);
 			this.setState({ spinning: false });
 		});
 	}
@@ -178,8 +183,30 @@ class Candidate extends Component {
 	// handler for change db
 	handleChangeDb = db => {
 		this.setState({ db }, async () => {
-			await this.listSync();
+			const offset = 0;
+			const size = 10;
+			await this.listSync(offset, size);
+			this.setState({ 
+				currentPage: 1,
+				pageSize: size,
+			});
 		});	
+	}
+
+	// handlers for pagiantion
+	handleChangePage = async (page, size) => {
+		if (this.state.pageSize === size) {
+			const offset = (page - 1) * size;
+			await this.listSync(offset, size);
+			this.setState({ currentPage: page });
+		} else {
+			const offset = 0;
+			await this.listSync(offset, size);
+			this.setState({ 
+				currentPage: 1,
+				pageSize: size,
+			});
+		}
 	}
 
 	// bind versions of CRUD
@@ -191,9 +218,9 @@ class Candidate extends Component {
 		dataName: "data",
 	};
 	list = listSync.bind(this, this.config);
-	listSync = () => {
-		this.setState( { spinning: true }, async () => {
-			await this.list({ db: this.state.db });
+	listSync = (offset=0, limit=1) => {
+		this.setState( { spinning: true, pagination: false }, async () => {
+			await this.list({ db: this.state.db, offset, limit });
 			this.setState({ spinning: false });
 		});
 	}
@@ -228,7 +255,7 @@ class Candidate extends Component {
 		list: "search_candidates",
 	});
 	searchCandidatesSync = params => {
-		this.setState( { spinning: true }, async () => {
+		this.setState( { spinning: true, pagination: true }, async () => {
 			await this.searchCandidates({...params, db: this.state.db});
 			this.setState({ spinning: false });
 		});
@@ -251,6 +278,10 @@ class Candidate extends Component {
 						key={ this.state.tableWrapperKey }
 						// data props
 						data={ this.state.data }
+						currentPage={ this.state.currentPage }
+						pageSize={ this.state.pageSize }
+						total={ this.state.total }
+						pagination={ this.state.pagination }
 						// display props
 						columns={ this.columns }
 						formItems={ this.formItems }
@@ -264,6 +295,8 @@ class Candidate extends Component {
 						blacklistSync={ this.blacklistSync }
 						searchCandidatesSync={ this.searchCandidatesSync }
 						onChangeDb={ this.handleChangeDb }
+						onChangePage={ this.handleChangePage }
+						onChangeSize={ this.handleChangePage }
 					>
 					</TableWrapper>
 				</Spin>
