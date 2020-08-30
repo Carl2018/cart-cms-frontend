@@ -34,7 +34,7 @@ class Candidate extends Component {
 			// populate the table body with data
 			data: [],
 			spinning: false,
-			db: 'ea',
+			cache: 'hk',
 			// pagination
 			pagination: false,
 			currentPage: 1,
@@ -180,9 +180,9 @@ class Candidate extends Component {
 		</>
 	)
 
-	// handler for change db
-	handleChangeDb = db => {
-		this.setState({ db }, async () => {
+	// handler for change cache
+	handleChangeCache = cache => {
+		this.setState({ cache }, async () => {
 			const offset = 0;
 			const size = 10;
 			await this.listSync(offset, size);
@@ -220,7 +220,7 @@ class Candidate extends Component {
 	list = listSync.bind(this, this.config);
 	listSync = (offset=0, limit=1) => {
 		this.setState( { spinning: true, pagination: false }, async () => {
-			await this.list({ db: this.state.db, offset, limit });
+			await this.list({ cache: this.state.cache, offset, limit });
 			this.setState({ spinning: false });
 		});
 	}
@@ -229,7 +229,7 @@ class Candidate extends Component {
 		const body = {
 			candidate_id: record.id,
 			ban_type: "S",
-			db: this.state.db,
+			cache: this.state.cache,
 		}
 		await this.ban(record.id, body);
 	}
@@ -237,7 +237,7 @@ class Candidate extends Component {
 		const body = {
 			candidate_id: record.id,
 			ban_type: "H",
-			db: this.state.db,
+			cache: this.state.cache,
 		}
 		await this.ban(record.id, body);
 	}
@@ -246,7 +246,7 @@ class Candidate extends Component {
 			candidate_id: id,
 			ban_type: "B",
 			blacklist_type: record.blacklist_type,
-			db: this.state.db,
+			cache: this.state.cache,
 		}
 		await this.ban(id, body);
 	}
@@ -256,7 +256,7 @@ class Candidate extends Component {
 	});
 	searchCandidatesSync = params => {
 		this.setState( { spinning: true, pagination: true }, async () => {
-			await this.searchCandidates({...params, db: this.state.db});
+			await this.searchCandidates({...params, cache: this.state.cache});
 			this.setState({ spinning: false });
 		});
 	}
@@ -294,7 +294,7 @@ class Candidate extends Component {
 						hardBanSync={ this.hardBanSync }
 						blacklistSync={ this.blacklistSync }
 						searchCandidatesSync={ this.searchCandidatesSync }
-						onChangeDb={ this.handleChangeDb }
+						onChangeCache={ this.handleChangeCache }
 						onChangePage={ this.handleChangePage }
 						onChangeSize={ this.handleChangePage }
 					>

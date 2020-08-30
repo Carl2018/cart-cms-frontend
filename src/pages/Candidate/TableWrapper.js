@@ -155,15 +155,17 @@ class TableWrapper extends Component {
 					>
 							<Space>
 								<span style={{ fontSize: "16px", marginLeft: "8px" }} >
-									Database:
+									Cache:
 								</span>
 								<Select
-									defaultValue="ea"
-									onChange={ this.props.onChangeDb  }
+									defaultValue="hk"
+									onChange={ this.props.onChangeCache  }
 									style={{ marginRight: "16px" }}
 								>
-									<Option value="ea">Asia</Option>
-									<Option value="na">NA</Option>
+									<Option value="hk">Hong Kong</Option>
+									<Option value="tw">Taiwan</Option>
+									<Option value="my">Malaysia</Option>
+									<Option value="ca">Canada</Option>
 								</Select>
 								<Search
 									onSearch={ this.handleSearch }
