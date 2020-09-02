@@ -76,7 +76,7 @@ class Query extends Component {
 		this.setState({ spinning: true }, async () => {
 			await this.listEmails();
 			await this.listCases();
-			await this.listAccounts();
+			// await this.listAccounts();
 			await this.listLabels();
 			await this.listCategories();
 			this.setState({ spinning: false });
@@ -103,13 +103,13 @@ class Query extends Component {
 	}
 
 	// update all 3 tables upon a search
-	updateTables = data => {
+	updateTables = async data => {
 		const email = data;
 		const found = this.state.emails
 			.find( item => item.email === email );
 		const profilename = found?.profilename;
 		const emailId = found?.id;
-		this.updateData(profilename);
+		await this.updateData(profilename);
 		this.setState({ 
 			email,
 			emailId,
@@ -168,19 +168,23 @@ class Query extends Component {
 		const dataCase = this.state.cases
 			.filter( item => emails.includes( item.email ) )
 		this.setState({ dataCase });
+		return new Promise(function(resolve, reject){ resolve(1) });
 	}
 
 	// update dataAccount
-	updateDataAccount = (profilename=this.state.profilename) => {
+	updateDataAccount = async (profilename=this.state.profilename) => {
+		await this.listAccountsBound({profilename});
 		const dataAccount = this.state.accounts
 			.filter( item => item.profilename === profilename );
 		this.setState({ dataAccount });
+		return new Promise(function(resolve, reject){ resolve(1) });
 	}
 
 	// update all 3 data streams 
-	updateData = (profilename=this.state.profilename) => {
-		this.updateDataCase( profilename );
-		this.updateDataAccount( profilename );
+	updateData = async (profilename=this.state.profilename) => {
+		await this.updateDataCase( profilename );
+		await this.updateDataAccount( profilename );
+		return new Promise(function(resolve, reject){ resolve(1) });
 	}
 
 	// bind versions of CRUD
@@ -319,6 +323,10 @@ class Query extends Component {
 		this.updateDataAccount();
 	}
 	listAccounts = listSync.bind(this, this.configAccount);
+	listAccountsBound = listSync.bind(this, {
+		...this.configAccount,
+		list: "list_bound",
+	});
 	updateAccount = updateSync.bind(this, this.configAccount);
 	updateAccountSync = async (id, record) => {
 		await this.updateAccount(id, record);

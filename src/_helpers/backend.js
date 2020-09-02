@@ -58,7 +58,9 @@ async function listSync(config, params) {
 			this.setState({ [dataName]: result.entry });
 		})
 		.catch( error => response = error );
-	return response;
+	return new Promise(function(resolve, reject){
+		resolve(response);
+	});
 }
 // interface for update sync
 async function updateSync(config, id, record) {

@@ -10,6 +10,7 @@ export const accountService = {
     retrieveConversation,
     retrieve_candidate,
     list,
+    list_bound,
     listByEmail,
     list_candidates,
     search_candidates,
@@ -102,6 +103,20 @@ function retrieve_candidate(params={}) {
 function list(params={}) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/account/list`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function list_bound(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/account/list_bound`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
