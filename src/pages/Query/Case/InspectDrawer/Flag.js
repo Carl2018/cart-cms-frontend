@@ -7,6 +7,7 @@ import {
 	InputNumber,
 	Input,
 	Modal,
+	Pagination, 
 	Row,
 	Space,
 	Spin,
@@ -36,10 +37,16 @@ class Flag extends Component {
 			flags: [],
 			// for search
 			interval: 1,
-			candidateId: "",
+			remarks: "",
+			reporterId: "",
+			suspectId: "",
 			// for AutoComplete
 			open: false,
 			options: [],
+			// for pagination
+			currentPage: 0,
+			pageSize: 10,
+			total: 5000,
 		};
 	}
 	
@@ -102,30 +109,49 @@ class Flag extends Component {
 
 	handleChangeOption = data => {
 		this.setState({ 
+			suspectId: data,
 			open: true,
 			options: this.getOptions(),
 		});
 	}
 
-	handleChange = value => {
+	handleChangeInterval = value => {
 		if (!isFinite(value)) {
-			message.error("Days should be a number");
+			message.error("Hours should be a number");
 			this.setState({ interval: 1 });
 			return;
 		}
 		this.setState({ interval: Math.round(value) });
 	}
 
+	handleChangeRemarks = event => this.setState({ remarks: event.target.value });
+
+	handleChangeReporterId = event => this.setState({ reporterId: event.target.value });
+
 	handleSearch = async value => {
 		const interval = this.state.interval;
-		const candidateId = value;
-		if (!isFinite(candidateId)) {
-			message.error("Candidate ID should be a number");
+		const suspectId = value;
+		const reporterId = this.state.reporterId;
+		const remarks = this.state.remarks;
+		if (!isFinite(reporterId)) {
+			message.error("Reporter ID should be a number");
+			return;
+		}
+			
+		if (!isFinite(suspectId)) {
+			message.error("Suspect ID should be a number");
 			return;
 		}
 			
 		this.setState({ loading: true });
-		const response = await this.listFlags({candidate_id: candidateId, interval});
+		const response = await this.listFlags({
+			suspect: suspectId, 
+			reporter: reporterId, 
+			remarks, 
+			interval,
+			page: this.state.currentPage,
+			items_per_page: this.state.pageSize,
+		});
 		if (response.code === 200)
 			message.info("Flags found");
 		else {
@@ -135,12 +161,59 @@ class Flag extends Component {
 		this.setState({ loading: false });
 	}
 
+	// handlers for pagiantion
+	handleChangePage = async (page, size) => {
+		const suspectId = this.state.suspectId;
+		if (!isFinite(suspectId)) {
+			message.error("Suspect ID should be a number");
+			return;
+		}
+		const reporterId = this.state.reporterId;
+		if (!isFinite(reporterId)) {
+			message.error("Reporter ID should be a number");
+			return;
+		}
+		const remarks = this.state.remarks;
+		const interval = this.state.interval;
+		if (this.state.pageSize === size) {
+			page = page - 1;
+			this.setState({ currentPage: page + 1 });
+		} else {
+			page = 0;
+			this.setState({ 
+				currentPage: page + 1,
+				pageSize: size, 
+			});
+		}
+		const items_per_page = size;
+			
+		this.setState({ loading: true });
+		const response = await this.listFlags({
+			suspect: suspectId, 
+			reporter: reporterId, 
+			remarks, 
+			interval,
+			page,
+			items_per_page,
+		});
+		if (response.code === 200)
+			message.info("Flags found");
+		else {
+			message.success("The account has not been reported for this interval");
+			this.setState({ flags: [] });
+		}
+		this.setState({ loading: false });
+	}
+
+
 	// handler for click close
 	onCancel = event => {
 		this.setState({ 
 			flags: [],
 			interval: 1,
-			candidateId: "",
+			remarks: "",
+			reporterId: "",
+			suspectId: "",
 		});
 		this.props.onCancel();
 	}
@@ -169,37 +242,63 @@ class Flag extends Component {
 					<div
 						style={{ margin: "0px 4px 32px 4px" }}
 					>
-						<Space size="middle" >
-								<span>
-									Interval(days):
-								</span>
-								<InputNumber
-									placeholder="Interval in Days"
-									onChange={ this.handleChange }
-									value={ this.state.interval }
-									style={{ width: 160 }}
-									min={ 1 }
+						<Space size="large" >
+							<span>
+								Interval(hours):
+							</span>
+							<InputNumber
+								placeholder="Interval in Hours"
+								onChange={ this.handleChangeInterval }
+								value={ this.state.interval }
+								style={{ width: 100 }}
+								min={ 1 }
+							/>
+							<span>
+								Remarks:
+							</span>
+							<Input
+								placeholder="Remarks"
+								onChange={ this.handleChangeRemarks }
+								value={ this.state.remarks }
+								style={{ width: 500 }}
+								min={ 1 }
+							/>
+						</Space>
+					</div>
+					<div
+						style={{ margin: "0px 4px 32px 4px" }}
+					>
+						<Space size="large" >
+							<span>
+								Reporter ID:
+							</span>
+							<Input
+								placeholder="Reporter ID"
+								onChange={ this.handleChangeReporterId }
+								value={ this.state.reporterId }
+								style={{ width: 300 }}
+								min={ 1 }
+							/>
+							<span>
+								Suspect ID:
+							</span>
+							<AutoComplete
+								options={ this.state.options }
+								defaultValue={ this.props.dataAccount?.candidate_id }
+								open={ this.state.open }
+								onFocus={ this.handleChangeOption.bind(this, "") }
+								onBlur ={ () => this.setState({ open: false }) }
+								onChange ={ this.handleChangeOption }
+							>
+								<Search
+									placeholder="Suspect ID"
+									onSearch={ data => {
+										this.setState({ open: false }, 
+											() => this.handleSearch(data));
+									}}
+									style={{ width: 300 }}
 								/>
-								<span>
-									Candidate ID:
-								</span>
-								<AutoComplete
-									options={ this.state.options }
-									defaultValue={ this.props.dataAccount?.candidate_id }
-									open={ this.state.open }
-									onFocus={ this.handleChangeOption.bind(this, "") }
-									onBlur ={ () => this.setState({ open: false }) }
-									onChange ={ this.handleChangeOption }
-								>
-									<Search
-										placeholder="Candidate ID"
-										onSearch={ data => {
-											this.setState({ open: false }, 
-												() => this.handleSearch(data));
-										}}
-										style={{ width: 200 }}
-									/>
-								</AutoComplete>
+							</AutoComplete>
 						</Space>
 					</div>
 					<div>
@@ -209,6 +308,19 @@ class Flag extends Component {
 									columns={ this.columns } 
 									data={ this.state.flags }
 									isSmall={ true }
+									pagination={ false }
+								/>
+							</div>
+							<div style={{marginTop: "16px", textAlign: "right" }} >
+								<Pagination
+									showSizeChanger
+									showQuickJumper
+									current={ this.state.currentPage }
+									pageSize={ this.state.pageSize }
+									pageSizeOptions={ [10, 20, 50] }
+									total={ this.state.total }
+									onChange={ this.handleChangePage }
+									onShowSizeChange={ this.handleChangePage }
 								/>
 							</div>
 						</Spin>
