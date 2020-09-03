@@ -217,7 +217,7 @@ class InspectDrawer extends Component {
 			title: 'Status',
 			dataIndex: 'status',
 			key: 'status',
-			width: '10%',
+			width: '15%',
 			render: status => {
 				let color = 'default';
 				let text = 'Unknown';
@@ -259,7 +259,7 @@ class InspectDrawer extends Component {
 			dataIndex: 'physical_region',
 			key: 'physical_region',
 			ellipsis: true,
-			width: '20%',
+			width: '15%',
 			setFilter: false
 		},
 	];

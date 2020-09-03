@@ -97,9 +97,11 @@ class Query extends Component {
 
 	// perform a search when the search button is pressed
 	handleSearch = data => {
-		this.setState({ spinning: true }, () => {
-			this.updateTables(data.trim().toLowerCase());
-		});
+		if (data) {
+			this.setState({ spinning: true }, () => {
+				this.updateTables(data.trim().toLowerCase());
+			});
+		}
 	}
 
 	// update all 3 tables upon a search

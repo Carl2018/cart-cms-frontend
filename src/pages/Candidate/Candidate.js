@@ -58,7 +58,8 @@ class Candidate extends Component {
 			key: 'id',
 			sorter: (a, b) => compare(a.id, b.id),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			fixed: 'left',
+			width: 140,
 			setFilter: true
 		},
 		{
@@ -68,7 +69,7 @@ class Candidate extends Component {
 			sorter: (a, b) => compare(a.message, b.message),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: '15%',
+			width: 300,
 			setFilter: true
 		},
 		{
@@ -77,7 +78,7 @@ class Candidate extends Component {
 			key: 'timestamp',
 			sorter: (a, b) => compare(a.timestamp, b.timestamp),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			width: 140,
 			// setFilter: true,
 			render: timestamp => (<>{ toDatetime(Number(timestamp)*1000) }</>),
 		},
@@ -87,7 +88,7 @@ class Candidate extends Component {
 			key: 'state',
 			sorter: (a, b) => compare(a.state, b.state),
 			sortDirection: ['ascend', 'descend'],
-			width: '10%',
+			width: 140,
 			// setFilter: true,
 			render: state => {
 				let color = 'default';
@@ -119,7 +120,7 @@ class Candidate extends Component {
 			key: 'status',
 			sorter: (a, b) => compare(a.status, b.status),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			width: 140,
 			// setFilter: true,
 			render: status => {
 				let color = 'default';
@@ -288,6 +289,7 @@ class Candidate extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Candidate'
 						showDropdown={ false }
+						scroll={ {x:1600} }
 						// api props
 						listSync={ this.listSync }
 						softBanSync={ this.softBanSync}
