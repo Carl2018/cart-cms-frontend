@@ -7,6 +7,7 @@ import {
 	Input,
 	Modal,
 	Row,
+	Select,
 	Space,
 	Spin,
 	message,
@@ -24,6 +25,7 @@ import { backend } from "_helpers";
 // destructure imported components and objects
 const { listSync } = backend;
 const { Search } = Input;
+const { Option } = Select;
 
 class Conversation extends Component {
 	constructor(props) {
@@ -34,6 +36,7 @@ class Conversation extends Component {
 			// for TableBody
 			conversations: [],
 			// for search
+			db: "ea",
 			candidateId: "",
 			// for AutoComplete
 			open: false,
@@ -121,13 +124,17 @@ class Conversation extends Component {
 
 	handleSearch = async value => {
 		const candidateId = value;
+		const db = this.state.db;
 		if (!isFinite(candidateId)) {
 			message.error("Candidate ID should be a number");
 			return;
 		}
 			
 		this.setState({ loading: true });
-		const response = await this.listConversations({candidate_id: candidateId});
+		const response = await this.listConversations({
+			db,
+			candidate_id: candidateId,
+		});
 		if (response.code === 200)
 			message.success("Conversations found");
 		else {
@@ -137,9 +144,19 @@ class Conversation extends Component {
 		this.setState({ loading: false });
 	}
 
+	// handler for database change
+	handleChangeDb = db => {
+		this.setState({ 
+			db, 
+			conversations: [],
+			candidateId: "",
+		});
+	}
+
 	// handler for click close
 	onCancel = event => {
 		this.setState({ 
+			db: "ea",
 			conversations: [],
 			candidateId: "",
 		});
@@ -171,6 +188,17 @@ class Conversation extends Component {
 						style={{ margin: "0px 4px 32px 4px" }}
 					>
 						<Space size="middle" >
+								<span>
+									Database:
+								</span>
+								<Select
+									value={ this.state.db }
+									onChange={ this.handleChangeDb }
+									style={{ width: 100 }}
+								>
+									<Option value="ea">Asia</Option>
+									<Option value="na">NA</Option>
+								</Select>
 								<span>
 									Candidate ID:
 								</span>

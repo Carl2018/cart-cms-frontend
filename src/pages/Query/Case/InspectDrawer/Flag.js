@@ -9,6 +9,7 @@ import {
 	Modal,
 	Pagination, 
 	Row,
+	Select,
 	Space,
 	Spin,
 	message,
@@ -26,6 +27,7 @@ import { backend } from "_helpers";
 // destructure imported components and objects
 const { listSync } = backend;
 const { Search } = Input;
+const { Option } = Select;
 
 class Flag extends Component {
 	constructor(props) {
@@ -36,6 +38,7 @@ class Flag extends Component {
 			// for TableBody
 			flags: [],
 			// for search
+			db: "ea",
 			interval: 1,
 			remarks: "",
 			reporterId: "",
@@ -44,7 +47,7 @@ class Flag extends Component {
 			open: false,
 			options: [],
 			// for pagination
-			currentPage: 0,
+			currentPage: 1,
 			pageSize: 10,
 			total: 5000,
 		};
@@ -107,6 +110,7 @@ class Flag extends Component {
 		return options;
 	}
 
+	// handler for filters and search
 	handleChangeOption = data => {
 		this.setState({ 
 			suspectId: data,
@@ -129,6 +133,7 @@ class Flag extends Component {
 	handleChangeReporterId = event => this.setState({ reporterId: event.target.value });
 
 	handleSearch = async value => {
+		const db = this.state.db;
 		const interval = this.state.interval;
 		const suspectId = value;
 		const reporterId = this.state.reporterId;
@@ -145,13 +150,15 @@ class Flag extends Component {
 			
 		this.setState({ loading: true });
 		const response = await this.listFlags({
+			db, 
 			suspect: suspectId, 
 			reporter: reporterId, 
 			remarks, 
 			interval,
-			page: this.state.currentPage,
+			page: 0,
 			items_per_page: this.state.pageSize,
 		});
+		this.setState({ currentPage: 1, suspectId: value });
 		if (response.code === 200)
 			message.info("Flags found");
 		else {
@@ -173,6 +180,7 @@ class Flag extends Component {
 			message.error("Reporter ID should be a number");
 			return;
 		}
+		const db = this.state.db;
 		const remarks = this.state.remarks;
 		const interval = this.state.interval;
 		if (this.state.pageSize === size) {
@@ -189,6 +197,7 @@ class Flag extends Component {
 			
 		this.setState({ loading: true });
 		const response = await this.listFlags({
+			db, 
 			suspect: suspectId, 
 			reporter: reporterId, 
 			remarks, 
@@ -205,12 +214,26 @@ class Flag extends Component {
 		this.setState({ loading: false });
 	}
 
+	// handler for database change
+	handleChangeDb = db => {
+		this.setState({ 
+			db, 
+			interval: 1,
+			remarks: "",
+			reporterId: "",
+			suspectId: "",
+			currentPage: 1, 
+			pageSize: 10, 
+			flags: [],
+		});
+	}
 
 	// handler for click close
 	onCancel = event => {
 		this.setState({ 
 			flags: [],
 			interval: 1,
+			db: "ea",
 			remarks: "",
 			reporterId: "",
 			suspectId: "",
@@ -244,6 +267,17 @@ class Flag extends Component {
 					>
 						<Space size="large" >
 							<span>
+								Database:
+							</span>
+							<Select
+								value={ this.state.db }
+								onChange={ this.handleChangeDb }
+								style={{ width: 100 }}
+							>
+								<Option value="ea">Asia</Option>
+								<Option value="na">NA</Option>
+							</Select>
+							<span>
 								Interval(hours):
 							</span>
 							<InputNumber
@@ -260,7 +294,7 @@ class Flag extends Component {
 								placeholder="Remarks"
 								onChange={ this.handleChangeRemarks }
 								value={ this.state.remarks }
-								style={{ width: 500 }}
+								style={{ width: 300 }}
 								min={ 1 }
 							/>
 						</Space>
@@ -296,7 +330,7 @@ class Flag extends Component {
 										this.setState({ open: false }, 
 											() => this.handleSearch(data));
 									}}
-									style={{ width: 300 }}
+									style={{ width: 320 }}
 								/>
 							</AutoComplete>
 						</Space>
