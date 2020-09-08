@@ -44,7 +44,7 @@ class TableBody extends Component {
 					} 
 					onSelect={ data => setSelectedKeys(data ? [data] : []) }
 					filterOption={ (inputValue, option) =>
-						option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+						String(option.value).toUpperCase().indexOf(String(inputValue).toUpperCase()) !== -1
 					}
 				>
 					<Input
@@ -85,7 +85,7 @@ class TableBody extends Component {
 				style={{ color: filtered ? '#1890ff' : undefined }} 
 			/>,
 		onFilter: (value, record) =>
-			record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+			record[dataIndex].toString().toLowerCase().includes(String(value).toLowerCase()),
 		onFilterDropdownVisibleChange: visible => {
 			if (visible) {
 				setTimeout(() => this.searchInput.select());

@@ -8,6 +8,7 @@ export const accountService = {
 		retrieveCandidateId,
     retrieveFlag,
     retrieveConversation,
+    retrieveContent,
     retrieve_candidate,
     list,
     list_bound,
@@ -75,6 +76,20 @@ function retrieveFlag(params={}) {
 function retrieveConversation(params={}) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/account/retrieve_conversation_record`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function retrieveContent(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/account/retrieve_conversation_content`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api

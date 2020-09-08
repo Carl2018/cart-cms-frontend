@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 // import components from ant design
 import { 
 	AutoComplete,
+	Button,
 	Col,
 	Input,
 	Modal,
@@ -12,18 +13,21 @@ import {
 	Spin,
 	message,
 } from 'antd';
+import { FileTextOutlined } from '@ant-design/icons';
 
 // import shared and child components
 import { TableBody } from '_components'
+import { Content } from './Content'
 
 // import services
 import { accountService } from '_services';
 
 // import helpers
-import { backend } from "_helpers";
+import { backend, helpers } from "_helpers";
 
 // destructure imported components and objects
 const { listSync } = backend;
+const { compare, toDatetime } = helpers;
 const { Search } = Input;
 const { Option } = Select;
 
@@ -41,6 +45,16 @@ class Conversation extends Component {
 			// for AutoComplete
 			open: false,
 			options: [],
+			// for content modal
+			loadingContent: false,
+			modalKeyContent: Date.now(),
+			visibleContent: false,
+			contents: [],
+			record: {},
+			// for pagination of content modal
+			currentPage: 1,
+			pageSize: 10,
+			total: 5000,
 		};
 	}
 	
@@ -50,53 +64,79 @@ class Conversation extends Component {
 	// for related email panel
 	columns = [
 		{
-			title: 'ID',
+			title: 'Conversation ID',
 			dataIndex: 'id',
 			key: 'id',
 			width: '10%',
+			sorter: (a, b) => compare(a.id, b.id),
 			setFilter: true
 		},
 		{
 			title: 'Chosen ID',
 			dataIndex: 'cid_chosen_id',
 			key: 'cid_chosen_id',
-			width: '15%',
+			width: '10%',
+			sorter: (a, b) => compare(a.cid_chosen_id, b.cid_chosen_id),
 			setFilter: true
 		},
 		{
 			title: 'Invitor ID',
 			dataIndex: 'cid_invitor_id',
 			key: 'cid_invitor_id',
-			width: '15%',
-			setFilter: false 
+			width: '10%',
+			sorter: (a, b) => compare(a.cid_chosen_id, b.cid_chosen_id),
+			setFilter: true 
 		},
 		{
 			title: 'Chosen Message',
 			dataIndex: 'cid_chosen_message',
 			key: 'cid_chosen_message',
 			width: '15%',
-			setFilter: false
+			sorter: (a, b) => compare(a.cid_chosen_message, b.cid_chosen_message),
+			setFilter: true 
 		},
 		{
 			title: 'Invitor Message',
 			dataIndex: 'cid_invitor_message',
 			key: 'cid_invitor_message',
 			width: '15%',
-			setFilter: false
+			sorter: (a, b) => compare(a.cid_invitor_message, b.cid_invitor_message),
+			setFilter: true
 		},
 		{
 			title: 'Created At',
 			dataIndex: 'created_at',
 			key: 'created_at',
 			width: '15%',
-			setFilter: true
+			sorter: (a, b) => compare(a.created_at, b.created_at),
+			render: timestring => (<>{ toDatetime( Date.parse(timestring) ) }</>),
+			// setFilter: true
 		},
 		{
 			title: 'Updated At',
 			dataIndex: 'updated_at',
 			key: 'updated_at',
 			width: '15%',
-			setFilter: true
+			sorter: (a, b) => compare(a.updated_at, b.updated_at),
+			render: timestring => (<>{ toDatetime( Date.parse(timestring) ) }</>),
+			// setFilter: true
+		},
+		{
+			title: 'Actions',
+			key: 'action',
+			render: (text, record) => (
+				<Space size='small'>
+					<Button 
+						type='link' 
+						icon={ <FileTextOutlined /> }
+						onClick={ this.handleClickView.bind(this, record) }
+					>
+						View
+					</Button>
+				</Space>
+			),
+			width: '10%',
+			setFilter: false
 		},
 	];
 
@@ -153,6 +193,61 @@ class Conversation extends Component {
 		});
 	}
 
+	// handlers for actions in TableBody
+	handleClickView = record => {
+		this.setState({ loading: true }, async () => {
+			const params = {
+				db: this.state.db,
+				conversation_id: record.id,
+				page: this.state.currentPage,
+				item_per_page: this.state.pageSize,
+			}
+			await this.listContents(params);
+
+			this.setState({ 
+				record,
+				loading: false,
+				visibleContent: true,
+			});
+		});
+	}
+
+	// handlers for pagiantion of content modal
+	handleChangePage = async (page, size) => {
+		if (this.state.pageSize === size) {
+			page = page - 1;
+			this.setState({ currentPage: page + 1 });
+		} else {
+			page = 0;
+			this.setState({ 
+				currentPage: page + 1,
+				pageSize: size, 
+			});
+		}
+		const item_per_page = size;
+			
+		this.setState({ loadingContent: true });
+		const params = {
+			db: this.state.db,
+			conversation_id: this.state.record.id,
+			page,
+			item_per_page,
+		}
+		await this.listContents(params);
+		this.setState({ loadingContent: false });
+	}
+
+	// handler for close content modal
+	handleCloseContent = event => {
+		this.setState({
+			visibleContent: false,
+			modalKeyContent: Date.now(),
+			record: {},
+			currentPage: 1,
+			pageSize: 10,
+		});
+	}
+
 	// handler for click close
 	onCancel = event => {
 		this.setState({ 
@@ -170,6 +265,12 @@ class Conversation extends Component {
 		dataName: "conversations",
 	};
 	listConversations = listSync.bind(this, this.configConversation);
+	configContent = {
+		service: accountService,
+		list: "retrieveContent",
+		dataName: "contents",
+	};
+	listContents = listSync.bind(this, this.configContent);
 
 	render(){
 		return (
@@ -177,7 +278,7 @@ class Conversation extends Component {
 				<Modal
 					key={ this.props.modalKey }
 					title={ this.titleModal() }
-					width={ 1000 }
+					width={ 1200 }
 					style={{ top: 20 }}
 					bodyStyle={{ minHeight: 600, overflow: "auto" }}
 					visible={ this.props.visible }
@@ -233,6 +334,20 @@ class Conversation extends Component {
 						</Spin>
 					</div>
 				</Modal>
+				<div>
+					<Content
+						data={ this.state.contents }
+						loading={ this.state.loadingContent }
+						modalKey={ this.state.modalKeyContent }
+						visible={ this.state.visibleContent }
+						onCancel={ this.handleCloseContent }
+						currentPage={ this.state.currentPage }
+						pageSize={ this.state.pageSize }
+						total={ this.state.total }
+						onChangePage={ this.handleChangePage }
+					>
+					</Content>
+				</div>
 			</div>
 		);
 	}

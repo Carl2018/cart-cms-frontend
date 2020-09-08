@@ -22,10 +22,11 @@ import { TableBody } from '_components'
 import { accountService } from '_services';
 
 // import helpers
-import { backend } from "_helpers";
+import { backend, helpers } from "_helpers";
 
 // destructure imported components and objects
 const { listSync } = backend;
+const { compare, toDatetime } = helpers;
 const { Search } = Input;
 const { Option } = Select;
 
@@ -63,6 +64,7 @@ class Flag extends Component {
 			dataIndex: 'suspect_message',
 			key: 'suspect_message',
 			width: '30%',
+			sorter: (a, b) => compare(a.id, b.id),
 			setFilter: true
 		},
 		{
@@ -70,6 +72,7 @@ class Flag extends Component {
 			dataIndex: 'remarks',
 			key: 'remarks',
 			width: '20%',
+			sorter: (a, b) => compare(a.remarks, b.remarks),
 			setFilter: true
 		},
 		{
@@ -77,21 +80,25 @@ class Flag extends Component {
 			dataIndex: 'flag_type',
 			key: 'flag_type',
 			width: '15%',
-			setFilter: false 
+			sorter: (a, b) => compare(a.flag_type, b.flag_type),
+			setFilter: true 
 		},
 		{
 			title: 'Flag Category',
 			dataIndex: 'flag_category',
 			key: 'flag_category',
 			width: '15%',
-			setFilter: false
+			sorter: (a, b) => compare(a.flag_category, b.flag_category),
+			setFilter: true
 		},
 		{
 			title: 'Created At',
 			dataIndex: 'timestamp',
 			key: 'timestamp',
 			width: '20%',
-			setFilter: true
+			sorter: (a, b) => compare(a.created_at, b.created_at),
+			render: timestring => (<>{ toDatetime( Date.parse(timestring) ) }</>),
+			// setFilter: true
 		},
 	];
 
@@ -255,7 +262,7 @@ class Flag extends Component {
 				<Modal
 					key={ this.props.modalKey }
 					title={ this.titleModal() }
-					width={ 1000 }
+					width={ 1200 }
 					style={{ top: 20 }}
 					bodyStyle={{ minHeight: 600, overflow: "auto" }}
 					visible={ this.props.visible }
