@@ -4,9 +4,12 @@ import { handleResponse } from '_helpers';
 
 export const accountService = {
     create,
+    createWords,
     retrieve,
 		retrieveCandidateId,
     retrieveFlag,
+    retrieveWords,
+    retrieveOneWord,
     retrieveConversation,
     retrieveContent,
     retrieve_candidate,
@@ -18,6 +21,7 @@ export const accountService = {
     update,
     ban,
     ban_candidate,
+    updateWords,
     hide,
 };
 
@@ -28,6 +32,16 @@ function create(record) {
 			body: JSON.stringify(record)
 		};
     return fetch(`${config.apiUrl}/account/create`, requestOptions)
+			.then(handleResponse);
+}
+
+function createWords(record) {
+    const requestOptions = { 
+			method: 'POST', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/account/create_words`, requestOptions)
 			.then(handleResponse);
 }
 
@@ -62,6 +76,34 @@ function retrieveCandidateId(params={}) {
 function retrieveFlag(params={}) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/account/retrieve_flag`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function retrieveWords(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/account/retrieve_words`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function retrieveOneWord(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/account/retrieve_one_word`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
@@ -208,6 +250,16 @@ function ban_candidate(record) {
 			body: JSON.stringify(record)
 		};
     return fetch(`${config.apiUrl}/account/ban_candidate`, requestOptions)
+			.then(handleResponse);
+}
+
+function updateWords(record) {
+    const requestOptions = { 
+			method: 'PUT', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/account/update_words`, requestOptions)
 			.then(handleResponse);
 }
 

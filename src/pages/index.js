@@ -9,3 +9,4 @@ export * from './Login/Login';
 export * from './Profile/Profile';
 export * from './Query/Query';
 export * from './Template/Template';
+export * from './Word/Word';

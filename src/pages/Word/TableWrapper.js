@@ -1,20 +1,27 @@
 import React, { Component } from 'react';
 
 // import styling from ant desgin
-import { Space, Button, Popconfirm, Row, Col } from 'antd';
-import { message, notification } from 'antd';
-import { FileTextOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { 
+	Button, 
+	Col, 
+	Row, 
+	Select, 
+	Space, 
+	message, 
+} from 'antd';
+import { EditOutlined } from '@ant-design/icons';
 
 // import shared components
-import { TableBody } from './TableBody'
+import { TableBody } from '_components'
 import { TableDropdown } from './TableDropdown'
-import { TableDrawer } from './TableDrawer'
+import { TableDrawer } from '_components'
+
+const { Option } = Select; 
 
 class TableWrapper extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			selectedRowKeys: [], // for selecting rows in TableBody
 			tableDrawerKey: Date.now(), // for refreshing the TableDrawer
 			visible: false, // for opening or closing the TableDrawer
 			record: {}, // for loading a record into the form in TableDrawer
@@ -32,51 +39,19 @@ class TableWrapper extends Component {
 				<Space size='small'>
 					<Button 
 						type='link' 
-						icon={ <FileTextOutlined /> }
-						onClick={ this.handleClickView.bind(this, record) }
-					>
-						View
-					</Button>
-					<Button 
-						type='link' 
 						icon={ <EditOutlined /> }
 						onClick={ this.handleClickEdit.bind(this, record) }
 					>
 						Edit
 					</Button>
-					<Popconfirm
-						title='Are you sure to delete this record?'
-						onConfirm={ this.handleClickDelete.bind(this, record) }
-						onCancel={ () => console.log('cancel') }
-						okText='Confirm'
-						cancelText='Cancel'
-						placement='left'
-					>
-					<Button 
-						type='link' 
-						danger 
-						icon={ <DeleteOutlined /> }
-						//onClick={ this.handleClickDelete.bind(this, record) }
-					>
-						Delete
-					</Button>
-					</Popconfirm>
 				</Space>
 			),
-			width: '20%',
+			width: 200,
 			setFilter: false
 		},
 	];
 
-	// handlers for actions in TableBody
-	handleClickView = record => {
-		this.setState({
-			visible: true, 
-			disabled: true,
-			record,
-		});
-	}
-
+	// handler for actions in TableBody
 	handleClickEdit = record => {
 		this.setState({
 			visible: true, 
@@ -85,16 +60,12 @@ class TableWrapper extends Component {
 		});
 	}
 
-	handleClickDelete = record => this.props.delete(record.id);
-
-	handleSelectChange = selectedRowKeys => this.setState({ selectedRowKeys });
-
 	// handlers for actions in TableDropdown
   handleClickAdd = event => {
     this.setState({
       visible: true,
 			disabled: false,
-			record: {},
+			record: {region: 1, is_active: 1, in_word: 1},
     });
   };
 
@@ -103,32 +74,6 @@ class TableWrapper extends Component {
 		message.info('the table has been refreshed');
 	}
 
-	handleClickBatchDelete = () => {
-		const key = `open${Date.now()}`;
-		const btn = (
-			<Button 
-				type='primary' 
-				size='small' 
-				onClick={ this.handleClickConfirm.bind(this, notification.close, key) }
-			>
-				Confirm
-			</Button>
-		);
-		notification.open({
-			message: 'About to delete multiple records',
-			description:
-				'Are you sure to delete these records?',
-			btn,
-			key,
-			duration: 0,
-			onClose: () => message.info('batch delete has been canceled'),
-		});
-	};
-
-  handleClickConfirm = (closeNotification, notificationKey) => {
-		this.props.delete(this.state.selectedRowKeys);
-		closeNotification(notificationKey);
-  };
 
 	// handlers for actions in TableDrawer
   handleClose = () => {
@@ -140,6 +85,7 @@ class TableWrapper extends Component {
   };
 
 	handleSubmit = record => {
+		record = {...record, db: this.props.db};
 		if (this.state.record.id) // edit the entry
 			this.props.edit(this.state.record.id, record);
 		else // create an entry
@@ -167,6 +113,26 @@ class TableWrapper extends Component {
 							{ this.props.tableHeader }
 						</Space>
 					</Col>
+				</Row>
+				<Row style={{ marginBottom: "16px" }}>
+					<Col 
+						style={{ fontSize: '24px', textAlign: 'left' }}
+						span={ 12 } 
+					>
+							<Space>
+								<span style={{ fontSize: "16px", marginLeft: "8px" }} >
+									Database:
+								</span>
+								<Select
+									defaultValue="ea"
+									onChange={ this.props.onChangeDb }
+									style={{ marginRight: "16px", width: 150 }}
+								>
+									<Option value="ea">East Asia</Option>
+									<Option value="na">North America</Option>
+								</Select>
+							</Space>
+					</Col>
 					<Col 
 						style={{ 
 							fontSize: this.props.isSmall ? 
@@ -174,26 +140,21 @@ class TableWrapper extends Component {
 						}}
 						span={ 12 } 
 					>
-						{ this.props.showDropdown === false ? (<></>) : (<>
-								<TableDropdown 
-									dropdownName={ this.props.dropdownName }
-									onClickAdd={ this.handleClickAdd }
-									onClickRefreshTable={ this.handleClickRefreshTable }
-									onClickBatchDelete={ this.handleClickBatchDelete }
-								/>
-							</>)
-						}
+						<TableDropdown 
+							dropdownName={ this.props.dropdownName }
+							onClickAdd={ this.handleClickAdd }
+							onClickRefreshTable={ this.handleClickRefreshTable }
+						/>
 					</Col>
 				</Row>
 				<div>
 					<TableBody 
 						data={ this.props.data } 
 						columns={ this.columns } 
-						selectedRowKeys={ this.state.selectedRowKeys }
-						onSelectChange={ this.handleSelectChange }
 						isSmall={ this.props.isSmall }
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
+						pagination={ this.props.pagination }
 					/>
 				</div>
 				<div>
