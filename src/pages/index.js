@@ -3,6 +3,7 @@ export * from './Candidate/Candidate';
 export * from './Case/Case';
 export * from './Category/Category';
 export * from './Email/Email';
+export * from './Flag/Flag';
 export * from './Home/Home';
 export * from './Label/Label';
 export * from './Login/Login';

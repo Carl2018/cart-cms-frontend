@@ -18,6 +18,7 @@ export const accountService = {
     listByEmail,
     list_candidates,
     search_candidates,
+    list_flag,
     update,
     ban,
     ban_candidate,
@@ -212,6 +213,20 @@ function list_candidates(params={}) {
 function search_candidates(params={}) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/account/search_candidates`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function list_flag(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/account/list_flag`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api

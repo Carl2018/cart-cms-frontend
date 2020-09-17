@@ -5,21 +5,24 @@ import {
 	Button, 
 	Col, 
 	Dropdown, 
-	Input, 
+	InputNumber, 
 	Menu, 
-	Pagination, 
 	Popconfirm, 
 	Row, 
 	Select, 
 	Space, 
 } from 'antd';
-import { EyeInvisibleOutlined, UserDeleteOutlined, ExceptionOutlined } from '@ant-design/icons';
+import { 
+	ExceptionOutlined,
+	EyeInvisibleOutlined, 
+	SearchOutlined, 
+	UserDeleteOutlined, 
+} from '@ant-design/icons';
 
 // import shared components
 import { TableBody } from '_components'
 import { TableDrawer } from '_components'
 
-const { Search } = Input; 
 const { Option } = Select; 
 
 class TableWrapper extends Component {
@@ -90,7 +93,7 @@ class TableWrapper extends Component {
 				</Space>
 			),
 			fixed: 'right',
-			width: 200,
+			width: 300,
 			setFilter: false
 		},
 	];
@@ -100,19 +103,12 @@ class TableWrapper extends Component {
 		this.setState({
 			visible: true, 
 			disabled: false,
-			record: {...record, blacklist_type: "E"},
+			record: {
+				...record, 
+				id: record.suspect_id,
+				blacklist_type: "E",
+			},
 		});
-	}
-
-	// handler for search
-	handleSearch = data => {
-		if (data) {
-			this.props.searchCandidatesSync({ keywords: data });
-		} else {
-			const page = 1;
-			const size = 10;
-			this.props.onChangePage(page, size);
-		}
 	}
 
 	// handlers for actions in TableDrawer
@@ -154,7 +150,7 @@ class TableWrapper extends Component {
 						style={{ fontSize: '24px', textAlign: 'left' }}
 						span={ 12 } 
 					>
-							<Space>
+							<Space size="large">
 								<span style={{ fontSize: "16px", marginLeft: "8px" }} >
 									Cache:
 								</span>
@@ -168,13 +164,44 @@ class TableWrapper extends Component {
 									<Option value="my">Malaysia</Option>
 									<Option value="ca">Canada</Option>
 								</Select>
-								<Search
-									onSearch={ this.handleSearch }
-									placeholder="Search Candidate by Message Keywords"
-									style={{ width: 400 }}
-									size="middle"
-									allowClear
+								<span style={{ fontSize: "16px", marginLeft: "8px" }} >
+									Order:
+								</span>
+								<Select
+									value={ this.props.orderBy }
+									onChange={ this.props.onChangeOrderBy }
+									style={{ marginRight: "16px" }}
+								>
+									<Option value="timestamp">Created By</Option>
+									<Option value="count">Total Flags</Option>
+								</Select>
+								<span style={{ fontSize: "16px", marginLeft: "8px" }} >
+									Page:
+								</span>
+								<InputNumber
+									placeholder="Page"
+									onChange={ this.props.onChangePage }
+									value={ this.props.page }
+									style={{ width: 100 }}
+									min={ 1 }
 								/>
+								<span style={{ fontSize: "16px", marginLeft: "8px" }} >
+									Interval(hours):
+								</span>
+								<InputNumber
+									placeholder="Interval in Hours"
+									onChange={ this.props.onChangeInterval }
+									value={ this.props.interval }
+									style={{ width: 100 }}
+									min={ 1 }
+								/>
+								<Button
+									size="middle"
+									onClick={ this.props.onSearch }
+									icon={ <SearchOutlined /> }
+								>
+									Search
+								</Button>
 							</Space>
 					</Col>
 				</Row>
@@ -189,20 +216,6 @@ class TableWrapper extends Component {
 						pagination={ this.props.pagination }
 					/>
 				</div>
-				{ this.props.pagination ? <></> :
-					<div style={{marginTop: "16px", textAlign: "right" }} >
-						<Pagination
-							showSizeChanger
-							showQuickJumper
-							current={ this.props.currentPage }
-							pageSize={ this.props.pageSize }
-							pageSizeOptions={ [10, 20, 50] }
-							total={ this.props.total }
-							onChange={ this.props.onChangePage }
-							onShowSizeChange={ this.props.onChangeSize }
-						/>
-					</div>
-				}
 				<div>
 					<TableDrawer 
 						tableDrawerKey={ this.state.tableDrawerKey }

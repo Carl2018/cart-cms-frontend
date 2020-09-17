@@ -8,6 +8,7 @@ import {
 	Home,
 	Query,
 	Candidate,
+	Flag,
 	Word,
 	Case,
 	Account,
@@ -40,6 +41,7 @@ import {
   HomeOutlined,
   IdcardOutlined,
   FileExcelOutlined,
+  FlagOutlined,
   LogoutOutlined,
   MailOutlined,
   MenuFoldOutlined,
@@ -172,6 +174,14 @@ class App extends Component {
 								</Item>
 								<Item 
 									key="3" 
+									icon={<FlagOutlined />}
+								>
+									<Link to="/flag">
+										Flag
+									</Link>
+								</Item>
+								<Item 
+									key="4" 
 									icon={<FileExcelOutlined />}
 								>
 									<Link to="/word">
@@ -179,7 +189,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="4" 
+									key="5" 
 									icon={<FileSearchOutlined />}
 								>
 									<Link to="/case">
@@ -187,7 +197,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="5" 
+									key="6" 
 									icon={<TeamOutlined />}
 								>
 									<Link to="/account">
@@ -195,7 +205,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="6" 
+									key="7" 
 									icon={<MailOutlined />}
 								>
 									<Link to="/email">
@@ -203,7 +213,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="7" 
+									key="8" 
 									icon={<ContactsOutlined />}
 								>
 									<Link to="/profile">
@@ -211,7 +221,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="8" 
+									key="9" 
 									icon={<TagOutlined />}
 								>
 									<Link to="/label">
@@ -219,7 +229,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="9" 
+									key="10" 
 									icon={<CopyOutlined />}
 								>
 									<Link to="/template">
@@ -227,7 +237,7 @@ class App extends Component {
 									</Link>
 								</Item>
 								<Item 
-									key="10" 
+									key="11" 
 									icon={<HddOutlined />}
 								>
 									<Link to="/category">
@@ -286,6 +296,7 @@ class App extends Component {
 									<PrivateRoute exact path="/" component={ Home } />
 									<PrivateRoute path="/query" component={ Query }/>
 									<PrivateRoute path="/candidate" component={ Candidate }/>
+									<PrivateRoute path="/flag" component={ Flag }/>
 									<PrivateRoute path="/word" component={ Word }/>
 									<PrivateRoute path="/case" component={ Case }/>
 									<PrivateRoute path="/account" component={ Account }/>
