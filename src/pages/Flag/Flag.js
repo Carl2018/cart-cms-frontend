@@ -247,6 +247,14 @@ class Flag extends Component {
 		const orderBy = this.state.orderBy;
 		const page = this.state.page;
 		await this.listSync(interval, orderBy, page);
+		const tableWrapperKey =  Date.now();
+		this.setState({ tableWrapperKey });
+	}
+
+	// update local data
+	updateLocal = (record, type) => {
+		record.status = type;
+		this.setState({ data: [record, ...this.state.data]});
 	}
 
 	// bind versions of CRUD
@@ -276,7 +284,8 @@ class Flag extends Component {
 			ban_type: "S",
 			cache: this.state.cache,
 		}
-		await this.ban(record.id, body);
+		await this.ban(record.suspect_id, body);
+		this.updateLocal( record, 's' );
 	}
 	hardBanSync = async record => {
 		const body = {
@@ -284,7 +293,8 @@ class Flag extends Component {
 			ban_type: "H",
 			cache: this.state.cache,
 		}
-		await this.ban(record.id, body);
+		await this.ban(record.suspect_id, body);
+		this.updateLocal( record, 'h' );
 	}
 	blacklistSync = async (id, record) => {
 		const body = {
@@ -294,6 +304,7 @@ class Flag extends Component {
 			cache: this.state.cache,
 		}
 		await this.ban(id, body);
+		this.updateLocal( record, 'h' );
 	}
 
 	// refresh table

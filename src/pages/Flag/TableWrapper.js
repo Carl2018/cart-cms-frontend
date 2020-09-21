@@ -121,7 +121,10 @@ class TableWrapper extends Component {
   };
 
 	handleSubmit = record => {
-		this.props.blacklistSync(this.state.record.id, record);
+		this.props.blacklistSync(this.state.record.id, {
+			...this.state.record,
+			record,
+		});
 		this.setState({
 			record: {},
 			visible: false,
