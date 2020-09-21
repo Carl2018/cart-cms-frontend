@@ -12,6 +12,7 @@ import { FlagOutlined } from '@ant-design/icons';
 
 // import shared and child components
 import { TableWrapper } from './TableWrapper'
+import { FlagModal } from './FlagModal'
 
 // import services
 import { accountService } from '_services';
@@ -39,6 +40,10 @@ class Flag extends Component {
 			interval: 48,
 			orderBy: 'timestamp',
 			page: 1,
+			// for the flag modal
+			visibleFlag: false,
+			modalKeyFlag: Date.now(),
+			db: "ea",
 		};
 	}
 	
@@ -205,7 +210,8 @@ class Flag extends Component {
 
 	// handler for change cache
 	handleChangeCache = cache => {
-		this.setState({ cache, data: [] }, async () => {
+		const db = cache === 'ca' ? 'na' : 'ea';
+		this.setState({ cache, data: [], db }, async () => {
 			const interval = 48;
 			const orderBy = 'timestamp';
 			const page = 1;
@@ -249,6 +255,22 @@ class Flag extends Component {
 		await this.listSync(interval, orderBy, page);
 		const tableWrapperKey =  Date.now();
 		this.setState({ tableWrapperKey });
+	}
+
+	// handler for click flag search modal
+	handleClickFlag = record => {
+		this.setState({
+			visibleFlag: true,
+			suspectId: record.suspect_id,
+		});
+	}
+
+	// handler for close flag modal
+	handleCloseFlag = event => {
+		this.setState({
+			visibleFlag: false,
+			modalKeyFlag: Date.now(),
+		});
 	}
 
 	// update local data
@@ -324,6 +346,7 @@ class Flag extends Component {
 						key={ this.state.tableWrapperKey }
 						// data props
 						data={ this.state.data }
+						cache={ this.state.cache }
 						interval={ this.state.interval }
 						orderBy={ this.state.orderBy }
 						page={ this.state.page }
@@ -344,9 +367,21 @@ class Flag extends Component {
 						onChangePage={ this.handleChangePage }
 						onChangeInterval={ this.handleChangeInterval }
 						onSearch={ this.handleSearch }
+						onClickFlag={ this.handleClickFlag }
 					>
 					</TableWrapper>
 				</Spin>
+				<div>
+					<FlagModal
+						suspectId={ this.state.suspectId }
+						interval={ this.state.interval}
+						db={ this.state.db }
+						modalKey={ this.state.modalKeyFlag }
+						visible={ this.state.visibleFlag }
+						onCancel={ this.handleCloseFlag }
+					>
+					</FlagModal>
+				</div>
 			</div>
 		);
 	}

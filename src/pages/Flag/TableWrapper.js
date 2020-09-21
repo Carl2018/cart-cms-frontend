@@ -15,6 +15,7 @@ import {
 import { 
 	ExceptionOutlined,
 	EyeInvisibleOutlined, 
+	FlagOutlined, 
 	SearchOutlined, 
 	UserDeleteOutlined, 
 } from '@ant-design/icons';
@@ -41,12 +42,20 @@ class TableWrapper extends Component {
 	getMenu = record => (
 		<Menu >
 			<Menu.Item 
-				key='2' 
+				key='1' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <ExceptionOutlined /> }
 				onClick={ this.handleClickBlacklist.bind(this, record) }
 			>
 				Blacklist
+			</Menu.Item>
+			<Menu.Item 
+				key='2' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <FlagOutlined /> }
+				onClick={ this.props.onClickFlag.bind(this, record) }
+			>
+				Flags
 			</Menu.Item>
 		</Menu>
 	);
@@ -158,7 +167,7 @@ class TableWrapper extends Component {
 									Cache:
 								</span>
 								<Select
-									defaultValue="hk"
+									value={ this.props.cache }
 									onChange={ this.props.onChangeCache  }
 									style={{ marginRight: "16px", width: 150 }}
 								>
