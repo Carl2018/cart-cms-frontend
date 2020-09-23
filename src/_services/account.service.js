@@ -6,6 +6,7 @@ export const accountService = {
     create,
     createWords,
     retrieve,
+    retrieveRowCount,
 		retrieveCandidateId,
     retrieveFlag,
     retrieveWords,
@@ -49,6 +50,20 @@ function createWords(record) {
 function retrieve(params={}) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/account/retrieve`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function retrieveRowCount(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/account/retrieve_row_count`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api

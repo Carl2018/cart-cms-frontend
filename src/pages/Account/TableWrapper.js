@@ -251,6 +251,12 @@ class TableWrapper extends Component {
 						scroll={ this.props.scroll }
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
+						pagination={ {
+							pageSize: this.props.pageSize, 
+							current: this.props.currentPage, 
+							total: this.props.total, 
+							onChange: this.props.onChangePage,
+						} }
 					/>
 				</div>
 				<div>

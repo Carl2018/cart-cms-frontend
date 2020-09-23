@@ -27,7 +27,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { createSync, listSync, updateSync, hideSync } = backend;
+const { createSync, retrieveSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
 
 class Account extends Component {
@@ -41,14 +41,25 @@ class Account extends Component {
 			profiles: [],
 			options: [],
 			spinning: false,
+			// pagination
+			currentPage: 1,
+			pageSize: 10,
+			total: 0,
 		};
 	}
 	
 	componentDidMount() {
 		this.setState({ spinning: true }, async () => {
-			await this.listSync();
+			await this.listSync({
+				page_size: this.state.pageSize,
+				current_page: this.state.currentPage,
+			});
 			await this.listProfiles();
-			this.setState({ spinning: false });
+			const { entry: {row_count} } = await this.retrieveRowCount();
+			this.setState({ 
+				spinning: false, 
+				total: row_count, 
+			});
 		});
 	}
 
@@ -251,6 +262,20 @@ class Account extends Component {
 		this.setState({ options });
 	}
 
+	// handler for pagination
+	handleChangePage = async (page, pageSize) => {
+		this.setState({ spinning: true }, async () => {
+			await this.listSync({
+				page_size: pageSize,
+				current_page: page,
+			});
+			this.setState({ 
+				currentPage: page,
+				spinning: false,
+			});
+		});
+	}
+
 	// bind versions of CRUD
 	config = {
 		service: accountService,
@@ -262,6 +287,10 @@ class Account extends Component {
 		dataName: "data",
 	};
 	createSync = createSync.bind(this, this.config);
+	retrieveRowCount = retrieveSync.bind(this, {
+		...this.config, 
+		retrieve: "retrieveRowCount",
+	});
 	listSync = listSync.bind(this, this.config);
 	updateSync = updateSync.bind(this, this.config);
 	hideSync = hideSync.bind(this, this.config);
@@ -301,6 +330,9 @@ class Account extends Component {
 						key={ this.state.tableWrapperKey }
 						// data props
 						data={ this.state.data }
+						currentPage={ this.state.currentPage }
+						pageSize={ this.state.pageSize }
+						total={ this.state.total }
 						// display props
 						columns={ this.columns }
 						formItems={ this.formItems }
@@ -313,6 +345,7 @@ class Account extends Component {
 						delete={ this.hideSync }
 						ban={ this.banSync }
 						refreshTable={ this.refreshTable }
+						onChangePage={ this.handleChangePage }
 					>
 					</TableWrapper>
 				</Spin>
