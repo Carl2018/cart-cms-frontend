@@ -12,7 +12,7 @@ import {
 	Spin, 
 	message, 
 } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined, SearchOutlined } from '@ant-design/icons';
 
 // import shared and child components
 import { ProfileDrawer } from "./ProfileDrawer"
@@ -41,7 +41,6 @@ const {
 	updateSync, 
 	hideSync, 
 } = backend;
-const { Search } = Input;
 
 class Query extends Component {
 	constructor(props) {
@@ -69,6 +68,8 @@ class Query extends Component {
 			labels: [],
 			// for category selections in case table
 			categories: [],
+			// current input
+			currentInput: "",
 		};
 	}
 	
@@ -92,10 +93,10 @@ class Query extends Component {
 				.includes(data.trim().toLowerCase()) 
 			)
 			.map( item => ({ value: item }) );
-		this.setState({ options });
+		this.setState({ options, currentInput: data });
 	}
 
-	// perform a search when the search button is pressed
+	// perform a search when an option is selected
 	handleSearch = data => {
 		if (data) {
 			this.setState({ spinning: true }, () => {
@@ -103,6 +104,15 @@ class Query extends Component {
 			});
 		}
 	}
+
+	// perform a search when the Enter key is pressed
+	handleKeyPress = key => {
+		if (key.toLowerCase() === "enter")
+			this.handleSearch( this.state.currentInput );
+	}
+
+	// perform a search when search button is clicked
+	handleClickSearch = event => this.handleSearch( this.state.currentInput );
 
 	// update all 3 tables upon a search
 	updateTables = async data => {
@@ -384,28 +394,31 @@ class Query extends Component {
 							style={{ fontSize: '24px', textAlign: 'left' }}
 							span={ 12 } 
 						>
-							<Space size="large">
 								<AutoComplete
 									id={ "autosearch" }
 									onChange={ this.handleChange }
 									onSelect={ this.handleSearch }
+									onKeyPress={ event => this.handleKeyPress(event.key) }
 									options={ this.state.options }
 									style={{ width: 320 }}
 								>
-									<Search
-										onSearch={ this.handleSearch }
+									<Input
 										placeholder="Search Profile by Email"
 										size="middle"
 										allowClear
 									/>
 								</AutoComplete>
 								<Button
+									icon={ <SearchOutlined/> }
+									onClick={ this.handleClickSearch }
+								/>
+								<Button
 									size="middle"
+									style={{ marginLeft: "16px" }}
 									onClick={ this.handleClickProfile }
 								>
 									Create Profile
 								</Button>
-							</Space>
 						</Col>
 					</Row>
 					<div>

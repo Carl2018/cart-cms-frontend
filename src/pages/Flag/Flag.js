@@ -60,22 +60,13 @@ class Flag extends Component {
 	// define columns for TableBody
 	columns = [
 		{
-			title: 'Suspect ID',
-			dataIndex: 'suspect_id',
-			key: 'suspect_id',
-			sorter: (a, b) => compare(a.suspect_id, b.suspect_id),
-			sortDirection: ['ascend', 'descend'],
-			fixed: 'left',
-			width: 160,
-			setFilter: true
-		},
-		{
 			title: 'Total Flags',
 			dataIndex: 'total_flag',
 			key: 'total_flag',
 			sorter: (a, b) => compare(a.total_flag, b.total_flag),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
+			fixed: 'left',
 			width: 140,
 			setFilter: true
 		},
@@ -85,9 +76,47 @@ class Flag extends Component {
 			key: 'suspect_message',
 			sorter: (a, b) => compare(a.suspect_message, b.suspect_message),
 			sortDirection: ['ascend', 'descend'],
-			ellipsis: true,
-			width: 340,
+			// ellipsis: true,
+			fixed: 'left',
+			width: 260,
 			setFilter: true
+		},
+		{
+			title: 'Account Status',
+			dataIndex: 'status',
+			key: 'status',
+			sorter: (a, b) => compare(a.status, b.status),
+			sortDirection: ['ascend', 'descend'],
+			width: 160,
+			// setFilter: true,
+			fixed: 'left',
+			render: status => {
+				let color = 'default';
+				let text = 'Unknown';
+				switch (status) {
+					case 'h' :
+						color = 'red';
+						text = 'Hard Banned';
+						break;
+					case 's' :
+						color = 'orange';
+						text = 'Soft Banned';
+						break;
+					case 'u' :
+						color = 'green';
+						text = 'Unbanned';
+						break;
+					default:
+						color = 'default';
+						text = 'Unknown';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
 		},
 		{
 			title: 'Current Message',
@@ -95,19 +124,9 @@ class Flag extends Component {
 			key: 'current_message',
 			sorter: (a, b) => compare(a.current_message, b.current_message),
 			sortDirection: ['ascend', 'descend'],
-			ellipsis: true,
-			width: 340,
+			// ellipsis: true,
+			width: 260,
 			setFilter: true
-		},
-		{
-			title: 'Created At',
-			dataIndex: 'flag_timestamp',
-			key: 'flag_timestamp',
-			sorter: (a, b) => compare(a.flag_timestamp, b.flag_timestamp),
-			sortDirection: ['ascend', 'descend'],
-			width: 140,
-			// setFilter: true,
-			render: timestamp => (<>{ toDatetime(Number(timestamp)*1000) }</>),
 		},
 		{
 			title: 'State',
@@ -142,40 +161,23 @@ class Flag extends Component {
 			},
 		},
 		{
-			title: 'Account Status',
-			dataIndex: 'status',
-			key: 'status',
-			sorter: (a, b) => compare(a.status, b.status),
+			title: 'Suspect ID',
+			dataIndex: 'suspect_id',
+			key: 'suspect_id',
+			sorter: (a, b) => compare(a.suspect_id, b.suspect_id),
+			sortDirection: ['ascend', 'descend'],
+			width: 160,
+			setFilter: true
+		},
+		{
+			title: 'Created At',
+			dataIndex: 'flag_timestamp',
+			key: 'flag_timestamp',
+			sorter: (a, b) => compare(a.flag_timestamp, b.flag_timestamp),
 			sortDirection: ['ascend', 'descend'],
 			width: 140,
 			// setFilter: true,
-			render: status => {
-				let color = 'default';
-				let text = 'Unknown';
-				switch (status) {
-					case 'h' :
-						color = 'red';
-						text = 'Hard Banned';
-						break;
-					case 's' :
-						color = 'orange';
-						text = 'Soft Banned';
-						break;
-					case 'u' :
-						color = 'green';
-						text = 'Unbanned';
-						break;
-					default:
-						color = 'default';
-						text = 'Unknown';
-						break;
-				};	
-				return (
-					<Tag color={ color } key={ uuidv4() }>
-						{ text }
-					</Tag>
-				);
-			},
+			render: timestamp => (<>{ toDatetime(Number(timestamp)*1000) }</>),
 		},
 	];
 
