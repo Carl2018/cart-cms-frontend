@@ -466,7 +466,6 @@ class InspectDrawer extends Component {
 			visibleBlacklist: false,
 			modalKeyBlacklist: Date.now(),
 		});
-		this.props.clearBlacklist();
 	}
 
 	onClickUnbanBlacklist = async record => {
@@ -477,6 +476,25 @@ class InspectDrawer extends Component {
 			blacklist_id: id,
 		});
 		await this.props.updateBlacklist({ candidate_id, db });
+	}
+
+	onClickBatchUnbanBlacklist = async ids => {
+		if (ids.length === 0) {
+			message.error("select at least 1 row");
+			return;
+		}
+		const { candidate_id, db } = this.props.dataAccount;
+		ids.push("update");
+		ids.forEach( async id => {
+			if( id !== "update") {
+				await this.props.onClickUnbanBlacklist(id, {
+					db,
+					blacklist_id: id,
+				});
+			} else {
+				await this.props.updateBlacklist({ candidate_id, db });
+			}
+		});
 	}
 
 	// define status 
@@ -715,6 +733,7 @@ class InspectDrawer extends Component {
 						visible={ this.state.visibleBlacklist }
 						onCancel={ this.handleCloseBlacklist }
 						onClickUnban={ this.onClickUnbanBlacklist }
+						onClickBatchUnban={ this.onClickBatchUnbanBlacklist }
 						blacklist={ this.props.blacklist }
 					>
 					</Blacklist>

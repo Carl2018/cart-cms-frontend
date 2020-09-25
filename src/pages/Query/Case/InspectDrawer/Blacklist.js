@@ -11,7 +11,7 @@ import {
 	Spin,
 	Tag,
 } from 'antd';
-import { FileTextOutlined } from '@ant-design/icons';
+import { UserAddOutlined, UsergroupAddOutlined } from '@ant-design/icons';
 
 // import shared and child components
 import { TableBody } from '_components'
@@ -30,6 +30,7 @@ class Blacklist extends Component {
 		this.state = {
 			// for Spin
 			loading: false,
+			selectedRowKeys: [], // for selecting rows in TableBody
 		};
 	}
 	
@@ -42,7 +43,7 @@ class Blacklist extends Component {
 			title: 'Blacklist ID',
 			dataIndex: 'id',
 			key: 'id',
-			width: '15%',
+			width: '10%',
 			sorter: (a, b) => compare(a.id, b.id),
 		},
 		{
@@ -144,7 +145,7 @@ class Blacklist extends Component {
 				<Space size='small'>
 					<Button 
 						type='link' 
-						icon={ <FileTextOutlined /> }
+						icon={ <UserAddOutlined /> }
 						onClick={ this.props.onClickUnban.bind(this, record) }
 					>
 						Unban
@@ -155,6 +156,13 @@ class Blacklist extends Component {
 			setFilter: false
 		},
 	];
+
+	handleSelectChange = selectedRowKeys => this.setState({ selectedRowKeys });
+
+	onClickBatchUnban = () => {
+		console.log("batch delete");
+		console.log(this.state.selectedRowKeys);
+	}
 
 	titleModal = () => (
 		<Row>
@@ -179,11 +187,30 @@ class Blacklist extends Component {
 				>
 					<div>
 						<Spin spinning={ this.state.loading }>
+							<Row style={{ margin: this.props.isSmall ? "8px" : "16px" }}>
+								<Col 
+									style={{ 
+										fontSize: '20px', textAlign: 'right' 
+									}}
+									span={ 24 } 
+								>
+									{ this.props.blacklist.length === 0 ? <></> :
+										<Button 
+											icon={ <UsergroupAddOutlined /> }
+											onClick={ this.props.onClickBatchUnban.bind(this, this.state.selectedRowKeys) }
+										>
+											Batch Unban
+										</Button>
+									}
+								</Col>
+							</Row>
 							<div>
 								<TableBody
 									columns={ this.columns } 
 									data={ this.props.blacklist }
 									isSmall={ true }
+									selectedRowKeys={ this.state.selectedRowKeys }
+									onSelectChange={ this.handleSelectChange }
 								/>
 							</div>
 						</Spin>
