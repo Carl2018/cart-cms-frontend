@@ -10,6 +10,7 @@ import {
 	Descriptions, 
 	Drawer, 
 	Row, 
+	Space, 
 	Spin, 
 	Tag, 
 	message, 
@@ -17,6 +18,7 @@ import {
 } from 'antd';
 import { 
 	ApiOutlined,
+	ExceptionOutlined,
 	NodeIndexOutlined,
 } from '@ant-design/icons';
 
@@ -26,6 +28,7 @@ import DrawerDropdown from './DrawerDropdown'
 import Template from './Template'
 import Flag from './Flag'
 import Conversation from './Conversation'
+import Blacklist from './Blacklist'
 
 // import helpers
 import { helpers } from '_helpers';
@@ -50,6 +53,9 @@ class InspectDrawer extends Component {
 			modalKeyConversation: Date.now(),
 			// for Spin
 			spinning: false,
+			// for the blacklist modal
+			visibleBlacklist: false,
+			modalKeyBlacklist: Date.now(),
 		};
 	}
 
@@ -262,6 +268,23 @@ class InspectDrawer extends Component {
 			width: '15%',
 			setFilter: false
 		},
+		{
+			title: 'Actions',
+			key: 'action',
+			render: (text, record) => (
+				<Space size='small'>
+					<Button 
+						type='link' 
+						icon={ <ExceptionOutlined /> }
+						onClick={ this.handleClickBlacklist.bind(this, record) }
+					>
+						Blacklist
+					</Button>
+				</Space>
+			),
+			width: '20%',
+			setFilter: false
+		},
 	];
 
 	// handlers for unban
@@ -431,6 +454,31 @@ class InspectDrawer extends Component {
 
 	onClickUnbind = () => this.props.onClickUnbind(this.props.dataCase);
 
+	// handler for blacklist button
+	handleClickBlacklist = event => {
+		this.setState({
+			visibleBlacklist: true,
+		});
+	}
+
+	handleCloseBlacklist = event => {
+		this.setState({
+			visibleBlacklist: false,
+			modalKeyBlacklist: Date.now(),
+		});
+		this.props.clearBlacklist();
+	}
+
+	onClickUnbanBlacklist = async record => {
+		const { candidate_id, db } = this.props.dataAccount;
+		const { id } = record;
+		await this.props.onClickUnbanBlacklist(id, {
+			db,
+			blacklist_id: id,
+		});
+		await this.props.updateBlacklist({ candidate_id, db });
+	}
+
 	// define status 
 	getStatus = status => {
 		let color = 'geekblue';
@@ -524,7 +572,7 @@ class InspectDrawer extends Component {
 			>
 				<Drawer
 					title={ this.title }
-					width={ 1000 }
+					width={ 1100 }
 					bodyStyle={{ paddingBottom: 80 }}
 					visible={ this.props.visible }
 					onClose={ this.props.onClose }
@@ -660,6 +708,16 @@ class InspectDrawer extends Component {
 						onCancel={ this.handleCloseConversation }
 					>
 					</Conversation>
+				</div>
+				<div>
+					<Blacklist
+						modalKey={ this.state.modalKeyBlacklist }
+						visible={ this.state.visibleBlacklist }
+						onCancel={ this.handleCloseBlacklist }
+						onClickUnban={ this.onClickUnbanBlacklist }
+						blacklist={ this.props.blacklist }
+					>
+					</Blacklist>
 				</div>
 			</div>
 		);

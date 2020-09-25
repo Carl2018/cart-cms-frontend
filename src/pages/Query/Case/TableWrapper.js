@@ -33,6 +33,7 @@ import { InspectDrawer } from './InspectDrawer/InspectDrawer'
 // import services
 import { 
 	accountService,
+	externalService,
 	processService, 
 	profileService, 
 } from '_services';
@@ -75,6 +76,7 @@ class TableWrapper extends Component {
 			inspectDrawerKey: Date.now(),
 			queriedEmail: {},
 			accountBound: {},
+			blacklist: [],
 		};
 	}
 	
@@ -475,15 +477,19 @@ class TableWrapper extends Component {
 	}
 
 	// handler for inspect drawer
-	handleClickInspect = record => {
+	handleClickInspect = async record => {
 		this.listSync({'case_id': record.id});
 		const { queriedEmail, accountBound } = this.getRelatedInfo(record);
+		const { candidate_id, db } = accountBound;
+		await this.searchBlacklist({ candidate_id, db });
 		this.setState({ queriedEmail, accountBound, record }, () => 
 		this.setState({
 			visibleInspect: true, 
 			disabledInspect: true,
 		}) );
 	}
+
+	updateBlacklist = body => this.searchBlacklist( body );
 
   handleCloseInspect = () => {
     this.setState({
@@ -535,6 +541,16 @@ class TableWrapper extends Component {
 	};
 	listProfiles = listSync.bind(this, this.configProfile);
 	updateMergeProfile = updateSync.bind(this, this.configProfile);
+
+	configExternal = {
+		service: externalService,
+		retrieve: "retrieve",
+		list: "searchBlacklist",
+		update: "unbanBlacklist",
+		dataName: "blacklist",
+	};
+	searchBlacklist = listSync.bind(this, this.configExternal );
+	unbanBlacklist = updateSync.bind(this, this.configExternal );
 
 	render(){
 		return (
@@ -641,6 +657,7 @@ class TableWrapper extends Component {
 						dataProcess={ this.state.dataProcess } 
 						allRelatedAccounts={ this.props.dataAccount }
 						labels={ this.props.labels }
+						blacklist={ this.state.blacklist }
 						// display props
 						drawerTitle={ this.props.drawerTitle } 
 						formItems={ this.props.formItems }
@@ -653,6 +670,9 @@ class TableWrapper extends Component {
 						onClickProcess={ this.handleClickProcess }
 						onClickEdit={ this.handleClickEdit }
 						onClickBan={ this.onClickBan }
+						onClickUnbanBlacklist={ this.unbanBlacklist }
+						clearBlacklist={ () => this.setState({ blacklist: [] }) }
+						updateBlacklist={ this.updateBlacklist }
 					/>
 				</div>
 			</div>
