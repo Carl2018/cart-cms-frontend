@@ -278,7 +278,7 @@ class Conversation extends Component {
 				<Modal
 					key={ this.props.modalKey }
 					title={ this.titleModal() }
-					width={ 1200 }
+					width={ 1300 }
 					style={{ top: 20 }}
 					bodyStyle={{ minHeight: 600, overflow: "auto" }}
 					visible={ this.props.visible }
