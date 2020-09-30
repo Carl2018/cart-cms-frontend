@@ -150,6 +150,46 @@ class Candidate extends Component {
 				);
 			},
 		},
+		{
+			title: 'Gender',
+			dataIndex: 'gender',
+			key: 'gender',
+			sorter: (a, b) => compare(a.gender, b.gender),
+			sortDirection: ['ascend', 'descend'],
+			width: 140,
+			// setFilter: true,
+			render: gender => {
+				let color = 'default';
+				let text = 'Unknown';
+				switch (gender) {
+					case '0' :
+						color = 'default';
+						text = 'Unknown';
+						break;
+					case '1' :
+						color = 'geekblue';
+						text = 'Male';
+						break;
+					case '2' :
+						color = 'magenta';
+						text = 'Female';
+						break;
+					case '3' :
+						color = 'purple';
+						text = 'Other';
+						break;
+					default:
+						color = 'default';
+						text = 'Unknown';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+		},
 	];
 
 	// define form items for TableDrawer
