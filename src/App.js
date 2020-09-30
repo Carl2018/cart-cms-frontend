@@ -63,7 +63,8 @@ class App extends Component {
 			currentUser: null,
 			// for sidebar menu
 			menuKey: Date.now(),
-			collapsed: true,
+			// fixed by kp, collapsed true becomes false.
+			collapsed: false,
 		};
 	}
 	
