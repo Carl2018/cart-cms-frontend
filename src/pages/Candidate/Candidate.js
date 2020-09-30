@@ -73,7 +73,7 @@ class Candidate extends Component {
 			setFilter: true
 		},
 		{
-			title: 'Created At',
+			title: 'Last Updated',
 			dataIndex: 'timestamp',
 			key: 'timestamp',
 			sorter: (a, b) => compare(a.timestamp, b.timestamp),
