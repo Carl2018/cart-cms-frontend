@@ -12,6 +12,8 @@ import {
 	Row, 
 	Select, 
 	Space, 
+	notification, 
+	message, 
 } from 'antd';
 import { 
 	CommentOutlined,
@@ -49,13 +51,21 @@ class TableWrapper extends Component {
 			<Menu.Item 
 				key='1' 
 				style={{ color:'#5a9ef8' }} 
+				icon={ <EyeInvisibleOutlined /> }
+				onClick={ this.handleClickSoftBan.bind(this, record) }
+			>
+				Soft Ban
+			</Menu.Item>
+			<Menu.Item 
+				key='2' 
+				style={{ color:'#5a9ef8' }} 
 				icon={ <ExceptionOutlined /> }
 				onClick={ this.handleClickBlacklist.bind(this, record) }
 			>
 				Blacklist
 			</Menu.Item>
 			<Menu.Item 
-				key='2' 
+				key='3' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <CommentOutlined /> }
 				onClick={ this.handleClickConversation.bind(this, record) }
@@ -74,22 +84,6 @@ class TableWrapper extends Component {
 			render: (text, record) => (
 				<Space size='small'>
 					<Popconfirm
-						title='Are you sure to soft ban this candidate?'
-						onConfirm={ this.props.softBanSync.bind(this, record) }
-						onCancel={ () => console.log('cancel') }
-						okText='Confirm'
-						cancelText='Cancel'
-						placement='left'
-					>
-						<Button
-							type='link'
-							style={{ color:'#5a9ef8' }} 
-							icon={ <EyeInvisibleOutlined /> }
-						>
-							Soft Ban
-						</Button>
-					</Popconfirm>
-					<Popconfirm
 						title='Are you sure to hard ban this candidate?'
 						onConfirm={ this.props.hardBanSync.bind(this, record) }
 						onCancel={ () => console.log('cancel') }
@@ -107,10 +101,38 @@ class TableWrapper extends Component {
 				</Space>
 			),
 			fixed: 'right',
-			width: 200,
+			width: 120,
 			setFilter: false
 		},
 	];
+
+	// handler for notifcation of soft ban
+	handleClickSoftBan = record => {
+		const key = `open${Date.now()}`;
+		const btn = (
+			<Button 
+				type='primary' 
+				size='small' 
+				onClick={ this.handleClickConfirmSoftBan.bind(this, notification.close, key, record) }
+			>
+				Confirm
+			</Button>
+		);
+		notification.open({
+			message: 'About to Soft Ban a Candidate',
+			description:
+				'Are you sure to soft ban this candidate?',
+			btn,
+			key,
+			duration: 0,
+			onClose: () => message.info('Soft ban has been canceled'),
+		});
+	};
+
+  handleClickConfirmSoftBan = (closeNotification, notificationKey, record) => {
+		this.props.softBanSync(record);
+		closeNotification(notificationKey);
+  };
 
 	// handlers for actions in TableBody
 	handleClickBlacklist = record => {
