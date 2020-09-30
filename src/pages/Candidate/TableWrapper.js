@@ -13,11 +13,17 @@ import {
 	Select, 
 	Space, 
 } from 'antd';
-import { EyeInvisibleOutlined, UserDeleteOutlined, ExceptionOutlined } from '@ant-design/icons';
+import { 
+	CommentOutlined,
+	ExceptionOutlined,
+	EyeInvisibleOutlined, 
+	UserDeleteOutlined, 
+} from '@ant-design/icons';
 
 // import shared components
 import { TableBody } from '_components'
 import { TableDrawer } from '_components'
+import Conversation from './Conversation'
 
 const { Search } = Input; 
 const { Option } = Select; 
@@ -31,6 +37,9 @@ class TableWrapper extends Component {
 			visible: false, // for opening or closing the TableDrawer
 			record: {}, // for loading a record into the form in TableDrawer
 			disabled: false, // for disabling the input fields in TableDrawer
+			// for the conversation modal
+			visibleConversation: false,
+			modalKeyConversation: Date.now(),
 		};
 	}
 	
@@ -38,12 +47,20 @@ class TableWrapper extends Component {
 	getMenu = record => (
 		<Menu >
 			<Menu.Item 
-				key='2' 
+				key='1' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <ExceptionOutlined /> }
 				onClick={ this.handleClickBlacklist.bind(this, record) }
 			>
 				Blacklist
+			</Menu.Item>
+			<Menu.Item 
+				key='2' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <CommentOutlined /> }
+				onClick={ this.handleClickConversation.bind(this, record) }
+			>
+				Conversations
 			</Menu.Item>
 		</Menu>
 	);
@@ -104,6 +121,13 @@ class TableWrapper extends Component {
 		});
 	}
 
+	handleClickConversation = record => {
+		this.setState({
+			visibleConversation: true, 
+			candidateId: record.id,
+		});
+	}
+
 	// handler for search
 	handleSearch = data => {
 		if (data) {
@@ -130,6 +154,14 @@ class TableWrapper extends Component {
 			record: {},
 			visible: false,
 			tableDrawerKey: Date.now(),
+		});
+	}
+
+	// handler for close conversation content modal
+	handleCloseConversation = event => {
+		this.setState({
+			visibleConversation: false,
+			modalKeyConversation: Date.now(),
 		});
 	}
 
@@ -216,6 +248,15 @@ class TableWrapper extends Component {
 						drawerTitle={ this.props.drawerTitle }
 						formLayout={ this.props.formLayout }
 					/>
+				</div>
+				<div>
+					<Conversation
+						candidateId={ this.state.candidateId }
+						modalKey={ this.state.modalKeyConversation }
+						visible={ this.state.visibleConversation }
+						onCancel={ this.handleCloseConversation }
+					>
+					</Conversation>
 				</div>
 			</div>
 		);

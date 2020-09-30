@@ -148,12 +148,7 @@ class Conversation extends Component {
 		</Row>	
 	)
 
-	getOptions = () => {
-		const options = this.props.allRelatedAccounts.map( item => {
-			return { value: item.candidate_id };
-		});
-		return options;
-	}
+	getOptions = () => { return [ { value: this.props.candidateId } ] };
 
 	handleChangeOption = data => {
 		this.setState({ 
@@ -306,7 +301,7 @@ class Conversation extends Component {
 								</span>
 								<AutoComplete
 									options={ this.state.options }
-									defaultValue={ this.props.dataAccount?.candidate_id }
+									defaultValue={ this.props.candidateId }
 									open={ this.state.open }
 									onFocus={ this.handleChangeOption.bind(this, "") }
 									onBlur ={ () => this.setState({ open: false }) }
