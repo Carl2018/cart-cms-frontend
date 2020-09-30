@@ -49,7 +49,8 @@ class Flag extends Component {
 			options: [],
 			// for pagination
 			currentPage: 1,
-			pageSize: 10,
+			//pageSize: 10,
+			pageSize: 500,
 			total: 5000,
 		};
 	}
@@ -358,7 +359,8 @@ class Flag extends Component {
 									showQuickJumper
 									current={ this.state.currentPage }
 									pageSize={ this.state.pageSize }
-									pageSizeOptions={ [10, 20, 50] }
+									//pageSizeOptions={ [10, 20, 50] }
+									pageSizeOptions={ [500, 600, 700, 800, 900, 1000] }
 									total={ this.state.total }
 									onChange={ this.handleChangePage }
 									onShowSizeChange={ this.handleChangePage }
