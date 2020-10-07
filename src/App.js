@@ -177,7 +177,7 @@ class App extends Component {
 									icon={<FlagOutlined />}
 								>
 									<Link to="/flag">
-										Flag
+										Flags
 									</Link>
 								</Item>
 								<Item 
@@ -209,7 +209,7 @@ class App extends Component {
 									icon={<MailOutlined />}
 								>
 									<Link to="/email">
-										Known Emails
+										Emails
 									</Link>
 								</Item>
 								<Item 

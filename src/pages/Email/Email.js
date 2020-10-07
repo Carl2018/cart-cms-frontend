@@ -170,7 +170,7 @@ class Email extends Component {
 	(
 		<>
 			<MailOutlined />
-			<strong>Known Emails</strong>
+			<strong>Emails</strong>
 		</>
 	)
 
