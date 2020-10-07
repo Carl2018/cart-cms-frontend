@@ -210,12 +210,11 @@ class Conversation extends Component {
 	// handlers for pagiantion of content modal
 	handleChangePage = async (page, size) => {
 		if (this.state.pageSize === size) {
-			page = page - 1;
-			this.setState({ currentPage: page + 1 });
+			this.setState({ currentPage: page });
 		} else {
-			page = 0;
+			page = 1;
 			this.setState({ 
-				currentPage: page + 1,
+				currentPage: page,
 				pageSize: size, 
 			});
 		}

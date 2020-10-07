@@ -480,10 +480,6 @@ class TableWrapper extends Component {
 	handleClickInspect = async record => {
 		this.listSync({'case_id': record.id});
 		const { queriedEmail, accountBound } = this.getRelatedInfo(record);
-		if (accountBound) {
-			const { candidate_id, db } = accountBound;
-			await this.searchBlacklist({ candidate_id, db });
-		}
 		this.setState({ queriedEmail, accountBound, record }, () => 
 		this.setState({
 			visibleInspect: true, 
@@ -675,6 +671,7 @@ class TableWrapper extends Component {
 						onClickBan={ this.onClickBan }
 						onClickUnbanBlacklist={ this.unbanBlacklist }
 						updateBlacklist={ this.updateBlacklist }
+						searchBlacklist={ this.searchBlacklist }
 					/>
 				</div>
 			</div>

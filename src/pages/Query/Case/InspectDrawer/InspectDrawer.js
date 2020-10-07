@@ -455,7 +455,9 @@ class InspectDrawer extends Component {
 	onClickUnbind = () => this.props.onClickUnbind(this.props.dataCase);
 
 	// handler for blacklist button
-	handleClickBlacklist = event => {
+	handleClickBlacklist = async event => {
+		const { candidate_id, db } = this.props.dataAccount;
+		await this.props.searchBlacklist({ candidate_id, db });
 		this.setState({
 			visibleBlacklist: true,
 		});
