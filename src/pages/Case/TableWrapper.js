@@ -28,6 +28,7 @@ import { TableDrawer } from '_components'
 import { ProcessDrawer } from './ProcessDrawer'
 import { BindDrawer } from './BindDrawer'
 import { MergeDrawer } from './MergeDrawer'
+import { TablePagination } from '_components'
 
 // import services
 import { 
@@ -500,7 +501,19 @@ class TableWrapper extends Component {
 						scroll={ this.props.scroll }
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
+						pagination={ this.props.pagination }
 					/>
+				</div>
+				<div style={ {textAlign: 'right'} }>
+					{ this.props.pagination === false ? 
+						<TablePagination 
+							rowCount={ this.props.rowCount }
+							defaultPageSize={ this.props.defaultPageSize }
+							defaultPage={ this.props.defaultPage }
+							list={ this.props.list }
+						/> 
+						: <></> 
+					}
 				</div>
 				<div>
 					<TableDrawer 

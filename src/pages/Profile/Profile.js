@@ -45,14 +45,26 @@ class Profile extends Component {
 			data: [],
 			labels: [],
 			spinning: false,
+			rowCount: 0,
+			defaultPageSize: 10,
+			defaultPage: 1,
 		};
 	}
 	
 	componentDidMount() {
 		this.setState({ spinning: true }, async () => {
-			await this.listSync();
+			const limit = this.state.defaultPageSize;
+			const offset = (this.state.defaultPage - 1) * limit;
+			await this.listSync({
+				limit,
+				offset,
+			});
 			await this.listLabels();
-			this.setState({ spinning: false });
+			const { entry: {row_count} } = await this.retrieveRowCount();
+			this.setState({ 
+				spinning: false, 
+				rowCount: row_count, 
+			});
 		});
 	}
 
@@ -199,6 +211,10 @@ class Profile extends Component {
 		dataName: "data",
 	};
 	createSync = createSync.bind(this, this.config);
+	retrieveRowCount = retrieveSync.bind(this, {
+		...this.config, 
+		retrieve: "retrieveRowCount",
+	});
 	listSync = listSync.bind(this, this.config);
 	retrieveNextId = retrieveSync.bind(this, {
 		...this.config,
@@ -232,13 +248,18 @@ class Profile extends Component {
 						key={ this.state.tableWrapperKey }
 						// data props
 						data={ this.state.data }
+						rowCount={ this.state.rowCount }
+						defaultPageSize={ this.state.defaultPageSize }
+						defaultPage={ this.state.defaultPage}
 						// display props
 						columns={ this.columns }
 						formItems={ this.formItems }
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Profile'
+						pagination={ false }
 						// api props
 						create={ this.createSync }
+						list={ this.listSync }
 						retrieveNextId={ this.retrieveNextId }
 						edit={ this.updateSync }
 						delete={ this.hideSync }

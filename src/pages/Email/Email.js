@@ -27,7 +27,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { createSync, listSync, updateSync, hideSync } = backend;
+const { createSync, retrieveSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
 
 class Email extends Component {
@@ -42,15 +42,27 @@ class Email extends Component {
 			profiles: [],
 			options: [],
 			spinning: false,
+			rowCount: 0,
+			defaultPageSize: 10,
+			defaultPage: 1,
 		};
 	}
 
 	componentDidMount() {
 		this.setState({ spinning: true }, async () => {
-			await this.listSync();
+			const limit = this.state.defaultPageSize;
+			const offset = (this.state.defaultPage - 1) * limit;
+			await this.listSync({
+				limit,
+				offset,
+			});
 			await this.listLabels();
 			await this.listProfiles();
-			this.setState({ spinning: false });
+			const { entry: {row_count} } = await this.retrieveRowCount();
+			this.setState({ 
+				spinning: false, 
+				rowCount: row_count, 
+			});
 		});
 	}
 
@@ -197,6 +209,10 @@ class Email extends Component {
 		dataName: "data",
 	};
 	createSync = createSync.bind(this, this.config);
+	retrieveRowCount = retrieveSync.bind(this, {
+		...this.config, 
+		retrieve: "retrieveRowCount",
+	});
 	listSync = listSync.bind(this, this.config);
 	update = updateSync.bind(this, this.config);
 	updateSync = (id, record) => this.update(id, record)
@@ -236,6 +252,9 @@ class Email extends Component {
 						// data props
 						data={ this.state.data }
 						labels={ this.state.labels }
+						rowCount={ this.state.rowCount }
+						defaultPageSize={ this.state.defaultPageSize }
+						defaultPage={ this.state.defaultPage}
 						// display props
 						columns={ this.columns }
 						formItems={ this.formItems }
@@ -243,8 +262,10 @@ class Email extends Component {
 						dropdownName='Create Profile'
 						drawerTitle='An Email'
 						isSmall={ this.props.isSmall }
+						pagination={ false }
 						// api props
 						create={ this.createSync }
+						list={ this.listSync }
 						edit={ this.updateSync }
 						delete={ this.hideSync }
 						refreshTable={ this.refreshTable }

@@ -5,4 +5,5 @@ export * from './SearchableInput';
 export * from './TableBody';
 export * from './TableDrawer';
 export * from './TableDropdown';
+export * from './TablePagination';
 export * from './TableWrapper';

@@ -45,15 +45,27 @@ class Case extends Component {
 			emails: [],
 			options: [],
 			spinning: false,
+			rowCount: 0,
+			defaultPageSize: 10,
+			defaultPage: 1,
 		};
 	}
 	
 	componentDidMount() {
 		this.setState({ spinning: true }, async () => {
-			await this.listSync();
+			const limit = this.state.defaultPageSize;
+			const offset = (this.state.defaultPage - 1) * limit;
+			await this.listSync({
+				limit,
+				offset,
+			});
 			await this.listCategories();
 			await this.listEmails();
-			this.setState({ spinning: false });
+			const { entry: {row_count} } = await this.retrieveRowCount();
+			this.setState({ 
+				spinning: false, 
+				rowCount: row_count, 
+			});
 		});
 	}
 
@@ -320,6 +332,10 @@ class Case extends Component {
 		dataName: "data",
 	};
 	createSync = createSync.bind(this, this.config);
+	retrieveRowCount = retrieveSync.bind(this, {
+		...this.config, 
+		retrieve: "retrieveRowCount",
+	});
 	retrieveNextId = retrieveSync.bind(this, {
 		...this.config,
 		retrieve: "retrieveNextId",
@@ -363,15 +379,19 @@ class Case extends Component {
 						key={ this.state.tableWrapperKey }
 						// data props
 						data={ this.state.data }
+						rowCount={ this.state.rowCount }
+						defaultPageSize={ this.state.defaultPageSize }
+						defaultPage={ this.state.defaultPage}
 						// display props
 						columns={ this.columns }
 						formItems={ this.formItems }
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Case'
+						pagination={ false }
 						// api props
 						create={ this.createSync }
-						retrieveNextId={ this.retrieveNextId }
 						list={ this.listSync }
+						retrieveNextId={ this.retrieveNextId }
 						edit={ this.updateSync }
 						bind={ this.bindSync }
 						unbind={ this.unbindSync }

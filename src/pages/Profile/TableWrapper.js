@@ -21,6 +21,7 @@ import {
 import { TableBody } from '_components'
 import { TableDropdown } from '_components'
 import { TableDrawer } from '_components'
+import { TablePagination } from '_components'
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -246,7 +247,19 @@ class TableWrapper extends Component {
 						isSmall={ this.props.isSmall }
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
+						pagination={ this.props.pagination }
 					/>
+				</div>
+				<div style={ {textAlign: 'right'} }>
+					{ this.props.pagination === false ? 
+						<TablePagination 
+							rowCount={ this.props.rowCount }
+							defaultPageSize={ this.props.defaultPageSize }
+							defaultPage={ this.props.defaultPage }
+							list={ this.props.list }
+						/> 
+						: <></> 
+					}
 				</div>
 				<div>
 					<TableDrawer 

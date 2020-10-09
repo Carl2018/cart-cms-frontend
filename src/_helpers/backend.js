@@ -50,6 +50,7 @@ async function retrieveSync(config, params) {
 }
 // interface for list sync
 async function listSync(config, params) {
+	this.setState({ spinning: true });
 	const { service, list, dataName } = config;
 	let response = null;
 	await service[list](params)
@@ -58,6 +59,7 @@ async function listSync(config, params) {
 			this.setState({ [dataName]: result.entry });
 		})
 		.catch( error => response = error );
+	this.setState({ spinning: false });
 	return new Promise(function(resolve, reject){
 		resolve(response);
 	});

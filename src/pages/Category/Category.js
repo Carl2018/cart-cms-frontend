@@ -20,7 +20,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { createSync, listSync, updateSync, hideSync } = backend;
+const { createSync, retrieveSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
 
 class Category extends Component {
@@ -31,13 +31,25 @@ class Category extends Component {
 			// populate the table body with data
 			data: [],
 			spinning: false,
+			rowCount: 0,
+			defaultPageSize: 10,
+			defaultPage: 1,
 		};
 	}
 	
 	componentDidMount() {
 		this.setState({ spinning: true }, async () => {
-			await this.listSync();
-			this.setState({ spinning: false });
+			const limit = this.state.defaultPageSize;
+			const offset = (this.state.defaultPage - 1) * limit;
+			await this.listSync({
+				limit,
+				offset,
+			});
+			const { entry: {row_count} } = await this.retrieveRowCount();
+			this.setState({ 
+				spinning: false, 
+				rowCount: row_count, 
+			});
 		});
 	}
 
@@ -127,6 +139,10 @@ class Category extends Component {
 		dataName: "data",
 	};
 	createSync = createSync.bind(this, this.config);
+	retrieveRowCount = retrieveSync.bind(this, {
+		...this.config, 
+		retrieve: "retrieveRowCount",
+	});
 	listSync = listSync.bind(this, this.config);
 	updateSync = updateSync.bind(this, this.config);
 	hideSync = hideSync.bind(this, this.config);
@@ -148,13 +164,18 @@ class Category extends Component {
 						key={ this.state.tableWrapperKey }
 						// data props
 						data={ this.state.data }
+						rowCount={ this.state.rowCount }
+						defaultPageSize={ this.state.defaultPageSize }
+						defaultPage={ this.state.defaultPage}
 						// display props
 						columns={ this.columns }
 						formItems={ this.formItems }
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Category'
+						pagination={ false }
 						// api props
 						create={ this.createSync }
+						list={ this.listSync }
 						edit={ this.updateSync }
 						delete={ this.hideSync }
 						refreshTable={ this.refreshTable }
