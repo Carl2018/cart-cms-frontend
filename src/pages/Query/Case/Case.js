@@ -42,7 +42,8 @@ class Case extends Component {
 			key: 'id',
 			sorter: (a, b) => compare(a.id, b.id),
 			sortDirection: ['ascend', 'descend'],
-			width: '8%',
+			fixed: 'left',
+			width: 100,
 			setFilter: true
 		},
 		{
@@ -51,7 +52,8 @@ class Case extends Component {
 			key: 'status',
 			sorter: (a, b) => compare(a.status, b.status),
 			sortDirection: ['ascend', 'descend'],
-			width: '10%',
+			fixed: 'left',
+			width: 80,
 			render: status => {
 				let color = 'geekblue';
 				let text = 'Open';
@@ -93,23 +95,13 @@ class Case extends Component {
 			},
 		},
 		{
-			title: 'Category',
-			dataIndex: 'categoryname',
-			key: 'categoryname',
-			sorter: (a, b) => compare(a.categoryname, b.categoryname),
-			sortDirection: ['ascend', 'descend'],
-			ellipsis: true,
-			width: '15%',
-			setFilter: true
-		},
-		{
 			title: 'Inquirer Email',
 			dataIndex: 'email',
 			key: 'email',
 			sorter: (a, b) => compare(a.email, b.email),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: '15%',
+			width: 160,
 			setFilter: true
 		},
 		{
@@ -119,7 +111,17 @@ class Case extends Component {
 			sorter: (a, b) => compare(a.accountname, b.accountname),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: '15%',
+			width: 160,
+			setFilter: true
+		},
+		{
+			title: 'Category',
+			dataIndex: 'categoryname',
+			key: 'categoryname',
+			sorter: (a, b) => compare(a.categoryname, b.categoryname),
+			sortDirection: ['ascend', 'descend'],
+			ellipsis: true,
+			width: 100,
 			setFilter: true
 		},
 		{
@@ -129,7 +131,7 @@ class Case extends Component {
 			sorter: (a, b) => compare(a.last_processed_by, b.last_processed_by),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: '12%',
+			width: 120,
 			setFilter: true
 		},
 	];
@@ -313,6 +315,7 @@ class Case extends Component {
 					loading={ this.props.loading }
 					showHeader={ this.props.showHeader }
 					showDropdown={ this.props.showDropdown }
+					scroll={ { x: 1400 } }
 					// api props
 					create={ this.props.create }
 					retrieveNextId={ this.props.retrieveNextId }

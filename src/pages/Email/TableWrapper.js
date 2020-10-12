@@ -138,7 +138,7 @@ class TableWrapper extends Component {
 					</Popconfirm>
 				</Space>
 			),
-			width: '20%',
+			width: '25%',
 			setFilter: false
 		},
 	];

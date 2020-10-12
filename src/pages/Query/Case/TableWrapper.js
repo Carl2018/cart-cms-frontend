@@ -164,7 +164,8 @@ class TableWrapper extends Component {
 					</Popconfirm>
 				</Space>
 			),
-			width: '20%',
+			fixed: 'right',
+			width: 195,
 			setFilter: false
 		},
 	];
@@ -593,6 +594,7 @@ class TableWrapper extends Component {
 						isSmall={ this.props.isSmall }
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
+						scroll={ this.props.scroll }
 					/>
 				</div>
 				<div>

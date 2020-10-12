@@ -140,6 +140,7 @@ class App extends Component {
 						{ currentUser &&
 						<Sider 
 							trigger={null} 
+							width={150} 
 							collapsible 
 							collapsed={this.state.collapsed}
 						>
