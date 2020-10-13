@@ -21,7 +21,7 @@ import {
 } from '@ant-design/icons';
 
 // import shared components
-import { TableBody } from '_components'
+import { TableBody } from './TableBody'
 import { TableDrawer } from '_components'
 
 const { Option } = Select; 
