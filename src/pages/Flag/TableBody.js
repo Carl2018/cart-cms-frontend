@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {styles} from './flagRow.css';
 
 /*
 		This component is a table
