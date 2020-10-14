@@ -17,6 +17,7 @@ import {
 	Label,
 	Template,
 	Category,
+	Log,
 } from 'pages';
 
 import { history } from '_helpers';
@@ -46,6 +47,7 @@ import {
   MailOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  ProfileOutlined,
   UserOutlined,
   QuestionCircleOutlined,
   TagOutlined,
@@ -246,6 +248,14 @@ class App extends Component {
 										Categories
 									</Link>
 								</Item>
+								<Item 
+									key="12" 
+									icon={<ProfileOutlined />}
+								>
+									<Link to="/log">
+										Logs
+									</Link>
+								</Item>
 							</Menu>
 						</Sider> }
 						<Layout className="site-layout">
@@ -307,6 +317,7 @@ class App extends Component {
 									<PrivateRoute path="/label" component={ Label }/>
 									<PrivateRoute path="/template" component={ Template }/>
 									<PrivateRoute path="/category" component={ Category }/>
+									<PrivateRoute path="/log" component={ Log }/>
 							</Content>
 							<Footer style={{textAlign: "center", color:"#a1a1a1"}}>
 								Copyright &copy; {new Date().getFullYear()} Heymandi 

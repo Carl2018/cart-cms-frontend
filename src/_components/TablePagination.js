@@ -14,6 +14,8 @@ class TablePagination extends Component {
 
 	// handler for page change and page size change
 	handleChange = (current, pageSize) => {
+		const extraParams = this.props.extraParams ? 
+			this.props.extraParams : {};
 		if (pageSize === this.state.pageSize ) {
 			this.setState({ currentPage: current });
 		} else { 
@@ -22,7 +24,7 @@ class TablePagination extends Component {
 		}
 		const limit = pageSize;
 		const offset = (current - 1) * pageSize;
-		this.props.list({ limit, offset });
+		this.props.list({ limit, offset, ...extraParams });
 	}
 
 	render(){

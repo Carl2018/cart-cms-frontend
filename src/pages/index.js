@@ -6,6 +6,7 @@ export * from './Email/Email';
 export * from './Flag/Flag';
 export * from './Home/Home';
 export * from './Label/Label';
+export * from './Log/Log';
 export * from './Login/Login';
 export * from './Profile/Profile';
 export * from './Query/Query';

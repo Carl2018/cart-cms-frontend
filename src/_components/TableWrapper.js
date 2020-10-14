@@ -24,7 +24,7 @@ class TableWrapper extends Component {
 	}
 	
 	// define columns in TableBody
-	columns = [
+	columns = this.props.noAction ? [...this.props.columns] : [
 		...this.props.columns,
 		{
 			title: 'Actions',
@@ -187,15 +187,21 @@ class TableWrapper extends Component {
 					</Col>
 				</Row>
 				<div>
+					{ this.props.extraRow }
+				</div>
+				<div>
 					<TableBody 
 						data={ this.props.data } 
 						columns={ this.columns } 
-						selectedRowKeys={ this.state.selectedRowKeys }
+						selectedRowKeys={ this.props.noBatch ? 
+							null : this.state.selectedRowKeys 
+						}
 						onSelectChange={ this.handleSelectChange }
 						isSmall={ this.props.isSmall }
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
 						pagination={ this.props.pagination }
+						scroll={ this.props.scroll }
 					/>
 				</div>
 				<div style={ {textAlign: 'right'} }>
@@ -205,24 +211,29 @@ class TableWrapper extends Component {
 							defaultPageSize={ this.props.defaultPageSize }
 							defaultPage={ this.props.defaultPage }
 							list={ this.props.list }
+							extraParams={ this.props.extraParams }
 						/> 
 						: <></> 
 					}
 				</div>
-				<div>
-					<TableDrawer 
-						tableDrawerKey={ this.state.tableDrawerKey }
-						visible={ this.state.visible } 
-						onClose={ this.handleClose }
-						record={ this.state.record }
-						formItems={ this.props.formItems }
-						disabled={ this.state.disabled } 
-						onSubmit={ this.handleSubmit }
-						drawerWidth={ this.props.drawerWidth }
-						drawerTitle={ this.props.drawerTitle }
-						formLayout={ this.props.formLayout }
-					/>
-				</div>
+				{ this.props.formItems ? 
+							<div>
+								<TableDrawer 
+									tableDrawerKey={ this.state.tableDrawerKey }
+									visible={ this.state.visible } 
+									onClose={ this.handleClose }
+									record={ this.state.record }
+									formItems={ this.props.formItems }
+									disabled={ this.state.disabled } 
+									onSubmit={ this.handleSubmit }
+									drawerWidth={ this.props.drawerWidth }
+									drawerTitle={ this.props.drawerTitle }
+									formLayout={ this.props.formLayout }
+								/>
+							</div>
+						:
+							<></>
+				}
 			</div>
 		);
 	}

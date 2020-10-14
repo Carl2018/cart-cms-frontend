@@ -9,3 +9,4 @@ export * from './label.service';
 export * from './process.service';
 export * from './profile.service';
 export * from './template.service';
+export * from './log.service';
