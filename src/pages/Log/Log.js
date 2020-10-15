@@ -99,7 +99,7 @@ class Log extends Component {
 			key: 'action_type',
 			sorter: (a, b) => compare(a.action_type, b.action_type),
 			sortDirection: ['ascend', 'descend'],
-			width: 200,
+			width: 150,
 			//setFilter: true
 			render: action_type => {
 				let color = 'default';
@@ -145,7 +145,7 @@ class Log extends Component {
 			key: 'relationname',
 			sorter: (a, b) => compare(a.relationname, b.relationname),
 			sortDirection: ['ascend', 'descend'],
-			width: 200,
+			width: 150,
 			ellipsis: true,
 			setFilter: true
 		},
@@ -161,6 +161,16 @@ class Log extends Component {
 		},
 		{
 			title: 'Column',
+			dataIndex: 'columnname',
+			key: 'columnname',
+			sorter: (a, b) => compare(a.columnname, b.columnname),
+			sortDirection: ['ascend', 'descend'],
+			width: 200,
+			ellipsis: true,
+			setFilter: true
+		},
+		{
+			title: 'Column Display Name',
 			dataIndex: 'displayname',
 			key: 'displayname',
 			sorter: (a, b) => compare(a.displayname, b.displayname),
@@ -399,7 +409,7 @@ class Log extends Component {
 						showDropdown={ false }
 						noAction={ true }
 						noBatch={ true }
-						scroll={ {x:2100} }
+						scroll={ {x:2200} }
 						// api props
 						list={ this.listSync }
 					>
