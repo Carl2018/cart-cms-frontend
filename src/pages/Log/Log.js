@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 // import components from ant design
 import { 
 	Col,
+	DatePicker,
 	Row,
 	Select,
 	Space,
@@ -16,7 +17,10 @@ import { ProfileOutlined } from '@ant-design/icons';
 import { TableWrapper } from '_components'
 
 // import services
-import { logService } from '_services';
+import { 
+	userService,
+	logService,
+} from '_services';
 
 // import helpers
 import { 
@@ -41,24 +45,37 @@ class Log extends Component {
 			defaultPageSize: 10,
 			defaultPage: 1,
 			pagename: "Categories",
+			users: [],
+			created_by: "",
+			created_on: "",
 		};
 	}
 	
 	componentDidMount() {
 		this.setState({ spinning: true }, async () => {
+			// get all users
+			const { entry } = await this.listUsers();
+			const users = entry.map( item => item.alias );
+
 			const limit = this.state.defaultPageSize;
 			const offset = (this.state.defaultPage - 1) * limit;
+			const filters = {
+				pagename: this.state.pagename,
+				created_by: this.state.created_by,
+				created_on: this.state.created_on,
+			}
 			await this.listSync({
 				limit,
 				offset,
-				pagename: this.state.pagename,
+				...filters,
 			});
 			const { entry: {row_count} } = await this.retrieveRowCount({
-				pagename: this.state.pagename,
+				...filters,
 			});
 			this.setState({ 
 				spinning: false, 
 				rowCount: row_count, 
+				users,
 			});
 		});
 	}
@@ -206,16 +223,21 @@ class Log extends Component {
 
 	// handler for change page 
 	handleChangePage = pagename => {
-		this.setState({ spinning: true, data: [] }, async () => {
+		this.setState({ spinning: true, data: [], pagename }, async () => {
 			const limit = this.state.defaultPageSize;
 			const offset = (this.state.defaultPage - 1) * limit;
+			const filters = {
+				pagename,
+				created_by: this.state.created_by,
+				created_on: this.state.created_on,
+			};
 			await this.listSync({
 				limit,
 				offset,
-				pagename,
+				...filters,
 			});
 			const { entry: {row_count} } = await this.retrieveRowCount({ 
-				pagename, 
+				...filters,
 			});
 			this.setState({ 
 				spinning: false, 
@@ -224,38 +246,57 @@ class Log extends Component {
 		});
 	}
 
-	// define extra row
-	extraRow = (
-		<Row style={{ marginBottom: "16px" }}>
-			<Col 
-				style={{ fontSize: '24px', textAlign: 'left' }}
-				span={ 12 } 
-			>
-					<Space>
-						<span style={{ fontSize: "16px", marginLeft: "8px" }} >
-							Page:
-						</span>
-						<Select
-							defaultValue="Categories"
-							onChange={ this.handleChangePage }
-							style={{ marginRight: "16px", width: 150 }}
-						>
-							<Option value="Queries">Queries</Option>
-							<Option value="Candidates">Candidates</Option>
-							<Option value="Flags">Flags</Option>
-							<Option value="Words">Words</Option>
-							<Option value="Cases">Cases</Option>
-							<Option value="Accounts">Accounts</Option>
-							<Option value="Emails">Emails</Option>
-							<Option value="Profiles">Profiles</Option>
-							<Option value="Labels">Labels</Option>
-							<Option value="Templates">Templates</Option>
-							<Option value="Categories">Categories</Option>
-						</Select>
-					</Space>
-			</Col>
-		</Row>
-	)
+	// handler for change user
+	handleChangeUser = user => {
+		this.setState({ spinning: true, data: [], created_by: user }, async () => {
+			const limit = this.state.defaultPageSize;
+			const offset = (this.state.defaultPage - 1) * limit;
+			const filters = {
+				pagename: this.state.pagename,
+				created_by: user,
+				created_on: this.state.created_on,
+			};
+			await this.listSync({
+				limit,
+				offset,
+				...filters,
+			});
+			const { entry: {row_count} } = await this.retrieveRowCount({ 
+				...filters,
+			});
+			this.setState({ 
+				spinning: false, 
+				rowCount: row_count, 
+			});
+		});
+	}
+
+	// handler for change date
+	handleChangeDate = (date, dateString) => {
+		this.setState({ spinning: true, data: [], created_on: dateString }, 
+			async () => {
+				const limit = this.state.defaultPageSize;
+				const offset = (this.state.defaultPage - 1) * limit;
+				const filters = {
+					pagename: this.state.pagename,
+					created_by: this.state.created_by,
+					created_on: dateString,
+				}
+				await this.listSync({
+					limit,
+					offset,
+					...filters,
+				});
+				const { entry: {row_count} } = await this.retrieveRowCount({ 
+					...filters
+				});
+				this.setState({ 
+					spinning: false, 
+					rowCount: row_count, 
+				});
+			}
+		);
+	}
 
 	// bind versions of CRUD
 	config = {
@@ -267,7 +308,74 @@ class Log extends Component {
 	retrieveRowCount = retrieveSync.bind(this, this.config);
 	listSync = listSync.bind(this, this.config);
 
+	configUser = {
+		service: userService,
+		list: "list",
+		dataName: "temp",
+	};
+	listUsers = listSync.bind(this, this.configUser);
+
 	render(){
+		// define extra row
+		const extraRow = (
+			<Row style={{ marginBottom: "16px" }}>
+				<Col 
+					style={{ fontSize: '24px', textAlign: 'left' }}
+					span={ 12 } 
+				>
+						<Space>
+							<span style={{ fontSize: "16px", marginLeft: "8px" }} >
+								Page:
+							</span>
+							<Select
+								value={ this.state.pagename }
+								onChange={ this.handleChangePage }
+								style={{ marginRight: "16px", width: 150 }}
+							>
+								<Option value="Queries">Queries</Option>
+								<Option value="Candidates">Candidates</Option>
+								<Option value="Flags">Flags</Option>
+								<Option value="Words">Words</Option>
+								<Option value="Cases">Cases</Option>
+								<Option value="Accounts">Accounts</Option>
+								<Option value="Emails">Emails</Option>
+								<Option value="Profiles">Profiles</Option>
+								<Option value="Labels">Labels</Option>
+								<Option value="Templates">Templates</Option>
+								<Option value="Categories">Categories</Option>
+							</Select>
+							<span style={{ fontSize: "16px", marginLeft: "8px" }} >
+								By:
+							</span>
+							<Select
+								value={ this.state.created_by }
+								onChange={ this.handleChangeUser }
+								style={{ marginRight: "16px", width: 150 }}
+							>
+								<Option value="">All</Option>
+								{
+									this.state.users.map( item =>
+										<Option
+											key={ uuidv4() }
+											value={ item }
+										>
+											{ item }
+										</Option>
+									)
+								}
+							</Select>
+							<span style={{ fontSize: "16px", marginLeft: "8px" }} >
+								On:
+							</span>
+							<DatePicker
+								onChange={ this.handleChangeDate }
+								style={{ marginRight: "16px", width: 150 }}
+							/>
+						</Space>
+				</Col>
+			</Row>
+		)
+
 		return (
 			<div className='Log'>
 				<Spin spinning={ this.state.spinning }>
@@ -278,11 +386,15 @@ class Log extends Component {
 						rowCount={ this.state.rowCount }
 						defaultPageSize={ this.state.defaultPageSize }
 						defaultPage={ this.state.defaultPage}
-						extraParams={ {pagename: this.state.pagename} }
+						filters={ {
+							pagename: this.state.pagename,
+							created_by: this.state.created_by,
+							created_on: this.state.created_on,
+						} }
 						// display props
 						columns={ this.columns }
 						tableHeader={ this.tableHeader }
-						extraRow={ this.extraRow }
+						extraRow={ extraRow }
 						pagination={ false }
 						showDropdown={ false }
 						noAction={ true }

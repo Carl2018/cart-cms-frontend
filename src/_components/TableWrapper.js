@@ -211,7 +211,7 @@ class TableWrapper extends Component {
 							defaultPageSize={ this.props.defaultPageSize }
 							defaultPage={ this.props.defaultPage }
 							list={ this.props.list }
-							extraParams={ this.props.extraParams }
+							filters={ this.props.filters }
 						/> 
 						: <></> 
 					}

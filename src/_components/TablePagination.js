@@ -12,10 +12,28 @@ class TablePagination extends Component {
 		};
 	}
 
+	// reset page and page size if a filter changes
+	componentDidUpdate(prevProps, prevState) {
+		if (this.props.filters) {
+			const paramNames = Object.keys(this.props.filters);
+			let changed = false;
+			paramNames.forEach( name => {
+				if (this.props.filters[name] !== prevProps.filters[name])
+					changed = true;
+			});
+			if (changed) {
+				this.setState({ 	
+					currentPage: this.props.defaultPage,
+					pageSize: this.props.defaultPageSize,
+				});
+			}
+		}
+	}
+
 	// handler for page change and page size change
 	handleChange = (current, pageSize) => {
-		const extraParams = this.props.extraParams ? 
-			this.props.extraParams : {};
+		const filters = this.props.filters ? 
+			this.props.filters : {};
 		if (pageSize === this.state.pageSize ) {
 			this.setState({ currentPage: current });
 		} else { 
@@ -24,7 +42,7 @@ class TablePagination extends Component {
 		}
 		const limit = pageSize;
 		const offset = (current - 1) * pageSize;
-		this.props.list({ limit, offset, ...extraParams });
+		this.props.list({ limit, offset, ...filters });
 	}
 
 	render(){
