@@ -94,6 +94,16 @@ class Log extends Component {
 			setFilter: true
 		},
 		{
+			title: 'Action Name',
+			dataIndex: 'actionname',
+			key: 'actionname',
+			sorter: (a, b) => compare(a.actionname, b.actionname),
+			sortDirection: ['ascend', 'descend'],
+			width: 200,
+			ellipsis: true,
+			setFilter: true
+		},
+		{
 			title: 'Action Type',
 			dataIndex: 'action_type',
 			key: 'action_type',
@@ -113,9 +123,13 @@ class Log extends Component {
 						color = 'gold';
 						text = 'Update';
 						break;
-					case 'd' :
+					case 's' :
+						color = 'magenta';
+						text = 'Soft Delete';
+						break;
+					case 'h' :
 						color = 'red';
-						text = 'Delete';
+						text = 'Hard Delete';
 						break;
 					default:
 						color = 'default';
@@ -128,16 +142,6 @@ class Log extends Component {
 					</Tag>
 				);
 			},
-		},
-		{
-			title: 'Action Name',
-			dataIndex: 'actionname',
-			key: 'actionname',
-			sorter: (a, b) => compare(a.actionname, b.actionname),
-			sortDirection: ['ascend', 'descend'],
-			width: 200,
-			ellipsis: true,
-			setFilter: true
 		},
 		{
 			title: 'Table',
@@ -170,7 +174,7 @@ class Log extends Component {
 			setFilter: true
 		},
 		{
-			title: 'Column Display Name',
+			title: 'Display Name',
 			dataIndex: 'displayname',
 			key: 'displayname',
 			sorter: (a, b) => compare(a.displayname, b.displayname),

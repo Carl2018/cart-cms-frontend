@@ -60,11 +60,13 @@ class Case extends Component {
 				offset,
 			});
 			await this.listCategories();
+			const categories = [{id: 0, categoryname: "Uncategorized"}, ...this.state.categories];
 			await this.listEmails();
 			const { entry: {row_count} } = await this.retrieveRowCount();
 			this.setState({ 
 				spinning: false, 
 				rowCount: row_count, 
+				categories,
 			});
 		});
 	}
