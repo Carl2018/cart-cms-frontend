@@ -9,6 +9,7 @@ import {
 	Select,
 	Space,
 	Spin,
+	Switch,
 	Tag,
 } from 'antd';
 import { ProfileOutlined } from '@ant-design/icons';
@@ -48,6 +49,7 @@ class Log extends Component {
 			users: [],
 			created_by: "",
 			created_on: "",
+			checked: true,
 		};
 	}
 	
@@ -63,6 +65,7 @@ class Log extends Component {
 				pagename: this.state.pagename,
 				created_by: this.state.created_by,
 				created_on: this.state.created_on,
+				details: this.state.checked ? 't' : 'f',
 			}
 			await this.listSync({
 				limit,
@@ -244,6 +247,7 @@ class Log extends Component {
 				pagename,
 				created_by: this.state.created_by,
 				created_on: this.state.created_on,
+				details: this.state.checked ? 't' : 'f',
 			};
 			await this.listSync({
 				limit,
@@ -269,6 +273,7 @@ class Log extends Component {
 				pagename: this.state.pagename,
 				created_by: user,
 				created_on: this.state.created_on,
+				details: this.state.checked ? 't' : 'f',
 			};
 			await this.listSync({
 				limit,
@@ -295,6 +300,7 @@ class Log extends Component {
 					pagename: this.state.pagename,
 					created_by: this.state.created_by,
 					created_on: dateString,
+					details: this.state.checked ? 't' : 'f',
 				}
 				await this.listSync({
 					limit,
@@ -312,6 +318,31 @@ class Log extends Component {
 		);
 	}
 
+	// handler for switch
+	handleSwitch = checked => {
+		this.setState({ spinning: true, data: [], checked }, async () => {
+			const limit = this.state.defaultPageSize;
+			const offset = (this.state.defaultPage - 1) * limit;
+			const filters = {
+				pagename: this.state.pagename,
+				created_by: this.state.created_by,
+				created_on: this.state.created_on,
+				details: checked ? 't' : 'f',
+			};
+			await this.listSync({
+				limit,
+				offset,
+				...filters,
+			});
+			const { entry: {row_count} } = await this.retrieveRowCount({ 
+				...filters,
+			});
+			this.setState({ 
+				spinning: false, 
+				rowCount: row_count, 
+			});
+		});
+	}
 	// bind versions of CRUD
 	config = {
 		service: logService,
@@ -385,6 +416,13 @@ class Log extends Component {
 								onChange={ this.handleChangeDate }
 								style={{ marginRight: "16px", width: 150 }}
 							/>
+							<span style={{ fontSize: "16px", marginLeft: "8px" }} >
+								Details:
+							</span>
+							<Switch
+								checked={ this.state.checked }
+								onChange={ this.handleSwitch }
+							/>
 						</Space>
 				</Col>
 			</Row>
@@ -404,6 +442,7 @@ class Log extends Component {
 							pagename: this.state.pagename,
 							created_by: this.state.created_by,
 							created_on: this.state.created_on,
+							details: this.state.checked ? 't' : 'f',
 						} }
 						// display props
 						columns={ this.columns }
