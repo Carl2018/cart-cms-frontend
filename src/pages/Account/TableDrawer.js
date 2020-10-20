@@ -31,7 +31,7 @@ import {
 // import shared components
 
 // import services
-import { accountService } from '_services';
+import { candidateService } from '_services';
 
 // import helpers
 import { backend } from '_helpers';
@@ -107,8 +107,8 @@ class TableDrawer extends Component {
 
 	// bind versions of CRUD
 	config = {
-		service: accountService,
-		list: "retrieveCandidateId",
+		service: candidateService,
+		list: "retrieveDetails",
 		dataName: "candidates",
 	};
 	listSync = listSync.bind(this, this.config);

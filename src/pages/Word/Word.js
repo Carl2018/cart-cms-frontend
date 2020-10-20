@@ -14,7 +14,7 @@ import { FileExcelOutlined } from '@ant-design/icons';
 import { TableWrapper } from './TableWrapper'
 
 // import services
-import { accountService } from '_services';
+import { wordService } from '_services';
 
 // import helpers
 import { 
@@ -273,11 +273,11 @@ class Word extends Component {
 
 	// bind versions of CRUD
 	config = {
-		service: accountService,
-		create: "createWords",
-		retrieve: "retrieveOneWord",
-		list: "retrieveWords",
-		update: "updateWords",
+		service: wordService,
+		create: "create",
+		retrieve: "retrieve",
+		list: "list",
+		update: "update",
 		dataName: "data",
 	};
 	createSync = createSync.bind(this, this.config);

@@ -13,7 +13,7 @@ import { IdcardOutlined } from '@ant-design/icons';
 import { TableWrapper } from './TableWrapper'
 
 // import services
-import { accountService } from '_services';
+import { candidateService } from '_services';
 
 // import helpers
 import { 
@@ -252,10 +252,10 @@ class Candidate extends Component {
 
 	// bind versions of CRUD
 	config = {
-		service: accountService,
-		retrieve: "retrieve_candidate",
-		list: "list_candidates",
-		update: "ban_candidate",
+		service: candidateService,
+		retrieve: "retrieve",
+		list: "list",
+		update: "ban",
 		dataName: "data",
 	};
 	list = listSync.bind(this, this.config);
@@ -293,7 +293,7 @@ class Candidate extends Component {
 	}
 	searchCandidates = listSync.bind(this, {
 		...this.config,
-		list: "search_candidates",
+		list: "search_by_keywords",
 	});
 	searchCandidatesSync = params => {
 		this.setState( { spinning: true, pagination: true }, async () => {

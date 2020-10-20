@@ -19,7 +19,7 @@ import {
 import { TableBody } from '_components'
 
 // import services
-import { accountService } from '_services';
+import { flagService } from '_services';
 
 // import helpers
 import { backend, helpers } from "_helpers";
@@ -255,8 +255,8 @@ class FlagModal extends Component {
 
 	// bind versions of CRUD
 	configFlag = {
-		service: accountService,
-		list: "retrieveFlag",
+		service: flagService,
+		list: "search",
 		dataName: "flags",
 	};
 	listFlags = listSync.bind(this, this.configFlag);

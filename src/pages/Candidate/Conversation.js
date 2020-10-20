@@ -20,7 +20,7 @@ import { TableBody } from '_components'
 import { Content } from './Content'
 
 // import services
-import { accountService } from '_services';
+import { conversationService } from '_services';
 
 // import helpers
 import { backend, helpers } from "_helpers";
@@ -255,14 +255,14 @@ class Conversation extends Component {
 
 	// bind versions of CRUD
 	configConversation = {
-		service: accountService,
-		list: "retrieveConversation",
+		service: conversationService,
+		list: "list",
 		dataName: "conversations",
 	};
 	listConversations = listSync.bind(this, this.configConversation);
 	configContent = {
-		service: accountService,
-		list: "retrieveContent",
+		service: conversationService,
+		list: "listContent",
 		dataName: "contents",
 	};
 	listContents = listSync.bind(this, this.configContent);

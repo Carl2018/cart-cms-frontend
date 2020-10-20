@@ -2,15 +2,14 @@ import { config } from 'config';
 import { authHeader } from '_helpers';
 import { handleResponse } from '_helpers';
 
-export const externalService = {
-		retrieve,
-    searchBlacklist,
-    unbanBlacklist,
+export const conversationService = {
+    list,
+    listContent,
 };
 
-function retrieve(params={}) {
+function list(params={}) {
 		// append query string
-		let url = new URL(`${config.apiUrl}/external/retrieve`);
+		let url = new URL(`${config.apiUrl}/conversation/list`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
@@ -22,9 +21,9 @@ function retrieve(params={}) {
 			.then(handleResponse);
 }
 
-function searchBlacklist(params={}) {
+function listContent(params={}) {
 		// append query string
-		let url = new URL(`${config.apiUrl}/external/search_blacklist`);
+		let url = new URL(`${config.apiUrl}/conversation/list_content`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
@@ -33,15 +32,5 @@ function searchBlacklist(params={}) {
 			headers: authHeader() 
 		};
     return fetch(url, requestOptions)
-			.then(handleResponse);
-}
-
-function unbanBlacklist(record) {
-    const requestOptions = { 
-			method: 'PUT', 
-			headers: authHeader(),
-			body: JSON.stringify(record)
-		};
-    return fetch(`${config.apiUrl}/external/unban_blacklist`, requestOptions)
 			.then(handleResponse);
 }

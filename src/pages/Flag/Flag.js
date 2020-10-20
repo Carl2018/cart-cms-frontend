@@ -15,7 +15,10 @@ import { TableWrapper } from './TableWrapper'
 import { FlagModal } from './FlagModal'
 
 // import services
-import { accountService } from '_services';
+import { 
+	candidateService,
+	flagService,
+} from '_services';
 
 // import helpers
 import { 
@@ -283,10 +286,9 @@ class Flag extends Component {
 
 	// bind versions of CRUD
 	config = {
-		service: accountService,
-		retrieve: "retrieve_candidate",
-		list: "list_flag",
-		update: "ban_candidate",
+		service: flagService,
+		retrieve: "retrieve",
+		list: "list",
 		dataName: "data",
 	};
 	list = listSync.bind(this, this.config);
@@ -301,7 +303,13 @@ class Flag extends Component {
 			this.setState({ spinning: false });
 		});
 	}
-	ban = updateSync.bind(this, this.config);
+	configCandidate = {
+		service: candidateService,
+		retrieve: "retrieve",
+		update: "ban",
+		dataName: "data",
+	};
+	ban = updateSync.bind(this, this.configCandidate);
 	softBanSync = async record => {
 		const body = {
 			candidate_id: record.suspect_id,

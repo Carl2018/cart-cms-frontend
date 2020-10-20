@@ -33,7 +33,7 @@ import { InspectDrawer } from './InspectDrawer/InspectDrawer'
 // import services
 import { 
 	accountService,
-	externalService,
+	blacklistService,
 	processService, 
 	profileService, 
 } from '_services';
@@ -542,15 +542,15 @@ class TableWrapper extends Component {
 	listProfiles = listSync.bind(this, this.configProfile);
 	updateMergeProfile = updateSync.bind(this, this.configProfile);
 
-	configExternal = {
-		service: externalService,
+	configBlacklist = {
+		service: blacklistService,
 		retrieve: "retrieve",
-		list: "searchBlacklist",
-		update: "unbanBlacklist",
+		list: "search",
+		update: "unban",
 		dataName: "blacklist",
 	};
-	searchBlacklist = listSync.bind(this, this.configExternal );
-	unbanBlacklist = updateSync.bind(this, this.configExternal );
+	searchBlacklist = listSync.bind(this, this.configBlacklist );
+	unbanBlacklist = updateSync.bind(this, this.configBlacklist );
 
 	render(){
 		return (
