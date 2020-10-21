@@ -138,7 +138,7 @@ class App extends Component {
 		return (
 			<div className="App">
 				<Router history={history}>
-					<Layout>
+					<Layout style={{ minHeight: '100vh' }}>
 						{ currentUser &&
 						<Sider 
 							trigger={null} 
