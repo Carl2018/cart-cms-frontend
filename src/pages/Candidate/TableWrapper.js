@@ -25,7 +25,7 @@ import {
 // import shared components
 import { TableBody } from '_components'
 import { TableDrawer } from '_components'
-import Conversation from './Conversation'
+import { Conversation } from '_components'
 
 const { Search } = Input; 
 const { Option } = Select; 

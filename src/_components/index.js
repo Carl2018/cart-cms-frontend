@@ -1,3 +1,4 @@
+export * from './Conversation';
 export * from './PrivateRoute';
 export * from './RichTextInput';
 export * from './RichTextOutput';

@@ -5,6 +5,7 @@ import {
 	Button, 
 	Col, 
 	Dropdown, 
+	Input, 
 	InputNumber, 
 	Menu, 
 	Popconfirm, 
@@ -15,6 +16,7 @@ import {
 	message, 
 } from 'antd';
 import { 
+	CommentOutlined,
 	ExceptionOutlined,
 	EyeInvisibleOutlined, 
 	FlagOutlined, 
@@ -25,6 +27,7 @@ import {
 // import shared components
 import { TableBody } from './TableBody'
 import { TableDrawer } from '_components'
+import { Conversation } from '_components'
 
 const { Option } = Select; 
 
@@ -37,6 +40,9 @@ class TableWrapper extends Component {
 			visible: false, // for opening or closing the TableDrawer
 			record: {}, // for loading a record into the form in TableDrawer
 			disabled: false, // for disabling the input fields in TableDrawer
+			// for the conversation modal
+			visibleConversation: false,
+			modalKeyConversation: Date.now(),
 		};
 	}
 	
@@ -66,6 +72,14 @@ class TableWrapper extends Component {
 				onClick={ this.props.onClickFlag.bind(this, record) }
 			>
 				Flags
+			</Menu.Item>
+			<Menu.Item 
+				key='4' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <CommentOutlined /> }
+				onClick={ this.handleClickConversation.bind(this, record) }
+			>
+				Conversations
 			</Menu.Item>
 		</Menu>
 	);
@@ -142,6 +156,14 @@ class TableWrapper extends Component {
 		});
 	}
 
+	handleClickConversation = record => {
+		this.setState({
+			visibleConversation: true, 
+			candidateId: record.id,
+		});
+	}
+
+
 	// handlers for actions in TableDrawer
   handleClose = () => {
     this.setState({
@@ -162,6 +184,15 @@ class TableWrapper extends Component {
 			tableDrawerKey: Date.now(),
 		});
 	}
+
+	// handler for close conversation content modal
+	handleCloseConversation = event => {
+		this.setState({
+			visibleConversation: false,
+			modalKeyConversation: Date.now(),
+		});
+	}
+
 
 	render(){
 		return (
@@ -184,7 +215,7 @@ class TableWrapper extends Component {
 						style={{ fontSize: '24px', textAlign: 'left' }}
 						span={ 12 } 
 					>
-							<Space size="large">
+							<Space size="small">
 								<span style={{ fontSize: "16px", marginLeft: "8px" }} >
 									Cache:
 								</span>
@@ -216,19 +247,29 @@ class TableWrapper extends Component {
 									placeholder="Page"
 									onChange={ this.props.onChangePage }
 									value={ this.props.page }
-									style={{ width: 100 }}
+									style={{ width: 80 }}
 									min={ 1 }
 								/>
 								<span style={{ fontSize: "16px", marginLeft: "8px" }} >
 									Interval(hours):
 								</span>
 								<InputNumber
-									placeholder="Interval in Hours"
+									placeholder="Hours"
 									onChange={ this.props.onChangeInterval }
 									value={ this.props.interval }
-									style={{ width: 100 }}
+									style={{ width: 80 }}
 									min={ 1 }
 								/>
+								<span style={{ fontSize: "16px", marginLeft: "8px" }} >
+									Remarks:
+								</span>
+								<Input
+									placeholder="Remarks"
+									value={ this.props.remarks}
+									onChange={ this.props.onChangeRemarks }
+									style={{ marginRight: "16px", width: 180 }}
+								>
+								</Input>
 								<Button
 									size="middle"
 									onClick={ this.props.onSearch }
@@ -263,6 +304,15 @@ class TableWrapper extends Component {
 						drawerTitle={ this.props.drawerTitle }
 						formLayout={ this.props.formLayout }
 					/>
+				</div>
+				<div>
+					<Conversation
+						candidateId={ this.state.candidateId }
+						modalKey={ this.state.modalKeyConversation }
+						visible={ this.state.visibleConversation }
+						onCancel={ this.handleCloseConversation }
+					>
+					</Conversation>
 				</div>
 			</div>
 		);

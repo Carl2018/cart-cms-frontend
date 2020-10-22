@@ -43,6 +43,7 @@ class Flag extends Component {
 			interval: 48,
 			orderBy: 'timestamp',
 			page: 1,
+			remarks: '',
 			// for the flag modal
 			visibleFlag: false,
 			modalKeyFlag: Date.now(),
@@ -55,7 +56,8 @@ class Flag extends Component {
 			const interval = this.state.interval;
 			const orderBy = this.state.orderBy;
 			const page = this.state.page;
-			await this.listSync(interval, orderBy, page);
+			const remarks = this.state.remarks;
+			await this.listSync(interval, orderBy, page, remarks);
 			this.setState({ spinning: false });
 		});
 	}
@@ -182,6 +184,25 @@ class Flag extends Component {
 			// setFilter: true,
 			render: timestamp => (<>{ toDatetime(Number(timestamp)*1000) }</>),
 		},
+		{
+			title: 'Remarks',
+			dataIndex: 'remarks',
+			key: 'remarks',
+			sorter: (a, b) => compare(a.remarks, b.remarks),
+			sortDirection: ['ascend', 'descend'],
+			width: 180,
+			setFilter: true,
+		},
+		{
+			title: 'Reporter',
+			dataIndex: 'reporter_message',
+			key: 'reporter_message',
+			sorter: (a, b) => compare(a.reporter_message, b.reporter_message),
+			sortDirection: ['ascend', 'descend'],
+			width: 140,
+			// setFilter: true,
+			render: reporter => (<>{ reporter ? reporter : "System/CMS" }</>),
+		},
 	];
 
 	// define form items for TableDrawer
@@ -220,11 +241,13 @@ class Flag extends Component {
 			const interval = 48;
 			const orderBy = 'timestamp';
 			const page = 1;
-			await this.listSync(interval, orderBy, page);
+			const remarks= '';
+			await this.listSync(interval, orderBy, page, remarks);
 			this.setState({ 
 				interval,
 				orderBy,
 				page,
+				remarks,
 			});
 		});	
 	}
@@ -252,14 +275,20 @@ class Flag extends Component {
 		this.setState({ interval });
 	}
 
+	// handler for remarks
+	handleChangeRemarks = event => this.setState({ remarks: event.target.value});
+
 	// handler for Search button
-	handleSearch = async event => {
-		const interval = this.state.interval;
-		const orderBy = this.state.orderBy;
-		const page = this.state.page;
-		await this.listSync(interval, orderBy, page);
-		const tableWrapperKey =  Date.now();
-		this.setState({ tableWrapperKey });
+	handleSearch = event => {
+		this.setState({ data: [] }, async () => {
+			const interval = this.state.interval;
+			const orderBy = this.state.orderBy;
+			const page = this.state.page;
+			const remarks = this.state.remarks;
+			await this.listSync(interval, orderBy, page, remarks);
+			const tableWrapperKey =  Date.now();
+			this.setState({ tableWrapperKey });
+		});
 	}
 
 	// handler for click flag search modal
@@ -292,13 +321,14 @@ class Flag extends Component {
 		dataName: "data",
 	};
 	list = listSync.bind(this, this.config);
-	listSync = (interval=48, orderBy='timestamp', page=1) => {
+	listSync = (interval=48, orderBy='timestamp', page=1, remarks='') => {
 		this.setState( { spinning: true }, async () => {
 			await this.list({ 
 				cache: this.state.cache, 
 				interval, 
 				order_by: orderBy, 
-				page
+				page,
+				remarks,
 			});
 			this.setState({ spinning: false });
 		});
@@ -360,13 +390,14 @@ class Flag extends Component {
 						interval={ this.state.interval }
 						orderBy={ this.state.orderBy }
 						page={ this.state.page }
+						remarks={ this.state.remarks }
 						// display props
 						columns={ this.columns }
 						formItems={ this.formItems }
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Flag'
 						showDropdown={ false }
-						scroll={ {x:1600} }
+						scroll={ {x:1800} }
 						// api props
 						listSync={ this.listSync }
 						softBanSync={ this.softBanSync}
@@ -376,6 +407,7 @@ class Flag extends Component {
 						onChangeOrderBy={ this.handleChangeOrderBy }
 						onChangePage={ this.handleChangePage }
 						onChangeInterval={ this.handleChangeInterval }
+						onChangeRemarks={ this.handleChangeRemarks }
 						onSearch={ this.handleSearch }
 						onClickFlag={ this.handleClickFlag }
 					>

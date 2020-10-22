@@ -348,4 +348,4 @@ class Conversation extends Component {
 	}
 }
 
-export default Conversation;
+export { Conversation };

@@ -131,16 +131,16 @@ class TableBody extends Component {
 		const data = this.props.data;
 		
 		// row selection
-		const { selectedRowKeys } = this.props;
-		const rowSelection = {
-			selectedRowKeys,
-			onChange: this.props.onSelectChange,
-			hideDefaultSelections: true,
-			selections: [
-				Table.SELECTION_ALL,
-				Table.SELECTION_INVERT,
-			]
-		};
+//		const { selectedRowKeys } = this.props;
+//		const rowSelection = {
+//			selectedRowKeys,
+//			onChange: this.props.onSelectChange,
+//			hideDefaultSelections: true,
+//			selections: [
+//				Table.SELECTION_ALL,
+//				Table.SELECTION_INVERT,
+//			]
+//		};
 
 		return (
 			<div className='TableDropdown'>
