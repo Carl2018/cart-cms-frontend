@@ -29,6 +29,7 @@ import {
 } from 'antd';
 
 // import shared components
+import { Choice } from './Choice';
 
 // import services
 import { candidateService } from '_services';
@@ -46,6 +47,11 @@ class TableDrawer extends Component {
 		this.state = {
 			candidates: [],
 			spnning: false,
+			// for Choice modal
+			candidateIds: [],
+			allCandidates: [],
+			modalKeyChoice: Date.now(), 
+			visibleChoice: false,
 		};
 	}
 
@@ -81,15 +87,34 @@ class TableDrawer extends Component {
 		});
 		this.setState({ spnning: false });
 		if (response.code === 200) {
-			this.formRef.current.setFieldsValue({
-				candidate_id: response.entry.candidate_id,
-				status: response.entry.status,
-				account_type: response.entry.account_type,
-				region: response.entry.region,
-				physical_region: response.entry.physical_region,
-			});
-			message.success("Candidate ID found");
+			let entry = response.entry;
+			if (entry.length === 1) {
+				entry = entry.pop();
+				this.formRef.current.setFieldsValue({
+					candidate_id: entry.candidate_id,
+					status: entry.status,
+					account_type: entry.account_type,
+					region: entry.region,
+					physical_region: entry.physical_region,
+				});
+				message.success("Candidate ID found");
+			} else {
+				message.success("Multiple Candidate IDs found");
+				const candidateIds = entry.map( item => item.candidate_id );
+				this.setState({ 
+					candidateIds,
+					allCandidates: entry,
+					visibleChoice: true,
+				});
+			}
 		} else {
+			this.formRef.current.setFieldsValue({
+				candidate_id: null,
+				status: null,
+				account_type: null,
+				region: null,
+				physical_region: null,
+			});
 			message.error("Candidate ID not found");
 		}
 	}
@@ -102,6 +127,34 @@ class TableDrawer extends Component {
 			account_type: null,
 			region: null,
 			physical_region: null,
+		});
+	}
+
+	// handlers for Choice modal
+	handleSubmitChoice = choice => {
+		const entry = this.state.allCandidates.find( item => 
+		 item.candidate_id === choice );
+		this.formRef.current.setFieldsValue({
+			candidate_id: entry.candidate_id,
+			status: entry.status,
+			account_type: entry.account_type,
+			region: entry.region,
+			physical_region: entry.physical_region,
+		});
+		this.setState({
+			visibleChoice: false,
+			modalKeyChoice: Date.now(),
+			candidateIds: [],
+			allCandidates: [],
+		});
+	}
+
+	handleCancelChoice = event => {
+		this.setState({
+			visibleChoice: false,
+			modalKeyChoice: Date.now(),
+			candidateIds: [],
+			allCandidates: [],
 		});
 	}
 
@@ -315,6 +368,16 @@ class TableDrawer extends Component {
 						</Form>
 					</Spin>
 				</Drawer>
+				<div>
+					<Choice
+						candidateIds={ this.state.candidateIds }
+						modalKey={ this.state.modalKeyChoice }
+						visible={ this.state.visibleChoice }
+						onSubmit={ this.handleSubmitChoice }
+						onCancel={ this.handleCancelChoice }
+					>
+					</Choice>
+				</div>
 			</div>
 		);
 	}
