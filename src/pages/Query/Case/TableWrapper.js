@@ -507,6 +507,7 @@ class TableWrapper extends Component {
 		list: "list",
 		update: "update",
 		dataName: "dataProcess",
+		pageName: "Queries",
 	};
 	create = createSync.bind(this, this.configProcess);
 	createSync = async record => {
@@ -538,6 +539,7 @@ class TableWrapper extends Component {
 		list: "list",
 		update: "updateMerge",
 		dataName: "profiles",
+		pageName: "Queries",
 	};
 	listProfiles = listSync.bind(this, this.configProfile);
 	updateMergeProfile = updateSync.bind(this, this.configProfile);
@@ -548,6 +550,7 @@ class TableWrapper extends Component {
 		list: "search",
 		update: "unban",
 		dataName: "blacklist",
+		pageName: "Queries",
 	};
 	searchBlacklist = listSync.bind(this, this.configBlacklist );
 	unbanBlacklist = updateSync.bind(this, this.configBlacklist );

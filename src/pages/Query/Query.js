@@ -222,6 +222,7 @@ class Query extends Component {
 		create: "create",
 		retrieve: "retrieve",
 		dataName: "profiles",
+		pageName: "Queries",
 	};
 	createProfile = createSync.bind(this, this.configProfile);
 	createProfileSync = record => this.createProfile(record)
@@ -249,6 +250,7 @@ class Query extends Component {
 		update: "update",
 		hide: "hide",
 		dataName: "emails",
+		pageName: "Queries",
 	};
 	createEmail = createSync.bind(this, this.configEmail);
 	createEmailSync = async record => {
@@ -285,6 +287,7 @@ class Query extends Component {
 		update: "update",
 		hide: "hide",
 		dataName: "cases",
+		pageName: "Queries",
 	};
 	createCase = createSync.bind(this, this.configCase);
 	createCaseSync = async record => {
@@ -328,6 +331,7 @@ class Query extends Component {
 		update: "update",
 		hide: "hide",
 		dataName: "accounts",
+		pageName: "Queries",
 	};
 	createAccount = createSync.bind(this, this.configAccount);
 	createAccountSync = async record => {

@@ -338,6 +338,7 @@ class Flag extends Component {
 		retrieve: "retrieve",
 		update: "ban",
 		dataName: "data",
+		pageName: "Flags",
 	};
 	ban = updateSync.bind(this, this.configCandidate);
 	softBanSync = async record => {

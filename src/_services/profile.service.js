@@ -99,11 +99,11 @@ function updateMerge(record) {
 			.then(handleResponse);
 }
 
-function hide(ids) {
+function hide(record) {
     const requestOptions = { 
 			method: 'PUT', 
 			headers: authHeader(),
-			body: JSON.stringify({ ids })
+			body: JSON.stringify(record)
 		};
     return fetch(`${config.apiUrl}/profile/hide`, requestOptions)
 			.then(handleResponse);

@@ -316,6 +316,7 @@ class Template extends Component {
 		update: "toggleSticktop",
 		dataName: "templates",
 		editSuccessMsg: "The top button has been toggled",
+		pageName: "Queries",
 	};
 	listTemplates = listSync.bind(this, this.configTemplate);
 	listSync = async () => {

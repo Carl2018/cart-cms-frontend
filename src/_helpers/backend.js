@@ -13,14 +13,14 @@ export const backend = {
 // interface for create sync
 async function createSync(config, record) {
 	this.setState({ spinning: true });
-	const { service, create, retrieve, dataName } = config;
+	const { service, create, retrieve, dataName, pageName } = config;
 	// insert the record into the backend table
 	let response = null;
 	// strip spaces
 	for (let key in record) 
 		record[key] = typeof record[key] === 'string' ? 
 			record[key].trim() : record[key];
-	await service[create](record)
+	await service[create]({...record, pagename: pageName})
 		.then( result => response = result )
 		.catch( error => response = error );
 	// update the frontend data accordingly
@@ -67,14 +67,14 @@ async function listSync(config, params) {
 // interface for update sync
 async function updateSync(config, id, record) {
 	this.setState({ spinning: true });
-	const { service, update, retrieve, dataName, editSuccessMsg } = config;
+	const { service, update, retrieve, dataName, pageName, editSuccessMsg } = config;
 	// update the record in the backend table
 	let response = null;
 	// strip spaces
 	for (let key in record) 
 		record[key] = typeof record[key] === 'string' ? 
 			record[key].trim() : record[key];
-	await service[update]({ id, ...record })
+	await service[update]({ id, ...record, pagename: pageName })
 		.then( result => response = result )
 		.catch( error => response = error );
 	// update the frontend data accordingly
@@ -105,13 +105,13 @@ async function updateSync(config, id, record) {
 // interface for hide sync
 async function hideSync(config, ids) {
 	this.setState({ spinning: true });
-	const { service, hide, dataName } = config;
+	const { service, hide, dataName, pageName } = config;
 	// convert to array if ids is a string
 	ids = Array.isArray(ids) ? ids : [ ids ];
 
 	// hide the record in the backend table
 	let response = null;
-	await service[hide](ids)
+	await service[hide]({ids, pagename: pageName})
 		.then( result => response = result )
 		.catch( error => { response = error; console.log(error) } );
 	// hide the frontend data accordingly
