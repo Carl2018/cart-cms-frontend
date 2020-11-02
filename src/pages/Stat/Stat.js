@@ -19,13 +19,124 @@ const { RangePicker } = DatePicker;
 // destructure imported components and objects
 const { listSync } = backend;
 
+const dataForRegister = {
+  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+  datasets: [
+    {
+      label: 'Google',
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: 'rgba(75,192,192,0.4)',
+      borderColor: 'rgba(255,69,0,1)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgba(255,69,0,1)',
+      pointBackgroundColor: 'rgba(255,69,0,1)',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgba(255,69,0,1)',
+      pointHoverBorderColor: 'rgba(255,69,0,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data: [1, 1, 1, 1, 1, 1]
+    },
+    {
+      label: 'SMS',
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: 'rgba(75,192,192,0.4)',
+      borderColor: 'rgba(255,140,0,1)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgba(255,140,0,1)',
+      pointBackgroundColor: 'rgba(255,140,0,1)',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgba(255,140,0,1)',
+      pointHoverBorderColor: 'rgba(220,220,220,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data: [1, 1, 1, 1, 1, 1]
+    },
+    {
+      label: 'Facebook',
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: 'rgba(75,192,192,0.4)',
+      borderColor: 'rgba(30,144,255,1)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgba(30,144,255,1)',
+      pointBackgroundColor: 'rgba(30,144,255,1)',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgba(30,144,255,1)',
+      pointHoverBorderColor: 'rgba(220,220,220,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data: [1, 1, 1, 1, 1, 1]
+    },
+    {
+      label: 'Apple',
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: 'rgba(75,192,192,0.4)',
+      borderColor: 'rgba(75,192,192,1)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgba(75,192,192,1)',
+      pointBackgroundColor: 'rgba(75,192,192,1)',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+      pointHoverBorderColor: 'rgba(220,220,220,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data: [1, 1, 1, 1, 1, 1]
+    },
+    {
+      label: 'Total',
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: 'rgba(75,192,192,0.4)',
+      borderColor: 'rgba(0,0,0,1)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgba(0,0,0,1)',
+      pointBackgroundColor: 'rgba(0,0,0,1)',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgba(0,0,0,1)',
+      pointHoverBorderColor: 'rgba(220,220,220,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data: [1, 1, 1, 1, 1, 1]
+    }
+  ]
+};
+
 class Stat extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentUser: authenticationService.currentUserValue,
-            invitation_start_date: "2020-08-01",
-            invitation_end_date: "2020-08-17",
+            invitation_start_date: this.dateToString(this.getDaysBefore(-7)),
+            invitation_end_date: this.dateToString(this.getDaysBefore(-1)),
             invitation_date_range: this.generateDateRangeArray(this.getDaysBefore(-7),this.getDaysBefore(-1) ),
             data: {},
         };
@@ -140,6 +251,16 @@ class Stat extends React.Component {
       ]
     }
 
+    getDataSetsByRegion = (region_type) => {
+      return [
+        this.dataEntry('Google','rgba(255,69,0,1)',region_type+'_google_register'),
+        this.dataEntry('SMS','rgba(255,140,0,1)',region_type+'_sms_register'),
+        this.dataEntry('Facebook','rgba(30,144,255,1)',region_type+'_facebook_register'),
+        this.dataEntry('Apple','rgba(75,192,192,1)',region_type+'_apple_register'),
+        this.dataEntry('Total','rgba(0,0,0,1)',region_type+'_total_register'),
+      ]
+    }
+
     getDataArrayBasedOnType = (region) =>{
       switch(region){
         case 'hk_invitation_count':
@@ -166,14 +287,33 @@ class Stat extends React.Component {
           return this.state.data.my_match_rate
         case 'ca_match_rate':
           return this.state.data.ca_match_rate
+        case 'hk_google_register':
+          return this.state.data.hk_google_register
+        case 'hk_sms_register':
+          return this.state.data.hk_sms_register
+        case 'hk_facebook_register':
+          return this.state.data.hk_facebook_register
+        case 'hk_apple_register':
+          return this.state.data.hk_apple_register
+        case 'hk_total_register':
+          return this.state.data.hk_total_register
         default:
           break
       }
       
     }
+
+    axes = [
+        { primary: true, type: 'time', position: 'bottom' },
+        { type: 'linear', position: 'left' }
+      ]
+      
+
     render() {
+        //const { currentUser } = this.state;
         return (
             <div>
+              
 								<Card
 									style={{
 										marginLeft: "16px",
@@ -192,25 +332,30 @@ class Stat extends React.Component {
                 <Col span={22}>
                   <RangePicker
                     ranges={{
+                      //'Past 7 days': [moment().startOf('month'), moment().endOf('month')],
                      'Past 7 days': [moment().subtract(7,'days'), moment().subtract(1,'days')],
                       'Past 14 days': [moment().subtract(14,'days'), moment().subtract(1,'days')],
                       'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
+                      
                     }}
                     onChange={this.onChange}
                   />
                 </Col>
                 </Row>
                 </Card>
+             
                 <Row gutter={16}>
                   <Col span={12}>
                     <Card
                       title="Invitation Count"
                       style={{ margin: "16px" }}
                     >
+                      
                       <Line data={{
                         labels: this.getLabels(),
                         datasets: this.getDataSets('invitation_count')
                       }} />
+                      
                     </Card>
                   </Col>
                   <Col span={12}>
@@ -224,6 +369,31 @@ class Stat extends React.Component {
                       }} />
                     </Card>
 									</Col>
+                </Row>
+                <Row gutter={16}>
+                  <Col span={12}>
+                    <Card
+                      title="Match Rate (%)"
+                      style={{ margin: "16px" }}
+                    >
+                    <Line data={{
+                      labels: this.getLabels(),
+                      datasets: this.getDataSets('match_rate')
+                    }} />
+                    </Card>
+                  </Col>
+                  <Col span={12}>
+                    <Card
+                      title="Daily Register"
+                      style={{ margin: "16px" }}
+                    >
+                      <Line data={{
+                        labels: this.getLabels(),
+                        datasets: this.getDataSetsByRegion('hk')
+                      
+                      }} />
+                    </Card>
+                  </Col>
                 </Row>
             </div>
         );
