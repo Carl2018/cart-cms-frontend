@@ -19,116 +19,116 @@ const { RangePicker } = DatePicker;
 // destructure imported components and objects
 const { listSync } = backend;
 
-const dataForRegister = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-  datasets: [
-    {
-      label: 'Google',
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'rgba(255,69,0,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(255,69,0,1)',
-      pointBackgroundColor: 'rgba(255,69,0,1)',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(255,69,0,1)',
-      pointHoverBorderColor: 'rgba(255,69,0,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [1, 1, 1, 1, 1, 1]
-    },
-    {
-      label: 'SMS',
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'rgba(255,140,0,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(255,140,0,1)',
-      pointBackgroundColor: 'rgba(255,140,0,1)',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(255,140,0,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [1, 1, 1, 1, 1, 1]
-    },
-    {
-      label: 'Facebook',
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'rgba(30,144,255,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(30,144,255,1)',
-      pointBackgroundColor: 'rgba(30,144,255,1)',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(30,144,255,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [1, 1, 1, 1, 1, 1]
-    },
-    {
-      label: 'Apple',
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'rgba(75,192,192,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(75,192,192,1)',
-      pointBackgroundColor: 'rgba(75,192,192,1)',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [1, 1, 1, 1, 1, 1]
-    },
-    {
-      label: 'Total',
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'rgba(0,0,0,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(0,0,0,1)',
-      pointBackgroundColor: 'rgba(0,0,0,1)',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(0,0,0,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [1, 1, 1, 1, 1, 1]
-    }
-  ]
-};
+//const dataForRegister = {
+//  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+//  datasets: [
+//    {
+//      label: 'Google',
+//      fill: false,
+//      lineTension: 0.1,
+//      backgroundColor: 'rgba(75,192,192,0.4)',
+//      borderColor: 'rgba(255,69,0,1)',
+//      borderCapStyle: 'butt',
+//      borderDash: [],
+//      borderDashOffset: 0.0,
+//      borderJoinStyle: 'miter',
+//      pointBorderColor: 'rgba(255,69,0,1)',
+//      pointBackgroundColor: 'rgba(255,69,0,1)',
+//      pointBorderWidth: 1,
+//      pointHoverRadius: 5,
+//      pointHoverBackgroundColor: 'rgba(255,69,0,1)',
+//      pointHoverBorderColor: 'rgba(255,69,0,1)',
+//      pointHoverBorderWidth: 2,
+//      pointRadius: 1,
+//      pointHitRadius: 10,
+//      data: [1, 1, 1, 1, 1, 1]
+//    },
+//    {
+//      label: 'SMS',
+//      fill: false,
+//      lineTension: 0.1,
+//      backgroundColor: 'rgba(75,192,192,0.4)',
+//      borderColor: 'rgba(255,140,0,1)',
+//      borderCapStyle: 'butt',
+//      borderDash: [],
+//      borderDashOffset: 0.0,
+//      borderJoinStyle: 'miter',
+//      pointBorderColor: 'rgba(255,140,0,1)',
+//      pointBackgroundColor: 'rgba(255,140,0,1)',
+//      pointBorderWidth: 1,
+//      pointHoverRadius: 5,
+//      pointHoverBackgroundColor: 'rgba(255,140,0,1)',
+//      pointHoverBorderColor: 'rgba(220,220,220,1)',
+//      pointHoverBorderWidth: 2,
+//      pointRadius: 1,
+//      pointHitRadius: 10,
+//      data: [1, 1, 1, 1, 1, 1]
+//    },
+//    {
+//      label: 'Facebook',
+//      fill: false,
+//      lineTension: 0.1,
+//      backgroundColor: 'rgba(75,192,192,0.4)',
+//      borderColor: 'rgba(30,144,255,1)',
+//      borderCapStyle: 'butt',
+//      borderDash: [],
+//      borderDashOffset: 0.0,
+//      borderJoinStyle: 'miter',
+//      pointBorderColor: 'rgba(30,144,255,1)',
+//      pointBackgroundColor: 'rgba(30,144,255,1)',
+//      pointBorderWidth: 1,
+//      pointHoverRadius: 5,
+//      pointHoverBackgroundColor: 'rgba(30,144,255,1)',
+//      pointHoverBorderColor: 'rgba(220,220,220,1)',
+//      pointHoverBorderWidth: 2,
+//      pointRadius: 1,
+//      pointHitRadius: 10,
+//      data: [1, 1, 1, 1, 1, 1]
+//    },
+//    {
+//      label: 'Apple',
+//      fill: false,
+//      lineTension: 0.1,
+//      backgroundColor: 'rgba(75,192,192,0.4)',
+//      borderColor: 'rgba(75,192,192,1)',
+//      borderCapStyle: 'butt',
+//      borderDash: [],
+//      borderDashOffset: 0.0,
+//      borderJoinStyle: 'miter',
+//      pointBorderColor: 'rgba(75,192,192,1)',
+//      pointBackgroundColor: 'rgba(75,192,192,1)',
+//      pointBorderWidth: 1,
+//      pointHoverRadius: 5,
+//      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+//      pointHoverBorderColor: 'rgba(220,220,220,1)',
+//      pointHoverBorderWidth: 2,
+//      pointRadius: 1,
+//      pointHitRadius: 10,
+//      data: [1, 1, 1, 1, 1, 1]
+//    },
+//    {
+//      label: 'Total',
+//      fill: false,
+//      lineTension: 0.1,
+//      backgroundColor: 'rgba(75,192,192,0.4)',
+//      borderColor: 'rgba(0,0,0,1)',
+//      borderCapStyle: 'butt',
+//      borderDash: [],
+//      borderDashOffset: 0.0,
+//      borderJoinStyle: 'miter',
+//      pointBorderColor: 'rgba(0,0,0,1)',
+//      pointBackgroundColor: 'rgba(0,0,0,1)',
+//      pointBorderWidth: 1,
+//      pointHoverRadius: 5,
+//      pointHoverBackgroundColor: 'rgba(0,0,0,1)',
+//      pointHoverBorderColor: 'rgba(220,220,220,1)',
+//      pointHoverBorderWidth: 2,
+//      pointRadius: 1,
+//      pointHitRadius: 10,
+//      data: [1, 1, 1, 1, 1, 1]
+//    }
+//  ]
+//};
 
 class Stat extends React.Component {
     constructor(props) {
@@ -313,23 +313,32 @@ class Stat extends React.Component {
         //const { currentUser } = this.state;
         return (
             <div>
-              
-								<Card
-									style={{
-										marginLeft: "16px",
-										fontSize: '24px',
-										textAlign: 'left',
-								 	}}
-									bordered={ false }
-                >
-                <Row gutter={16}>
-                <Col span={2}>
+                <div 
+									style={ 
+										{
+											fontSize: '24px',
+											textAlign: 'left',
+											margin: "16px 16px 0px 16px"
+										} 
+									} 
+								>
 									<Space size="large">
 										<LineChartOutlined />
 										<strong>Stat</strong>
                   </Space>
-                </Col>
-                <Col span={22}>
+                </div>
+								<div 
+									style={ 
+										{
+											fontSize: '16px',
+											textAlign: 'left',
+											margin: "16px 16px 0px 16px"
+										} 
+									} 
+								>
+                  <span style={ {marginRight: "16px"} }>
+										{ "Date Range: " }
+                  </span>
                   <RangePicker
                     ranges={{
                       //'Past 7 days': [moment().startOf('month'), moment().endOf('month')],
@@ -340,9 +349,7 @@ class Stat extends React.Component {
                     }}
                     onChange={this.onChange}
                   />
-                </Col>
-                </Row>
-                </Card>
+                </div>
              
                 <Row gutter={16}>
                   <Col span={12}>
