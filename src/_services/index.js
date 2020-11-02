@@ -11,6 +11,7 @@ export * from './label.service';
 export * from './log.service';
 export * from './process.service';
 export * from './profile.service';
+export * from './statistic.service';
 export * from './template.service';
 export * from './user.service';
 export * from './word.service';

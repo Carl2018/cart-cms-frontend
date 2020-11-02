@@ -6,7 +6,7 @@ export const backend = {
     retrieveSync,
     listSync,
     updateSync,
-    hideSync,
+	hideSync
 };
 
 // sync version
