@@ -10,5 +10,6 @@ export * from './Log/Log';
 export * from './Login/Login';
 export * from './Profile/Profile';
 export * from './Query/Query';
+export * from './Stat/Stat';
 export * from './Template/Template';
 export * from './Word/Word';

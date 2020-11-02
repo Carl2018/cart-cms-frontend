@@ -18,6 +18,7 @@ import {
 	Template,
 	Category,
 	Log,
+	Stat
 } from 'pages';
 
 import { history } from '_helpers';
@@ -43,6 +44,7 @@ import {
   IdcardOutlined,
   FileExcelOutlined,
   FlagOutlined,
+  LineChartOutlined,
   LogoutOutlined,
   MailOutlined,
   MenuFoldOutlined,
@@ -158,6 +160,14 @@ class App extends Component {
 								>
 									<Link to="/">
 										Home
+									</Link>
+								</Item>
+								<Item 
+									key="100" 
+									icon={<LineChartOutlined />}
+								>
+									<Link to="/stat">
+										Stat
 									</Link>
 								</Item>
 								<Item 
@@ -306,6 +316,7 @@ class App extends Component {
 							>
 									<Route path="/login" component={ Login } />
 									<PrivateRoute exact path="/" component={ Home } />
+									<PrivateRoute path="/stat" component={ Stat }/>
 									<PrivateRoute path="/query" component={ Query }/>
 									<PrivateRoute path="/candidate" component={ Candidate }/>
 									<PrivateRoute path="/flag" component={ Flag }/>
