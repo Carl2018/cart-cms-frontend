@@ -2,10 +2,10 @@
 import { message } from 'antd';
 
 export const backend = {
-    createSync,
-    retrieveSync,
-    listSync,
-    updateSync,
+	createSync,
+	retrieveSync,
+	listSync,
+	updateSync,
 	hideSync
 };
 
