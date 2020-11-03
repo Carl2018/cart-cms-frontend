@@ -15,120 +15,8 @@ import { authenticationService,statisticService } from '_services';
 import moment from 'moment';
 import { backend } from '_helpers';
 const { RangePicker } = DatePicker;
-
 // destructure imported components and objects
 const { listSync } = backend;
-
-const dataForRegister = {
-  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-  datasets: [
-    {
-      label: 'Google',
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'rgba(255,69,0,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(255,69,0,1)',
-      pointBackgroundColor: 'rgba(255,69,0,1)',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(255,69,0,1)',
-      pointHoverBorderColor: 'rgba(255,69,0,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [1, 1, 1, 1, 1, 1]
-    },
-    {
-      label: 'SMS',
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'rgba(255,140,0,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(255,140,0,1)',
-      pointBackgroundColor: 'rgba(255,140,0,1)',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(255,140,0,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [1, 1, 1, 1, 1, 1]
-    },
-    {
-      label: 'Facebook',
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'rgba(30,144,255,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(30,144,255,1)',
-      pointBackgroundColor: 'rgba(30,144,255,1)',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(30,144,255,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [1, 1, 1, 1, 1, 1]
-    },
-    {
-      label: 'Apple',
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'rgba(75,192,192,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(75,192,192,1)',
-      pointBackgroundColor: 'rgba(75,192,192,1)',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [1, 1, 1, 1, 1, 1]
-    },
-    {
-      label: 'Total',
-      fill: false,
-      lineTension: 0.1,
-      backgroundColor: 'rgba(75,192,192,0.4)',
-      borderColor: 'rgba(0,0,0,1)',
-      borderCapStyle: 'butt',
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: 'miter',
-      pointBorderColor: 'rgba(0,0,0,1)',
-      pointBackgroundColor: 'rgba(0,0,0,1)',
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: 'rgba(0,0,0,1)',
-      pointHoverBorderColor: 'rgba(220,220,220,1)',
-      pointHoverBorderWidth: 2,
-      pointRadius: 1,
-      pointHitRadius: 10,
-      data: [1, 1, 1, 1, 1, 1]
-    }
-  ]
-};
 
 class Stat extends React.Component {
     constructor(props) {
@@ -140,7 +28,6 @@ class Stat extends React.Component {
             invitation_date_range: this.generateDateRangeArray(this.getDaysBefore(-7),this.getDaysBefore(-1) ),
             data: {},
         };
-        
     }
 
     componentDidMount() {
@@ -201,7 +88,6 @@ class Stat extends React.Component {
       let stringCurrentDate = this.dateToString(startDate)
       while (currentDate <= endDate) {
           dateArray.push(stringCurrentDate)
-          //stringCurrentDate = (currentDate.getMonth()+1)+"-"+(currentDate.getDate()+1)
           currentDate = new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate()+1)
           stringCurrentDate = (currentDate.getMonth()+1) + "-" + currentDate.getDate()
       }
@@ -239,6 +125,7 @@ class Stat extends React.Component {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
+        spanGaps: true,
         data: this.getDataArrayBasedOnType(data_type)
       }
     }
@@ -307,55 +194,49 @@ class Stat extends React.Component {
         { primary: true, type: 'time', position: 'bottom' },
         { type: 'linear', position: 'left' }
       ]
-      
 
     render() {
-        //const { currentUser } = this.state;
         return (
             <div>
-              
 								<Card
 									style={{
-										marginLeft: "16px",
 										fontSize: '24px',
 										textAlign: 'left',
 								 	}}
 									bordered={ false }
                 >
-                <Row gutter={16}>
-                <Col span={2}>
-									<Space size="large">
-										<LineChartOutlined />
-										<strong>Stat</strong>
-                  </Space>
-                </Col>
-                <Col span={22}>
-                  <RangePicker
-                    ranges={{
-                      //'Past 7 days': [moment().startOf('month'), moment().endOf('month')],
-                     'Past 7 days': [moment().subtract(7,'days'), moment().subtract(1,'days')],
-                      'Past 14 days': [moment().subtract(14,'days'), moment().subtract(1,'days')],
-                      'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
-                      
-                    }}
-                    onChange={this.onChange}
-                  />
-                </Col>
-                </Row>
+                  <Row >
+                      <Space size="large">
+                        <LineChartOutlined />
+                        <strong>Stat</strong>
+                      </Space>
+                  </Row>
+                  <Row >
+                    <Col span={2}>
+                        <p>Date Range:</p>
+                    </Col>
+                    <Col span={22}>
+                      <RangePicker
+                        ranges={{
+                        'Past 7 days': [moment().subtract(7,'days'), moment().subtract(1,'days')],
+                          'Past 14 days': [moment().subtract(14,'days'), moment().subtract(1,'days')],
+                          'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
+                        }}
+                        onChange={this.onChange}
+                      />
+                    </Col>
+                  </Row>
                 </Card>
-             
                 <Row gutter={16}>
                   <Col span={12}>
                     <Card
                       title="Invitation Count"
                       style={{ margin: "16px" }}
                     >
-                      
                       <Line data={{
                         labels: this.getLabels(),
                         datasets: this.getDataSets('invitation_count')
                       }} />
-                      
                     </Card>
                   </Col>
                   <Col span={12}>
