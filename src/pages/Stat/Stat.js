@@ -15,10 +15,10 @@ import { authenticationService,statisticService } from '_services';
 import moment from 'moment';
 import { backend } from '_helpers';
 const { RangePicker } = DatePicker;
-
 // destructure imported components and objects
 const { listSync } = backend;
 
+<<<<<<< HEAD
 //const dataForRegister = {
 //  labels: ['January', 'February', 'March', 'April', 'May', 'June'],
 //  datasets: [
@@ -130,6 +130,8 @@ const { listSync } = backend;
 //  ]
 //};
 
+=======
+>>>>>>> kapo
 class Stat extends React.Component {
     constructor(props) {
         super(props);
@@ -140,7 +142,6 @@ class Stat extends React.Component {
             invitation_date_range: this.generateDateRangeArray(this.getDaysBefore(-7),this.getDaysBefore(-1) ),
             data: {},
         };
-        
     }
 
     componentDidMount() {
@@ -201,7 +202,6 @@ class Stat extends React.Component {
       let stringCurrentDate = this.dateToString(startDate)
       while (currentDate <= endDate) {
           dateArray.push(stringCurrentDate)
-          //stringCurrentDate = (currentDate.getMonth()+1)+"-"+(currentDate.getDate()+1)
           currentDate = new Date(currentDate.getFullYear(),currentDate.getMonth(),currentDate.getDate()+1)
           stringCurrentDate = (currentDate.getMonth()+1) + "-" + currentDate.getDate()
       }
@@ -239,6 +239,7 @@ class Stat extends React.Component {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
+        spanGaps: true,
         data: this.getDataArrayBasedOnType(data_type)
       }
     }
@@ -307,104 +308,99 @@ class Stat extends React.Component {
         { primary: true, type: 'time', position: 'bottom' },
         { type: 'linear', position: 'left' }
       ]
-      
 
     render() {
-        //const { currentUser } = this.state;
         return (
             <div>
-                <div 
-									style={ 
-										{
-											fontSize: '24px',
-											textAlign: 'left',
-											margin: "16px 16px 0px 16px"
-										} 
+							<div 
+								style={ 
+									{
+										fontSize: '24px',
+										textAlign: 'left',
+										margin: "16px 16px 0px 16px"
 									} 
-								>
-									<Space size="large">
-										<LineChartOutlined />
-										<strong>Stat</strong>
-                  </Space>
-                </div>
-								<div 
-									style={ 
-										{
-											fontSize: '16px',
-											textAlign: 'left',
-											margin: "16px 16px 0px 16px"
-										} 
+								} 
+							>
+								<Space size="large">
+									<LineChartOutlined />
+									<strong>Stat</strong>
+								</Space>
+							</div>
+							<div 
+								style={ 
+									{
+										fontSize: '16px',
+										textAlign: 'left',
+										margin: "16px 16px 0px 16px"
 									} 
-								>
-                  <span style={ {marginRight: "16px"} }>
-										{ "Date Range: " }
-                  </span>
-                  <RangePicker
-                    ranges={{
-                      //'Past 7 days': [moment().startOf('month'), moment().endOf('month')],
-                     'Past 7 days': [moment().subtract(7,'days'), moment().subtract(1,'days')],
-                      'Past 14 days': [moment().subtract(14,'days'), moment().subtract(1,'days')],
-                      'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
-                      
-                    }}
-                    onChange={this.onChange}
-                  />
-                </div>
-             
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Card
-                      title="Invitation Count"
-                      style={{ margin: "16px" }}
-                    >
-                      
-                      <Line data={{
-                        labels: this.getLabels(),
-                        datasets: this.getDataSets('invitation_count')
-                      }} />
-                      
-                    </Card>
-                  </Col>
-                  <Col span={12}>
-                    <Card
-                      title="Conversation Count"
-                      style={{ margin: "16px" }}
-                    >
-                      <Line data={{
-                        labels: this.getLabels(),
-                        datasets: this.getDataSets('conversation_count')
-                      }} />
-                    </Card>
-									</Col>
-                </Row>
-                <Row gutter={16}>
-                  <Col span={12}>
-                    <Card
-                      title="Match Rate (%)"
-                      style={{ margin: "16px" }}
-                    >
-                    <Line data={{
-                      labels: this.getLabels(),
-                      datasets: this.getDataSets('match_rate')
-                    }} />
-                    </Card>
-                  </Col>
-                  <Col span={12}>
-                    <Card
-                      title="Daily Register"
-                      style={{ margin: "16px" }}
-                    >
-                      <Line data={{
-                        labels: this.getLabels(),
-                        datasets: this.getDataSetsByRegion('hk')
-                      
-                      }} />
-                    </Card>
-                  </Col>
-                </Row>
-            </div>
-        );
-    }
+								} 
+							>
+								<span style={ {marginRight: "16px"} }>
+									{ "Date Range: " }
+								</span>
+								<RangePicker
+									ranges={{
+										//'Past 7 days': [moment().startOf('month'), moment().endOf('month')],
+									 'Past 7 days': [moment().subtract(7,'days'), moment().subtract(1,'days')],
+										'Past 14 days': [moment().subtract(14,'days'), moment().subtract(1,'days')],
+										'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
+										
+									}}
+									onChange={this.onChange}
+								/>
+							</div>
+							<Row gutter={16}>
+								<Col span={12}>
+									<Card
+										title="Invitation Count"
+										style={{ margin: "16px" }}
+									>
+										<Line data={{
+											labels: this.getLabels(),
+											datasets: this.getDataSets('invitation_count')
+										}} />
+									</Card>
+								</Col>
+								<Col span={12}>
+									<Card
+										title="Conversation Count"
+										style={{ margin: "16px" }}
+									>
+										<Line data={{
+											labels: this.getLabels(),
+											datasets: this.getDataSets('conversation_count')
+										}} />
+									</Card>
+								</Col>
+							</Row>
+							<Row gutter={16}>
+								<Col span={12}>
+									<Card
+										title="Match Rate (%)"
+										style={{ margin: "16px" }}
+									>
+									<Line data={{
+										labels: this.getLabels(),
+										datasets: this.getDataSets('match_rate')
+									}} />
+									</Card>
+								</Col>
+								<Col span={12}>
+									<Card
+										title="Daily Register"
+										style={{ margin: "16px" }}
+									>
+										<Line data={{
+											labels: this.getLabels(),
+											datasets: this.getDataSetsByRegion('hk')
+										
+										}} />
+									</Card>
+								</Col>
+							</Row>
+					</div>
+			);
+	}
 }
 
 export { Stat };
