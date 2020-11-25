@@ -16,6 +16,7 @@ import {
 	Profile,
 	Label,
 	Template,
+	Title,
 	Category,
 	Log,
 	Stat
@@ -260,6 +261,14 @@ class App extends Component {
 								</Item>
 								<Item 
 									key="12" 
+									icon={<HddOutlined />}
+								>
+									<Link to="/title">
+										Titles
+									</Link>
+								</Item>
+								<Item 
+									key="13" 
 									icon={<ProfileOutlined />}
 								>
 									<Link to="/log">
@@ -328,6 +337,7 @@ class App extends Component {
 									<PrivateRoute path="/label" component={ Label }/>
 									<PrivateRoute path="/template" component={ Template }/>
 									<PrivateRoute path="/category" component={ Category }/>
+									<PrivateRoute path="/title" component={ Title }/>
 									<PrivateRoute path="/log" component={ Log }/>
 							</Content>
 							<Footer style={{textAlign: "center", color:"#a1a1a1"}}>
