@@ -6,7 +6,13 @@ export const titleService = {
 		retrieve,
 		retrieveRowCount,
     list,
-    check,
+    update,
+    collect,
+    preprocess,
+    fit,
+    test,
+    deploy,
+    predict,
 };
 
 function retrieve(params={}) {
@@ -51,12 +57,92 @@ function list(params={}) {
 			.then(handleResponse);
 }
 
-function check(record) {
+function update(record) {
     const requestOptions = { 
 			method: 'PUT', 
 			headers: authHeader(),
 			body: JSON.stringify(record)
 		};
-    return fetch(`${config.apiUrl}/title/check`, requestOptions)
+    return fetch(`${config.apiUrl}/title/update`, requestOptions)
+			.then(handleResponse);
+}
+
+function collect(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/title/collect`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+    const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+    return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function preprocess(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/title/preprocess`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+    const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+    return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function fit(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/title/fit`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+    const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+    return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function test(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/title/test`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+    const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+    return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function deploy(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/title/deploy`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+    const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+    return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function predict(record) {
+    const requestOptions = { 
+			method: 'PUT', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/category/predict`, requestOptions)
 			.then(handleResponse);
 }

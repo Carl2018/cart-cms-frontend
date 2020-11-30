@@ -8,11 +8,6 @@ export const candidateService = {
     list,
     search_by_keywords,
     ban,
-    collect,
-    preprocess,
-    fit,
-    test,
-    predict,
 };
 
 function retrieve(params={}) {
@@ -78,71 +73,5 @@ function ban(record) {
 			body: JSON.stringify(record)
 		};
     return fetch(`${config.apiUrl}/candidate/ban`, requestOptions)
-			.then(handleResponse);
-}
-
-function collect(params={}) {
-		// append query string
-		let url = new URL(`${config.apiUrl}/candidate/collect`);
-		Object.keys(params).forEach( key => 
-			url.searchParams.append(key, params[key]) );
-		// call the api
-    const requestOptions = { 
-			method: 'GET', 
-			headers: authHeader() 
-		};
-    return fetch(url, requestOptions)
-			.then(handleResponse);
-}
-
-function preprocess(params={}) {
-		// append query string
-		let url = new URL(`${config.apiUrl}/candidate/preprocess`);
-		Object.keys(params).forEach( key => 
-			url.searchParams.append(key, params[key]) );
-		// call the api
-    const requestOptions = { 
-			method: 'GET', 
-			headers: authHeader() 
-		};
-    return fetch(url, requestOptions)
-			.then(handleResponse);
-}
-
-function fit(params={}) {
-		// append query string
-		let url = new URL(`${config.apiUrl}/candidate/fit`);
-		Object.keys(params).forEach( key => 
-			url.searchParams.append(key, params[key]) );
-		// call the api
-    const requestOptions = { 
-			method: 'GET', 
-			headers: authHeader() 
-		};
-    return fetch(url, requestOptions)
-			.then(handleResponse);
-}
-
-function test(params={}) {
-		// append query string
-		let url = new URL(`${config.apiUrl}/candidate/test`);
-		Object.keys(params).forEach( key => 
-			url.searchParams.append(key, params[key]) );
-		// call the api
-    const requestOptions = { 
-			method: 'GET', 
-			headers: authHeader() 
-		};
-    return fetch(url, requestOptions)
-			.then(handleResponse);
-}
-
-function predict(record) {
-    const requestOptions = { 
-			method: 'PUT', 
-			headers: authHeader(),
-			body: JSON.stringify(record)
-		};
-    return fetch(`${config.apiUrl}/category/predict`, requestOptions)
 			.then(handleResponse);
 }

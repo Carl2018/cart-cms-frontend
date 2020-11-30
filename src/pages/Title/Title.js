@@ -4,13 +4,14 @@ import { v4 as uuidv4 } from 'uuid';
 // import components from ant design
 import { 
 	Input,
+	Select,
 	Spin,
 	Tag,
 } from 'antd';
 import { HddOutlined } from '@ant-design/icons';
 
 // import shared and child components
-import { TableWrapper } from '_components'
+import { TableWrapper } from './TableWrapper'
 
 // import services
 import { titleService } from '_services';
@@ -24,6 +25,7 @@ import {
 // destructure imported components and objects
 const { retrieveSync, listSync, updateSync } = backend;
 const { compare } = helpers;
+const { Option } = Select;
 
 class Title extends Component {
 	constructor(props) {
@@ -73,19 +75,42 @@ class Title extends Component {
 			key: 'message',
 			sorter: (a, b) => compare(a.message, b.message),
 			sortDirection: ['ascend', 'descend'],
-			width: '15%',
+			width: '20%',
 			ellipsis: true,
 			setFilter: true
 		},
 		{
-			title: 'Group',
-			dataIndex: 'group',
-			key: 'group',
-			sorter: (a, b) => compare(a.group, b.group),
+			title: 'Tag',
+			dataIndex: 'tag',
+			key: 'tag',
+			sorter: (a, b) => compare(a.tag, b.tag),
 			sortDirection: ['ascend', 'descend'],
 			width: '15%',
 			ellipsis: true,
-			setFilter: true
+			//setFilter: true
+			render: tag => {
+				let color = 'green';
+				let text = 'Normal';
+				switch (tag) {
+					case 0 :
+						color = 'green';
+						text = 'Normal';
+						break;
+					case 1 :
+						color = 'red';
+						text = 'Spammer';
+						break;
+					default:
+						color = 'green';
+						text = 'Normal';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
 		},
 		{
 			title: 'Spam Score',
@@ -93,7 +118,7 @@ class Title extends Component {
 			key: 'score',
 			sorter: (a, b) => compare(a.score, b.score),
 			sortDirection: ['ascend', 'descend'],
-			width: 80,
+			width: '20%',
 			//setFilter: true
 			render: score => {
 				let color = '#00ff00';
@@ -102,34 +127,34 @@ class Title extends Component {
 						color = '#00ff00';
 						break;
 					case 1 :
-						color = '#1bff00';
+						color = '#2efc00';
 						break;
 					case 2 :
-						color = '#54ff00';
+						color = '#5bf900';
 						break;
 					case 3 :
-						color = '#8dff00';
+						color = '#88f700';
 						break;
 					case 4 :
-						color = '#c6ff00';
+						color = '#b3f400';
 						break;
 					case 5 :
-						color = '#ffff00';
+						color = '#def200';
 						break;
 					case 6 :
-						color = '#ffe400';
+						color = '#efd600';
 						break;
 					case 7 :
-						color = '#ffab00';
+						color = '#eca800';
 						break;
 					case 8 :
-						color = '#ff7200';
+						color = '#ea7b00';
 						break;
 					case 9 :
-						color = '#ff3900';
+						color = '#e74f00';
 						break;
 					case 10 :
-						color = '#ff0000';
+						color = '#e52400';
 						break;
 					default:
 						color = '#00ff00';
@@ -150,19 +175,42 @@ class Title extends Component {
 			sortDirection: ['ascend', 'descend'],
 			width: '15%',
 			ellipsis: true,
-			setFilter: true
+			//setFilter: true
+			render: mistagged => {
+				let color = '#87d068';
+				let text = 'No';
+				switch (mistagged) {
+					case 0 :
+						color = '#87d068';
+						text = 'No';
+						break;
+					case 1 :
+						color = '#f50';
+						text = 'Yes';
+						break;
+					default:
+						color = '#87d068';
+						text = 'No';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
 		},
 	];
 
 	// define form items for TableDrawer
 	formItems = [
 		{
-			label: 'Title',
-			name: 'titlename',
+			label: 'Candidate ID',
+			name: 'candidate_id',
 			rules: [
 				{
 					required: true,
-					message: 'title cannot be empty',
+					message: 'candidate id cannot be empty',
 				}
 			],
 			editable: true,
@@ -170,29 +218,107 @@ class Title extends Component {
 				<Input
 					maxLength={255}
 					allowClear
-					disabled={ disabled }
-					placeholder={ "Title name must be unique" }
+					disabled={ true }
+					placeholder={ "Candidate ID name must be unique" }
 				/>
 			)
 		},
 		{
-			label: 'Description',
-			name: 'description',
+			label: 'Title',
+			name: 'message',
 			rules: [
 				{
 					required: true,
-					message: 'description cannot be empty',
+					message: 'title cannot be empty',
 				},
 			],
 			editable: true,
 			input: disabled => (
-				<Input.TextArea
-					autoSize={{ minRows: 2, maxRows: 8 }}
+				<Input
 					maxLength={255}
 					allowClear
-					disabled={ disabled }
-					placeholder={ "Title description" }
+					disabled={ true }
+					placeholder={ "title" }
 				/>
+			)
+		},			
+		{
+			label: 'Group',
+			name: 'group',
+			rules: [
+				{
+					required: true,
+					message: 'group cannot be empty',
+				},
+			],
+			editable: true,
+			input: disabled => (
+				<Select
+					disabled={ true }
+					placeholder={ "Group" }
+				>
+							<Option
+								key={ 0 }
+								value={ 0 }
+							>
+								Normal
+							</Option>
+							<Option
+								key={ 1 }
+								value={ 1 }
+							>
+								Spammer
+							</Option>
+				</Select>
+			)
+		},			
+		{
+			label: 'Score',
+			name: 'score',
+			rules: [
+				{
+					required: true,
+					message: 'score cannot be empty',
+				},
+			],
+			editable: true,
+			input: disabled => (
+				<Input
+					maxLength={255}
+					allowClear
+					disabled={ true }
+					placeholder={ "score" }
+				/>
+			)
+		},			
+		{
+			label: 'Mistagged',
+			name: 'mistagged',
+			rules: [
+				{
+					required: true,
+					message: 'mistagged cannot be empty',
+				},
+			],
+			editable: true,
+			input: disabled => (
+				<Select
+					disabled={ disabled }
+					placeholder={ "Mistagged" }
+				>
+							<Option
+								key={ 0 }
+								value={ 0 }
+							>
+								No
+							</Option>
+							<Option
+								key={ 1 }
+								value={ 1 }
+							>
+								Yes
+							</Option>
+				</Select>
 			)
 		},			
 	];
@@ -201,7 +327,7 @@ class Title extends Component {
 	tableHeader = (
 		<>
 			<HddOutlined />
-			<strong>Categories</strong>
+			<strong>Titles</strong>
 		</>
 	)
 
@@ -247,11 +373,10 @@ class Title extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Title'
 						pagination={ false }
+						noBatch={ true }
 						// api props
-						create={ this.createSync }
 						list={ this.listSync }
 						edit={ this.updateSync }
-						delete={ this.hideSync }
 						refreshTable={ this.refreshTable }
 					>
 					</TableWrapper>
