@@ -7,6 +7,7 @@ export const titleService = {
 		retrieveRowCount,
     list,
     update,
+    count,
     collect,
     preprocess,
     fit,
@@ -64,6 +65,20 @@ function update(record) {
 			body: JSON.stringify(record)
 		};
     return fetch(`${config.apiUrl}/title/update`, requestOptions)
+			.then(handleResponse);
+}
+
+function count(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/title/count`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+    const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+    return fetch(url, requestOptions)
 			.then(handleResponse);
 }
 

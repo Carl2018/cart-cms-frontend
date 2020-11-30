@@ -45,7 +45,7 @@ class RefineModal extends Component {
 			loadingCollect: false,
 			dataPointN: 0,
 			// for Split
-			dataPointO: 6000,
+			dataPointO: 0,
 			didPreprocess: false,
 			rePreprocess: false,
 			loadingPreprocess: false,
@@ -76,6 +76,10 @@ class RefineModal extends Component {
 	}
 	
 	componentDidMount() {
+		this.setState({ loading: true }, async () => {
+			const { entry } = await this.countSync();
+			this.setState({ dataPointO: entry.total, loading: false });
+		});
 	}
 
 	// define number of steps
@@ -434,7 +438,7 @@ class RefineModal extends Component {
 			loadingCollect: false,
 			dataPointN: 0,
 			// for Split
-			dataPointO: 6000,
+			// dataPointO: 0, // do not reset this
 			didPreprocess: false,
 			rePreprocess: false,
 			loadingPreprocess: false,
@@ -495,6 +499,10 @@ class RefineModal extends Component {
 	}
 
 	// bind versions of CRUD
+	countSync = retrieveSync.bind(this, {
+		service: titleService, 
+		retrieve: "count",
+	});
 	collectSync = retrieveSync.bind(this, {
 		service: titleService, 
 		retrieve: "collect",
