@@ -65,7 +65,7 @@ async function listSync(config, params) {
 	});
 }
 // interface for update sync
-async function updateSync(config, id, record) {
+async function updateSync(config, id, record, updateFrontend=true) {
 	this.setState({ spinning: true });
 	const { service, update, retrieve, dataName, pageName, editSuccessMsg } = config;
 	// update the record in the backend table
@@ -79,24 +79,31 @@ async function updateSync(config, id, record) {
 		.catch( error => response = error );
 	// update the frontend data accordingly
 	if (response.code === 200){
-		let data = this.state[dataName].slice();
-		const index = data.findIndex( item => item.id === id);
-		let entry = {};
-		await service[retrieve]({id})
-			.then( result => entry = result.entry )
-			.catch( error => entry = error );
-		// data[index] = entry;
-		if (entry)
-			data = [ entry, ...data.slice(0,index), ...data.slice(index+1) ];
-		else
-			data = [ ...data.slice(0,index), ...data.slice(index+1) ];
-		this.setState({ [dataName]: data });
-		if (editSuccessMsg)
-			message.success(editSuccessMsg);
-		else
-			message.success('The record has been edited');
-		this.setState({ spinning: false });
-		return response.entry; // for merge
+		if (updateFrontend) {
+			let data = this.state[dataName].slice();
+			const index = data.findIndex( item => item.id === id);
+			let entry = {};
+			await service[retrieve]({id})
+				.then( result => entry = result.entry )
+				.catch( error => entry = error );
+			// data[index] = entry;
+			if (entry)
+				data = [ entry, ...data.slice(0,index), ...data.slice(index+1) ];
+			else
+				data = [ ...data.slice(0,index), ...data.slice(index+1) ];
+			this.setState({ [dataName]: data });
+			if (editSuccessMsg)
+				message.success(editSuccessMsg);
+			else
+				message.success('The record has been edited');
+			this.setState({ spinning: false });
+			return response.entry; // for merge
+		} else {
+			this.setState({ spinning: false });
+			return new Promise(function(resolve, reject){
+				resolve(response);
+			});
+		}
 	} else {
 		message.error(response.en);
 	this.setState({ spinning: false });

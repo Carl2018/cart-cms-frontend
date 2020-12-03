@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 
-/*
-		This component is a dropdown
-		It requires 3 props
-
-		function 'onClickAdd' for the Add Button
-		function 'onClickRefreshTable' for the Refresh Table Button
-		function 'onClickBatchDelete' for the Batch Delete Button
-*/
-
 // import styling from ant design
-import { Menu, Dropdown } from 'antd';
-import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { 
+	Menu, 
+	Dropdown, 
+} from 'antd';
+import { 
+	DownloadOutlined, 
+	PlusOutlined, 
+	ReloadOutlined, 
+	ShareAltOutlined, 
+} from '@ant-design/icons';
 
 class TableDropdown extends Component {
 	constructor(props) {
@@ -25,6 +24,22 @@ class TableDropdown extends Component {
 		<Menu >
 			<Menu.Item 
 				key='1' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <DownloadOutlined /> }
+				onClick={ this.props.onClickDownload }
+			>
+				Download
+			</Menu.Item>
+			<Menu.Item 
+				key='2' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <ShareAltOutlined /> }
+				onClick={ this.props.onClickPredict }
+			>
+				Predict
+			</Menu.Item>
+			<Menu.Item 
+				key='3' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <ReloadOutlined /> }
 				onClick={ this.props.onClickRefreshTable }

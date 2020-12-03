@@ -8,7 +8,7 @@ import {
 	Spin,
 	Tag,
 } from 'antd';
-import { HddOutlined } from '@ant-design/icons';
+import { RobotOutlined } from '@ant-design/icons';
 
 // import shared and child components
 import { TableWrapper } from './TableWrapper'
@@ -326,7 +326,7 @@ class Title extends Component {
 	// define table header
 	tableHeader = (
 		<>
-			<HddOutlined />
+			<RobotOutlined />
 			<strong>Titles</strong>
 		</>
 	)
@@ -334,7 +334,6 @@ class Title extends Component {
 	// bind versions of CRUD
 	config = {
 		service: titleService,
-		create: "create",
 		retrieve: "retrieve",
 		list: "list",
 		update: "update",
@@ -346,6 +345,19 @@ class Title extends Component {
 	});
 	listSync = listSync.bind(this, this.config);
 	updateSync = updateSync.bind(this, this.config);
+	downloadVectorizerSync = retrieveSync.bind(this, {
+		...this.config, 
+		retrieve: "downloadVectorizer",
+	});
+	downloadClfSync = retrieveSync.bind(this, {
+		...this.config, 
+		retrieve: "downloadClf",
+	});
+	predictSync = updateSync.bind(this, {
+		...this.config,
+		update: "predict",
+		dataName: "unknown",
+	});
 
 	// refresh table
 	refreshTable = () => {
@@ -355,6 +367,27 @@ class Title extends Component {
 			this.setState({ tableWrapperKey: Date.now() })
 		});
 	};
+
+	// handlers for downloading classifer 
+	download = (name, stream) => {
+		const url = window.URL.createObjectURL(new Blob([stream]));
+		const link = document.createElement('a');
+		link.href = url;
+		link.setAttribute('download', name);
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	}
+
+	handleClickDownload = async () => {
+		const streamVectorizer = await this.downloadVectorizerSync();
+		const nameVectorizer = "title_vectorizer.pkl"
+		this.download(nameVectorizer, streamVectorizer);
+
+		const streamClf = await this.downloadClfSync();
+		const nameClf = "title_clf.pkl"
+		this.download(nameClf, streamClf);
+	}
 
 	render(){
 		return (
@@ -377,7 +410,9 @@ class Title extends Component {
 						// api props
 						list={ this.listSync }
 						edit={ this.updateSync }
+						predict={ this.predictSync }
 						refreshTable={ this.refreshTable }
+						onClickDownload={ this.handleClickDownload }
 					>
 					</TableWrapper>
 				</Spin>

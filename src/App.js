@@ -51,6 +51,7 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   ProfileOutlined,
+  RobotOutlined,
   UserOutlined,
   QuestionCircleOutlined,
   TagOutlined,
@@ -261,7 +262,7 @@ class App extends Component {
 								</Item>
 								<Item 
 									key="12" 
-									icon={<HddOutlined />}
+									icon={<RobotOutlined />}
 								>
 									<Link to="/title">
 										Titles

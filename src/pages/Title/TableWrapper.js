@@ -17,6 +17,7 @@ import { TableDropdown } from './TableDropdown'
 import { TableDrawer } from '_components'
 import { TablePagination } from '_components'
 import { RefineModal } from './RefineModal/RefineModal'
+import { PredictModal } from './PredictModal'
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -30,6 +31,9 @@ class TableWrapper extends Component {
 			// for the refine modal
 			visibleRefine: false,
 			modalKeyRefine: Date.now(),
+			// for the predict modal
+			visiblePredict: false,
+			modalKeyPredict: Date.now(),
 		};
 	}
 	
@@ -93,6 +97,12 @@ class TableWrapper extends Component {
 		});
 	}
 
+	handleClickPredict = event => {
+		this.setState({
+			visiblePredict: true,
+		});
+	}
+
 	handleClickRefreshTable = () => {
 		this.props.refreshTable();
 		message.info('the table has been refreshed');
@@ -125,6 +135,13 @@ class TableWrapper extends Component {
 		});
 	}
 
+	// handlers for PredictModal
+	handleClosePredict = event => {
+		this.setState({
+			visiblePredict: false,
+			modalKeyPredict: Date.now(),
+		});
+	}
 	render(){
 		return (
 			<div className='TableWrapper'>
@@ -151,7 +168,9 @@ class TableWrapper extends Component {
 								<TableDropdown 
 									dropdownName={ this.props.dropdownName }
 									onClickRefine={ this.handleClickRefine }
+									onClickPredict={ this.handleClickPredict }
 									onClickRefreshTable={ this.handleClickRefreshTable }
+									onClickDownload={ this.props.onClickDownload }
 								/>
 							</>)
 						}
@@ -212,6 +231,16 @@ class TableWrapper extends Component {
 						onCancel={ this.handleCloseRefine }
 					>
 					</RefineModal>
+				</div>
+				<div>
+					<PredictModal
+						modalKey={ this.state.modalKeyPredict }
+						predictions={ this.props.predictions }
+						visible={ this.state.visiblePredict }
+						predict={ this.props.predict }
+						onCancel={ this.handleClosePredict }
+					>
+					</PredictModal>
 				</div>
 			</div>
 		);

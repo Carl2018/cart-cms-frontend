@@ -328,7 +328,7 @@ class RefineModal extends Component {
 	}
 	
 	preprocess = () => {
-		const { rePreprocess, willCollect } = this.state;
+		const { rePreprocess, willCollect, split } = this.state;
 
 		if (!rePreprocess)
 			message.info("Preprocessing");
@@ -336,7 +336,7 @@ class RefineModal extends Component {
 			message.info("Re-preprocessing");
 		this.setState({ loadingPreprocess: true, loading: true }, async () => {
 			const retrain = willCollect ? 'y' : 'n';
-			await this.preprocessSync({retrain});
+			await this.preprocessSync({retrain, split});
 			message.success("Done");
 			this.setState({
 				trainingBgColor: "#7cb06d",
