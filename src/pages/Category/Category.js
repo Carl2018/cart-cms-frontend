@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 // import components from ant design
 import { 
 	Input,
-	Spin,
+	Spin
 } from 'antd';
 import { HddOutlined } from '@ant-design/icons';
 

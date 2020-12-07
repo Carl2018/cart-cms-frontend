@@ -3,7 +3,9 @@ import { authHeader } from '_helpers';
 import { handleResponse } from '_helpers';
 
 export const statisticService = {
-    list
+    list,
+    apple_subscriber_list,
+    apple_subscription_list
 };
 
 
@@ -13,10 +15,38 @@ function list(params={}) {
     Object.keys(params).forEach( key => 
         url.searchParams.append(key, params[key]) );
     // call the api
-const requestOptions = { 
-        method: 'GET', 
-        headers: authHeader() 
-    };
-return fetch(url, requestOptions)
-        .then(handleResponse);
+    const requestOptions = { 
+            method: 'GET', 
+            headers: authHeader() 
+        };
+    return fetch(url, requestOptions)
+            .then(handleResponse);
+}
+
+function apple_subscriber_list(params={}) {
+    // append query string
+    let url = new URL(`${config.apiUrl}/statistic/apple_subscriber_list`);
+    Object.keys(params).forEach( key => 
+        url.searchParams.append(key, params[key]) );
+    // call the api
+    const requestOptions = { 
+            method: 'GET', 
+            headers: authHeader() 
+        };
+    return fetch(url, requestOptions)
+            .then(handleResponse);
+}
+
+function apple_subscription_list(params={}) {
+    // append query string
+    let url = new URL(`${config.apiUrl}/statistic/apple_subscription_list`);
+    Object.keys(params).forEach( key => 
+        url.searchParams.append(key, params[key]) );
+    // call the api
+    const requestOptions = { 
+            method: 'GET', 
+            headers: authHeader() 
+        };
+    return fetch(url, requestOptions)
+            .then(handleResponse);
 }
