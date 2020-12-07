@@ -12,4 +12,5 @@ export * from './Profile/Profile';
 export * from './Query/Query';
 export * from './Stat/Stat';
 export * from './Template/Template';
+export * from './Title/Title';
 export * from './Word/Word';

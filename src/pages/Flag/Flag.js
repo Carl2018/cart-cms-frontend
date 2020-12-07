@@ -134,6 +134,94 @@ class Flag extends Component {
 			setFilter: true
 		},
 		{
+			title: 'Tag',
+			dataIndex: 'tag',
+			key: 'tag',
+			sorter: (a, b) => compare(a.tag, b.tag),
+			sortDirection: ['ascend', 'descend'],
+			width: 140,
+			ellipsis: true,
+			//setFilter: true
+			render: tag => {
+				let color = 'green';
+				let text = 'Normal';
+				switch (tag) {
+					case 0 :
+						color = 'green';
+						text = 'Normal';
+						break;
+					case 1 :
+						color = 'red';
+						text = 'Spammer';
+						break;
+					default:
+						color = 'green';
+						text = 'Normal';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+		},
+		{
+			title: 'Spam Score',
+			dataIndex: 'score',
+			key: 'score',
+			sorter: (a, b) => compare(a.score, b.score),
+			sortDirection: ['ascend', 'descend'],
+			width: 140,
+			//setFilter: true
+			render: score => {
+				let color = '#00ff00';
+				switch (score) {
+					case 0 :
+						color = '#00ff00';
+						break;
+					case 1 :
+						color = '#2efc00';
+						break;
+					case 2 :
+						color = '#5bf900';
+						break;
+					case 3 :
+						color = '#88f700';
+						break;
+					case 4 :
+						color = '#b3f400';
+						break;
+					case 5 :
+						color = '#def200';
+						break;
+					case 6 :
+						color = '#efd600';
+						break;
+					case 7 :
+						color = '#eca800';
+						break;
+					case 8 :
+						color = '#ea7b00';
+						break;
+					case 9 :
+						color = '#e74f00';
+						break;
+					case 10 :
+						color = '#e52400';
+						break;
+					default:
+						color = '#00ff00';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ score }
+					</Tag>
+				);
+			},
+		},
+		{
 			title: 'State',
 			dataIndex: 'state',
 			key: 'state',
@@ -398,7 +486,7 @@ class Flag extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Flag'
 						showDropdown={ false }
-						scroll={ {x:1800} }
+						scroll={ {x:2080} }
 						// api props
 						listSync={ this.listSync }
 						softBanSync={ this.softBanSync}
