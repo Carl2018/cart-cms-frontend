@@ -34,7 +34,7 @@ import {
 	Dropdown,
 	Layout, 
 	Menu,
-	Row,
+	Row
 } from 'antd';
 import {
   ContactsOutlined,

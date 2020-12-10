@@ -8,7 +8,8 @@ import {
 	Row, 
   Space,
   DatePicker,
-  Dropdown
+  Statistic,
+  Cascader
 } from 'antd';
 
 import { authenticationService,statisticService } from '_services';
@@ -22,13 +23,77 @@ class Stat extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // currentUser: authenticationService.currentUserValue,
+            currentUser: authenticationService.currentUserValue,
             invitation_start_date: this.dateToString(this.getDaysBefore(-7)),
             invitation_end_date: this.dateToString(this.getDaysBefore(-1)),
             invitation_date_range: this.generateDateRangeArray(this.getDaysBefore(-7),this.getDaysBefore(-1) ),
             data: {},
             dataSubscriber: {},
-            dataSubscription: {}
+            dataSubscription: {},
+            dataYesterday: {},
+            line_chart_options:{
+              tooltips: {
+                mode: 'index',
+                intersect: true,
+              },
+              scales: {
+                xAxes: [{
+                  ticks: {
+                    stepSize: 3,
+                  }
+                }],
+              }
+            },
+            regions:[
+              {
+                value: 'HK',
+                label: 'HK',
+              },
+              {
+                value: 'TW',
+                label: 'TW',
+              },
+              {
+                value: 'MO',
+                label: 'MO',
+              },
+              {
+                value: 'SG',
+                label: 'SG',
+              },
+              {
+                value: 'GB',
+                label: 'GB',
+              },
+              {
+                value: 'CN',
+                label: 'CN',
+              },
+              {
+                value: 'JP',
+                label: 'JP',
+              },
+              {
+                value: 'US',
+                label: 'US',
+              },
+              {
+                value: 'CA',
+                label: 'CA',
+              },
+              {
+                value: 'AU',
+                label: 'AU',
+              },
+              {
+                value: 'MY',
+                label: 'MY',
+              },
+              {
+                value: 'NZ',
+                label: 'NZ',
+              }
+            ]
         };
     }
     componentDidMount() {
@@ -52,6 +117,8 @@ class Stat extends React.Component {
           await this.listSyncSubscription({
             start_date,
             end_date,
+          });
+          await this.listSyncYesterday({
           });
         }catch(error){
           console.log(error)
@@ -112,10 +179,16 @@ class Stat extends React.Component {
       list: "apple_subscription_list",
       dataName:"dataSubscription"
     };
+    yesterdayStat = {
+      service: statisticService,
+      list: "yesterday_stat",
+      dataName:"dataYesterday"
+    };
     //listSync = listSync.bind(this, this.config);
     listSyncInvite = listSync.bind(this, this.configInvite);
     listSyncSubscriber = listSync.bind(this, this.configSubscriber);
     listSyncSubscription = listSync.bind(this, this.configSubscription);
+    listSyncYesterday = listSync.bind(this, this.yesterdayStat);
 
     setDateRange = (startDate, endDate) => {
       let dateArray = this.generateDateRangeArray(startDate, endDate);
@@ -258,44 +331,6 @@ class Stat extends React.Component {
         }
       }
       return this.state.data[properties[input_property]]
-      // switch(input_region){
-      //   case 'hk_invitation_count':
-      //     return this.state.data.hk_invitation_count
-      //   case 'tw_invitation_count':
-      //     return this.state.data.tw_invitation_count
-      //   case 'my_invitation_count':
-      //     return this.state.data.my_invitation_count
-      //   case 'ca_invitation_count':
-      //     return this.state.data.ca_invitation_count
-      //   case 'hk_conversation_count':
-      //     return this.state.data.hk_conversation_count
-      //   case 'tw_conversation_count':
-      //     return this.state.data.tw_conversation_count
-      //   case 'my_conversation_count':
-      //     return this.state.data.my_conversation_count
-      //   case 'ca_conversation_count':
-      //     return this.state.data.ca_conversation_count
-      //   case 'hk_match_rate':
-      //     return this.state.data.hk_match_rate
-      //   case 'tw_match_rate':
-      //     return this.state.data.tw_match_rate
-      //   case 'my_match_rate':
-      //     return this.state.data.my_match_rate
-      //   case 'ca_match_rate':
-      //     return this.state.data.ca_match_rate
-      //   case 'hk_google_register':
-      //     return this.state.data.hk_google_register
-      //   case 'hk_sms_register':
-      //     return this.state.data.hk_sms_register
-      //   case 'hk_facebook_register':
-      //     return this.state.data.hk_facebook_register
-      //   case 'hk_apple_register':
-      //     return this.state.data.hk_apple_register
-      //   case 'hk_total_register':
-      //     return this.state.data.hk_total_register
-      //   default:
-      //     break
-      // }
     }
     getAppleDataArrayBasedOnType = (input_property,dataset) =>{
       let regions = {'au' : 'au', 'ca' : 'ca', 'cn' : 'cn', 'gb' : 'gb', 'hk' : 'hk', 
@@ -310,15 +345,12 @@ class Stat extends React.Component {
       }
       let returned_array = dataset === 'subscriber' ? this.state.dataSubscriber[properties[input_property]] : this.state.dataSubscription[properties[input_property]]
       return returned_array
-       
     }
     axes = [
         { primary: true, type: 'time', position: 'bottom' },
         { type: 'linear', position: 'left' }
       ]
-
-    
-
+//////////////////////////////////////////////////////////////////////////
     render() {
       return (
         <div>
@@ -327,7 +359,7 @@ class Stat extends React.Component {
               {
                 fontSize: '24px',
                 textAlign: 'left',
-                margin: "16px 16px 0px 16px"
+                margin: "16px 16px 16px 16px"
               } 
             } 
           >
@@ -335,6 +367,42 @@ class Stat extends React.Component {
               <LineChartOutlined />
               <strong>Stat</strong>
             </Space>
+            <Row gutter={16}>
+              <Col span={6}>
+                <Statistic title="Register" value={this.state.dataYesterday.total_register} />
+              </Col>
+              <Col span={6}>
+                <Statistic title="Match Rate" value={this.state.dataYesterday.total_rate}  />
+              </Col>
+              <Col span={6}>
+                <Statistic title="Invitation Count" value={this.state.dataYesterday.total_invitation}  />
+              </Col>
+              <Col span={6}>
+                <Statistic title="Conversation Count" value={this.state.dataYesterday.total_conversation}  />
+              </Col>
+            </Row>
+            <div style={ 
+              {
+                fontSize: '18px',
+                textAlign: 'left',
+                color: 'black'
+              } 
+            } >
+              <Row gutter={16}>
+                <Col span={6}>
+                  {this.state.dataYesterday.register}
+                </Col>
+                <Col span={6}>
+                  {this.state.dataYesterday.rate}
+                </Col>
+                <Col span={6}>
+                  {this.state.dataYesterday.invitation}
+                </Col>
+                <Col span={6}>
+                  {this.state.dataYesterday.conversation}
+                </Col>
+              </Row>
+            </div>
           </div>
           <div 
             style={ 
@@ -345,24 +413,25 @@ class Stat extends React.Component {
               } 
             } 
           >
-          <span style={ {marginRight: "16px"} }>
-            { "Date Range: " }
-          </span>
-          <RangePicker
-            ranges={{
-              //'Past 7 days': [moment().startOf('month'), moment().endOf('month')],
-              'Past 7 days': [moment().subtract(7,'days'), moment().subtract(1,'days')],
-              'Past 14 days': [moment().subtract(14,'days'), moment().subtract(1,'days')],
-              'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
-              
-            }}
-            onChange={this.onChange}
-          />
-          <span style={ {marginRight: "16px",marginLeft: "16px"} }>
-            { "Country: " }
-          </span>
+          <Row gutter={16}>
+            <Col span={12}>
+              { "Date Range " }
+              <RangePicker
+                ranges={{
+                  //'Past 7 days': [moment().startOf('month'), moment().endOf('month')],
+                  'Past 7 days': [moment().subtract(7,'days'), moment().subtract(1,'days')],
+                  'Past 14 days': [moment().subtract(14,'days'), moment().subtract(1,'days')],
+                  'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
+                }}
+                onChange={this.onChange}
+              />
+            </Col>
+            <Col span={12} >
+              { "Region: " }
+              <Cascader options={this.state.regions} placeholder="Please select" />
+            </Col>
+          </Row>
         </div>
-        
         <Row gutter={16}>
           <Col span={12}>
             <Card
@@ -372,7 +441,7 @@ class Stat extends React.Component {
               <Line data={{
                 labels: this.getLabels(),
                 datasets: this.getDataSets('invitation_count')
-              }} />
+              }} options={this.state.line_chart_options}/>
             </Card>
           </Col>
           <Col span={12}>
@@ -383,7 +452,7 @@ class Stat extends React.Component {
               <Line data={{
                 labels: this.getLabels(),
                 datasets: this.getDataSets('conversation_count')
-              }} />
+              }} options={this.state.line_chart_options}/>
             </Card>
           </Col>
         </Row>
@@ -396,7 +465,7 @@ class Stat extends React.Component {
             <Line data={{
               labels: this.getLabels(),
               datasets: this.getDataSets('match_rate')
-            }} />
+            }} options={this.state.line_chart_options}/>
             </Card>
           </Col>
           <Col span={12}>
@@ -407,7 +476,7 @@ class Stat extends React.Component {
               <Line data={{
                 labels: this.getLabels(),
                 datasets: this.getDataSetsByRegion('hk')
-              }} />
+              }} options={this.state.line_chart_options}/>
             </Card>
           </Col>
         </Row>
@@ -421,7 +490,7 @@ class Stat extends React.Component {
             <Line data={{
               labels: this.getLabels(),
               datasets: this.getDataSetsByCountry('hk','subscriber')
-            }} />
+            }} options={this.state.line_chart_options}/>
               
             </Card>
           </Col>
@@ -434,7 +503,7 @@ class Stat extends React.Component {
             <Line data={{
               labels: this.getLabels(),
               datasets: this.getDataSetsByCountry('hk','subscription')
-            }} />
+            }} options={this.state.line_chart_options}/>
           </Card>
           </Col>
         </Row>
