@@ -18,12 +18,14 @@ import {
 	FileTextOutlined, 
 	UserAddOutlined,
 	UserDeleteOutlined,
+	HistoryOutlined,
 } from '@ant-design/icons';
 
 // import shared and child components
 import { TableBody } from '_components'
 import { TableDropdown } from '_components'
 import { TableDrawer } from './TableDrawer'
+import { History } from './History'
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -34,6 +36,8 @@ class TableWrapper extends Component {
 			visible: false, // for opening or closing the TableDrawer
 			record: {}, // for loading a record into the form in TableDrawer
 			disabled: false, // for disabling the input fields in TableDrawer
+			visibleHistory: false, // for opening or closing the TableDrawer
+			historyModalKey: Date.now(),
 		};
 	}
 	
@@ -55,6 +59,14 @@ class TableWrapper extends Component {
 				onClick={ this.handleClickEdit.bind(this, record) }
 			>
 				Edit
+			</Menu.Item>
+			<Menu.Item 
+				key='3' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <HistoryOutlined /> }
+				onClick={ this.handleClickHistory.bind(this, record) }
+			>
+				History
 			</Menu.Item>
 		</Menu>
 	);
@@ -137,6 +149,13 @@ class TableWrapper extends Component {
 		});
 	}
 
+	handleClickHistory = record => {
+		this.setState({
+			visibleHistory: true, 
+			record,
+		});
+	}
+
 	handleClickBan = record => this.props.ban(record.id, record);
 
 	handleClickDelete = record => this.props.delete(record.id);
@@ -208,6 +227,14 @@ class TableWrapper extends Component {
 		});
 	}
 
+  handleCloseHistory = () => {
+    this.setState({
+      visibleHistory: false,
+			record: {},
+			historyModalKey: Date.now(),
+    });
+  };
+
 	render(){
 		return (
 			<div className='TableWrapper'>
@@ -271,6 +298,14 @@ class TableWrapper extends Component {
 						onSubmit={ this.handleSubmit }
 						drawerWidth={ this.props.drawerWidth }
 						formLayout={ this.props.formLayout }
+					/>
+				</div>
+				<div>
+					<History
+						modalKey={ this.state.historyModalKey }
+						visible={ this.state.visibleHistory } 
+						history={ this.state.record.history }
+						onClose={ this.handleCloseHistory }
 					/>
 				</div>
 			</div>

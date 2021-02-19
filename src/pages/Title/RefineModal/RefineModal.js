@@ -78,7 +78,7 @@ class RefineModal extends Component {
 	componentDidMount() {
 		this.setState({ loading: true }, async () => {
 			const { entry } = await this.countSync();
-			this.setState({ dataPointO: entry.total, loading: false });
+			this.setState({ dataPointO: entry?.total, loading: false });
 		});
 	}
 

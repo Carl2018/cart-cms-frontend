@@ -162,6 +162,24 @@ class Account extends Component {
 			width: 120,
 		},
 		{
+			title: 'Product ID',
+			dataIndex: 'product_id',
+			key: 'product_id',
+			sorter: (a, b) => compare(a.product_id, b.product_id),
+			sortDirection: ['ascend', 'descend'],
+			width: 120,
+			setFilter: true
+		},
+		{
+			title: 'Expiry Date',
+			dataIndex: 'expiry_date',
+			key: 'expiry_date',
+			sorter: (a, b) => compare(a.expiry_date, b.expiry_date),
+			sortDirection: ['ascend', 'descend'],
+			width: 120,
+			setFilter: true
+		},
+		{
 			title: 'Profile ID',
 			dataIndex: 'profilename',
 			key: 'profilename',
@@ -338,7 +356,7 @@ class Account extends Component {
 						formItems={ this.formItems }
 						tableHeader={ this.tableHeader }
 						drawerTitle='An Account'
-						scroll={ {x:1600} }
+						scroll={ {x:1840} }
 						// api props
 						create={ this.createSync }
 						edit={ this.updateSync }
