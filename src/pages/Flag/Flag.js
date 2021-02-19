@@ -18,6 +18,7 @@ import { FlagModal } from './FlagModal'
 import { 
 	candidateService,
 	flagService,
+	titleService,
 } from '_services';
 
 // import helpers
@@ -27,7 +28,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { listSync, updateSync } = backend;
+const { createSync, listSync, updateSync } = backend;
 const { compare, toDatetime } = helpers;
 const { Option } = Select;
 
@@ -411,13 +412,27 @@ class Flag extends Component {
 	list = listSync.bind(this, this.config);
 	listSync = (interval=48, orderBy='timestamp', page=1, remarks='') => {
 		this.setState( { spinning: true }, async () => {
-			await this.list({ 
+			const { entry } = await this.list({ 
 				cache: this.state.cache, 
 				interval, 
 				order_by: orderBy, 
 				page,
 				remarks,
 			});
+
+			if (entry) {
+				// perform title classifications
+				const titles = entry.map( item => item.suspect_message );
+				const { entry : predictions } = await this.predictSync({ titles });
+				const data = entry.map( item => {
+					const prediction = predictions[item.suspect_message] ? predictions[item.suspect_message] : [0, 0];
+					item.score = prediction[0];
+					item.tag = item.score > 6 ? 1 : 0;
+					return item; 
+				})
+				this.setState({ data });
+			}
+
 			this.setState({ spinning: false });
 		});
 	}
@@ -457,6 +472,12 @@ class Flag extends Component {
 		await this.ban(id, body);
 		this.updateLocal( record, 'h' );
 	}
+
+	predictSync = createSync.bind(this, {
+		service: titleService,
+		create: "predict",
+		dataName: "unknown",
+	});
 
 	// refresh table
 	refreshTable = () => {

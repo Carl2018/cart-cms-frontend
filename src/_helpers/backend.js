@@ -24,6 +24,10 @@ async function createSync(config, record) {
 		.then( result => response = result )
 		.catch( error => response = error );
 	// update the frontend data accordingly
+	if (response.skip) {
+			this.setState({ spinning: false });
+			return response; // for process drawer
+		}
 	if (response.code === 200){
 		let data = this.state[dataName].slice();
 		let entry = {};

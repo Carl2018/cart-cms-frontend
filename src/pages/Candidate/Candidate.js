@@ -13,7 +13,7 @@ import { IdcardOutlined } from '@ant-design/icons';
 import { TableWrapper } from './TableWrapper'
 
 // import services
-import { candidateService } from '_services';
+import { candidateService, titleService } from '_services';
 
 // import helpers
 import { 
@@ -22,7 +22,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { listSync, updateSync } = backend;
+const { createSync, listSync, updateSync } = backend;
 const { compare, toDatetime } = helpers;
 const { Option } = Select;
 
@@ -349,7 +349,21 @@ class Candidate extends Component {
 	list = listSync.bind(this, this.config);
 	listSync = (offset=0, limit=1) => {
 		this.setState( { spinning: true, pagination: false }, async () => {
-			await this.list({ cache: this.state.cache, offset, limit });
+			const { entry } = await this.list({ cache: this.state.cache, offset, limit });
+
+			if (entry) {
+				// perform title classifications
+				const titles = entry.map( item => item.message );
+				const { entry : predictions } = await this.predictSync({ titles });
+				const data = entry.map( item => {
+					const prediction = predictions[item.message] ? predictions[item.message] : [0, 0];
+					item.score = prediction[0];
+					item.tag = item.score > 6 ? 1 : 0;
+					return item; 
+				})
+				this.setState({ data });
+			}
+
 			this.setState({ spinning: false });
 		});
 	}
@@ -385,10 +399,30 @@ class Candidate extends Component {
 	});
 	searchCandidatesSync = params => {
 		this.setState( { spinning: true, pagination: true }, async () => {
-			await this.searchCandidates({...params, cache: this.state.cache});
+			const { entry } = await this.searchCandidates({...params, cache: this.state.cache});
+
+			if (entry) {
+				// perform title classifications
+				const titles = entry.map( item => item.message );
+				const { entry : predictions } = await this.predictSync({ titles });
+				const data = entry.map( item => {
+					const prediction = predictions[item.message] ? predictions[item.message] : [0, 0];
+					item.score = prediction[0];
+					item.tag = item.score > 6 ? 1 : 0;
+					return item; 
+				})
+				this.setState({ data });
+			}
+
 			this.setState({ spinning: false });
 		});
 	}
+
+	predictSync = createSync.bind(this, {
+		service: titleService,
+		create: "predict",
+		dataName: "unknown",
+	});
 
 	// refresh table
 	refreshTable = () => {
