@@ -1,5 +1,5 @@
-import { config } from 'config';
-import { authHeader } from '_helpers';
+import { config, ml } from 'config';
+import { authHeader, mlAuthHeader } from '_helpers';
 import { handleResponse } from '_helpers';
 
 export const titleService = {
@@ -86,13 +86,13 @@ function count(params={}) {
 
 function collect(params={}) {
 		// append query string
-		let url = new URL(`${config.apiUrl}/title/collect`);
+		let url = new URL(`${ml.domain}/api/title/collect`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
     const requestOptions = { 
 			method: 'GET', 
-			headers: authHeader() 
+			headers: mlAuthHeader() 
 		};
     return fetch(url, requestOptions)
 			.then(handleResponse);
@@ -100,13 +100,13 @@ function collect(params={}) {
 
 function preprocess(params={}) {
 		// append query string
-		let url = new URL(`${config.apiUrl}/title/preprocess`);
+		let url = new URL(`${ml.domain}/api/title/preprocess`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
     const requestOptions = { 
 			method: 'GET', 
-			headers: authHeader() 
+			headers: mlAuthHeader() 
 		};
     return fetch(url, requestOptions)
 			.then(handleResponse);
@@ -114,13 +114,13 @@ function preprocess(params={}) {
 
 function fit(params={}) {
 		// append query string
-		let url = new URL(`${config.apiUrl}/title/fit`);
+		let url = new URL(`${ml.domain}/api/title/fit`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
     const requestOptions = { 
 			method: 'GET', 
-			headers: authHeader() 
+			headers: mlAuthHeader() 
 		};
     return fetch(url, requestOptions)
 			.then(handleResponse);
@@ -128,13 +128,13 @@ function fit(params={}) {
 
 function test(params={}) {
 		// append query string
-		let url = new URL(`${config.apiUrl}/title/test`);
+		let url = new URL(`${ml.domain}/api/title/test`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
     const requestOptions = { 
 			method: 'GET', 
-			headers: authHeader() 
+			headers: mlAuthHeader() 
 		};
     return fetch(url, requestOptions)
 			.then(handleResponse);
@@ -142,13 +142,13 @@ function test(params={}) {
 
 function deploy(params={}) {
 		// append query string
-		let url = new URL(`${config.apiUrl}/title/deploy`);
+		let url = new URL(`${ml.domain}/api/title/deploy`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
     const requestOptions = { 
 			method: 'GET', 
-			headers: authHeader() 
+			headers: mlAuthHeader() 
 		};
     return fetch(url, requestOptions)
 			.then(handleResponse);
@@ -157,22 +157,22 @@ function deploy(params={}) {
 function predict(record) {
     const requestOptions = { 
 			method: 'PUT', 
-			headers: authHeader(),
+			headers: mlAuthHeader(),
 			body: JSON.stringify(record)
 		};
-    return fetch(`${config.apiUrl}/title/predict`, requestOptions)
+    return fetch(`${ml.domain}/api/title/predict`, requestOptions)
 			.then(handleResponse);
 }
 
 function downloadVectorizer(params={}) {
 		// append query string
-		let url = new URL(`${config.apiUrl}/title/download_vectorizer`);
+		let url = new URL(`${ml.domain}/api/title/download_vectorizer`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
     const requestOptions = { 
 			method: 'GET', 
-			headers: authHeader() 
+			headers: mlAuthHeader() 
 		};
     return fetch(url, requestOptions)
 			.then(handleResponse);
@@ -180,13 +180,13 @@ function downloadVectorizer(params={}) {
 
 function downloadClf(params={}) {
 		// append query string
-		let url = new URL(`${config.apiUrl}/title/download_clf`);
+		let url = new URL(`${ml.domain}/api/title/download_clf`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
     const requestOptions = { 
 			method: 'GET', 
-			headers: authHeader() 
+			headers: mlAuthHeader() 
 		};
     return fetch(url, requestOptions)
 			.then(handleResponse);

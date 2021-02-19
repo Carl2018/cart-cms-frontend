@@ -12,3 +12,16 @@ export function authHeader() {
         return {};
     }
 }
+
+export function mlAuthHeader() {
+    // return authorization header with jwt token
+    const currentUser = authenticationService.currentUserValue;
+    if (currentUser && currentUser.mlToken) {
+        return { 
+					'Authorization': `Token ${currentUser.mlToken}`,
+					'Content-Type': 'application/json'
+				};
+    } else {
+        return {};
+    }
+}
