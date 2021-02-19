@@ -72,13 +72,13 @@ function update(record) {
 
 function count(params={}) {
 		// append query string
-		let url = new URL(`${config.apiUrl}/title/count`);
+		let url = new URL(`${ml.domain}/api/title/count`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
     const requestOptions = { 
 			method: 'GET', 
-			headers: authHeader() 
+			headers: mlAuthHeader() 
 		};
     return fetch(url, requestOptions)
 			.then(handleResponse);
@@ -156,11 +156,11 @@ function deploy(params={}) {
 
 function predict(record) {
     const requestOptions = { 
-			method: 'PUT', 
+			method: 'POST', 
 			headers: mlAuthHeader(),
 			body: JSON.stringify(record)
 		};
-    return fetch(`${ml.domain}/api/title/predict`, requestOptions)
+    return fetch(`${ml.domain}/api/title/predict/`, requestOptions)
 			.then(handleResponse);
 }
 

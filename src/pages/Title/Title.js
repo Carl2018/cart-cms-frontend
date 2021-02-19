@@ -23,7 +23,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { retrieveSync, listSync, updateSync } = backend;
+const { createSync, retrieveSync, listSync, updateSync } = backend;
 const { compare } = helpers;
 const { Option } = Select;
 
@@ -353,9 +353,9 @@ class Title extends Component {
 		...this.config, 
 		retrieve: "downloadClf",
 	});
-	predictSync = updateSync.bind(this, {
+	predictSync = createSync.bind(this, {
 		...this.config,
-		update: "predict",
+		create: "predict",
 		dataName: "unknown",
 	});
 

@@ -42,9 +42,9 @@ class PredictModal extends Component {
 
 	onClickPredict = () => {
 		let { titles } = this.state;
-		titles = JSON.stringify({ titles: titles.split(/\r?\n/) });
+		titles = titles.split(/\r?\n/);
 		this.setState({ loading: true }, async () => {
-			const { entry } = await this.props.predict(0, { titles }, false);
+			const { entry } = await this.props.predict({ titles });
 			let predictions = "";
 			Object.entries(entry).forEach( item => {
 				predictions = predictions.concat( `${item[0]}\nspam score: ${item[1][0]} probability: ${item[1][1]}\n` )
