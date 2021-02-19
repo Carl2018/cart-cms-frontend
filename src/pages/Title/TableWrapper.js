@@ -170,7 +170,6 @@ class TableWrapper extends Component {
 									onClickRefine={ this.handleClickRefine }
 									onClickPredict={ this.handleClickPredict }
 									onClickRefreshTable={ this.handleClickRefreshTable }
-									onClickDownload={ this.props.onClickDownload }
 								/>
 							</>)
 						}
