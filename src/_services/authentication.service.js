@@ -25,7 +25,18 @@ function signin(username, password) {
 				.then( async user => {
 
 						// get token to access ml instance
-						await fetch(`${ml.domain}/api-token-auth/`, requestOptions)
+						// temp solution
+						// should do it in backend
+						const mlRequestOptions = {
+								method: 'POST',
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify({ 
+									username: 'cms@gmail.com', 
+									password: 'xh4HLpScUKkDzJyv',
+								})
+						};
+
+						await fetch(`${ml.domain}/api-token-auth/`, mlRequestOptions)
 							.then( response => response.json() )
 							.then( data => user.mlToken = data.token )
 						console.log(user)
