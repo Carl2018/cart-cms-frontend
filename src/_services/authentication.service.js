@@ -1,6 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-// import { config, ml } from 'config';
-import { config } from 'config';
+import { config, ml } from 'config';
 
 //import config from 'config';
 import { handleResponse } from '_helpers';
@@ -28,18 +27,18 @@ function signin(username, password) {
 						// get token to access ml instance
 						// temp solution
 						// should do it in backend
-//						const mlRequestOptions = {
-//								method: 'POST',
-//								headers: { 'Content-Type': 'application/json' },
-//								body: JSON.stringify({ 
-//									username: 'cms@gmail.com', 
-//									password: 'xh4HLpScUKkDzJyv',
-//								})
-//						};
-//
-//						await fetch(`${ml.domain}/api-token-auth/`, mlRequestOptions)
-//							.then( response => response.json() )
-//							.then( data => user.mlToken = data.token )
+						const mlRequestOptions = {
+								method: 'POST',
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify({ 
+									username: 'cms@gmail.com', 
+									password: 'xh4HLpScUKkDzJyv',
+								})
+						};
+
+						await fetch(`${ml.domain}/api-token-auth/`, mlRequestOptions)
+							.then( response => response.json() )
+							.then( data => user.mlToken = data.token )
 
             // store user details and jwt token in local storage to keep user logged in between page refreshes
             localStorage.setItem('currentUser', JSON.stringify(user));
