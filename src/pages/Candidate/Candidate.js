@@ -353,11 +353,14 @@ class Candidate extends Component {
 
 			if (entry) {
 				// perform title classifications
-				const titles = entry.map( item => item.message );
-				const { entry : predictions } = await this.predictSync({ titles });
+				let titles = {};
+				entry.forEach( item => { titles[item.id] = item.message });
+				const { entry : predictions } = await this.predictSync({ 
+					titles,
+					should_update: "False",
+				});
 				const data = entry.map( item => {
-					const prediction = predictions[item.message] ? predictions[item.message] : [0, 0];
-					item.score = prediction[0];
+					item.score = predictions[item.id]?.score ? predictions[item.id]?.score : 0;
 					item.tag = item.score > 6 ? 1 : 0;
 					return item; 
 				})
@@ -403,11 +406,14 @@ class Candidate extends Component {
 
 			if (entry) {
 				// perform title classifications
-				const titles = entry.map( item => item.message );
-				const { entry : predictions } = await this.predictSync({ titles });
+				let titles = {};
+				entry.forEach( item => { titles[item.id] = item.message });
+				const { entry : predictions } = await this.predictSync({ 
+					titles,
+					should_update: "False",
+				});
 				const data = entry.map( item => {
-					const prediction = predictions[item.message] ? predictions[item.message] : [0, 0];
-					item.score = prediction[0];
+					item.score = predictions[item.id]?.score ? predictions[item.id]?.score : 0;
 					item.tag = item.score > 6 ? 1 : 0;
 					return item; 
 				})

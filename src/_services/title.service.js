@@ -14,8 +14,6 @@ export const titleService = {
     test,
     deploy,
     predict,
-    downloadVectorizer,
-    downloadClf,
 };
 
 function retrieve(params={}) {
@@ -161,33 +159,5 @@ function predict(record) {
 			body: JSON.stringify(record)
 		};
     return fetch(`${ml.domain}/api/title/predict/`, requestOptions)
-			.then(handleResponse);
-}
-
-function downloadVectorizer(params={}) {
-		// append query string
-		let url = new URL(`${ml.domain}/api/title/download_vectorizer`);
-		Object.keys(params).forEach( key => 
-			url.searchParams.append(key, params[key]) );
-		// call the api
-    const requestOptions = { 
-			method: 'GET', 
-			headers: mlAuthHeader() 
-		};
-    return fetch(url, requestOptions)
-			.then(handleResponse);
-}
-
-function downloadClf(params={}) {
-		// append query string
-		let url = new URL(`${ml.domain}/api/title/download_clf`);
-		Object.keys(params).forEach( key => 
-			url.searchParams.append(key, params[key]) );
-		// call the api
-    const requestOptions = { 
-			method: 'GET', 
-			headers: mlAuthHeader() 
-		};
-    return fetch(url, requestOptions)
 			.then(handleResponse);
 }

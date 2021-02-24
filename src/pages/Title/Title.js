@@ -345,14 +345,6 @@ class Title extends Component {
 	});
 	listSync = listSync.bind(this, this.config);
 	updateSync = updateSync.bind(this, this.config);
-	downloadVectorizerSync = retrieveSync.bind(this, {
-		...this.config, 
-		retrieve: "downloadVectorizer",
-	});
-	downloadClfSync = retrieveSync.bind(this, {
-		...this.config, 
-		retrieve: "downloadClf",
-	});
 	predictSync = createSync.bind(this, {
 		...this.config,
 		create: "predict",
@@ -367,27 +359,6 @@ class Title extends Component {
 			this.setState({ tableWrapperKey: Date.now() })
 		});
 	};
-
-	// handlers for downloading classifer 
-	download = (name, stream) => {
-		const url = window.URL.createObjectURL(new Blob([stream]));
-		const link = document.createElement('a');
-		link.href = url;
-		link.setAttribute('download', name);
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-	}
-
-	handleClickDownload = async () => {
-		const streamVectorizer = await this.downloadVectorizerSync();
-		const nameVectorizer = "title_vectorizer.pkl"
-		this.download(nameVectorizer, streamVectorizer);
-
-		const streamClf = await this.downloadClfSync();
-		const nameClf = "title_clf.pkl"
-		this.download(nameClf, streamClf);
-	}
 
 	render(){
 		return (
