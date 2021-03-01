@@ -30,16 +30,7 @@ class CustomizedTag extends Component {
 		this.state = {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
-			data: [
-				{tag: "tag 1",region:"HK",is_banned:0,is_featured:1,count:123,created_at:"2020-12-28 13:00:00"},
-				{tag: "tag 2",region:"TW",is_banned:0,is_featured:1,count:43,created_at:"2020-12-28 13:00:00"},
-				{tag: "tag 3",region:"MY",is_banned:0,is_featured:1,count:10,created_at:"2020-12-28 13:00:00"},
-				{tag: "tag 4",region:"CA",is_banned:0,is_featured:0,count:50,created_at:"2020-12-28 13:00:00"},
-				{tag: "tag 5",region:"HK",is_banned:0,is_featured:0,count:70,created_at:"2020-12-28 13:00:00"},
-				{tag: "tag 6",region:"HK",is_banned:1,is_featured:0,count:20,created_at:"2020-12-28 13:00:00"},
-				{tag: "tag 7",region:"TW",is_banned:1,is_featured:0,count:550,created_at:"2020-12-28 13:00:00"},
-				{tag: "tag 8",region:"TW",is_banned:1,is_featured:0,count:1110,created_at:"2020-12-28 13:00:00"},
-			],
+			data: [],
 			spinning: false,
 			rowCount: 0,
 			defaultPageSize: 10,
@@ -51,10 +42,15 @@ class CustomizedTag extends Component {
 		this.setState({ spinning: true }, async () => {
 			const limit = this.state.defaultPageSize;
 			const offset = (this.state.defaultPage - 1) * limit;
-			// await this.listSync({
-			// 	limit,
-			// 	offset,
-			// });
+			let filter = {
+				in_region: 1,
+				in_is_banned: 0,
+				in_is_featured:1,
+				in_is_active:1,
+				in_order_by_column:'count',
+				in_order_by_order:'desc'
+			}
+			await this.listSync(filter);
 			// const { entry: {row_count} } = await this.retrieveRowCount();
 			this.setState({ 
 				spinning: false, 
@@ -114,8 +110,8 @@ class CustomizedTag extends Component {
 		},
 		{
 			title: 'Created at',
-			dataIndex: 'created_at',
-			key: 'created_at',
+			dataIndex: 'latest_update_datetime',
+			key: 'latest_update_datetime',
 			sorter: (a, b) => compare(a.created_at, b.created_at),
 			sortDirection: ['ascend', 'descend'],
 			width: '20%',
@@ -165,8 +161,7 @@ class CustomizedTag extends Component {
 					{[
 						<Option key={1}>{"HK"}</Option>,
 						<Option key={2}>{"TW"}</Option>,
-						<Option key={3}>{"MY"}</Option>,
-						<Option key={4}>{"CA"}</Option>,
+						<Option key={3}>{"SG"}</Option>,
 					]}
 				</Select>
 			)
