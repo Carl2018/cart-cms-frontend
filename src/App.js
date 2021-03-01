@@ -20,8 +20,7 @@ import {
 	Category,
 	Log,
 	Stat,
-	CustomizedTag,
-	TagCandidate
+	CustomizedTag
 } from 'pages';
 
 import { history } from '_helpers';
@@ -74,13 +73,16 @@ class App extends Component {
 			menuKey: Date.now(),
 			// fixed by kp, collapsed true becomes false.
 			collapsed: false,
+			toFlagPage: this.toFlagPage(),
 		};
 	}
 	
 	componentDidMount() {
 			authenticationService.currentUser.subscribe(x => this.setState({ currentUser: x }));
 	}
-
+	toFlagPage() {
+		alert("Hello")
+	}
 	// for profile menu
 	menu = (
 		<Menu>
@@ -279,22 +281,14 @@ class App extends Component {
 										Logs
 									</Link>
 								</Item>
-								<SubMenu key="14" icon={<TagOutlined />} title="Tags">
-									<Item 
-										key="15" 
-									>
-										<Link to="/tag">
-											New
-										</Link>
-									</Item>
-									<Item 
-										key="16" 
-									>
-										<Link to="/tagcandidate">
-											Candidates
-										</Link>
-									</Item>
-								</SubMenu>
+								<Item 
+									key="14" 
+									icon={<TagOutlined />}
+								>
+									<Link to="/tagsss" toFlagPage={ this.toFlagPage }>
+										Tags
+									</Link>
+								</Item>
 							</Menu>
 						</Sider> }
 						<Layout className="site-layout">
@@ -359,8 +353,7 @@ class App extends Component {
 									<PrivateRoute path="/category" component={ Category }/>
 									<PrivateRoute path="/title" component={ Title }/>
 									<PrivateRoute path="/log" component={ Log }/>
-									<PrivateRoute path="/tag" component={ CustomizedTag }/>
-									<PrivateRoute path="/tagcandidate" component={ TagCandidate }/>
+									<PrivateRoute path="/tagsss" component={ CustomizedTag } heeeee='123123'/>
 							</Content>
 							<Footer style={{textAlign: "center", color:"#a1a1a1"}}>
 								Copyright &copy; {new Date().getFullYear()} Heymandi 
