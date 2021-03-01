@@ -584,12 +584,11 @@ class Stat extends React.Component {
           </Col>
         </Row>
         <div gutter={16}>
-          <Row >
-              <Col span={4}>
+          <Row style={{ margin: "16px" }}>
+              <Col span={4} >
                 { "Date Range " }
                 <RangePicker
                   ranges={{
-                    //'Past 7 days': [moment().startOf('month'), moment().endOf('month')],
                     'Past 7 days': [moment().subtract(7,'days'), moment().subtract(1,'days')],
                     'Past 14 days': [moment().subtract(14,'days'), moment().subtract(1,'days')],
                     'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
