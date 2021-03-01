@@ -56,14 +56,11 @@ class TableWrapper extends Component {
 					>
 						Edit
 					</Button>
-					{/* <Button 
-						type='link' 
-						danger 
-                        icon={ <DeleteOutlined /> }
-                        disabled
+                    <Button
+						onClick={this.props.toFlagPage}
 					>
-						Delete
-					</Button> */}
+						Flag
+					</Button>
 				</Space>
 			),
 			width: '25%',
