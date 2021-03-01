@@ -594,7 +594,6 @@ class Stat extends React.Component {
                     'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
                   }}
                   onChange={this.onChangeDatePicker}
-                  defaultValue={[moment(this.state.revenue_start_date, 'YYYY-MM-DD'), moment(this.state.revenue_start_date, 'YYYY-MM-DD')]}
                 />
               </Col>
               <Col span={3} >
