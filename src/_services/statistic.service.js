@@ -85,7 +85,7 @@ function csv_import(file) {
     const requestOptions = {
         method: "POST",
         headers: authHeaderWithoutContentType(),
-        body: file 
+        body: {file: file.file}
     }
     return fetch(`${config.apiUrl}/statistic/csv_import`, requestOptions).then(handleResponse)
 }
