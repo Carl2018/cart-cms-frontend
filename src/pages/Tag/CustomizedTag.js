@@ -268,9 +268,11 @@ class CustomizedTag extends Component {
 						edit={ this.updateSync }
 						// delete={ this.hideSync }
 						refreshTable={ this.refreshTable }
+						toFlagPage={this.props.toFlagPage}
 					>
 					</TableWrapper>
 				</Spin>
+				<button onClick={this.props.toFlagPage}> test</button>
 			</div>
         );
     }
