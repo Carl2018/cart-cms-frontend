@@ -197,13 +197,14 @@ class TableWrapper extends Component {
                         } 
                       } 
                     >
-                        <Col span={4}>
+                        <Col xs={{span:6}} lg={{span:6}} xl={{span:5}} xl={{span:4}}  xxl={{span:3}}>
                             { "Region: " }
                             <Select
                                 mode="single"
                                 allowClear
-                                style={{ width: '70%' }}
-                                placeholder="Please select"
+                                style={{ width: '50%' }}
+								placeholder="Select"
+								size="small"
                             >
                                 {[
                                     <Option key={"HK"}>{"HK"}</Option>,
@@ -214,7 +215,7 @@ class TableWrapper extends Component {
                                 ]}
                             </Select>
                         </Col>
-                        <Col span={3}>
+                        <Col xs={{span:9}} lg={{span:7}} xl={{span:6}} xl={{span:6}} xxl={{span:4}}> 
                             { "Is Banned: " }
                             <Radio.Group
                                 options={this.state.bannedOptions}
@@ -222,10 +223,11 @@ class TableWrapper extends Component {
                                 // value={value4}
                                 optionType="button"
                                 buttonStyle="solid"
-                                defaultValue="ALL"
+								defaultValue="ALL"
+								size="small"
                             />
                         </Col>
-                        <Col span={3}>
+                        <Col xs={{span:9}} lg={{span:7}} xl={{span:6}} xl={{span:6}} xxl={{span:4}}>
                             { "Is Featured: " }
                             <Radio.Group
                                 options={this.state.bannedOptions}
@@ -233,7 +235,8 @@ class TableWrapper extends Component {
                                 // value={value4}
                                 optionType="button"
                                 buttonStyle="solid"
-                                defaultValue="ALL"
+								defaultValue="ALL"
+								size="small"
                             />
                         </Col>
                     </Row>
