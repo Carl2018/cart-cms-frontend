@@ -144,12 +144,12 @@ class Stat extends React.Component {
                 this.columnChildren("AOS $","my_aos_cash","my_aos_cash",'5%')
               ]
             },
-            {title:"MY",
+            {title:"Others",
               children:[
-                this.columnChildren("IOS No.","my_ios_no","my_ios_no",'5%'),
-                this.columnChildren("IOS $","my_ios_cash","my_ios_cash",'5%'),
-                this.columnChildren("AOS No.","my_aos_no","my_aos_no",'5%'),
-                this.columnChildren("AOS $","my_aos_cash","my_aos_cash",'5%')
+                this.columnChildren("IOS No.","ot_ios_no","ot_ios_no",'5%'),
+                this.columnChildren("IOS $","ot_ios_cash","ot_ios_cash",'5%'),
+                this.columnChildren("AOS No.","ot_aos_no","ot_aos_no",'5%'),
+                this.columnChildren("AOS $","ot_aos_cash","ot_aos_cash",'5%')
               ]
             }
           ],
