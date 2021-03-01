@@ -16,3 +16,4 @@ export * from './template.service';
 export * from './title.service';
 export * from './user.service';
 export * from './word.service';
+export * from './tag.service';
