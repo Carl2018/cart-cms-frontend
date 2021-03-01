@@ -20,11 +20,17 @@ class TableWrapper extends Component {
 			tableDrawerKey: Date.now(), // for refreshing the TableDrawer
 			visible: false, // for opening or closing the TableDrawer
 			record: {}, // for loading a record into the form in TableDrawer
-            disabled: false, // for disabling the input fields in TableDrawer
+			disabled: false, // for disabling the input fields in TableDrawer
+			in_region: 1,
+			in_is_banned: 1,
+			in_is_featured:1,
+			in_is_active:1,
+			in_order_by_column:'count',
+			in_order_by_order:'asc',
             bannedOptions : [
-                { label: 'ON', value: 'ON' },
-                { label: 'OFF', value: 'OFF' },
-                { label: 'ALL', value: 'ALL' },
+                { label: 'ON', value: 1 },
+                { label: 'OFF', value: 0 },
+                { label: 'ALL', value: '' },
             ]
 		};
 	}
@@ -88,13 +94,56 @@ class TableWrapper extends Component {
 	handleSelectChange = selectedRowKeys => this.setState({ selectedRowKeys });
 
 	// handlers for actions in TableDropdown
-  handleClickAdd = event => {
-    this.setState({
-      visible: true,
-			disabled: false,
-			record: {},
-    });
-  };
+    handleClickAdd = event => {
+        this.setState({
+            visible: true,
+            disabled: false,
+            record: {},
+        });
+    };
+    handleRegionChange = value => {
+        this.setState({
+            in_region: value
+        });
+        let filter = {
+            in_region: value,
+            in_is_banned: this.state.in_is_banned,
+            in_is_featured:this.state.in_is_featured,
+            in_is_active:this.state.in_is_active,
+            in_order_by_column:this.state.in_order_by_column,
+            in_order_by_order:this.state.in_order_by_order
+        }
+        this.props.list(filter)
+    }
+    handleBannedChange = value => {
+		this.setState({
+			in_is_banned: value.target.value
+		});
+		let filter = {
+			in_is_banned: value.target.value,
+			in_region: this.state.in_region,
+			in_is_featured:this.state.in_is_featured,
+			in_is_active:this.state.in_is_active,
+			in_order_by_column:this.state.in_order_by_column,
+			in_order_by_order:this.state.in_order_by_order
+		}
+		this.props.list(filter)
+	}
+
+    handleFeaturedChange = value => {
+		this.setState({
+			in_is_featured: value.target.value
+		});
+		let filter = {
+			in_is_featured: value.target.value,
+			in_region: this.state.in_region,
+			in_is_banned:this.state.in_is_banned,
+			in_is_active:this.state.in_is_active,
+			in_order_by_column:this.state.in_order_by_column,
+			in_order_by_order:this.state.in_order_by_order
+		}
+		this.props.list(filter)
+	}
 
 	handleClickRefreshTable = () => {
 		this.props.refreshTable();
@@ -205,13 +254,13 @@ class TableWrapper extends Component {
                                 style={{ width: '50%' }}
 								placeholder="Select"
 								size="small"
+                                onChange={this.handleRegionChange}
                             >
                                 {[
-                                    <Option key={"HK"}>{"HK"}</Option>,
-                                    <Option key={"TW"}>{"TW"}</Option>,
-                                    <Option key={"MY"}>{"MY"}</Option>,
-                                    <Option key={"CA"}>{"CA"}</Option>,
-
+                                    <Option key={1}>{"HK"}</Option>,
+                                    <Option key={2}>{"TW"}</Option>,
+                                    <Option key={3}>{"MY"}</Option>,
+                                    <Option key={4}>{"CA"}</Option>,
                                 ]}
                             </Select>
                         </Col>
@@ -219,8 +268,7 @@ class TableWrapper extends Component {
                             { "Is Banned: " }
                             <Radio.Group
                                 options={this.state.bannedOptions}
-                                // onChange={this.onChange4}
-                                // value={value4}
+                                onChange={this.handleBannedChange}
                                 optionType="button"
                                 buttonStyle="solid"
 								defaultValue="ALL"
@@ -231,8 +279,7 @@ class TableWrapper extends Component {
                             { "Is Featured: " }
                             <Radio.Group
                                 options={this.state.bannedOptions}
-                                // onChange={this.onChange4}
-                                // value={value4}
+                                onChange={this.handleFeaturedChange}
                                 optionType="button"
                                 buttonStyle="solid"
 								defaultValue="ALL"
