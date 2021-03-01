@@ -6,7 +6,8 @@ export const statisticService = {
     list,
     apple_subscriber_list,
     apple_subscription_list,
-    yesterday_stat
+    yesterday_stat,
+    revenue_list
 };
 
 
@@ -55,6 +56,20 @@ function apple_subscriber_list(params={}) {
 function apple_subscription_list(params={}) {
     // append query string
     let url = new URL(`${config.apiUrl}/statistic/apple_subscription_list`);
+    Object.keys(params).forEach( key => 
+        url.searchParams.append(key, params[key]) );
+    // call the api
+    const requestOptions = { 
+            method: 'GET', 
+            headers: authHeader() 
+        };
+    return fetch(url, requestOptions)
+            .then(handleResponse);
+}
+
+function revenue_list(params={}) {
+    // append query string
+    let url = new URL(`${config.apiUrl}/statistic/revenue_list`);
     Object.keys(params).forEach( key => 
         url.searchParams.append(key, params[key]) );
     // call the api

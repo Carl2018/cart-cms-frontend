@@ -1,7 +1,7 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 // import styling from ant desgin
-import { LineChartOutlined } from '@ant-design/icons';
+import { LineChartOutlined,UploadOutlined } from '@ant-design/icons';
 import { 
 	Card, 
 	Col, 
@@ -9,15 +9,42 @@ import {
   Space,
   DatePicker,
   Statistic,
-  Cascader
+  Cascader,
+  Table,
+  Button,
+  Upload,
+  message
 } from 'antd';
 
 import { authenticationService,statisticService } from '_services';
 import moment from 'moment';
 import { backend } from '_helpers';
 const { RangePicker } = DatePicker;
+const { Column, ColumnGroup } = Table;
 // destructure imported components and objects
 const { listSync } = backend;
+const upploadProps = {
+  name: 'file',
+  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+  headers: {
+    authorization: 'authorization-text',
+  },
+  onChange(info) {
+    if (info.file.status !== 'uploading') {
+      console.log(info.file, info.fileList);
+    }
+    if (info.file.status === 'done') {
+      message.success({
+        content: `${info.file.name} file uploaded and imported successfully`,
+        style:{
+          marginTop: '10vh'
+        }
+      },2);
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  },
+}
 
 class Stat extends React.Component {
     constructor(props) {
@@ -27,10 +54,15 @@ class Stat extends React.Component {
             invitation_start_date: this.dateToString(this.getDaysBefore(-7)),
             invitation_end_date: this.dateToString(this.getDaysBefore(-1)),
             invitation_date_range: this.generateDateRangeArray(this.getDaysBefore(-7),this.getDaysBefore(-1) ),
+            revenue_start_date: '2020-12-15',
+            revenue_end_date: '2020-12-16',
+            revenue_region: '',
+            revenue_platform: '',
             data: {},
             dataSubscriber: {},
             dataSubscription: {},
             dataYesterday: {},
+            dataRevenue: {},
             line_chart_options:{
               tooltips: {
                 mode: 'index',
@@ -45,55 +77,236 @@ class Stat extends React.Component {
               }
             },
             regions:[
+              { value: 'HK', label: 'HK' },
+              { value: 'TW', label: 'TW' },
+              { value: 'MO', label: 'MO' },
+              { value: 'SG', label: 'SG' },
+              { value: 'GB', label: 'GB' },
+              { value: 'CN', label: 'CN' },
+              { value: 'JP', label: 'JP' },
+              { value: 'US', label: 'US' },
+              { value: 'CA', label: 'CA' },
+              { value: 'AU', label: 'AU' },
+              { value: 'MY', label: 'MY' },
+              { value: 'NZ', label: 'NZ' }
+            ],
+            regions:[
+              { value: '1', label: 'HK' },
+              { value: '2', label: 'TW' },
+              { value: '3', label: 'MY' },
+              { value: '', label: 'All' },
+            ],
+            platform:[
+              { value: '1', label: 'IOS' },
+              { value: '2', label: 'Android' },
+              { value: '', label: 'All' },
+            ],
+            subscriptionColumns:[
+              {title:"", 
+                children:[
+                  {title:"",dataIndex:"title",key:"title", width:150},
+              ]},
+              {title:"HK",
+                children:[{title:"IOS No.", dataIndex:"hk_ios_no", key:"hk_ios_no", width: 100},
+                  {title:"IOS $", dataIndex:"hk_ios_cash", key:"hk_ios_cash", width: 100},
+                  {title:"AOS No.", dataIndex:"hk_aos_no", key:"hk_aos_no", width: 100},
+                  {title:"AOS $", dataIndex:"hk_aos_cash", key:"hk_aos_cash", width: 100}
+              ]},
+              
+              {title:"TW",
+                children:[{title:"IOS No.", dataIndex:"tw_ios_no", key:"tw_ios_no", width: 100},
+                  {title:"IOS $", dataIndex:"tw_ios_cash", key:"tw_ios_cash", width: 100},
+                  {title:"AOS No.", dataIndex:"tw_aos_no", key:"tw_aos_no", width: 100},
+                  {title:"AOS $", dataIndex:"tw_aos_cash", key:"tw_aos_cash", width: 100}
+              ]},
+              {title:"MY",
+                children:[{title:"IOS No.", dataIndex:"my_ios_no", key:"my_ios_no", width: 100},
+                  {title:"IOS $", dataIndex:"my_ios_cash", key:"my_ios_cash", width: 100},
+                  {title:"AOS No.", dataIndex:"my_aos_no", key:"my_aos_no", width: 100},
+                  {title:"AOS $", dataIndex:"my_aos_cash", key:"my_aos_cash", width: 100}
+              ]},
+              {title:"Others",
+                children:[{title:"IOS No.", dataIndex:"ot_ios_no", key:"ot_ios_no", width: 100},
+                  {title:"IOS $", dataIndex:"ot_ios_cash", key:"ot_ios_cash", width: 100},
+                  {title:"AOS No.", dataIndex:"ot_aos_no", key:"ot_aos_no", width: 100},
+                  {title:"AOS $", dataIndex:"ot_aos_cash", key:"ot_aos_cash", width: 100}
+              ]},
+            ],
+            tableData : [
               {
-                value: 'HK',
-                label: 'HK',
-              },
-              {
-                value: 'TW',
-                label: 'TW',
-              },
-              {
-                value: 'MO',
-                label: 'MO',
-              },
-              {
-                value: 'SG',
-                label: 'SG',
-              },
-              {
-                value: 'GB',
-                label: 'GB',
-              },
-              {
-                value: 'CN',
-                label: 'CN',
-              },
-              {
-                value: 'JP',
-                label: 'JP',
-              },
-              {
-                value: 'US',
-                label: 'US',
-              },
-              {
-                value: 'CA',
-                label: 'CA',
-              },
-              {
-                value: 'AU',
-                label: 'AU',
-              },
-              {
-                value: 'MY',
-                label: 'MY',
-              },
-              {
-                value: 'NZ',
-                label: 'NZ',
-              }
-            ]
+                "title": "Ad-Free Month",
+                "hk_ios_cash": 0,
+                "hk_ios_no": 0,
+                "hk_aos_cash": 0,
+                "hk_aos_no": 0,
+                "tw_ios_cash": 0,
+                "tw_ios_no": 0,
+                "tw_aos_cash": 0,
+                "tw_aos_no": 0,
+                "my_ios_cash": 0,
+                "my_ios_no": 0,
+                "my_aos_cash": 0,
+                "my_aos_no": 0,
+                "ot_ios_cash": 0,
+                "ot_ios_no": 0,
+                "ot_aos_cash": 0,
+                "ot_aos_no": 0
+            },
+            {
+              "title": "Ad-Free Quarter",
+              "hk_ios_cash": 0,
+              "hk_ios_no": 0,
+              "hk_aos_cash": 0,
+              "hk_aos_no": 0,
+              "tw_ios_cash": 0,
+              "tw_ios_no": 0,
+              "tw_aos_cash": 0,
+              "tw_aos_no": 0,
+              "my_ios_cash": 0,
+              "my_ios_no": 0,
+              "my_aos_cash": 0,
+              "my_aos_no": 0,
+              "ot_ios_cash": 0,
+              "ot_ios_no": 0,
+              "ot_aos_cash": 0,
+              "ot_aos_no": 0
+          },
+          {
+            "title": "Ad-Free Half-year",
+            "hk_ios_cash": 0,
+            "hk_ios_no": 0,
+            "hk_aos_cash": 0,
+            "hk_aos_no": 0,
+            "tw_ios_cash": 0,
+            "tw_ios_no": 0,
+            "tw_aos_cash": 0,
+            "tw_aos_no": 0,
+            "my_ios_cash": 0,
+            "my_ios_no": 0,
+            "my_aos_cash": 0,
+            "my_aos_no": 0,
+            "ot_ios_cash": 0,
+            "ot_ios_no": 0,
+            "ot_aos_cash": 0,
+            "ot_aos_no": 0
+        },
+        {
+          "title": "Hey Silver Month",
+          "hk_ios_cash": 0,
+          "hk_ios_no": 0,
+          "hk_aos_cash": 0,
+          "hk_aos_no": 0,
+          "tw_ios_cash": 0,
+          "tw_ios_no": 0,
+          "tw_aos_cash": 0,
+          "tw_aos_no": 0,
+          "my_ios_cash": 0,
+          "my_ios_no": 0,
+          "my_aos_cash": 0,
+          "my_aos_no": 0,
+          "ot_ios_cash": 0,
+          "ot_ios_no": 0,
+          "ot_aos_cash": 0,
+          "ot_aos_no": 0
+      },
+      {
+        "title": "Hey Silver Quarter",
+        "hk_ios_cash": 0,
+        "hk_ios_no": 0,
+        "hk_aos_cash": 0,
+        "hk_aos_no": 0,
+        "tw_ios_cash": 0,
+        "tw_ios_no": 0,
+        "tw_aos_cash": 0,
+        "tw_aos_no": 0,
+        "my_ios_cash": 0,
+        "my_ios_no": 0,
+        "my_aos_cash": 0,
+        "my_aos_no": 0,
+        "ot_ios_cash": 0,
+        "ot_ios_no": 0,
+        "ot_aos_cash": 0,
+        "ot_aos_no": 0
+    },
+    {
+      "title": "Hey Silver Half-year",
+      "hk_ios_cash": 0,
+      "hk_ios_no": 0,
+      "hk_aos_cash": 0,
+      "hk_aos_no": 0,
+      "tw_ios_cash": 0,
+      "tw_ios_no": 0,
+      "tw_aos_cash": 0,
+      "tw_aos_no": 0,
+      "my_ios_cash": 0,
+      "my_ios_no": 0,
+      "my_aos_cash": 0,
+      "my_aos_no": 0,
+      "ot_ios_cash": 0,
+      "ot_ios_no": 0,
+      "ot_aos_cash": 0,
+      "ot_aos_no": 0
+  },
+  {
+    "title": "Hey Gold Month",
+    "hk_ios_cash": 0,
+    "hk_ios_no": 0,
+    "hk_aos_cash": 0,
+    "hk_aos_no": 0,
+    "tw_ios_cash": 0,
+    "tw_ios_no": 0,
+    "tw_aos_cash": 0,
+    "tw_aos_no": 0,
+    "my_ios_cash": 0,
+    "my_ios_no": 0,
+    "my_aos_cash": 0,
+    "my_aos_no": 0,
+    "ot_ios_cash": 0,
+    "ot_ios_no": 0,
+    "ot_aos_cash": 0,
+    "ot_aos_no": 0
+},
+{
+  "title": "Hey Gold Quarter",
+  "hk_ios_cash": 0,
+  "hk_ios_no": 0,
+  "hk_aos_cash": 0,
+  "hk_aos_no": 0,
+  "tw_ios_cash": 0,
+  "tw_ios_no": 0,
+  "tw_aos_cash": 0,
+  "tw_aos_no": 0,
+  "my_ios_cash": 0,
+  "my_ios_no": 0,
+  "my_aos_cash": 0,
+  "my_aos_no": 0,
+  "ot_ios_cash": 0,
+  "ot_ios_no": 0,
+  "ot_aos_cash": 0,
+  "ot_aos_no": 0
+},
+{
+  "title": "Hey Gold Half-year",
+  "hk_ios_cash": 0,
+  "hk_ios_no": 0,
+  "hk_aos_cash": 0,
+  "hk_aos_no": 0,
+  "tw_ios_cash": 0,
+  "tw_ios_no": 0,
+  "tw_aos_cash": 0,
+  "tw_aos_no": 0,
+  "my_ios_cash": 0,
+  "my_ios_no": 0,
+  "my_aos_cash": 0,
+  "my_aos_no": 0,
+  "ot_ios_cash": 0,
+  "ot_ios_no": 0,
+  "ot_aos_cash": 0,
+  "ot_aos_no": 0
+}
+]
+
+
         };
     }
     componentDidMount() {
@@ -101,11 +314,17 @@ class Stat extends React.Component {
         // this.setState(  (state) => {
         let start_date = state.invitation_start_date;
         let end_date = state.invitation_end_date;
-        // await this.listSync({
-        //   start_date,
-        //   end_date,
-        // });
+        let revenue_start_date = state.revenue_start_date;
+        let revenue_end_date = state.revenue_end_date;
+        let revenue_region = state.revenue_region;
+        let revenue_platform = state.revenue_platform;
         try{
+          await this.listSyncRevenue({
+            revenue_start_date,
+            revenue_end_date,
+            revenue_region,
+            revenue_platform
+          });
           await this.listSyncInvite({
             start_date,
             end_date,
@@ -137,13 +356,8 @@ class Stat extends React.Component {
       })
       this.setDateRange(dateStrings[0],dateStrings[1])
       this.setState( async () => {
-      // this.setState(  () => {
         let start_date = this.dateToString(dateStrings[0])
         let end_date = this.dateToString(dateStrings[1])
-        // await this.listSync({
-        //   start_date,
-        //   end_date,
-        // });
         try{
           this.listSyncInvite({
             start_date,
@@ -162,6 +376,49 @@ class Stat extends React.Component {
         }
         
       });
+    }
+    onChangeDatePicker = (dateStrings) => {
+      this.setState({
+        revenue_start_date: dateStrings[0],
+        revenue_end_date: dateStrings[1]
+      })
+      this.setState( async () => {
+        let start_date = this.dateToString(dateStrings[0])
+        let end_date = this.dateToString(dateStrings[1])
+        let region = this.state.revenue_region
+        let platform = this.state.revenue_platform
+        this.tryListSyncRevenue(start_date,end_date,region,platform)
+      });
+    }
+    onChangeRegion = (region) => {
+      this.setState( async () => {
+        this.state.revenue_region = region
+        let start_date = this.dateToString(this.state.revenue_start_date)
+        let end_date = this.dateToString(this.state.revenue_start_date)
+        let platform = this.state.revenue_platform
+        this.tryListSyncRevenue(start_date,end_date,region,platform)
+      });
+    }
+    onChangePlatform = (platform) => {
+      this.setState( async () => {
+        this.state.revenue_platform = platform
+        let start_date = this.dateToString(this.state.revenue_start_date)
+        let end_date = this.dateToString(this.state.revenue_start_date)
+        let region = this.state.revenue_region
+        this.tryListSyncRevenue(start_date,end_date,region,platform)
+      });
+    }
+    tryListSyncRevenue = (start_date,end_date,region,platform) => {
+      try{
+        this.listSyncRevenue({
+          start_date,
+          end_date,
+          region,
+          platform
+        });
+      }catch(error){
+        console.log(error)
+      }
     }
     // bind versions of CRUD
     configInvite = {
@@ -184,31 +441,21 @@ class Stat extends React.Component {
       list: "yesterday_stat",
       dataName:"dataYesterday"
     };
-    //listSync = listSync.bind(this, this.config);
+    configRevenue = {
+      service: statisticService,
+      list: "revenue_list",
+      dataName:"dataRevenue"
+    }
     listSyncInvite = listSync.bind(this, this.configInvite);
     listSyncSubscriber = listSync.bind(this, this.configSubscriber);
     listSyncSubscription = listSync.bind(this, this.configSubscription);
     listSyncYesterday = listSync.bind(this, this.yesterdayStat);
-
+    listSyncRevenue = listSync.bind(this, this.configRevenue);
     setDateRange = (startDate, endDate) => {
       let dateArray = this.generateDateRangeArray(startDate, endDate);
-      // let stringStartDate = this.dateToString(startDate)
-      // let stringEndDate = this.dateToString(endDate)
       this.setState({
         invitation_date_range: dateArray
       })
-      // this.listSync({
-      //   start_date:stringStartDate,
-      //   end_date:stringEndDate
-      // });
-      // this.listSyncInvite({
-      //   start_date:stringStartDate,
-      //   end_date:stringEndDate
-      // });
-      // this.listSyncSubscriber({
-      //   start_date:stringStartDate,
-      //   end_date:stringEndDate
-      // });
     }
 
     generateDateRangeArray = (startDate, endDate) => {
@@ -507,6 +754,51 @@ class Stat extends React.Component {
           </Card>
           </Col>
         </Row>
+        <div gutter={16}>
+          <Row >
+              <Col span={4}>
+                { "Date Range " }
+                <RangePicker
+                  ranges={{
+                    //'Past 7 days': [moment().startOf('month'), moment().endOf('month')],
+                    'Past 7 days': [moment().subtract(7,'days'), moment().subtract(1,'days')],
+                    'Past 14 days': [moment().subtract(14,'days'), moment().subtract(1,'days')],
+                    'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
+                  }}
+                  onChange={this.onChangeDatePicker}
+                />
+              </Col>
+              <Col span={3} >
+                { "Region " }
+                <Cascader options={this.state.regions} placeholder="Please select region" onChange={this.onChangeRegion}/>
+              </Col>
+              <Col span={3} >
+                { "Platform " }
+                <Cascader options={this.state.platform} placeholder="Please select platform" onChange={this.onChangePlatform}/>
+              </Col>
+              <Col span={3} >
+                { "Plan " }
+                <Cascader options={this.state.plan} placeholder="Please select plan" />
+              </Col>
+              <Col span={2} >
+                <Button type="link" a href="https://www.bing.com" target="_blank">Link Button</Button>
+              </Col>
+              <Col span={3} >
+                <Upload {...upploadProps}>
+                  <Button icon={<UploadOutlined/>}>Import Active User CSV</Button>
+                </Upload>
+              </Col>
+            </Row>
+          <Row gutter={16}>
+            <Col span={24}>
+              {/* <Table dataSource={this.state.dataRevenue} bordered  */}
+              <Table dataSource={this.state.tableData} bordered 
+              pagination={{hideOnSinglePage:true, pageSize:20}}
+              columns={this.state.subscriptionColumns}>
+              </Table>
+            </Col>
+          </Row>
+        </div>
       </div>
     );
 	}
