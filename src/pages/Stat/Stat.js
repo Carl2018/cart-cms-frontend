@@ -104,33 +104,54 @@ class Stat extends React.Component {
           subscriptionColumns:[
             {title:"", 
               children:[
-                {title:"",dataIndex:"title",key:"title", width:150},
-            ]},
+                {title:"",dataIndex:"group",key:"group", width:'5%',
+                render: (text,row,index) => { 
+                  let obj = {
+                    children: text,
+                    props: {}
+                  }
+                  if(index === 0 || index === 4 || index === 8  )
+                    obj.props.rowSpan = 4
+                  if( index != 0 && index != 4 && index != 8 && index != 12 )
+                    obj.props.rowSpan = 0
+                  return obj 
+                }
+              },
+              {title:"",dataIndex:"duration",key:"duration", width:'6%'},
+            ]
+          },
             {title:"HK",
-              children:[{title:"IOS No.", dataIndex:"hk_ios_no", key:"hk_ios_no", width: 100},
-                {title:"IOS $", dataIndex:"hk_ios_cash", key:"hk_ios_cash", width: 100},
-                {title:"AOS No.", dataIndex:"hk_aos_no", key:"hk_aos_no", width: 100},
-                {title:"AOS $", dataIndex:"hk_aos_cash", key:"hk_aos_cash", width: 100}
-            ]},
-            
+              children:[
+                this.columnChildren("IOS No.","hk_ios_no","hk_ios_no",'5%'),
+                this.columnChildren("IOS $","hk_ios_cash","hk_ios_cash",'5%'),
+                this.columnChildren("AOS No.","hk_aos_no","hk_aos_no",'5%'),
+                this.columnChildren("AOS $","hk_aos_cash","hk_aos_cash",'5%')
+              ]
+            },
             {title:"TW",
-              children:[{title:"IOS No.", dataIndex:"tw_ios_no", key:"tw_ios_no", width: 100},
-                {title:"IOS $", dataIndex:"tw_ios_cash", key:"tw_ios_cash", width: 100},
-                {title:"AOS No.", dataIndex:"tw_aos_no", key:"tw_aos_no", width: 100},
-                {title:"AOS $", dataIndex:"tw_aos_cash", key:"tw_aos_cash", width: 100}
-            ]},
+              children:[
+                this.columnChildren("IOS No.","tw_ios_no","tw_ios_no",'5%'),
+                this.columnChildren("IOS $","tw_ios_cash","tw_ios_cash",'5%'),
+                this.columnChildren("AOS No.","tw_aos_no","tw_aos_no",'5%'),
+                this.columnChildren("AOS $","tw_aos_cash","tw_aos_cash",'5%')
+              ]
+            },
             {title:"MY",
-              children:[{title:"IOS No.", dataIndex:"my_ios_no", key:"my_ios_no", width: 100},
-                {title:"IOS $", dataIndex:"my_ios_cash", key:"my_ios_cash", width: 100},
-                {title:"AOS No.", dataIndex:"my_aos_no", key:"my_aos_no", width: 100},
-                {title:"AOS $", dataIndex:"my_aos_cash", key:"my_aos_cash", width: 100}
-            ]},
-            {title:"Others",
-              children:[{title:"IOS No.", dataIndex:"ot_ios_no", key:"ot_ios_no", width: 100},
-                {title:"IOS $", dataIndex:"ot_ios_cash", key:"ot_ios_cash", width: 100},
-                {title:"AOS No.", dataIndex:"ot_aos_no", key:"ot_aos_no", width: 100},
-                {title:"AOS $", dataIndex:"ot_aos_cash", key:"ot_aos_cash", width: 100}
-            ]},
+              children:[
+                this.columnChildren("IOS No.","my_ios_no","my_ios_no",'5%'),
+                this.columnChildren("IOS $","my_ios_cash","my_ios_cash",'5%'),
+                this.columnChildren("AOS No.","my_aos_no","my_aos_no",'5%'),
+                this.columnChildren("AOS $","my_aos_cash","my_aos_cash",'5%')
+              ]
+            },
+            {title:"MY",
+              children:[
+                this.columnChildren("IOS No.","my_ios_no","my_ios_no",'5%'),
+                this.columnChildren("IOS $","my_ios_cash","my_ios_cash",'5%'),
+                this.columnChildren("AOS No.","my_aos_no","my_aos_no",'5%'),
+                this.columnChildren("AOS $","my_aos_cash","my_aos_cash",'5%')
+              ]
+            }
           ],
         };
     }
@@ -167,6 +188,20 @@ class Stat extends React.Component {
           console.log(error)
         }
       });
+    }
+    columnChildren = (title,dataIndex,key,width) => {
+      return {
+        title:title, 
+        dataIndex:dataIndex, 
+        key:key, 
+        width: width, 
+        render: (text) => { 
+          if(text == 0)
+            return (<div style={{color:'#C0C0C0'}}>{text}</div>)
+          else
+            return (<div style={{color:'black'}}>{text}</div>)
+        }
+      }
     }
     dateToString = (selectedDate) => {
       let currentDate = new Date(selectedDate)
@@ -461,7 +496,8 @@ class Stat extends React.Component {
               {
                 fontSize: '18px',
                 textAlign: 'left',
-                color: 'black'
+                color: 'black',
+                margin: "24px 0px 0px 0px"
               } 
             } >
               <Row gutter={16}>
@@ -485,12 +521,12 @@ class Stat extends React.Component {
               {
                 fontSize: '16px',
                 textAlign: 'left',
-                margin: "16px 16px 0px 16px"
+                margin: "80px 0px 0px 0px"
               } 
             } 
           >
           <Row gutter={16}>
-            <Col span={12}>
+            <Col span={6}>
               { "Date Range " }
               <RangePicker
                 ranges={{
@@ -502,7 +538,7 @@ class Stat extends React.Component {
                 onChange={this.onChange}
               />
             </Col>
-            <Col span={12} >
+            <Col span={6} >
               { "Region: " }
               <Cascader options={this.state.regions} placeholder="Please select" />
             </Col>
@@ -512,7 +548,7 @@ class Stat extends React.Component {
           <Col span={12}>
             <Card
               title="Invitation Counts"
-              style={{ margin: "16px" }}
+              style={{ margin: "48px 0px 0px 0px" }}
             >
               <Line data={{
                 labels: this.getLabels(),
@@ -523,7 +559,7 @@ class Stat extends React.Component {
           <Col span={12}>
             <Card
               title="Conversation Counts"
-              style={{ margin: "16px" }}
+              style={{ margin: "48px 0px 0px 0px" }}
             >
               <Line data={{
                 labels: this.getLabels(),
@@ -536,7 +572,7 @@ class Stat extends React.Component {
           <Col span={12}>
             <Card
               title="Match Rate (%)"
-              style={{ margin: "16px" }}
+              style={{ margin: "16px 0px 0px 0px" }}
             >
             <Line data={{
               labels: this.getLabels(),
@@ -547,7 +583,7 @@ class Stat extends React.Component {
           <Col span={12}>
             <Card
               title="Daily Registers"
-              style={{ margin: "16px" }}
+              style={{ margin: "16px 0px 0px 0px" }}
             >
               <Line data={{
                 labels: this.getLabels(),
@@ -560,7 +596,7 @@ class Stat extends React.Component {
           <Col span={12}>
             <Card
               title="Daily Subscribers"
-              style={{ margin: "16px" }}
+              style={{ margin: "16px 0px 0px 0px" }}
             >
             
             <Line data={{
@@ -574,7 +610,7 @@ class Stat extends React.Component {
           
           <Card
             title="Daily Subscription Amount"
-            style={{ margin: "16px" }}
+            style={{ margin: "16px 0px 0px 0px" }}
           >
             <Line data={{
               labels: this.getLabels(),
@@ -584,7 +620,7 @@ class Stat extends React.Component {
           </Col>
         </Row>
         <div gutter={16}>
-          <Row style={{ margin: "16px" }}>
+        <Row style={{ margin: "80px 0px 48px 0px" }}>
               <Col span={4} >
                 { "Date Range " }
                 <RangePicker
@@ -622,7 +658,7 @@ class Stat extends React.Component {
             <Col span={24}>
             <Table dataSource={this.getSubscriptionRevenueTableData()} bordered 
               pagination={{hideOnSinglePage:true, pageSize:20}}
-              columns={this.state.subscriptionColumns}>
+              columns={this.state.subscriptionColumns} size="middle">
               </Table>
             </Col>
           </Row>
