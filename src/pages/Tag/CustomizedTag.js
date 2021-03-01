@@ -186,8 +186,8 @@ class CustomizedTag extends Component {
 					disabled={ disabled }
 					allowClear
 				>
-					<Radio value={1}>ON</Radio>
-					<Radio value={0}>OFF</Radio>
+					<Radio value={"ON"}>ON</Radio>
+					<Radio value={"OFF"}>OFF</Radio>
 				</Radio.Group>
 			)
 		},	
@@ -206,8 +206,8 @@ class CustomizedTag extends Component {
 					disabled={ disabled }
 					allowClear
 				>
-					<Radio value={1}>ON</Radio>
-					<Radio value={0}>OFF</Radio>
+					<Radio value={"ON"}>ON</Radio>
+					<Radio value={"OFF"}>OFF</Radio>
 				</Radio.Group>
 			)
 		},			
