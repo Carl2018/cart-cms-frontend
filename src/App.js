@@ -20,8 +20,7 @@ import {
 	Category,
 	Log,
 	Stat,
-	Tag,
-	TagList,
+	CustomizedTag,
 	TagCandidate
 } from 'pages';
 
@@ -291,13 +290,6 @@ class App extends Component {
 									<Item 
 										key="16" 
 									>
-										<Link to="/taglist">
-											List
-										</Link>
-									</Item>
-									<Item 
-										key="17" 
-									>
 										<Link to="/tagcandidate">
 											Candidates
 										</Link>
@@ -367,8 +359,7 @@ class App extends Component {
 									<PrivateRoute path="/category" component={ Category }/>
 									<PrivateRoute path="/title" component={ Title }/>
 									<PrivateRoute path="/log" component={ Log }/>
-									<PrivateRoute path="/tag" component={ Tag }/>
-									<PrivateRoute path="/taglist" component={ TagList }/>
+									<PrivateRoute path="/tag" component={ CustomizedTag }/>
 									<PrivateRoute path="/tagcandidate" component={ TagCandidate }/>
 							</Content>
 							<Footer style={{textAlign: "center", color:"#a1a1a1"}}>
