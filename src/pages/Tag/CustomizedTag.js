@@ -10,7 +10,7 @@ import {
 	Select,
 } from 'antd';
 // import services
-import { labelService } from '_services';
+import { tagService } from '_services';
 // import shared and child components
 import { TableWrapper } from './TableWrapper'
 // import helpers
@@ -31,14 +31,14 @@ class CustomizedTag extends Component {
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
 			data: [
-				{tag_name: "tag 1",tag_region:"HK",tag_banned:"OFF",tag_featured:"ON",tag_count:123,tag_created_at:"2020-12-28 13:00:00"},
-				{tag_name: "tag 2",tag_region:"TW",tag_banned:"OFF",tag_featured:"ON",tag_count:43,tag_created_at:"2020-12-28 13:00:00"},
-				{tag_name: "tag 3",tag_region:"MY",tag_banned:"OFF",tag_featured:"ON",tag_count:10,tag_created_at:"2020-12-28 13:00:00"},
-				{tag_name: "tag 4",tag_region:"CA",tag_banned:"OFF",tag_featured:"OFF",tag_count:50,tag_created_at:"2020-12-28 13:00:00"},
-				{tag_name: "tag 5",tag_region:"HK",tag_banned:"OFF",tag_featured:"OFF",tag_count:70,tag_created_at:"2020-12-28 13:00:00"},
-				{tag_name: "tag 6",tag_region:"HK",tag_banned:"ON",tag_featured:"OFF",tag_count:20,tag_created_at:"2020-12-28 13:00:00"},
-				{tag_name: "tag 7",tag_region:"TW",tag_banned:"ON",tag_featured:"OFF",tag_count:550,tag_created_at:"2020-12-28 13:00:00"},
-				{tag_name: "tag 8",tag_region:"TW",tag_banned:"ON",tag_featured:"OFF",tag_count:1110,tag_created_at:"2020-12-28 13:00:00"},
+				{tag: "tag 1",region:"HK",is_banned:0,is_featured:1,count:123,created_at:"2020-12-28 13:00:00"},
+				{tag: "tag 2",region:"TW",is_banned:0,is_featured:1,count:43,created_at:"2020-12-28 13:00:00"},
+				{tag: "tag 3",region:"MY",is_banned:0,is_featured:1,count:10,created_at:"2020-12-28 13:00:00"},
+				{tag: "tag 4",region:"CA",is_banned:0,is_featured:0,count:50,created_at:"2020-12-28 13:00:00"},
+				{tag: "tag 5",region:"HK",is_banned:0,is_featured:0,count:70,created_at:"2020-12-28 13:00:00"},
+				{tag: "tag 6",region:"HK",is_banned:1,is_featured:0,count:20,created_at:"2020-12-28 13:00:00"},
+				{tag: "tag 7",region:"TW",is_banned:1,is_featured:0,count:550,created_at:"2020-12-28 13:00:00"},
+				{tag: "tag 8",region:"TW",is_banned:1,is_featured:0,count:1110,created_at:"2020-12-28 13:00:00"},
 			],
 			spinning: false,
 			rowCount: 0,
@@ -66,9 +66,9 @@ class CustomizedTag extends Component {
 	columns = [
 		{
 			title: 'Tag Name',
-			dataIndex: 'tag_name',
-			key: 'tag_name',
-			sorter: (a, b) => compare(a.tag_name, b.tag_name),
+			dataIndex: 'tag',
+			key: 'tag',
+			sorter: (a, b) => compare(a.tag, b.tag),
 			sortDirection: ['ascend', 'descend'],
 			width: '20%',
 			ellipsis: true,
@@ -76,9 +76,9 @@ class CustomizedTag extends Component {
 		},
 		{
 			title: 'Count',
-			dataIndex: 'tag_count',
-			key: 'tag_count',
-			sorter: (a, b) => compare(a.tag_count, b.tag_count),
+			dataIndex: 'count',
+			key: 'count',
+			sorter: (a, b) => compare(a.count, b.count),
 			sortDirection: ['ascend', 'descend'],
 			width: '20%',
 			setFilter: false,
@@ -94,9 +94,9 @@ class CustomizedTag extends Component {
 		},
 		{
 			title: 'Is Banned',
-			dataIndex: 'tag_banned',
-			key: 'tag_banned',
-			sorter: (a, b) => compare(a.tag_banned, b.tag_banned),
+			dataIndex: 'is_banned',
+			key: 'is_banned',
+			sorter: (a, b) => compare(a.is_banned, b.is_banned),
 			sortDirection: ['ascend', 'descend'],
 			width: '20%',
 			ellipsis: true,
@@ -104,9 +104,9 @@ class CustomizedTag extends Component {
 		},
 		{
 			title: 'Is Featured',
-			dataIndex: 'tag_featured',
-			key: 'tag_featured',
-			sorter: (a, b) => compare(a.tag_featured, b.tag_featured),
+			dataIndex: 'is_featured',
+			key: 'is_featured',
+			sorter: (a, b) => compare(a.is_featured, b.is_featured),
 			sortDirection: ['ascend', 'descend'],
 			width: '20%',
 			ellipsis: true,
@@ -114,9 +114,9 @@ class CustomizedTag extends Component {
 		},
 		{
 			title: 'Created at',
-			dataIndex: 'tag_created_at',
-			key: 'tag_created_at',
-			sorter: (a, b) => compare(a.tag_created_at, b.tag_created_at),
+			dataIndex: 'created_at',
+			key: 'created_at',
+			sorter: (a, b) => compare(a.created_at, b.created_at),
 			sortDirection: ['ascend', 'descend'],
 			width: '20%',
 			setFilter: false,
@@ -127,7 +127,7 @@ class CustomizedTag extends Component {
 	formItems = [
 		{
 			label: 'Tag Name',
-			name: 'tag_name',
+			name: 'tag',
 			rules: [
 				{
 					required: true,
@@ -139,14 +139,14 @@ class CustomizedTag extends Component {
 			return	<Input
 					maxLength={255}
 					allowClear
-					disabled= { record?.tag_name? true:disabled }
+					disabled= { record?.tag? true:disabled }
 					placeholder={ "" }
 				/>
 			}
 		},
 		{
 			label: 'Tag Region',
-			name: 'tag_region',
+			name: 'region',
 			rules: [
 				{
 					required: true,
@@ -156,25 +156,24 @@ class CustomizedTag extends Component {
 			editable: true,
 			input: (disabled, record) => (
 				<Select
-					mode="multiple"
+				mode="single"
 					allowClear
 					style={{ width: '100%' }}
 					placeholder="Please select"
-					disabled={ record?.tag_name? true: disabled }
+					disabled={ record?.tag? true: disabled }
 				>
 					{[
-						<Option key={"HK"}>{"HK"}</Option>,
-						<Option key={"TW"}>{"TW"}</Option>,
-						<Option key={"MY"}>{"MY"}</Option>,
-						<Option key={"CA"}>{"CA"}</Option>,
-
+						<Option key={1}>{"HK"}</Option>,
+						<Option key={2}>{"TW"}</Option>,
+						<Option key={3}>{"MY"}</Option>,
+						<Option key={4}>{"CA"}</Option>,
 					]}
 				</Select>
 			)
 		},	
 		{
 			label: 'Is Banned',
-			name: 'tag_banned',
+			name: 'is_banned',
 			rules: [
 				{
 					required: true,
@@ -188,13 +187,13 @@ class CustomizedTag extends Component {
 					allowClear
 				>
 					<Radio value={1}>ON</Radio>
-					<Radio value={2}>OFF</Radio>
+					<Radio value={0}>OFF</Radio>
 				</Radio.Group>
 			)
 		},	
 		{
 			label: 'Is Featured',
-			name: 'tag_featured',
+			name: 'is_featured',
 			rules: [
 				{
 					required: true,
@@ -208,7 +207,7 @@ class CustomizedTag extends Component {
 					allowClear
 				>
 					<Radio value={1}>ON</Radio>
-					<Radio value={2}>OFF</Radio>
+					<Radio value={0}>OFF</Radio>
 				</Radio.Group>
 			)
 		},			
@@ -224,10 +223,10 @@ class CustomizedTag extends Component {
 
 	// bind versions of CRUD
 	config = {
-		service: labelService,
+		service: tagService,
 		create: "create",
 		retrieve: "retrieve",
-		list: "list",
+		list: "tagList",
 		update: "update",
 		hide: "hide",
 		dataName: "data",
@@ -272,7 +271,7 @@ class CustomizedTag extends Component {
 						create={ this.createSync }
 						//list={ this.listSync }
 						edit={ this.updateSync }
-						delete={ this.hideSync }
+						// delete={ this.hideSync }
 						refreshTable={ this.refreshTable }
 					>
 					</TableWrapper>
