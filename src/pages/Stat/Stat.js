@@ -20,7 +20,6 @@ import { authenticationService,statisticService } from '_services';
 import moment from 'moment';
 import { backend } from '_helpers';
 const { RangePicker } = DatePicker;
-const { Column, ColumnGroup } = Table;
 // destructure imported components and objects
 const { listSync,uploadSync } = backend;
 const upploadProps = {
@@ -77,20 +76,6 @@ class Stat extends React.Component {
             }
           },
           regions:[
-            { value: 'HK', label: 'HK' },
-            { value: 'TW', label: 'TW' },
-            { value: 'MO', label: 'MO' },
-            { value: 'SG', label: 'SG' },
-            { value: 'GB', label: 'GB' },
-            { value: 'CN', label: 'CN' },
-            { value: 'JP', label: 'JP' },
-            { value: 'US', label: 'US' },
-            { value: 'CA', label: 'CA' },
-            { value: 'AU', label: 'AU' },
-            { value: 'MY', label: 'MY' },
-            { value: 'NZ', label: 'NZ' }
-          ],
-          regions:[
             { value: '1', label: 'HK' },
             { value: '2', label: 'TW' },
             { value: '3', label: 'MY' },
@@ -112,7 +97,7 @@ class Stat extends React.Component {
                   }
                   if(index === 0 || index === 4 || index === 8  )
                     obj.props.rowSpan = 4
-                  if( index != 0 && index != 4 && index != 8 && index != 12 )
+                    if( index !== 0 && index !== 4 && index !== 8 && index !== 12 )
                     obj.props.rowSpan = 0
                   return obj 
                 }
@@ -196,7 +181,7 @@ class Stat extends React.Component {
         key:key, 
         width: width, 
         render: (text) => { 
-          if(text == 0)
+          if(text === 0)
             return (<div style={{color:'#C0C0C0'}}>{text}</div>)
           else
             return (<div style={{color:'black'}}>{text}</div>)
@@ -626,7 +611,7 @@ class Stat extends React.Component {
         </Row>
         <div gutter={16}>
         <Row style={{ margin: "80px 0px 48px 0px" }}>
-          <Col xs={{span:10}} lg={{span:10}} xl={{span:10}} xl={{span:8}}  xxl={{span:6}} >
+          <Col xs={{span:10}} lg={{span:10}} xl={{span:8}}  xxl={{span:6}} >
                 { "Date Range " }
                 <RangePicker
                   ranges={{
@@ -639,12 +624,12 @@ class Stat extends React.Component {
                   size="small" 
                   />
               </Col>
-              <Col xs={{span:4}} lg={{span:4}} xl={{span:4}} xl={{span:4}}  xxl={{span:3}} >
+              <Col xs={{span:4}} lg={{span:4}} xl={{span:4}}  xxl={{span:3}} >
                 { "Region " }
                 <Cascader options={this.state.regions} placeholder="Select" onChange={this.onChangeRegion} size="small" 
               style={{ width: '60%' }}/>
               </Col>
-              <Col xs={{span:4}} lg={{span:4}} xl={{span:4}} xl={{span:4}}  xxl={{span:3}} >
+              <Col xs={{span:4}} lg={{span:4}} xl={{span:4}}  xxl={{span:3}} >
                 { "Platform " }
                 <Cascader options={this.state.platform} placeholder="Select" onChange={this.onChangePlatform} size="small" 
               style={{ width: '60%' }}/>
@@ -656,7 +641,7 @@ class Stat extends React.Component {
               <Col span={2} >
                 <Button type="link" a href="https://www.bing.com" target="_blank">Link Button</Button>
               </Col> */}
-            <Col xs={{span:4}} lg={{span:4}} xl={{span:4}} xl={{span:4}}  xxl={{span:3}} >
+            <Col xs={{span:4}} lg={{span:4}} xl={{span:4}} xxl={{span:3}} >
             {/* <Upload {...upploadProps} onChange={this.uploadFile}> */}
             <Upload {...upploadProps} action={this.uploadSync} >
                 <Button icon={<UploadOutlined/>} size="small">Import Active User CSV</Button>
