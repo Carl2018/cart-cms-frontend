@@ -621,7 +621,7 @@ class Stat extends React.Component {
         </Row>
         <div gutter={16}>
         <Row style={{ margin: "80px 0px 48px 0px" }}>
-              <Col span={4} >
+          <Col xs={{span:10}} lg={{span:10}} xl={{span:10}} xl={{span:8}}  xxl={{span:6}} >
                 { "Date Range " }
                 <RangePicker
                   ranges={{
@@ -630,16 +630,19 @@ class Stat extends React.Component {
                     'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
                   }}
                   onChange={this.onChangeDatePicker}
-                  defaultValue={[moment(this.state.revenue_start_date, 'YYYY-MM-DD'), moment(this.state.revenue_start_date, 'YYYY-MM-DD')]}
-                />
+                  defaultValue={[moment(this.state.revenue_start_date, 'YYYY-MM-DD'), moment(this.state.revenue_start_date, 'YYYY-MM-DD')]} 
+                  size="small" 
+                  />
               </Col>
-              <Col span={3} >
+              <Col xs={{span:4}} lg={{span:4}} xl={{span:4}} xl={{span:4}}  xxl={{span:3}} >
                 { "Region " }
-                <Cascader options={this.state.regions} placeholder="Please select region" onChange={this.onChangeRegion}/>
+                <Cascader options={this.state.regions} placeholder="Select" onChange={this.onChangeRegion} size="small" 
+              style={{ width: '60%' }}/>
               </Col>
-              <Col span={3} >
+              <Col xs={{span:4}} lg={{span:4}} xl={{span:4}} xl={{span:4}}  xxl={{span:3}} >
                 { "Platform " }
-                <Cascader options={this.state.platform} placeholder="Please select platform" onChange={this.onChangePlatform}/>
+                <Cascader options={this.state.platform} placeholder="Select" onChange={this.onChangePlatform} size="small" 
+              style={{ width: '60%' }}/>
               </Col>
               {/* <Col span={3} >
                 { "Plan " }
@@ -648,9 +651,9 @@ class Stat extends React.Component {
               <Col span={2} >
                 <Button type="link" a href="https://www.bing.com" target="_blank">Link Button</Button>
               </Col> */}
-              <Col span={3} >
+            <Col xs={{span:4}} lg={{span:4}} xl={{span:4}} xl={{span:4}}  xxl={{span:3}} >
                 <Upload {...upploadProps}>
-                  <Button icon={<UploadOutlined/>}>Import Active User CSV</Button>
+                <Button icon={<UploadOutlined/>} size="small">Import Active User CSV</Button>
                 </Upload>
               </Col>
             </Row>
