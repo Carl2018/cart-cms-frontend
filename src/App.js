@@ -73,15 +73,11 @@ class App extends Component {
 			menuKey: Date.now(),
 			// fixed by kp, collapsed true becomes false.
 			collapsed: false,
-			toFlagPage: this.toFlagPage(),
 		};
 	}
 	
 	componentDidMount() {
 			authenticationService.currentUser.subscribe(x => this.setState({ currentUser: x }));
-	}
-	toFlagPage() {
-		alert("Hello")
 	}
 	// for profile menu
 	menu = (
