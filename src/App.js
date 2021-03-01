@@ -281,7 +281,7 @@ class App extends Component {
 									key="14" 
 									icon={<TagOutlined />}
 								>
-									<Link to="/tagsss" toFlagPage={ this.toFlagPage }>
+									<Link to="/tag" >
 										Tags
 									</Link>
 								</Item>
@@ -349,7 +349,7 @@ class App extends Component {
 									<PrivateRoute path="/category" component={ Category }/>
 									<PrivateRoute path="/title" component={ Title }/>
 									<PrivateRoute path="/log" component={ Log }/>
-									<PrivateRoute path="/tagsss" component={ CustomizedTag } heeeee='123123'/>
+									<PrivateRoute path="/tag" component={ CustomizedTag }/>
 							</Content>
 							<Footer style={{textAlign: "center", color:"#a1a1a1"}}>
 								Copyright &copy; {new Date().getFullYear()} Heymandi 
