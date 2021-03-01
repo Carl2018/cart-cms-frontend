@@ -233,7 +233,8 @@ class Stat extends React.Component {
       });
     }
     tryListSyncRevenue = (revenue_start_date,revenue_end_date,revenue_region,revenue_platform) => {
-    this.listSyncRevenue({ revenue_start_date, revenue_end_date,  revenue_region,  revenue_platform});
+      this.listSyncRevenue({ revenue_start_date, revenue_end_date,  revenue_region,  revenue_platform});
+    }
     // bind versions of CRUD
     configInvite = {
       service: statisticService,
