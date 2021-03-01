@@ -19,7 +19,10 @@ import {
 	Title,
 	Category,
 	Log,
-	Stat
+	Stat,
+	Tag,
+	TagList,
+	TagCandidate
 } from 'pages';
 
 import { history } from '_helpers';
@@ -281,21 +284,21 @@ class App extends Component {
 									<Item 
 										key="15" 
 									>
-										<Link >
-											New/Update
+										<Link to="/tag">
+											New
 										</Link>
 									</Item>
 									<Item 
 										key="16" 
 									>
-										<Link >
+										<Link to="/taglist">
 											List
 										</Link>
 									</Item>
 									<Item 
 										key="17" 
 									>
-										<Link >
+										<Link to="/tagcandidate">
 											Candidates
 										</Link>
 									</Item>
@@ -364,6 +367,9 @@ class App extends Component {
 									<PrivateRoute path="/category" component={ Category }/>
 									<PrivateRoute path="/title" component={ Title }/>
 									<PrivateRoute path="/log" component={ Log }/>
+									<PrivateRoute path="/tag" component={ Tag }/>
+									<PrivateRoute path="/taglist" component={ TagList }/>
+									<PrivateRoute path="/tagcandidate" component={ TagCandidate }/>
 							</Content>
 							<Footer style={{textAlign: "center", color:"#a1a1a1"}}>
 								Copyright &copy; {new Date().getFullYear()} Heymandi 
