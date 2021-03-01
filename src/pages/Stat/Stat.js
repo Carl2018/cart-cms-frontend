@@ -22,10 +22,10 @@ import { backend } from '_helpers';
 const { RangePicker } = DatePicker;
 const { Column, ColumnGroup } = Table;
 // destructure imported components and objects
-const { listSync } = backend;
+const { listSync,uploadSync } = backend;
 const upploadProps = {
   name: 'file',
-  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+  action: 'http://localhost:8080/api/statistic/csv_import',
   headers: {
     authorization: 'authorization-text',
   },
@@ -296,11 +296,16 @@ class Stat extends React.Component {
       list: "revenue_list",
       dataName:"dataRevenue"
     }
+    configUpload = {
+      service: statisticService,
+      upload: "csv_import",
+    }
     listSyncInvite = listSync.bind(this, this.configInvite);
     listSyncSubscriber = listSync.bind(this, this.configSubscriber);
     listSyncSubscription = listSync.bind(this, this.configSubscription);
     listSyncYesterday = listSync.bind(this, this.yesterdayStat);
     listSyncRevenue = listSync.bind(this, this.configRevenue);
+    uploadSync = uploadSync.bind(this,this.configUpload)
     setDateRange = (startDate, endDate) => {
       let dateArray = this.generateDateRangeArray(startDate, endDate);
       this.setState({
@@ -652,6 +657,7 @@ class Stat extends React.Component {
                 <Button type="link" a href="https://www.bing.com" target="_blank">Link Button</Button>
               </Col> */}
             <Col xs={{span:4}} lg={{span:4}} xl={{span:4}} xl={{span:4}}  xxl={{span:3}} >
+            {/* <Upload {...upploadProps} onChange={this.uploadFile}> */}
                 <Upload {...upploadProps}>
                 <Button icon={<UploadOutlined/>} size="small">Import Active User CSV</Button>
                 </Upload>
