@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 // import styling from ant desgin
-import { Space, Button, Popconfirm, Row, Col,Select } from 'antd';
+import { Space, Button, Row, Col,Select,Modal, } from 'antd';
 import { message, notification, Radio } from 'antd';
 import { FileTextOutlined, EditOutlined } from '@ant-design/icons';
 
@@ -10,6 +10,7 @@ import { TableBody } from '_components'
 import { TableDropdown } from './TableDropdown'
 import { TableDrawer } from '_components'
 import { TablePagination } from '_components'
+import { Candidate } from '../Candidate/Candidate'
 const { Option } = Select
 
 class TableWrapper extends Component {
@@ -30,7 +31,10 @@ class TableWrapper extends Component {
             bannedOptions : [
                 { label: 'ON', value: 1 },
 				{ label: 'OFF', value: 0 }
-            ]
+			],
+			// for the candidate modal
+			visibleCandidate: false,
+			modalKeyCandidate: Date.now(),
 		};
 	}
 	
@@ -57,9 +61,10 @@ class TableWrapper extends Component {
 						Edit
 					</Button>
                     <Button
-						onClick={this.props.toFlagPage}
+						type='link'
+						onClick={this.handleClickCandidate.bind(this,record)}
 					>
-						Flag
+						Candidate
 					</Button>
 				</Space>
 			),
@@ -194,7 +199,21 @@ class TableWrapper extends Component {
 			tableDrawerKey: Date.now(),
 		});
 	}
+    	// handler for click flag search modal
+	handleClickCandidate = record => {
+		this.setState({
+			record: record,
+			visibleCandidate: true,
+		});
+	}
 
+	// handler for close Candidate modal
+	handleCloseCandidate = event => {
+		this.setState({
+			visibleCandidate: false,
+			modalKeyCandidate: Date.now(),
+		});
+	}
 	render(){
 		return (
 			<div className='TableWrapper'>
@@ -242,7 +261,7 @@ class TableWrapper extends Component {
                         } 
                       } 
                     >
-                        <Col xs={{span:6}} lg={{span:6}} xl={{span:5}} xl={{span:4}}  xxl={{span:3}}>
+                        <Col xs={{span:6}} lg={{span:6}} xl={{span:5}}  xxl={{span:3}}>
                             { "Region: " }
                             <Select
                                 mode="single"
@@ -260,7 +279,7 @@ class TableWrapper extends Component {
                                 ]}
                             </Select>
                         </Col>
-                        <Col xs={{span:9}} lg={{span:7}} xl={{span:6}} xl={{span:6}} xxl={{span:4}}> 
+                        <Col xs={{span:9}} lg={{span:7}} xl={{span:6}} xxl={{span:4}}> 
                             { "Is Banned: " }
                             <Radio.Group
                                 options={this.state.bannedOptions}
@@ -271,7 +290,7 @@ class TableWrapper extends Component {
 								size="small"
                             />
                         </Col>
-                        <Col xs={{span:9}} lg={{span:7}} xl={{span:6}} xl={{span:6}} xxl={{span:4}}>
+                        <Col xs={{span:9}} lg={{span:7}} xl={{span:6}} xxl={{span:4}}>
                             { "Is Featured: " }
                             <Radio.Group
                                 options={this.state.bannedOptions}
@@ -329,6 +348,20 @@ class TableWrapper extends Component {
 						:
 							<></>
 				}
+                <div>
+					<Modal
+						visible={ this.state.visibleCandidate }
+						onCancel={ this.handleCloseCandidate }
+						key={ this.state.modalKeyCandidate }
+						width={ 1200 }
+						style={{ top: 20 }}
+						bodyStyle={{ minHeight: 700, overflow: "auto" }}
+						footer={ null }
+					>
+						<Candidate fromTagPage={true} keywords={this.state.record.tag}/>
+					</Modal>
+				</div>
+
 			</div>
 		);
 	}
