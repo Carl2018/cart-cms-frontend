@@ -54,8 +54,8 @@ class Stat extends React.Component {
           invitation_start_date: this.dateToString(this.getDaysBefore(-7)),
           invitation_end_date: this.dateToString(this.getDaysBefore(-1)),
           invitation_date_range: this.generateDateRangeArray(this.getDaysBefore(-7),this.getDaysBefore(-1) ),
-          revenue_start_date: '2020-12-15',
-          revenue_end_date: '2020-12-16',
+          revenue_start_date: this.dateToString(this.getDaysBefore(-1)),
+          revenue_end_date: this.dateToString(this.getDaysBefore(-1)),
           revenue_region: '',
           revenue_platform: '',
           data: {},
@@ -136,7 +136,6 @@ class Stat extends React.Component {
     }
     componentDidMount() {
       this.setState( async (state) => {
-        // this.setState(  (state) => {
         let start_date = state.invitation_start_date;
         let end_date = state.invitation_end_date;
         let revenue_start_date = state.revenue_start_date;
@@ -217,34 +216,24 @@ class Stat extends React.Component {
     }
     onChangeRegion = (region) => {
       this.setState( async () => {
-        this.state.revenue_region = region
         let start_date = this.dateToString(this.state.revenue_start_date)
-        let end_date = this.dateToString(this.state.revenue_start_date)
+        let end_date = this.dateToString(this.state.revenue_end_date)
         let platform = this.state.revenue_platform
+        this.state.revenue_region = region
         this.tryListSyncRevenue(start_date,end_date,region,platform)
       });
     }
     onChangePlatform = (platform) => {
       this.setState( async () => {
-        this.state.revenue_platform = platform
         let start_date = this.dateToString(this.state.revenue_start_date)
-        let end_date = this.dateToString(this.state.revenue_start_date)
+        let end_date = this.dateToString(this.state.revenue_end_date)
         let region = this.state.revenue_region
+        this.state.revenue_platform = platform
         this.tryListSyncRevenue(start_date,end_date,region,platform)
       });
     }
-    tryListSyncRevenue = (start_date,end_date,region,platform) => {
-      try{
-        this.listSyncRevenue({
-          start_date,
-          end_date,
-          region,
-          platform
-        });
-      }catch(error){
-        console.log(error)
-      }
-    }
+    tryListSyncRevenue = (revenue_start_date,revenue_end_date,revenue_region,revenue_platform) => {
+    this.listSyncRevenue({ revenue_start_date, revenue_end_date,  revenue_region,  revenue_platform});
     // bind versions of CRUD
     configInvite = {
       service: statisticService,
