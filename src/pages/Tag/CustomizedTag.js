@@ -236,7 +236,7 @@ class CustomizedTag extends Component {
 		...this.config, 
 		retrieve: "retrieveRowCount",
 	});
-	//listSync = listSync.bind(this, this.config);
+	listSync = listSync.bind(this, this.config);
 	updateSync = updateSync.bind(this, this.config);
 	hideSync = hideSync.bind(this, this.config);
 
@@ -269,7 +269,7 @@ class CustomizedTag extends Component {
 						pagination={ false }
 						// api props
 						create={ this.createSync }
-						//list={ this.listSync }
+						list={ this.listSync }
 						edit={ this.updateSync }
 						// delete={ this.hideSync }
 						refreshTable={ this.refreshTable }
