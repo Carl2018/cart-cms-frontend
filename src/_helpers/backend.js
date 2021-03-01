@@ -6,7 +6,8 @@ export const backend = {
 	retrieveSync,
 	listSync,
 	updateSync,
-	hideSync
+	hideSync,
+	uploadSync
 };
 
 // sync version
@@ -131,4 +132,21 @@ async function hideSync(config, ids) {
 			message.error(response.en);
 		}
 	this.setState({ spinning: false });
+}
+
+// interface for upload sync
+async function uploadSync(config, file) {
+	const { service, upload } = config;
+	// insert the file into the backend table
+	let response = null;
+	await service[upload]({ file: file})
+		.then( result => response = result )
+		.catch( error => response = error );
+	// update the frontend data accordingly
+	if (response.code === 200){
+		message.success('A record has been created');
+	} else {
+		message.error(response.en);
+	}
+	return response; // for process drawer
 }
