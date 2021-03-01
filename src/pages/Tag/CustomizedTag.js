@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 
 // import components from ant design
 import { TagOutlined } from '@ant-design/icons';
@@ -18,7 +17,6 @@ import {
 	backend,
 	helpers 
 } from '_helpers';
-import moment from 'moment';
 // destructure imported components and objects
 const { createSync, retrieveSync, listSync, updateSync, hideSync } = backend;
 const { compare } = helpers;
@@ -40,8 +38,8 @@ class CustomizedTag extends Component {
 	
 	componentDidMount() {
 		this.setState({ spinning: true }, async () => {
-			const limit = this.state.defaultPageSize;
-			const offset = (this.state.defaultPage - 1) * limit;
+			// const limit = this.state.defaultPageSize;
+			// const offset = (this.state.defaultPage - 1) * limit;
 			let filter = {
 				in_region: 1,
 				in_is_banned: 0,
@@ -268,11 +266,9 @@ class CustomizedTag extends Component {
 						edit={ this.updateSync }
 						// delete={ this.hideSync }
 						refreshTable={ this.refreshTable }
-						toFlagPage={this.props.toFlagPage}
 					>
 					</TableWrapper>
 				</Spin>
-				<button onClick={this.props.toFlagPage}> test</button>
 			</div>
         );
     }
