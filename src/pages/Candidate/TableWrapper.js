@@ -223,8 +223,8 @@ class TableWrapper extends Component {
 									<Option value="ca">Canada</Option>
 								</Select>
 								<Search
-									onSearch={ this.handleSearch }
-									placeholder="Search Candidate by Message Keywords"
+									onSearch={ this.props.fromTagPage? this.handleSearch(this.props.keywords) : this.handleSearch }
+									placeholder= "Search Candidate by Message Keywords"
 									style={{ width: 400 }}
 									size="middle"
 									allowClear
