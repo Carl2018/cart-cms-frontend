@@ -200,7 +200,7 @@ class TableWrapper extends Component {
                         <Col span={4}>
                             { "Region: " }
                             <Select
-                                mode="multiple"
+                                mode="single"
                                 allowClear
                                 style={{ width: '70%' }}
                                 placeholder="Please select"
