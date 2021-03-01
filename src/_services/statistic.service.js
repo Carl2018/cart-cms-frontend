@@ -1,6 +1,5 @@
 import { config } from 'config';
-import { authHeader } from '_helpers';
-import { authHeader,authHeaderWithoutContentType } from '_helpers';
+import { authHeader,authHeaderWithoutContentType,handleResponse } from '_helpers';
 
 export const statisticService = {
     list,
