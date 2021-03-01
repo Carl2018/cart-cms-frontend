@@ -116,6 +116,15 @@ class Candidate extends Component {
 			},
 		},
 		{
+			title: 'User Tag',
+			dataIndex: 'user_tag',
+			key: 'user_tag',
+			sorter: (a, b) => compare(a.tag, b.tag),
+			sortDirection: ['ascend', 'descend'],
+			width: 140,
+			ellipsis: true,
+		},
+		{
 			title: 'Spam Score',
 			dataIndex: 'score',
 			key: 'score',
