@@ -14,6 +14,5 @@ export * from './Stat/Stat';
 export * from './Template/Template';
 export * from './Title/Title';
 export * from './Word/Word';
-export * from './Tag/Tag';
-export * from './Tag/TagList';
+export * from './Tag/CustomizedTag';
 export * from './Tag/TagCandidate';
