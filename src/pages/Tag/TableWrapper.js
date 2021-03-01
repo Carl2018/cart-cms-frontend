@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 // import styling from ant desgin
-import { Space, Button, Row, Col,Select,Modal, } from 'antd';
+import { Space, Button, Row, Col,Select,Modal,Input } from 'antd';
 import { message, notification, Radio } from 'antd';
 import { FileTextOutlined, EditOutlined } from '@ant-design/icons';
 
@@ -12,6 +12,7 @@ import { TableDrawer } from '_components'
 import { TablePagination } from '_components'
 import { Candidate } from '../Candidate/Candidate'
 const { Option } = Select
+const { Search } = Input
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -28,6 +29,7 @@ class TableWrapper extends Component {
 			in_is_active:1,
 			in_order_by_column:'count',
 			in_order_by_order:'desc',
+            in_tag: '',
             bannedOptions : [
                 { label: 'ON', value: 1 },
 				{ label: 'OFF', value: 0 }
@@ -112,7 +114,8 @@ class TableWrapper extends Component {
             in_is_featured:this.state.in_is_featured,
             in_is_active:this.state.in_is_active,
             in_order_by_column:this.state.in_order_by_column,
-            in_order_by_order:this.state.in_order_by_order
+			in_order_by_order:this.state.in_order_by_order,
+			in_tag: this.state.in_tag
         }
         this.props.list(filter)
     }
@@ -141,10 +144,27 @@ class TableWrapper extends Component {
 			in_is_banned:this.state.in_is_banned,
 			in_is_active:this.state.in_is_active,
 			in_order_by_column:this.state.in_order_by_column,
-			in_order_by_order:this.state.in_order_by_order
+			in_order_by_order:this.state.in_order_by_order,
+			in_tag: this.state.in_tag
 		}
 		this.props.list(filter)
 	}
+    handleTagSearch = value => {
+		this.setState({
+			in_tag: value
+		});
+		let filter = {
+			in_is_featured: this.state.in_is_featured,
+			in_region: this.state.in_region,
+			in_is_banned:this.state.in_is_banned,
+			in_is_active:this.state.in_is_active,
+			in_order_by_column:this.state.in_order_by_column,
+			in_order_by_order:this.state.in_order_by_order,
+			in_tag: value
+		}
+		this.props.list(filter)
+	}
+
 
 	handleClickRefreshTable = () => {
 		this.props.refreshTable();
@@ -261,7 +281,7 @@ class TableWrapper extends Component {
                         } 
                       } 
                     >
-                        <Col xs={{span:6}} lg={{span:6}} xl={{span:5}}  xxl={{span:3}}>
+                        <Col xs={{span:4}} lg={{span:5}} xl={{span:3}}  xxl={{span:3}}>
                             { "Region: " }
                             <Select
                                 mode="single"
@@ -279,7 +299,7 @@ class TableWrapper extends Component {
                                 ]}
                             </Select>
                         </Col>
-                        <Col xs={{span:9}} lg={{span:7}} xl={{span:6}} xxl={{span:4}}> 
+                        <Col xs={{span:8}} lg={{span:5}} xl={{span:4}} xxl={{span:3}}> 
                             { "Is Banned: " }
                             <Radio.Group
                                 options={this.state.bannedOptions}
@@ -290,7 +310,7 @@ class TableWrapper extends Component {
 								size="small"
                             />
                         </Col>
-                        <Col xs={{span:9}} lg={{span:7}} xl={{span:6}} xxl={{span:4}}>
+                        <Col xs={{span:8}} lg={{span:5}} xl={{span:4}} xxl={{span:3}}>
                             { "Is Featured: " }
                             <Radio.Group
                                 options={this.state.bannedOptions}
@@ -300,6 +320,16 @@ class TableWrapper extends Component {
 								defaultValue="ON"
 								size="small"
                             />
+                        </Col>
+                        <Col xs={{span:6}} lg={{span:7}} xl={{span:6}} xxl={{span:4}}>
+                            { "Tag: " }
+                            <Search
+									onSearch={this.handleTagSearch}
+									placeholder= "Search Tag"
+									style={{ width: 200 }}
+									size="small"
+									allowClear
+								/>
                         </Col>
                     </Row>
                 </div>
