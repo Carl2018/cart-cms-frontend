@@ -25,10 +25,10 @@ const { Column, ColumnGroup } = Table;
 const { listSync,uploadSync } = backend;
 const upploadProps = {
   name: 'file',
-  action: 'http://localhost:8080/api/statistic/csv_import',
-  headers: {
-    authorization: 'authorization-text',
-  },
+  // action: 'http://localhost:8080/api/statistic/csv_import',
+  // headers: {
+  //   authorization: 'authorization-text',
+  // },
   onChange(info) {
     if (info.file.status !== 'uploading') {
       console.log(info.file, info.fileList);
@@ -531,21 +531,21 @@ class Stat extends React.Component {
             } 
           >
           <Row gutter={16}>
-            <Col span={6}>
+          <Col xxl={{span:7}} xl={{span:8}}>
               { "Date Range " }
               <RangePicker
                 ranges={{
-                  //'Past 7 days': [moment().startOf('month'), moment().endOf('month')],
                   'Past 7 days': [moment().subtract(7,'days'), moment().subtract(1,'days')],
                   'Past 14 days': [moment().subtract(14,'days'), moment().subtract(1,'days')],
                   'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
                 }}
                 onChange={this.onChange}
+                size = "small"
               />
             </Col>
-            <Col span={6} >
+            <Col xxl={{span:6}} xl={{span:7}} >
               { "Region: " }
-              <Cascader options={this.state.regions} placeholder="Please select" />
+              <Cascader options={this.state.regions} placeholder="Please select" size="small"/>
             </Col>
           </Row>
         </div>
@@ -658,7 +658,7 @@ class Stat extends React.Component {
               </Col> */}
             <Col xs={{span:4}} lg={{span:4}} xl={{span:4}} xl={{span:4}}  xxl={{span:3}} >
             {/* <Upload {...upploadProps} onChange={this.uploadFile}> */}
-                <Upload {...upploadProps}>
+            <Upload {...upploadProps} action={this.uploadSync} >
                 <Button icon={<UploadOutlined/>} size="small">Import Active User CSV</Button>
                 </Upload>
               </Col>
