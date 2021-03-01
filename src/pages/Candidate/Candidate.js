@@ -44,10 +44,18 @@ class Candidate extends Component {
 	}
 	
 	componentDidMount() {
-		this.setState({ spinning: true }, async () => {
-			await this.listSync(0, 10);
-			this.setState({ spinning: false });
-		});
+		if(this.props.fromTagPage){
+			this.setState({ spinning: true }, async () => {
+				await this.searchCandidatesSync({keywords: this.props.keywords});
+				this.setState({ spinning: false });
+			});
+		}
+		else {
+			this.setState({ spinning: true }, async () => {
+				await this.listSync(0, 10);
+				this.setState({ spinning: false });
+			});
+		}
 	}
 
 	// define columns for TableBody
