@@ -1,13 +1,14 @@
 import { config } from 'config';
 import { authHeader } from '_helpers';
-import { handleResponse } from '_helpers';
+import { authHeader,authHeaderWithoutContentType } from '_helpers';
 
 export const statisticService = {
     list,
     apple_subscriber_list,
     apple_subscription_list,
     yesterday_stat,
-    revenue_list
+    revenue_list,
+    csv_import
 };
 
 
@@ -79,4 +80,13 @@ function revenue_list(params={}) {
         };
     return fetch(url, requestOptions)
             .then(handleResponse);
+}
+
+function csv_import(file) {
+    const requestOptions = {
+        method: "POST",
+        headers: authHeaderWithoutContentType(),
+        body: file 
+    }
+    return fetch(`${config.apiUrl}/statistic/csv_import`, requestOptions).then(handleResponse)
 }
