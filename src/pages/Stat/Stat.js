@@ -641,13 +641,13 @@ class Stat extends React.Component {
                 { "Platform " }
                 <Cascader options={this.state.platform} placeholder="Please select platform" onChange={this.onChangePlatform}/>
               </Col>
-              <Col span={3} >
+              {/* <Col span={3} >
                 { "Plan " }
                 <Cascader options={this.state.plan} placeholder="Please select plan" />
               </Col>
               <Col span={2} >
                 <Button type="link" a href="https://www.bing.com" target="_blank">Link Button</Button>
-              </Col>
+              </Col> */}
               <Col span={3} >
                 <Upload {...upploadProps}>
                   <Button icon={<UploadOutlined/>}>Import Active User CSV</Button>
