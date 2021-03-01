@@ -57,6 +57,7 @@ import {
   TagOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
+const { SubMenu } = Menu;
 
 const { Header, Sider, Footer, Content } = Layout;
 
@@ -276,6 +277,29 @@ class App extends Component {
 										Logs
 									</Link>
 								</Item>
+								<SubMenu key="14" icon={<TagOutlined />} title="Tags">
+									<Item 
+										key="15" 
+									>
+										<Link >
+											New/Update
+										</Link>
+									</Item>
+									<Item 
+										key="16" 
+									>
+										<Link >
+											List
+										</Link>
+									</Item>
+									<Item 
+										key="17" 
+									>
+										<Link >
+											Candidates
+										</Link>
+									</Item>
+								</SubMenu>
 							</Menu>
 						</Sider> }
 						<Layout className="site-layout">
