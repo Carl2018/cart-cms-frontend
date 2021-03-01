@@ -26,11 +26,10 @@ class TableWrapper extends Component {
 			in_is_featured:1,
 			in_is_active:1,
 			in_order_by_column:'count',
-			in_order_by_order:'asc',
+			in_order_by_order:'desc',
             bannedOptions : [
                 { label: 'ON', value: 1 },
-                { label: 'OFF', value: 0 },
-                { label: 'ALL', value: '' },
+				{ label: 'OFF', value: 0 }
             ]
 		};
 	}
@@ -255,12 +254,12 @@ class TableWrapper extends Component {
 								placeholder="Select"
 								size="small"
                                 onChange={this.handleRegionChange}
+                                defaultValue="HK"
                             >
                                 {[
                                     <Option key={1}>{"HK"}</Option>,
                                     <Option key={2}>{"TW"}</Option>,
-                                    <Option key={3}>{"MY"}</Option>,
-                                    <Option key={4}>{"CA"}</Option>,
+                                    <Option key={3}>{"SG"}</Option>,
                                 ]}
                             </Select>
                         </Col>
@@ -271,7 +270,7 @@ class TableWrapper extends Component {
                                 onChange={this.handleBannedChange}
                                 optionType="button"
                                 buttonStyle="solid"
-								defaultValue="ALL"
+								defaultValue="OFF"
 								size="small"
                             />
                         </Col>
@@ -282,7 +281,7 @@ class TableWrapper extends Component {
                                 onChange={this.handleFeaturedChange}
                                 optionType="button"
                                 buttonStyle="solid"
-								defaultValue="ALL"
+								defaultValue="ON"
 								size="small"
                             />
                         </Col>
