@@ -593,6 +593,20 @@ class Stat extends React.Component {
       let returned_array = dataset === 'subscriber' ? this.state.dataSubscriber[properties[input_property]] : this.state.dataSubscription[properties[input_property]]
       return returned_array
     }
+    getSubscriptionRevenueTableData = () => {
+      let final_entry = []
+      let formatted_entry = this.state.dataRevenue
+      for(let index in formatted_entry){
+        let entity = {}
+        entity['title'] = index 
+        let inner_array = formatted_entry[index]
+        for(let idx in inner_array){
+          entity[idx] = inner_array[idx]
+        }
+        final_entry.push(entity)
+      }
+      return final_entry
+    }
     axes = [
         { primary: true, type: 'time', position: 'bottom' },
         { type: 'linear', position: 'left' }
@@ -791,8 +805,7 @@ class Stat extends React.Component {
             </Row>
           <Row gutter={16}>
             <Col span={24}>
-              {/* <Table dataSource={this.state.dataRevenue} bordered  */}
-              <Table dataSource={this.state.tableData} bordered 
+            <Table dataSource={this.getSubscriptionRevenueTableData()} bordered 
               pagination={{hideOnSinglePage:true, pageSize:20}}
               columns={this.state.subscriptionColumns}>
               </Table>
