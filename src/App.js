@@ -58,8 +58,6 @@ import {
   TagOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
-const { SubMenu } = Menu;
-
 const { Header, Sider, Footer, Content } = Layout;
 
 const { Item } = Menu;
