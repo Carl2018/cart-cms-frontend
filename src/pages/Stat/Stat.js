@@ -61,7 +61,8 @@ class Stat extends React.Component {
           dataSubscriber: {},
           dataSubscription: {},
           dataYesterday: {},
-          dataRevenue: {},
+          dataRevenue: {
+          },
           line_chart_options:{
             tooltips: {
               mode: 'index',
@@ -433,37 +434,8 @@ class Stat extends React.Component {
       let returned_array = dataset === 'subscriber' ? this.state.dataSubscriber[properties[input_property]] : this.state.dataSubscription[properties[input_property]]
       return returned_array
     }
-    getSubscriptionRevenueTableData = () => {
+    getSubscriptionRevenueTable = () => {
       let final_entry = []
-      let total_group = this.state.dataRevenue.Total 
-      // this.state.dataRevenue.total_revenue = null
-      // this.state.dataRevenue.total_count = null
-      this.setState(prevState => ({
-        dataRevenue: {
-          ...prevState.dataRevenue,
-          total_revenue: null,
-          total_count: null
-        }
-      }))
-     for( let inx in total_group) {
-        if(inx.includes('cash')){
-          // this.state.dataRevenue.total_revenue += total_group[inx]
-          this.setState(prevState => ({
-            dataRevenue: {
-              ...prevState.dataRevenue,
-              total_revenue: prevState.dataRevenue.total_revenue + total_group[inx]
-            }
-          }))
-        }
-        if(inx.includes('no'))
-        // this.state.dataRevenue.total_count += total_group[inx]
-        this.setState(prevState => ({
-          dataRevenue: {
-            ...prevState.dataRevenue,
-            total_count: prevState.dataRevenue.total_count + total_group[inx]
-          }
-        }))
-     }
       let formatted_entry = this.state.dataRevenue
       for(let index in formatted_entry){
         let entity = {}
@@ -482,6 +454,7 @@ class Stat extends React.Component {
       ]
 //////////////////////////////////////////////////////////////////////////
     render() {
+      const revenueDataSet = this.getSubscriptionRevenueTable()
       return (
         <div>
           <div 
@@ -679,7 +652,7 @@ class Stat extends React.Component {
             </Row>
           <Row gutter={16}>
             <Col span={24}>
-            <Table dataSource={this.getSubscriptionRevenueTableData()} bordered 
+            <Table dataSource={revenueDataSet} bordered 
               pagination={{hideOnSinglePage:true, pageSize:20}}
               columns={this.state.subscriptionColumns} size="middle">
               </Table>
