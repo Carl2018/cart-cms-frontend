@@ -44,10 +44,18 @@ class Candidate extends Component {
 	}
 	
 	componentDidMount() {
-		this.setState({ spinning: true }, async () => {
-			await this.listSync(0, 10);
-			this.setState({ spinning: false });
-		});
+		if(this.props.fromTagPage){
+			this.setState({ spinning: true }, async () => {
+				await this.searchCandidatesSync({keywords: this.props.keywords});
+				this.setState({ spinning: false });
+			});
+		}
+		else {
+			this.setState({ spinning: true }, async () => {
+				await this.listSync(0, 10);
+				this.setState({ spinning: false });
+			});
+		}
 	}
 
 	// define columns for TableBody
@@ -114,6 +122,15 @@ class Candidate extends Component {
 					</Tag>
 				);
 			},
+		},
+		{
+			title: 'User Tag',
+			dataIndex: 'user_tag',
+			key: 'user_tag',
+			sorter: (a, b) => compare(a.tag, b.tag),
+			sortDirection: ['ascend', 'descend'],
+			width: 140,
+			ellipsis: true,
 		},
 		{
 			title: 'Spam Score',

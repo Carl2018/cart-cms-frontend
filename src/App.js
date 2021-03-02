@@ -19,7 +19,8 @@ import {
 	Title,
 	Category,
 	Log,
-	Stat
+	Stat,
+	CustomizedTag
 } from 'pages';
 
 import { history } from '_helpers';
@@ -57,7 +58,6 @@ import {
   TagOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
-
 const { Header, Sider, Footer, Content } = Layout;
 
 const { Item } = Menu;
@@ -77,7 +77,6 @@ class App extends Component {
 	componentDidMount() {
 			authenticationService.currentUser.subscribe(x => this.setState({ currentUser: x }));
 	}
-
 	// for profile menu
 	menu = (
 		<Menu>
@@ -276,6 +275,14 @@ class App extends Component {
 										Logs
 									</Link>
 								</Item>
+								<Item 
+									key="14" 
+									icon={<TagOutlined />}
+								>
+									<Link to="/tag" >
+										Tags
+									</Link>
+								</Item>
 							</Menu>
 						</Sider> }
 						<Layout className="site-layout">
@@ -340,6 +347,7 @@ class App extends Component {
 									<PrivateRoute path="/category" component={ Category }/>
 									<PrivateRoute path="/title" component={ Title }/>
 									<PrivateRoute path="/log" component={ Log }/>
+									<PrivateRoute path="/tag" component={ CustomizedTag }/>
 							</Content>
 							<Footer style={{textAlign: "center", color:"#a1a1a1"}}>
 								Copyright &copy; {new Date().getFullYear()} Heymandi 

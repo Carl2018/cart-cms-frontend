@@ -208,28 +208,28 @@ class TableWrapper extends Component {
 						style={{ fontSize: '24px', textAlign: 'left' }}
 						span={ 12 } 
 					>
-							<Space>
-								<span style={{ fontSize: "16px", marginLeft: "8px" }} >
-									Cache:
-								</span>
-								<Select
-									defaultValue="hk"
-									onChange={ this.props.onChangeCache  }
-									style={{ marginRight: "16px", width: 150 }}
-								>
-									<Option value="hk">Hong Kong</Option>
-									<Option value="tw">Taiwan</Option>
-									<Option value="my">Malaysia</Option>
-									<Option value="ca">Canada</Option>
-								</Select>
-								<Search
-									onSearch={ this.handleSearch }
-									placeholder="Search Candidate by Message Keywords"
-									style={{ width: 400 }}
-									size="middle"
-									allowClear
-								/>
-							</Space>
+						<Space>
+							<span style={{ fontSize: "16px", marginLeft: "8px" }} >
+								Cache:
+							</span>
+							<Select
+								defaultValue="hk"
+								onChange={ this.props.onChangeCache  }
+								style={{ marginRight: "16px", width: 150 }}
+							>
+								<Option value="hk">Hong Kong</Option>
+								<Option value="tw">Taiwan</Option>
+								<Option value="my">Malaysia</Option>
+								<Option value="ca">Canada</Option>
+							</Select>
+							<Search
+								onSearch={ this.props.fromTagPage? this.handleSearch(this.props.keywords) : this.handleSearch }
+								placeholder= "Search Candidate by Message Keywords"
+								style={{ width: 400 }}
+								size="middle"
+								allowClear
+							/>
+						</Space>
 					</Col>
 				</Row>
 				<div>

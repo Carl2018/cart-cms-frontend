@@ -1,7 +1,7 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 // import styling from ant desgin
-import { LineChartOutlined } from '@ant-design/icons';
+import { LineChartOutlined,UploadOutlined } from '@ant-design/icons';
 import { 
 	Card, 
 	Col, 
@@ -9,7 +9,11 @@ import {
   Space,
   DatePicker,
   Statistic,
-  Cascader
+  Cascader,
+  Table,
+  Button,
+  Upload,
+  message
 } from 'antd';
 
 import { authenticationService,statisticService } from '_services';
@@ -17,95 +21,141 @@ import moment from 'moment';
 import { backend } from '_helpers';
 const { RangePicker } = DatePicker;
 // destructure imported components and objects
-const { listSync } = backend;
+const { listSync,uploadSync } = backend;
+const upploadProps = {
+  name: 'file',
+  // action: 'http://localhost:8080/api/statistic/csv_import',
+  // headers: {
+  //   authorization: 'authorization-text',
+  // },
+  onChange(info) {
+    if (info.file.status !== 'uploading') {
+      console.log(info.file, info.fileList);
+    }
+    if (info.file.status === 'done') {
+      message.success({
+        content: `${info.file.name} file uploaded and imported successfully`,
+        style:{
+          marginTop: '10vh'
+        }
+      },2);
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  },
+}
 
 class Stat extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentUser: authenticationService.currentUserValue,
-            invitation_start_date: this.dateToString(this.getDaysBefore(-7)),
-            invitation_end_date: this.dateToString(this.getDaysBefore(-1)),
-            invitation_date_range: this.generateDateRangeArray(this.getDaysBefore(-7),this.getDaysBefore(-1) ),
-            data: {},
-            dataSubscriber: {},
-            dataSubscription: {},
-            dataYesterday: {},
-            line_chart_options:{
-              tooltips: {
-                mode: 'index',
-                intersect: true,
-              },
-              scales: {
-                xAxes: [{
-                  ticks: {
-                    stepSize: 3,
-                  }
-                }],
-              }
+          currentUser: authenticationService.currentUserValue,
+          invitation_start_date: this.dateToString(this.getDaysBefore(-7)),
+          invitation_end_date: this.dateToString(this.getDaysBefore(-1)),
+          invitation_date_range: this.generateDateRangeArray(this.getDaysBefore(-7),this.getDaysBefore(-1) ),
+          revenue_start_date: this.dateToString(this.getDaysBefore(-1)),
+          revenue_end_date: this.dateToString(this.getDaysBefore(-1)),
+          revenue_region: '',
+          revenue_platform: '',
+          data: {},
+          dataSubscriber: {},
+          dataSubscription: {},
+          dataYesterday: {},
+          dataRevenue: {
+          },
+          line_chart_options:{
+            tooltips: {
+              mode: 'index',
+              intersect: true,
             },
-            regions:[
-              {
-                value: 'HK',
-                label: 'HK',
+            scales: {
+              xAxes: [{
+                ticks: {
+                  stepSize: 3,
+                }
+              }],
+            }
+          },
+          regions:[
+            { value: '1', label: 'HK' },
+            { value: '2', label: 'TW' },
+            { value: '3', label: 'MY' },
+            { value: '', label: 'All' },
+          ],
+          platform:[
+            { value: '1', label: 'IOS' },
+            { value: '2', label: 'Android' },
+            { value: '', label: 'All' },
+          ],
+          subscriptionColumns:[
+            {title:"", 
+              children:[
+                {title:"",dataIndex:"group",key:"group", width:'5%',
+                render: (text,row,index) => { 
+                  let obj = {
+                    children: text,
+                    props: {}
+                  }
+                  if(index === 0 || index === 4 || index === 8  )
+                    obj.props.rowSpan = 4
+                    if( index !== 0 && index !== 4 && index !== 8 && index !== 12 )
+                    obj.props.rowSpan = 0
+                  return obj 
+                }
               },
-              {
-                value: 'TW',
-                label: 'TW',
-              },
-              {
-                value: 'MO',
-                label: 'MO',
-              },
-              {
-                value: 'SG',
-                label: 'SG',
-              },
-              {
-                value: 'GB',
-                label: 'GB',
-              },
-              {
-                value: 'CN',
-                label: 'CN',
-              },
-              {
-                value: 'JP',
-                label: 'JP',
-              },
-              {
-                value: 'US',
-                label: 'US',
-              },
-              {
-                value: 'CA',
-                label: 'CA',
-              },
-              {
-                value: 'AU',
-                label: 'AU',
-              },
-              {
-                value: 'MY',
-                label: 'MY',
-              },
-              {
-                value: 'NZ',
-                label: 'NZ',
-              }
+              {title:"",dataIndex:"duration",key:"duration", width:'6%'},
             ]
+          },
+            {title:"HK",
+              children:[
+                this.columnChildren("IOS No.","hk_ios_no","hk_ios_no",'5%'),
+                this.columnChildren("IOS $","hk_ios_cash","hk_ios_cash",'5%'),
+                this.columnChildren("AOS No.","hk_aos_no","hk_aos_no",'5%'),
+                this.columnChildren("AOS $","hk_aos_cash","hk_aos_cash",'5%')
+              ]
+            },
+            {title:"TW",
+              children:[
+                this.columnChildren("IOS No.","tw_ios_no","tw_ios_no",'5%'),
+                this.columnChildren("IOS $","tw_ios_cash","tw_ios_cash",'5%'),
+                this.columnChildren("AOS No.","tw_aos_no","tw_aos_no",'5%'),
+                this.columnChildren("AOS $","tw_aos_cash","tw_aos_cash",'5%')
+              ]
+            },
+            {title:"MY",
+              children:[
+                this.columnChildren("IOS No.","my_ios_no","my_ios_no",'5%'),
+                this.columnChildren("IOS $","my_ios_cash","my_ios_cash",'5%'),
+                this.columnChildren("AOS No.","my_aos_no","my_aos_no",'5%'),
+                this.columnChildren("AOS $","my_aos_cash","my_aos_cash",'5%')
+              ]
+            },
+            {title:"Others",
+              children:[
+                this.columnChildren("IOS No.","ot_ios_no","ot_ios_no",'5%'),
+                this.columnChildren("IOS $","ot_ios_cash","ot_ios_cash",'5%'),
+                this.columnChildren("AOS No.","ot_aos_no","ot_aos_no",'5%'),
+                this.columnChildren("AOS $","ot_aos_cash","ot_aos_cash",'5%')
+              ]
+            }
+          ],
         };
     }
     componentDidMount() {
       this.setState( async (state) => {
-        // this.setState(  (state) => {
         let start_date = state.invitation_start_date;
         let end_date = state.invitation_end_date;
-        // await this.listSync({
-        //   start_date,
-        //   end_date,
-        // });
+        let revenue_start_date = state.revenue_start_date;
+        let revenue_end_date = state.revenue_end_date;
+        let revenue_region = state.revenue_region;
+        let revenue_platform = state.revenue_platform;
         try{
+          await this.listSyncRevenue({
+            revenue_start_date,
+            revenue_end_date,
+            revenue_region,
+            revenue_platform
+          });
           await this.listSyncInvite({
             start_date,
             end_date,
@@ -125,6 +175,20 @@ class Stat extends React.Component {
         }
       });
     }
+    columnChildren = (title,dataIndex,key,width) => {
+      return {
+        title:title, 
+        dataIndex:dataIndex, 
+        key:key, 
+        width: width, 
+        render: (text) => { 
+          if(text === 0)
+            return (<div style={{color:'#C0C0C0'}}>{text}</div>)
+          else
+            return (<div style={{color:'black'}}>{text}</div>)
+        }
+      }
+    }
     dateToString = (selectedDate) => {
       let currentDate = new Date(selectedDate)
       let stringStartDate = currentDate.getFullYear()+"-"+(currentDate.getMonth()+1)+"-"+currentDate.getDate()
@@ -137,13 +201,8 @@ class Stat extends React.Component {
       })
       this.setDateRange(dateStrings[0],dateStrings[1])
       this.setState( async () => {
-      // this.setState(  () => {
         let start_date = this.dateToString(dateStrings[0])
         let end_date = this.dateToString(dateStrings[1])
-        // await this.listSync({
-        //   start_date,
-        //   end_date,
-        // });
         try{
           this.listSyncInvite({
             start_date,
@@ -162,6 +221,40 @@ class Stat extends React.Component {
         }
         
       });
+    }
+    onChangeDatePicker = (dateStrings) => {
+      this.setState({
+        revenue_start_date: dateStrings[0],
+        revenue_end_date: dateStrings[1]
+      })
+      this.setState( async () => {
+        let start_date = this.dateToString(dateStrings[0])
+        let end_date = this.dateToString(dateStrings[1])
+        let region = this.state.revenue_region
+        let platform = this.state.revenue_platform
+        this.tryListSyncRevenue(start_date,end_date,region,platform)
+      });
+    }
+    onChangeRegion = (region) => {
+      this.setState( async () => {
+        let start_date = this.dateToString(this.state.revenue_start_date)
+        let end_date = this.dateToString(this.state.revenue_end_date)
+        let platform = this.state.revenue_platform
+        this.state.revenue_region = region
+        this.tryListSyncRevenue(start_date,end_date,region,platform)
+      });
+    }
+    onChangePlatform = (platform) => {
+      this.setState( async () => {
+        let start_date = this.dateToString(this.state.revenue_start_date)
+        let end_date = this.dateToString(this.state.revenue_end_date)
+        let region = this.state.revenue_region
+        this.state.revenue_platform = platform
+        this.tryListSyncRevenue(start_date,end_date,region,platform)
+      });
+    }
+    tryListSyncRevenue = (revenue_start_date,revenue_end_date,revenue_region,revenue_platform) => {
+      this.listSyncRevenue({ revenue_start_date, revenue_end_date,  revenue_region,  revenue_platform});
     }
     // bind versions of CRUD
     configInvite = {
@@ -184,31 +277,26 @@ class Stat extends React.Component {
       list: "yesterday_stat",
       dataName:"dataYesterday"
     };
-    //listSync = listSync.bind(this, this.config);
+    configRevenue = {
+      service: statisticService,
+      list: "revenue_list",
+      dataName:"dataRevenue"
+    }
+    configUpload = {
+      service: statisticService,
+      upload: "csv_import",
+    }
     listSyncInvite = listSync.bind(this, this.configInvite);
     listSyncSubscriber = listSync.bind(this, this.configSubscriber);
     listSyncSubscription = listSync.bind(this, this.configSubscription);
     listSyncYesterday = listSync.bind(this, this.yesterdayStat);
-
+    listSyncRevenue = listSync.bind(this, this.configRevenue);
+    uploadSync = uploadSync.bind(this,this.configUpload)
     setDateRange = (startDate, endDate) => {
       let dateArray = this.generateDateRangeArray(startDate, endDate);
-      // let stringStartDate = this.dateToString(startDate)
-      // let stringEndDate = this.dateToString(endDate)
       this.setState({
         invitation_date_range: dateArray
       })
-      // this.listSync({
-      //   start_date:stringStartDate,
-      //   end_date:stringEndDate
-      // });
-      // this.listSyncInvite({
-      //   start_date:stringStartDate,
-      //   end_date:stringEndDate
-      // });
-      // this.listSyncSubscriber({
-      //   start_date:stringStartDate,
-      //   end_date:stringEndDate
-      // });
     }
 
     generateDateRangeArray = (startDate, endDate) => {
@@ -346,12 +434,27 @@ class Stat extends React.Component {
       let returned_array = dataset === 'subscriber' ? this.state.dataSubscriber[properties[input_property]] : this.state.dataSubscription[properties[input_property]]
       return returned_array
     }
+    getSubscriptionRevenueTable = () => {
+      let final_entry = []
+      let formatted_entry = this.state.dataRevenue
+      for(let index in formatted_entry){
+        let entity = {}
+        entity['title'] = index 
+        let inner_array = formatted_entry[index]
+        for(let idx in inner_array){
+          entity[idx] = inner_array[idx]
+        }
+        final_entry.push(entity)
+      }
+      return final_entry
+    }
     axes = [
         { primary: true, type: 'time', position: 'bottom' },
         { type: 'linear', position: 'left' }
       ]
 //////////////////////////////////////////////////////////////////////////
     render() {
+      const revenueDataSet = this.getSubscriptionRevenueTable()
       return (
         <div>
           <div 
@@ -385,7 +488,8 @@ class Stat extends React.Component {
               {
                 fontSize: '18px',
                 textAlign: 'left',
-                color: 'black'
+                color: 'black',
+                margin: "24px 0px 0px 0px"
               } 
             } >
               <Row gutter={16}>
@@ -409,26 +513,26 @@ class Stat extends React.Component {
               {
                 fontSize: '16px',
                 textAlign: 'left',
-                margin: "16px 16px 0px 16px"
+                margin: "80px 0px 0px 0px"
               } 
             } 
           >
           <Row gutter={16}>
-            <Col span={12}>
+          <Col xxl={{span:7}} xl={{span:8}}>
               { "Date Range " }
               <RangePicker
                 ranges={{
-                  //'Past 7 days': [moment().startOf('month'), moment().endOf('month')],
                   'Past 7 days': [moment().subtract(7,'days'), moment().subtract(1,'days')],
                   'Past 14 days': [moment().subtract(14,'days'), moment().subtract(1,'days')],
                   'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
                 }}
                 onChange={this.onChange}
+                size = "small"
               />
             </Col>
-            <Col span={12} >
+            <Col xxl={{span:6}} xl={{span:7}} >
               { "Region: " }
-              <Cascader options={this.state.regions} placeholder="Please select" />
+              <Cascader options={this.state.regions} placeholder="Please select" size="small"/>
             </Col>
           </Row>
         </div>
@@ -436,7 +540,7 @@ class Stat extends React.Component {
           <Col span={12}>
             <Card
               title="Invitation Counts"
-              style={{ margin: "16px" }}
+              style={{ margin: "48px 0px 0px 0px" }}
             >
               <Line data={{
                 labels: this.getLabels(),
@@ -447,7 +551,7 @@ class Stat extends React.Component {
           <Col span={12}>
             <Card
               title="Conversation Counts"
-              style={{ margin: "16px" }}
+              style={{ margin: "48px 0px 0px 0px" }}
             >
               <Line data={{
                 labels: this.getLabels(),
@@ -460,7 +564,7 @@ class Stat extends React.Component {
           <Col span={12}>
             <Card
               title="Match Rate (%)"
-              style={{ margin: "16px" }}
+              style={{ margin: "16px 0px 0px 0px" }}
             >
             <Line data={{
               labels: this.getLabels(),
@@ -471,7 +575,7 @@ class Stat extends React.Component {
           <Col span={12}>
             <Card
               title="Daily Registers"
-              style={{ margin: "16px" }}
+              style={{ margin: "16px 0px 0px 0px" }}
             >
               <Line data={{
                 labels: this.getLabels(),
@@ -484,7 +588,7 @@ class Stat extends React.Component {
           <Col span={12}>
             <Card
               title="Daily Subscribers"
-              style={{ margin: "16px" }}
+              style={{ margin: "16px 0px 0px 0px" }}
             >
             
             <Line data={{
@@ -498,7 +602,7 @@ class Stat extends React.Component {
           
           <Card
             title="Daily Subscription Amount"
-            style={{ margin: "16px" }}
+            style={{ margin: "16px 0px 0px 0px" }}
           >
             <Line data={{
               labels: this.getLabels(),
@@ -507,6 +611,54 @@ class Stat extends React.Component {
           </Card>
           </Col>
         </Row>
+        <div gutter={16}>
+        <Row style={{ margin: "80px 0px 48px 0px" }}>
+          <Col xs={{span:10}} lg={{span:10}} xl={{span:8}}  xxl={{span:6}} >
+                { "Date Range " }
+                <RangePicker
+                  ranges={{
+                    'Past 7 days': [moment().subtract(7,'days'), moment().subtract(1,'days')],
+                    'Past 14 days': [moment().subtract(14,'days'), moment().subtract(1,'days')],
+                    'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
+                  }}
+                  onChange={this.onChangeDatePicker}
+                  defaultValue={[moment(this.state.revenue_start_date, 'YYYY-MM-DD'), moment(this.state.revenue_start_date, 'YYYY-MM-DD')]} 
+                  size="small" 
+                  />
+              </Col>
+              <Col xs={{span:4}} lg={{span:4}} xl={{span:4}}  xxl={{span:3}} >
+                { "Region " }
+                <Cascader options={this.state.regions} placeholder="Select" onChange={this.onChangeRegion} size="small" 
+              style={{ width: '60%' }}/>
+              </Col>
+              <Col xs={{span:4}} lg={{span:4}} xl={{span:4}}  xxl={{span:3}} >
+                { "Platform " }
+                <Cascader options={this.state.platform} placeholder="Select" onChange={this.onChangePlatform} size="small" 
+              style={{ width: '60%' }}/>
+              </Col>
+              {/* <Col span={3} >
+                { "Plan " }
+                <Cascader options={this.state.plan} placeholder="Please select plan" />
+              </Col>
+              <Col span={2} >
+                <Button type="link" a href="https://www.bing.com" target="_blank">Link Button</Button>
+              </Col> */}
+            <Col xs={{span:4}} lg={{span:4}} xl={{span:4}} xxl={{span:3}} >
+            {/* <Upload {...upploadProps} onChange={this.uploadFile}> */}
+            <Upload {...upploadProps} action={this.uploadSync} >
+                <Button icon={<UploadOutlined/>} size="small">Import Active User CSV</Button>
+                </Upload>
+              </Col>
+            </Row>
+          <Row gutter={16}>
+            <Col span={24}>
+            <Table dataSource={revenueDataSet} bordered 
+              pagination={{hideOnSinglePage:true, pageSize:20}}
+              columns={this.state.subscriptionColumns} size="middle">
+              </Table>
+            </Col>
+          </Row>
+        </div>
       </div>
     );
 	}
