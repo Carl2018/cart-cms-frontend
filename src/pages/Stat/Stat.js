@@ -436,13 +436,33 @@ class Stat extends React.Component {
     getSubscriptionRevenueTableData = () => {
       let final_entry = []
       let total_group = this.state.dataRevenue.Total 
-      this.state.dataRevenue.total_revenue = null
-      this.state.dataRevenue.total_count = null
+      // this.state.dataRevenue.total_revenue = null
+      // this.state.dataRevenue.total_count = null
+      this.setState(prevState => ({
+        dataRevenue: {
+          ...prevState.dataRevenue,
+          total_revenue: null,
+          total_count: null
+        }
+      }))
      for( let inx in total_group) {
-        if(inx.includes('cash'))
-        this.state.dataRevenue.total_revenue += total_group[inx]
+        if(inx.includes('cash')){
+          // this.state.dataRevenue.total_revenue += total_group[inx]
+          this.setState(prevState => ({
+            dataRevenue: {
+              ...prevState.dataRevenue,
+              total_revenue: prevState.dataRevenue.total_revenue + total_group[inx]
+            }
+          }))
+        }
         if(inx.includes('no'))
-        this.state.dataRevenue.total_count += total_group[inx]
+        // this.state.dataRevenue.total_count += total_group[inx]
+        this.setState(prevState => ({
+          dataRevenue: {
+            ...prevState.dataRevenue,
+            total_count: prevState.dataRevenue.total_count + total_group[inx]
+          }
+        }))
      }
       let formatted_entry = this.state.dataRevenue
       for(let index in formatted_entry){
