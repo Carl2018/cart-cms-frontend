@@ -374,7 +374,7 @@ class Candidate extends Component {
 				entry.forEach( item => { titles[item.id] = item.message });
 				const { entry : predictions } = await this.predictSync({ 
 					titles,
-					should_update: "False",
+					should_update: 0,
 				});
 				const data = entry.map( item => {
 					item.score = predictions[item.id]?.score ? predictions[item.id]?.score : 0;
@@ -427,7 +427,7 @@ class Candidate extends Component {
 				entry.forEach( item => { titles[item.id] = item.message });
 				const { entry : predictions } = await this.predictSync({ 
 					titles,
-					should_update: "False",
+					should_update: 0,
 				});
 				const data = entry.map( item => {
 					item.score = predictions[item.id]?.score ? predictions[item.id]?.score : 0;
