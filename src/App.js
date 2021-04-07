@@ -20,7 +20,8 @@ import {
 	Category,
 	Log,
 	Stat,
-	CustomizedTag
+	CustomizedTag,
+	RedisLog
 } from 'pages';
 
 import { history } from '_helpers';
@@ -283,6 +284,14 @@ class App extends Component {
 										Tags
 									</Link>
 								</Item>
+								<Item 
+									key="15" 
+									icon={<ProfileOutlined />}
+								>
+									<Link to="/redislog" >
+										Redis Logs
+									</Link>
+								</Item>
 							</Menu>
 						</Sider> }
 						<Layout className="site-layout">
@@ -348,6 +357,7 @@ class App extends Component {
 									<PrivateRoute path="/title" component={ Title }/>
 									<PrivateRoute path="/log" component={ Log }/>
 									<PrivateRoute path="/tag" component={ CustomizedTag }/>
+									<PrivateRoute path="/redislog" component={ RedisLog }/>
 							</Content>
 							<Footer style={{textAlign: "center", color:"#a1a1a1"}}>
 								Copyright &copy; {new Date().getFullYear()} Heymandi 
