@@ -7,7 +7,10 @@ export const statisticService = {
     apple_subscription_list,
     yesterday_stat,
     revenue_list,
-    csv_import
+    csv_import,
+    redis_logs,
+    retrieve_row_count,
+    category_lists
 };
 
 
@@ -88,4 +91,46 @@ function csv_import(file) {
         body: {file: file.file}
     }
     return fetch(`${config.apiUrl}/statistic/csv_import`, requestOptions).then(handleResponse)
+}
+
+function redis_logs(params={}) {
+    // append query string
+    let url = new URL(`${config.apiUrl}/statistic/redis_logs`);
+    Object.keys(params).forEach( key => 
+        url.searchParams.append(key, params[key]) );
+    // call the api
+    const requestOptions = { 
+            method: 'GET', 
+            headers: authHeader() 
+        };
+    return fetch(url, requestOptions)
+            .then(handleResponse);
+}
+
+function retrieve_row_count(params={}) {
+    // append query string
+    let url = new URL(`${config.apiUrl}/statistic/retrieve_row_count`);
+    Object.keys(params).forEach( key => 
+        url.searchParams.append(key, params[key]) );
+    // call the api
+    const requestOptions = { 
+            method: 'GET', 
+            headers: authHeader() 
+        };
+    return fetch(url, requestOptions)
+            .then(handleResponse);
+}
+
+function category_lists(params={}) {
+    // append query string
+    let url = new URL(`${config.apiUrl}/statistic/category_lists`);
+    Object.keys(params).forEach( key => 
+        url.searchParams.append(key, params[key]) );
+    // call the api
+    const requestOptions = { 
+            method: 'GET', 
+            headers: authHeader() 
+        };
+    return fetch(url, requestOptions)
+            .then(handleResponse);
 }
