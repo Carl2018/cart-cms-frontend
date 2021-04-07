@@ -15,3 +15,4 @@ export * from './Template/Template';
 export * from './Title/Title';
 export * from './Word/Word';
 export * from './Tag/CustomizedTag';
+export * from './RedisLog/RedisLog';
