@@ -84,31 +84,11 @@ class RedisLog extends Component {
 			title: 'Candidate ID',
 			dataIndex: 'candidate_id',
 			key: 'candidate_id',
-			sorter: (a, b) => compare(a.candidate_id, b.candidate_id),
+			sorter: (a, b) =>  compare(a.candidate_id - b.candidate_id),
 			sortDirection: ['ascend', 'descend'],
-			width: 40,
+			width: '10%',
 			ellipsis: true,
-			setFilter: true
-		},
-		{
-			title: 'Cache',
-			dataIndex: 'region',
-			key: 'region',
-			sorter: (a, b) => compare(a.region, b.region),
-			sortDirection: ['ascend', 'descend'],
-			width: 20,
-			ellipsis: true,
-			setFilter: true
-		},
-		{
-			title: 'Category',
-			dataIndex: 'category',
-			key: 'category',
-			sorter: (a, b) => compare(a.category, b.category),
-			sortDirection: ['ascend', 'descend'],
-			width: 40,
-			ellipsis: true,
-			setFilter: true
+			setFilter: false
 		},
 		{
 			title: 'Value',
@@ -116,9 +96,30 @@ class RedisLog extends Component {
 			key: 'value',
 			sorter: (a, b) => compare(a.value, b.value),
 			sortDirection: ['ascend', 'descend'],
-			width: 20,
+			width: '5%',
 			ellipsis: true,
-			setFilter: true
+			setFilter: false
+		},
+		{
+			title: 'Category',
+			dataIndex: 'category',
+			key: 'category',
+			sorter: (a, b) => compare(a.category, b.category),
+			sortDirection: ['ascend', 'descend'],
+			width: '20%',
+			ellipsis: true,
+			setFilter: false
+		},
+		
+		{
+			title: 'Cache',
+			dataIndex: 'region',
+			key: 'region',
+			sorter: (a, b) => compare(a.region, b.region),
+			sortDirection: ['ascend', 'descend'],
+			width: '10%',
+			ellipsis: true,
+			setFilter: false
 		},
 		{
 			title: 'Created at',
@@ -126,9 +127,9 @@ class RedisLog extends Component {
 			key: 'created_at',
 			sorter: (a, b) => compare(a.created_at, b.created_at),
 			sortDirection: ['ascend', 'descend'],
-			width: 60,
+			width: '20%',
 			ellipsis: true,
-			setFilter: true
+			setFilter: false
 		},
 	];
 
@@ -158,7 +159,6 @@ class RedisLog extends Component {
 			const { entry: {row_count} } = await this.retrieveRowCount({ 
 				...filters,
 			});
-			console.log(`row_count is: dddddddddddddddd  ${row_count}`)
 			this.setState({ 
 				spinning: false, 
 				rowCount: row_count, 
@@ -256,7 +256,16 @@ class RedisLog extends Component {
 								<Option value="4">Malaysia</Option>
 								<Option value="3">Canada</Option>
 							</Select>
-							
+							<span style={{ fontSize: "16px", marginLeft: "8px" }} >
+								Category:
+							</span>
+							<Select
+								value={ this.state.category }
+								onChange={ this.handleCategorySearch }
+								style={{ marginRight: "16px", width: 350 }}
+							>
+								{this.state.categoryList.map( item => (<Option value={item}>{item}</Option>))}
+							</Select>
 							<Search
 								onSearch={ this.handleSearch }
 								placeholder= "Search Logs by Candidate ID"
@@ -264,16 +273,6 @@ class RedisLog extends Component {
 								size="middle"
 								allowClear
 							/>
-							<span style={{ fontSize: "16px", marginLeft: "8px" }} >
-								Category:
-							</span>
-							<Select
-								value={ this.state.category }
-								onChange={ this.handleCategorySearch }
-								style={{ marginRight: "16px", width: 150 }}
-							>
-								{this.state.categoryList.map( item => (<Option value={item}>{item}</Option>))}
-							</Select>
 						</Space>
 				</Col>
 			</Row>
@@ -290,9 +289,9 @@ class RedisLog extends Component {
 						defaultPageSize={ this.state.defaultPageSize }
 						defaultPage={ this.state.defaultPage}
 						filters={ {
-							pagename: this.state.pagename,
-							created_by: this.state.created_by,
-							created_on: this.state.created_on,
+							region: this.state.region,
+							candidate_id: this.state.candidate_id,
+							category: this.state.category,
 						} }
 						// display props
 						columns={ this.columns }
@@ -302,7 +301,7 @@ class RedisLog extends Component {
 						showDropdown={ false }
 						noAction={ true }
 						noBatch={ true }
-						scroll={ {x:2200} }
+						// scroll={ {x:1200} }
 						// api props
 						list={ this.listSync }
 					>
