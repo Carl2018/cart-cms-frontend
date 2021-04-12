@@ -9,6 +9,7 @@ import {
 	Space,
 	Spin,
 	Input, 
+	Button
 } from 'antd';
 import { ProfileOutlined } from '@ant-design/icons';
 
@@ -129,6 +130,22 @@ class RedisLog extends Component {
 			sortDirection: ['ascend', 'descend'],
 			width: '20%',
 			ellipsis: true,
+			setFilter: false
+		},
+		{
+			title: 'Actions',
+			key: 'action',
+			render: (text, record) => (
+				<Space size='small'>
+                    <Button
+						type='link'
+						// onClick={this.handleClickCandidate.bind(this,record)}
+					>
+						Detail
+					</Button>
+				</Space>
+			),
+			width: '5%',
 			setFilter: false
 		},
 	];
