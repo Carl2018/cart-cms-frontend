@@ -41,7 +41,7 @@ class RefineModal extends Component {
 			willCollect: false,
 			didCollect: false,
 			reCollect: false,
-			months: 6,
+			days: 6,
 			loadingCollect: false,
 			dataPointN: 0,
 			// for Split
@@ -125,12 +125,12 @@ class RefineModal extends Component {
 						willCollect={ this.state.willCollect }
 						didCollect={ this.state.didCollect }
 						reCollect={ this.state.reCollect }
-						months={ this.state.months }
+						days={ this.state.days }
 						loading={ this.state.loadingCollect }
 						dataPointN ={ this.state.dataPointN }
 						collect={ this.collect }
 						changeCollect={ this.changeCollect }
-						onChangeMonths={ this.handleChangeMonths }
+						onChangeDays={ this.handleChangeDays }
 					/>
 				);
 				break;
@@ -264,10 +264,10 @@ class RefineModal extends Component {
 
 	// handlers for the collect
 	collect = () => {
-		const { months, reCollect } = this.state; // request paramter
-		if ( months !== parseInt(months, 10) || months < 1 ) {
-			message.error("months must be a positive integer");
-			this.setState({ months: 6 });
+		const { days, reCollect } = this.state; // request paramter
+		if ( days !== parseInt(days, 10) || days < 1 ) {
+			message.error("days must be a positive integer");
+			this.setState({ days: 6 });
 			return;
 		}
 		if (!reCollect)
@@ -275,7 +275,7 @@ class RefineModal extends Component {
 		else
 			message.info("Re-collecting");
 		this.setState({ loadingCollect: true, loading: true }, async () => {
-			const { entry } = await this.collectSync({past: months});
+			const { entry } = await this.collectSync({past_days: days});
 			message.success("Done");
 			this.setState({
 				dataPointN: entry.new_normal_titles + entry.new_spammy_titles,
@@ -302,7 +302,7 @@ class RefineModal extends Component {
 		this.setState({ willCollect: option });
 	}
 
-	handleChangeMonths = months => this.setState({ months });
+	handleChangeDays = days => this.setState({ days });
 
 	// handlers for Preprocess
 	handleChangeSplit = split => {
@@ -434,7 +434,7 @@ class RefineModal extends Component {
 			willCollect: false,
 			didCollect: false,
 			reCollect: false,
-			months: 6,
+			days: 6,
 			loadingCollect: false,
 			dataPointN: 0,
 			// for Split

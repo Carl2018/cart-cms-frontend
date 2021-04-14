@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 // import components from ant design
 import { 
@@ -42,12 +43,14 @@ class PredictModal extends Component {
 
 	onClickPredict = () => {
 		let { titles } = this.state;
-		titles = titles.split(/\r?\n/);
+		titles = Object.fromEntries( 
+			titles.split(/\r?\n/).map( item => [uuidv4(), item] ) 
+		);
 		this.setState({ loading: true }, async () => {
-			const { entry } = await this.props.predict({ titles });
+			const { entry } = await this.props.predict({ titles, should_update: 0 });
 			let predictions = "";
-			Object.entries(entry).forEach( item => {
-				predictions = predictions.concat( `${item[0]}\nspam score: ${item[1][0]} probability: ${item[1][1]}\n` )
+			Object.values(entry).forEach( item => {
+				predictions = predictions.concat( `${item.title}\nprobability: ${item.percent}\n\n` )
 			});
 			this.setState({ 
 				loading: false,	
