@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-
 // import components from ant design
 import { 
 	Col,
@@ -15,7 +14,7 @@ import { ProfileOutlined } from '@ant-design/icons';
 
 // import shared and child components
 import { TableWrapper } from '_components'
-
+import { RedisLogChart } from '_components'
 // import services
 import { 
 	statisticService,
@@ -32,11 +31,13 @@ const { retrieveSync, listSync } = backend;
 const { compare } = helpers;
 const { Option } = Select;
 const { Search } = Input; 
+const moment = require('moment');
 
 class RedisLog extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			modalKeyDetail: Date.now(),
 			tableWrapperKey: Date.now(),
 			// populate the table body with data
 			data: [],
@@ -48,6 +49,10 @@ class RedisLog extends Component {
 			candidate_id:"",
 			category:"",
 			categoryList: ['a','b','c'],
+			lineDataSet: [],
+			start_time:moment().format("YYYY-MM-DD"),
+			end_time:moment().format("YYYY-MM-DD"),
+			timeLabels: [],
 		};
 	}
 	
@@ -77,6 +82,7 @@ class RedisLog extends Component {
 				categoryList: categories
 			});
 		});
+		this.generateDateRangeArray('20210311','20210311')
 	}
 
 	// define columns for TableBody
@@ -87,7 +93,7 @@ class RedisLog extends Component {
 			key: 'candidate_id',
 			sorter: (a, b) =>  compare(a.candidate_id - b.candidate_id),
 			sortDirection: ['ascend', 'descend'],
-			width: '10%',
+			width: '5%',
 			ellipsis: true,
 			setFilter: false
 		},
@@ -97,7 +103,7 @@ class RedisLog extends Component {
 			key: 'value',
 			sorter: (a, b) => compare(a.value, b.value),
 			sortDirection: ['ascend', 'descend'],
-			width: '5%',
+			width: '3%',
 			ellipsis: true,
 			setFilter: false
 		},
@@ -107,7 +113,7 @@ class RedisLog extends Component {
 			key: 'category',
 			sorter: (a, b) => compare(a.category, b.category),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '8%',
 			ellipsis: true,
 			setFilter: false
 		},
@@ -118,7 +124,7 @@ class RedisLog extends Component {
 			key: 'region',
 			sorter: (a, b) => compare(a.region, b.region),
 			sortDirection: ['ascend', 'descend'],
-			width: '10%',
+			width: '7%',
 			ellipsis: true,
 			setFilter: false
 		},
@@ -128,7 +134,7 @@ class RedisLog extends Component {
 			key: 'created_at',
 			sorter: (a, b) => compare(a.created_at, b.created_at),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '10%',
 			ellipsis: true,
 			setFilter: false
 		},
@@ -139,7 +145,7 @@ class RedisLog extends Component {
 				<Space size='small'>
                     <Button
 						type='link'
-						// onClick={this.handleClickCandidate.bind(this,record)}
+						onClick={this.handleClickDetail.bind(this,record)}
 					>
 						Detail
 					</Button>
@@ -159,7 +165,7 @@ class RedisLog extends Component {
 	)
 
 	// handler for change page 
-	handleChangeCache = region => {
+	handleChangeCache = async region => {
 		this.setState({ spinning: true, data: [], region }, async () => {
 			const limit = this.state.defaultPageSize;
 			const offset = (this.state.defaultPage - 1) * limit;
@@ -183,7 +189,7 @@ class RedisLog extends Component {
 		});
 	}
 	// handler for Search button
-	handleSearch = candidate_id => {
+	handleSearch = async candidate_id => {
 		this.setState({ data: [] }, async () => {
 			const limit = this.state.defaultPageSize;
 			const offset = (this.state.defaultPage - 1) * limit;
@@ -209,7 +215,7 @@ class RedisLog extends Component {
 		});
 	}
 	// handler for Search button
-	handleCategorySearch = category => {
+	handleCategorySearch = async category => {
 		this.setState({ data: [] }, async () => {
 			const limit = this.state.defaultPageSize;
 			const offset = (this.state.defaultPage - 1) * limit;
@@ -234,6 +240,48 @@ class RedisLog extends Component {
 			});
 		});
 	}
+	// handler for click flag search modal
+	handleClickDetail = async record => {
+		this.setState({
+			candidate_id: record.candidate_id,
+			visibleDetail: true,
+		});
+		const filters = {
+			candidate_id: record.candidate_id,
+			start_time: this.state.start_time,
+			end_time: this.state.end_time,
+		}
+		await this.logValueListSync({
+			...filters,
+		})
+		this.generateDateRangeArray('20210311','20210311')
+	}
+	// handler for close Detail modal
+	handleCloseDetail = event => {
+		this.setState({
+			visibleDetail: false,
+			modalKeyDetail: Date.now(),
+		});
+	}
+
+	generateDateRangeArray = (startDate, endDate) => {
+		startDate = startDate + "T00"
+		endDate = endDate + "T23"
+		let endTime = moment(endDate).format('YYYYMMDDHH')
+		let timeLabels = []
+		let currentTime = moment(startDate)
+		let formattedCurrentTime = currentTime.format('YYYYMMDDHH')
+		while (formattedCurrentTime <= endTime) {
+			timeLabels.push(formattedCurrentTime)
+			currentTime = currentTime.add(1,'h')
+			formattedCurrentTime = currentTime.format('YYYYMMDDHH')
+		}
+		this.setState({
+			timeLabels
+		})
+	  }
+
+
 	// bind versions of CRUD
 	config = {
 		service: statisticService,
@@ -245,8 +293,14 @@ class RedisLog extends Component {
 		service: statisticService,
 		list: "category_lists",
 	};
+	configLogValueList = {
+		service: statisticService,
+		dataName: "lineDataSet",
+		list: "log_value_lists",
+	};
 	listSync = listSync.bind(this, this.config);
 	categoryListSync = listSync.bind(this, this.configCategoryList);
+	logValueListSync = listSync.bind(this, this.configLogValueList);
 	retrieveRowCount = retrieveSync.bind(this, {
 		...this.config, 
 	});
@@ -281,7 +335,7 @@ class RedisLog extends Component {
 								onChange={ this.handleCategorySearch }
 								style={{ marginRight: "16px", width: 350 }}
 							>
-								{this.state.categoryList.map( item => (<Option value={item}>{item}</Option>))}
+								{this.state.categoryList.map( item => (<Option value={item} key={ uuidv4() }>{item}</Option>))}
 							</Select>
 							<Search
 								onSearch={ this.handleSearch }
@@ -324,6 +378,19 @@ class RedisLog extends Component {
 					>
 					</TableWrapper>
 				</Spin>
+				<div>
+					<RedisLogChart
+						timeLabels = { this.state.timeLabels}
+						// lineDataSet = { this.state.lineDataSet}
+						categoryList={ this.state.categoryList }
+						candidateId={ this.state.candidate_id }
+						category = { this.state.category }
+						modalKey={ this.state.modalKeyDetail }
+						visible={ this.state.visibleDetail }
+						onCancel={ this.handleCloseDetail }
+					>
+					</RedisLogChart>
+				</div>
 			</div>
 		);
 	}
