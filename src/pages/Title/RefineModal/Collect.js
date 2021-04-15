@@ -95,13 +95,13 @@ class Collect extends Component {
 						<Descriptions.Item label="New Data Points">
 								{ didCollect ? this.props.dataPointN : "To be collected" }
 						</Descriptions.Item>
-						<Descriptions.Item label="In the past(months)">
+						<Descriptions.Item label="In the past(days)">
 								<InputNumber
-									value={ this.props.months }
+									value={ this.props.days }
 									min={ 1 }
 									style={ {marginRight: "16px" }}
 									disabled={ !willCollect }
-									onChange={ this.props.onChangeMonths }
+									onChange={ this.props.onChangeDays }
 								/>
 								<Button
 									onClick={ this.props.collect }
