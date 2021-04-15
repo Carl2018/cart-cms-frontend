@@ -10,7 +10,8 @@ export const statisticService = {
     csv_import,
     redis_logs,
     retrieve_row_count,
-    category_lists
+    category_lists,
+    log_value_lists
 };
 
 
@@ -124,6 +125,20 @@ function retrieve_row_count(params={}) {
 function category_lists(params={}) {
     // append query string
     let url = new URL(`${config.apiUrl}/statistic/category_lists`);
+    Object.keys(params).forEach( key => 
+        url.searchParams.append(key, params[key]) );
+    // call the api
+    const requestOptions = { 
+            method: 'GET', 
+            headers: authHeader() 
+        };
+    return fetch(url, requestOptions)
+            .then(handleResponse);
+}
+
+function log_value_lists(params={}) {
+    // append query string
+    let url = new URL(`${config.apiUrl}/statistic/log_value_lists`);
     Object.keys(params).forEach( key => 
         url.searchParams.append(key, params[key]) );
     // call the api
