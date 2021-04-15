@@ -8,3 +8,5 @@ export * from './TableDrawer';
 export * from './TableDropdown';
 export * from './TablePagination';
 export * from './TableWrapper';
+
+export * from './RedisLogChart';
