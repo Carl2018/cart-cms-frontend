@@ -53,7 +53,6 @@ class RedisLog extends Component {
 			lineDataSet: [],
 			start_time:moment().format("YYYY-MM-DD"),
 			end_time:moment().format("YYYY-MM-DD"),
-			timeLabels: [],
 		};
 	}
 	
@@ -83,7 +82,6 @@ class RedisLog extends Component {
 				categoryList: categories
 			});
 		});
-		this.generateDateRangeArray('20210311','20210311')
 	}
 
 	// define columns for TableBody
@@ -255,7 +253,6 @@ class RedisLog extends Component {
 		await this.logValueListSync({
 			...filters,
 		})
-		this.generateDateRangeArray('20210311','20210311')
 	}
 	// handler for close Detail modal
 	handleCloseDetail = event => {
@@ -264,25 +261,6 @@ class RedisLog extends Component {
 			modalKeyDetail: Date.now(),
 		});
 	}
-
-	generateDateRangeArray = (startDate, endDate) => {
-		startDate = startDate + "T00"
-		endDate = endDate + "T23"
-		let endTime = moment(endDate).format('YYYYMMDDHH')
-		let timeLabels = []
-		let currentTime = moment(startDate)
-		let formattedCurrentTime = currentTime.format('YYYYMMDDHH')
-		while (formattedCurrentTime <= endTime) {
-			timeLabels.push(formattedCurrentTime)
-			currentTime = currentTime.add(1,'h')
-			formattedCurrentTime = currentTime.format('YYYYMMDDHH')
-		}
-		this.setState({
-			timeLabels
-		})
-	  }
-
-
 	// bind versions of CRUD
 	config = {
 		service: statisticService,
@@ -381,7 +359,6 @@ class RedisLog extends Component {
 				</Spin>
 				<div>
 					<RedisLogChart
-						timeLabels = { this.state.timeLabels}
 						// lineDataSet = { this.state.lineDataSet}
 						categoryList={ this.state.categoryList }
 						candidateId={ this.state.candidate_id }
