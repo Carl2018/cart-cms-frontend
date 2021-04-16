@@ -63,6 +63,7 @@ class RedisLogChart extends Component {
 			end_time:moment(),
 			today: [moment(),moment()],
 			lineDataSet: [],
+			timeLabels: [],
 			line_chart_options:{
 				tooltips: {
 				  mode: 'index',
@@ -71,7 +72,7 @@ class RedisLogChart extends Component {
 				scales: {
 				  xAxes: [{
 					ticks: {
-					  stepSize: 3,
+					  stepSize: 6,
 					}
 				  }],
 				}
@@ -80,9 +81,7 @@ class RedisLogChart extends Component {
 	}
 	
 	componentDidMount() {
-		// this.setState({
-		// 	lineDataSet: this.props.lineDataSet
-		// });
+		this.generateDateRangeArray(moment().format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"))
 	}
 
 	// for related email panel
@@ -289,6 +288,7 @@ class RedisLogChart extends Component {
 		this.setState({ 
 			lineDataSet: entry
 		});
+		this.generateDateRangeArray(this.state.start_time.format("YYYY-MM-DD"),this.state.end_time.format("YYYY-MM-DD"))
 	}
 	onChangeDatePicker = (dateStrings) => {
 		this.setState({
@@ -300,6 +300,36 @@ class RedisLogChart extends Component {
 		this.setState({ 
 			category: category
 		});
+	}
+
+	generateDateRangeArray = (startDate, endDate) => {
+		let timeLabels = []
+		if(startDate === endDate){
+			let hour =  "0"
+			let counter = 0
+			while(counter < 24){
+				if(counter < 10)
+					hour = "0" + counter 
+				else
+					hour = "" + counter 
+				counter = counter + 1
+				timeLabels.push(hour)
+			}
+		}else{
+			startDate = startDate + "T00"
+			endDate = endDate + "T23"
+			let endTime = moment(endDate).format('MMDDHH')
+			let currentTime = moment(startDate)
+			let formattedCurrentTime = currentTime.format('MMDDHH')
+			while (formattedCurrentTime <= endTime) {
+				timeLabels.push(formattedCurrentTime)
+				currentTime = currentTime.add(1,'h')
+				formattedCurrentTime = currentTime.format('MMDDHH')
+			}
+		}
+		this.setState({
+			timeLabels
+		})
 	}
 
 	// bind versions of CRUD
@@ -379,7 +409,7 @@ class RedisLogChart extends Component {
 						<Spin spinning={ this.state.loading }>
 							<div>
 							<Line data={{
-									labels: this.props.timeLabels,
+									labels: this.state.timeLabels,
 									datasets: [
 										{
 										  label: 'Dataset 1',
