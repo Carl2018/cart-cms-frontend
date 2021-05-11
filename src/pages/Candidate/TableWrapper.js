@@ -219,6 +219,7 @@ class TableWrapper extends Component {
 							>
 								<Option value="hk">Hong Kong</Option>
 								<Option value="tw">Taiwan</Option>
+								<Option value="sg">Singapore</Option>
 								<Option value="my">Malaysia</Option>
 								<Option value="ca">Canada</Option>
 							</Select>
