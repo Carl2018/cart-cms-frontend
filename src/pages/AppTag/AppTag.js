@@ -131,7 +131,42 @@ class AppTag extends Component {
 			fixed: 'left',
 			ellipsis: true,
 			width: "10%",
-			setFilter: true
+			// setFilter: true
+			render: category => {
+				let color = 'lime';
+				let text = 'Normal';
+				switch (category) {
+					case 1 :
+						color = 'lime';
+						text = 'Normal';
+						break;
+					case 2 :
+						color = 'gold';
+						text = 'Sweet';
+						break;
+					case 3 :
+						color = 'geekblue';
+						text = 'Drug';
+						break;
+					case 4 :
+						color = 'red';
+						text = 'Scam';
+						break;
+					case 5 :
+						color = 'purple';
+						text = 'Crime';
+						break;
+					default:
+						color = 'lime';
+						text = 'Normal';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
 		},
 		{
 			title: 'Tag',
@@ -206,9 +241,9 @@ class AppTag extends Component {
 		},
 		{
 			title: 'Count',
-			dataIndex: 'count',
-			key: 'count',
-			sorter: (a, b) => compare(a.count, b.count),
+			dataIndex: 'cand_count',
+			key: 'cand_count',
+			sorter: (a, b) => compare(a.cand_count, b.cand_count),
 			sortDirection: ['ascend', 'descend'],
 			fixed: 'left',
 			ellipsis: true,
@@ -269,6 +304,26 @@ class AppTag extends Component {
 				<Select>
 					<Option value={ 0 }>No</Option>
 					<Option value={ 1 }>Yes</Option>
+				</Select>
+			)
+		},			
+		{
+			label: 'Category',
+			name: 'category',
+			rules: [
+				{
+					required: true,
+					message: 'category field cannot be empty',
+				},
+			],
+			editable: true,
+			input: disabled => (
+				<Select>
+					<Option value={ 1 }>Normal</Option>
+					<Option value={ 2 }>Sweet</Option>
+					<Option value={ 3 }>Drug</Option>
+					<Option value={ 4 }>Scam</Option>
+					<Option value={ 5 }>Crime</Option>
 				</Select>
 			)
 		},			
@@ -390,7 +445,7 @@ class AppTag extends Component {
 				is_banned: this.state.isBanned, 
 				offset,
 				limit,
-				order_by: "count",
+				order_by: "cand_count",
 				is_asc: 0,
 			});
 			const { entry: {row_count} } = await this.retrieveRowCount({
@@ -409,22 +464,27 @@ class AppTag extends Component {
 		dataName: "dataCandidate",
 	});
 	searchCandidatesByTagSync = ({currentPage=1, pageSize=10, tagId}) => {
-		this.setState( { spinning: true }, async () => {
-			const limit = pageSize;
-			const offset = (currentPage - 1)*limit;
-			const { entry: dataCandidate } = await this.searchCandidatesByTag({ 
-				cache: this.state.cache, 
-				tag_id: tagId,
-				offset,
-				limit,
+		// the lower component needs to invoke the await statement
+		// wrap the logic with Promise
+		return new Promise(function (resolve) {
+			this.setState( { spinning: true }, async () => {
+				const limit = pageSize;
+				const offset = (currentPage - 1)*limit;
+				const { entry: dataCandidate } = await this.searchCandidatesByTag({ 
+					cache: this.state.cache, 
+					tag_id: tagId,
+					offset,
+					limit,
+				});
+				this.setState({ 
+					dataCandidate,
+					currentPageCandidate: currentPage,
+					pageSizeCandidate: pageSize,
+					spinning: false 
+				});
+				resolve(1);
 			});
-			this.setState({ 
-				dataCandidate,
-				currentPageCandidate: currentPage,
-				pageSizeCandidate: pageSize,
-				spinning: false 
-			});
-		});
+		}.bind(this));
 	}
 	updateSync = updateSync.bind(this, this.config);
 

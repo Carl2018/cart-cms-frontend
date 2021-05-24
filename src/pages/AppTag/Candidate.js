@@ -3,29 +3,42 @@ import { v4 as uuidv4 } from 'uuid';
 
 // import components from ant design
 import { 
-	Col,
 	Modal,
-	Row,
+	Select,
+	Space,
 	Spin,
 	Tag,
 } from 'antd';
+import { IdcardOutlined } from '@ant-design/icons';
 
 // import shared and child components
-import { TableBody } from '_components'
+import { TableWrapper } from '../Candidate/TableWrapper'
 
 // import services
+import { candidateService } from '_services';
 
 // import helpers
-import { helpers } from "_helpers";
+import { backend, helpers } from "_helpers";
 
 // destructure imported components and objects
+const { updateSync } = backend;
 const { compare } = helpers;
+const { Option } = Select;
 
 class Candidate extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			tableWrapperKey: Date.now(),
+			// populate the table body with data
+			data: [],
 			spinning: false,
+			cache: 'hk',
+			// pagination
+			pagination: false,
+			currentPage: 1,
+			pageSize: 10,
+			total: 5000,
 		};
 	}
 	
@@ -47,21 +60,22 @@ class Candidate extends Component {
 			});
 		}
 	}
+
 	// for related email panel
 	columns = [
 		{
 			title: 'Candidate ID',
 			dataIndex: 'candidate_id',
 			key: 'candidate_id',
-			width: '60%',
+			width: '20%',
 			sorter: (a, b) => compare(a.candidate_id, b.candidate_id),
 			setFilter: true
 		},
 		{
-			title: 'Status',
+			title: 'Active',
 			dataIndex: 'is_active',
 			key: 'is_active',
-			width: '40%',
+			width: '20%',
 			sorter: (a, b) => compare(a.is_active, b.is_active),
 			// setFilter: true
 			render: is_active => {
@@ -85,73 +99,48 @@ class Candidate extends Component {
 			},
 		},
 		{
-			title: 'Duplicated',
-			dataIndex: 'is_duplicated',
-			key: 'is_duplicated',
+			title: 'Message',
+			dataIndex: 'message',
+			key: 'message',
 			width: '40%',
-			sorter: (a, b) => compare(a.is_duplicated, b.is_duplicated),
-			// setFilter: true
-			render: is_duplicated => {
-				let color = 'lime';
-				let text = 'No';
-				switch (is_duplicated) {
-					case 1 :
-						color = 'red';
-						text = 'Yes';
-						break;
-					default:
-						color = 'lime';
-						text = 'No';
-						break;
-				};	
-				return (
-					<Tag color={ color } key={ uuidv4() }>
-						{ text }
-					</Tag>
-				);
-			},
-		},
-		{
-			title: 'Deleted',
-			dataIndex: 'is_deleted',
-			key: 'is_deleted',
-			width: '40%',
-			sorter: (a, b) => compare(a.is_deleted, b.is_deleted),
-			// setFilter: true
-			render: is_deleted => {
-				let color = 'lime';
-				let text = 'No';
-				switch (is_deleted) {
-					case 1 :
-						color = 'red';
-						text = 'Yes';
-						break;
-					default:
-						color = 'lime';
-						text = 'No';
-						break;
-				};	
-				return (
-					<Tag color={ color } key={ uuidv4() }>
-						{ text }
-					</Tag>
-				);
-			},
+			sorter: (a, b) => compare(a.message, b.message),
+			setFilter: true
 		},
 	];
 
-	titleModal = () => (
-		<Row>
-			<Col span={ 8 }>
-				Candidates
-			</Col>
-		</Row>	
-	)
+	// define form items for TableDrawer
+	formItems = [
+		{
+			label: 'Blacklist Type',
+			name: 'blacklist_type',
+			rules: [
+				{
+					required: true,
+					message: 'Blacklist type cannot be empty',
+				}
+			],
+			editable: true,
+			input: disabled => (
+				<Select>
+					<Option value="E">Registration</Option>
+					<Option value="U">Device</Option>
+				</Select>
+			)
+		},
+	];
+
+	// define table header
+	titleModal = () => { return ( 
+		<Space>
+			<IdcardOutlined />
+			<strong>Candidates</strong>
+		</Space>
+	); }
 
 	// handler for pagination
 	handleChangePage = async (page, pageSize) => {
 		this.setState({ spinning: true }, async () => {
-			this.props.searchCandidatesByTagSync({
+			await this.props.searchCandidatesByTagSync({
 				currentPage: page, 
 				pageSize: pageSize, 
 				tagId: this.props.tagId, 
@@ -162,13 +151,48 @@ class Candidate extends Component {
 		});
 	}
 
+	// bind versions of CRUD
+	config = {
+		service: candidateService,
+		retrieve: "retrieve",
+		list: "list",
+		update: "ban",
+		dataName: "data",
+	};
+	ban = updateSync.bind(this, this.config);
+	softBanSync = async record => {
+		const body = {
+			candidate_id: record.id,
+			ban_type: "S",
+			cache: this.state.cache,
+		}
+		await this.ban(record.id, body);
+	}
+	hardBanSync = async record => {
+		const body = {
+			candidate_id: record.id,
+			ban_type: "H",
+			cache: this.state.cache,
+		}
+		await this.ban(record.id, body);
+	}
+	blacklistSync = async (id, record) => {
+		const body = {
+			candidate_id: id,
+			ban_type: "B",
+			blacklist_type: record.blacklist_type,
+			cache: this.state.cache,
+		}
+		await this.ban(id, body);
+	}
+
 	render(){
 		return (
 			<div className="Candidate">
 				<Modal
 					key={ this.props.modalKey }
 					title={ this.titleModal() }
-					width={ 600 }
+					width={ 1200 }
 					style={{ top: 20 }}
 					bodyStyle={{ minHeight: 600, overflow: "auto" }}
 					visible={ this.props.visible }
@@ -176,17 +200,28 @@ class Candidate extends Component {
 					footer={ null }
 				>
 					<Spin spinning={ this.state.spinning }>
-						<TableBody
-							columns={ this.columns } 
+						<TableWrapper
+							key={ this.state.tableWrapperKey }
+							// data props
+							noFilter={ true }
 							data={ this.props.dataCandidate ? this.props.dataCandidate : [] }
-							isSmall={ true }
-							pagination={ {
-								pageSize: this.props.pageSizeCandidate, 
-								current: this.props.currentPageCandidate, 
-								total: this.props.candCount, 
-								onChange: this.handleChangePage,
-							} }
-						/>
+							currentPage={ this.props.currentPageCandidate }
+							pageSize={ this.props.pageSizeCandidate }
+							total={ this.props.candCount }
+							pagination={ this.state.pagination }
+							// display props
+							columns={ this.columns }
+							formItems={ this.formItems }
+							drawerTitle='A Candidate'
+							showDropdown={ false }
+							// api props
+							softBanSync={ this.softBanSync }
+							hardBanSync={ this.hardBanSync }
+							blacklistSync={ this.blacklistSync }
+							onChangePage={ this.handleChangePage }
+							onChangeSize={ this.handleChangePage }
+						>
+						</TableWrapper>
 					</Spin>
 				</Modal>
 			</div>

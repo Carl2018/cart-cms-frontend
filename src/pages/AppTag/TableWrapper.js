@@ -213,11 +213,11 @@ class TableWrapper extends Component {
 								style={{ marginRight: "16px", width: 100 }}
 							>
 								<Option value="all">All</Option>
-								<Option value="1">1</Option>
-								<Option value="2">2</Option>
-								<Option value="3">3</Option>
-								<Option value="4">4</Option>
-								<Option value="5">5</Option>
+								<Option value="1">Normal</Option>
+								<Option value="2">Sweet</Option>
+								<Option value="3">Drug</Option>
+								<Option value="4">Scam</Option>
+								<Option value="5">Crime</Option>
 							</Select>
 							<span style={{ fontSize: "16px", marginLeft: "8px" }} >
 								Featured:
