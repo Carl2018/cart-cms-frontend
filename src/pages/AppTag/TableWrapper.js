@@ -37,6 +37,7 @@ class TableWrapper extends Component {
 			visibleCandidate: false,
 			candidateModalKey: Date.now(),
 			tagId: null,
+			tag: null,
 			candCount: null,
 		};
 	}
@@ -84,6 +85,7 @@ class TableWrapper extends Component {
 		this.setState({
 			visibleCandidate: true, 
 			tagId: record.id,
+			tag: record.tag,
 			candCount: record.cand_count,
 		});
 	}
@@ -270,6 +272,7 @@ class TableWrapper extends Component {
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
 						pagination={ {
+							pageSizeOptions: [10, 25, 50, 100], 
 							pageSize: this.props.pageSize, 
 							current: this.props.currentPage, 
 							total: this.props.total, 
@@ -296,6 +299,7 @@ class TableWrapper extends Component {
 						modalKey={ this.state.candidateModalKey }
 						visible={ this.state.visibleCandidate } 
 						tagId={ this.state.tagId}
+						tag={ this.state.tag}
 						candCount={ this.state.candCount}
 						onClose={ this.handleCloseCandidate }
 						// data props

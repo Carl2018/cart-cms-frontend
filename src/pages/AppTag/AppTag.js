@@ -42,12 +42,12 @@ class AppTag extends Component {
 			data: [],
 			// pagination
 			currentPage: 1,
-			pageSize: 10,
+			pageSize: 25,
 			total: 0,
 			// for Candidate modal
 			dataCandidate: [],
 			currentPageCandidate: 1,
-			pageSizeCandidate: 10,
+			pageSizeCandidate: 25,
 		};
 	}
 	
@@ -523,6 +523,7 @@ class AppTag extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Tag'
 						noBatch={ true }
+						isSmall={ true }
 						// api props
 						edit={ this.updateSync }
 						refreshTable={ this.refreshTable }
