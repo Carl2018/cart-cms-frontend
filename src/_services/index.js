@@ -13,7 +13,7 @@ export * from './process.service';
 export * from './profile.service';
 export * from './statistic.service';
 export * from './template.service';
+export * from './tag.service';
 export * from './title.service';
 export * from './user.service';
 export * from './word.service';
-export * from './tag.service';

@@ -3,21 +3,12 @@ import { authHeader } from '_helpers';
 import { handleResponse } from '_helpers';
 
 export const tagService = {
-    create,
-	retrieve,
-    tagList,
+		retrieve,
+		retrieveRowCount,
+    list,
+		searchCandidatesByTag,
     update,
 };
-
-function create(record) {
-    const requestOptions = { 
-			method: 'POST', 
-			headers: authHeader(),
-			body: JSON.stringify(record)
-		};
-    return fetch(`${config.apiUrl}/tag/create`, requestOptions)
-			.then(handleResponse);
-}
 
 function retrieve(params={}) {
 		// append query string
@@ -33,9 +24,37 @@ function retrieve(params={}) {
 			.then(handleResponse);
 }
 
-function tagList(params={}) {
+function retrieveRowCount(params={}) {
 		// append query string
-		let url = new URL(`${config.apiUrl}/tag/tag_list`);
+		let url = new URL(`${config.apiUrl}/tag/retrieve_row_count`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+		const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+		return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function list(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/tag/list`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+    const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+    return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function searchCandidatesByTag(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/tag/search_candidates_by_tag`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api

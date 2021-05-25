@@ -190,48 +190,52 @@ class TableWrapper extends Component {
 	render(){
 		return (
 			<div className='TableWrapper'>
-				<Row style={{ margin: this.props.isSmall ? "8px" : "16px" }}>
-					<Col 
-						style={{ 
-							fontSize: this.props.isSmall ? 
-							'20px' : '24px', textAlign: 'left' 
-						}}
-						span={ 12 } 
-					>
-						<Space size="large">
-							{ this.props.tableHeader }
-						</Space>
-					</Col>
-				</Row>
-				<Row style={{ marginBottom: "16px" }}>
-					<Col 
-						style={{ fontSize: '24px', textAlign: 'left' }}
-						span={ 12 } 
-					>
-						<Space>
-							<span style={{ fontSize: "16px", marginLeft: "8px" }} >
-								Cache:
-							</span>
-							<Select
-								defaultValue="hk"
-								onChange={ this.props.onChangeCache  }
-								style={{ marginRight: "16px", width: 150 }}
+				{ this.props.noFilter ? <></> : <>
+						<Row style={{ margin: this.props.isSmall ? "8px" : "16px" }}>
+							<Col 
+								style={{ 
+									fontSize: this.props.isSmall ? 
+									'20px' : '24px', textAlign: 'left' 
+								}}
+								span={ 12 } 
 							>
-								<Option value="hk">Hong Kong</Option>
-								<Option value="tw">Taiwan</Option>
-								<Option value="my">Malaysia</Option>
-								<Option value="ca">Canada</Option>
-							</Select>
-							<Search
-								onSearch={ this.props.fromTagPage? this.handleSearch(this.props.keywords) : this.handleSearch }
-								placeholder= "Search Candidate by Message Keywords"
-								style={{ width: 400 }}
-								size="middle"
-								allowClear
-							/>
-						</Space>
-					</Col>
-				</Row>
+								<Space size="large">
+									{ this.props.tableHeader }
+								</Space>
+							</Col>
+						</Row>
+						<Row style={{ marginBottom: "16px" }}>
+							<Col 
+								style={{ fontSize: '24px', textAlign: 'left' }}
+								span={ 12 } 
+							>
+								<Space>
+									<span style={{ fontSize: "16px", marginLeft: "8px" }} >
+										Cache:
+									</span>
+									<Select
+										defaultValue="hk"
+										onChange={ this.props.onChangeCache  }
+										style={{ marginRight: "16px", width: 150 }}
+									>
+										<Option value="hk">Hong Kong</Option>
+										<Option value="tw">Taiwan</Option>
+										<Option value="sg">Singapore</Option>
+										<Option value="my">Malaysia</Option>
+										<Option value="ca">Canada</Option>
+									</Select>
+									<Search
+										onSearch={ this.props.fromTagPage? this.handleSearch(this.props.keywords) : this.handleSearch }
+										placeholder= "Search Candidate by Message Keywords"
+										style={{ width: 400 }}
+										size="middle"
+										allowClear
+									/>
+								</Space>
+							</Col>
+						</Row>
+					</>
+				}
 				<div>
 					<TableBody 
 						data={ this.props.data } 

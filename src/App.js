@@ -19,8 +19,8 @@ import {
 	Title,
 	Category,
 	Log,
+	AppTag,
 	Stat,
-	CustomizedTag,
 	RedisLog
 } from 'pages';
 
@@ -280,7 +280,7 @@ class App extends Component {
 									key="14" 
 									icon={<TagOutlined />}
 								>
-									<Link to="/tag" >
+									<Link to="/apptag" >
 										Tags
 									</Link>
 								</Item>
@@ -356,7 +356,7 @@ class App extends Component {
 									<PrivateRoute path="/category" component={ Category }/>
 									<PrivateRoute path="/title" component={ Title }/>
 									<PrivateRoute path="/log" component={ Log }/>
-									<PrivateRoute path="/tag" component={ CustomizedTag }/>
+									<PrivateRoute path="/apptag" component={ AppTag }/>
 									<PrivateRoute path="/redislog" component={ RedisLog }/>
 							</Content>
 							<Footer style={{textAlign: "center", color:"#a1a1a1"}}>

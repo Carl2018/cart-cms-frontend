@@ -38,7 +38,7 @@ class TableBody extends Component {
 				<AutoComplete 
 					key={ this.state.AutoCompleteKey }
 					options={ this.props.data
-						.map( item => item[dataIndex] )
+						?.map( item => item[dataIndex] )
 						.filter( (item, index, array) => array.indexOf(item) === index )
 						.map( entry => ({value:entry}) )
 					} 
