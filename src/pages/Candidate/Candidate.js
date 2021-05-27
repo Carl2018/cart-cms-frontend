@@ -71,6 +71,46 @@ class Candidate extends Component {
 			setFilter: true
 		},
 		{
+			title: 'Gender',
+			dataIndex: 'gender',
+			key: 'gender',
+			sorter: (a, b) => compare(a.gender, b.gender),
+			sortDirection: ['ascend', 'descend'],
+			width: 140,
+			// setFilter: true,
+			render: gender => {
+				let color = 'default';
+				let text = 'Unknown';
+				switch (gender) {
+					case '0' :
+						color = 'default';
+						text = 'Unknown';
+						break;
+					case '1' :
+						color = 'geekblue';
+						text = 'Male';
+						break;
+					case '2' :
+						color = 'magenta';
+						text = 'Female';
+						break;
+					case '3' :
+						color = 'purple';
+						text = 'Other';
+						break;
+					default:
+						color = 'default';
+						text = 'Unknown';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+		},
+		{
 			title: 'Message',
 			dataIndex: 'message',
 			key: 'message',
@@ -81,14 +121,24 @@ class Candidate extends Component {
 			setFilter: true
 		},
 		{
-			title: 'Last Updated',
-			dataIndex: 'timestamp',
-			key: 'timestamp',
-			sorter: (a, b) => compare(a.timestamp, b.timestamp),
+			title: 'User Tags',
+			dataIndex: 'user_tags',
+			key: 'user_tags',
+			sorter: (a, b) => compare(a.tag, b.tag),
 			sortDirection: ['ascend', 'descend'],
-			width: 140,
-			// setFilter: true,
-			render: timestamp => (<>{ toDatetime(Number(timestamp)*1000) }</>),
+			width: 200,
+			// ellipsis: true,
+			render: user_tags => (
+				<>
+					{ 
+						user_tags.length ? user_tags.map( item => (
+							<Tag color="blue" key={ uuidv4() }>
+								{ item.length > 20 ? item.slice(0,20) + "..." : item }
+							</Tag>
+						)) : <Tag key={ uuidv4() }>None</Tag> 
+					}
+				</>
+			),
 		},
 		{
 			title: 'Tag',
@@ -122,15 +172,6 @@ class Candidate extends Component {
 					</Tag>
 				);
 			},
-		},
-		{
-			title: 'User Tag',
-			dataIndex: 'user_tag',
-			key: 'user_tag',
-			sorter: (a, b) => compare(a.tag, b.tag),
-			sortDirection: ['ascend', 'descend'],
-			width: 140,
-			ellipsis: true,
 		},
 		{
 			title: 'Spam Score',
@@ -256,44 +297,14 @@ class Candidate extends Component {
 			},
 		},
 		{
-			title: 'Gender',
-			dataIndex: 'gender',
-			key: 'gender',
-			sorter: (a, b) => compare(a.gender, b.gender),
+			title: 'Last Updated',
+			dataIndex: 'timestamp',
+			key: 'timestamp',
+			sorter: (a, b) => compare(a.timestamp, b.timestamp),
 			sortDirection: ['ascend', 'descend'],
 			width: 140,
 			// setFilter: true,
-			render: gender => {
-				let color = 'default';
-				let text = 'Unknown';
-				switch (gender) {
-					case '0' :
-						color = 'default';
-						text = 'Unknown';
-						break;
-					case '1' :
-						color = 'geekblue';
-						text = 'Male';
-						break;
-					case '2' :
-						color = 'magenta';
-						text = 'Female';
-						break;
-					case '3' :
-						color = 'purple';
-						text = 'Other';
-						break;
-					default:
-						color = 'default';
-						text = 'Unknown';
-						break;
-				};	
-				return (
-					<Tag color={ color } key={ uuidv4() }>
-						{ text }
-					</Tag>
-				);
-			},
+			render: timestamp => (<>{ toDatetime(Number(timestamp)*1000) }</>),
 		},
 	];
 
@@ -474,7 +485,7 @@ class Candidate extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Candidate'
 						showDropdown={ false }
-						scroll={ {x:1880} }
+						scroll={ {x:2000} }
 						// api props
 						listSync={ this.listSync }
 						softBanSync={ this.softBanSync}

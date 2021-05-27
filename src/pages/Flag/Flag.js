@@ -135,6 +135,26 @@ class Flag extends Component {
 			setFilter: true
 		},
 		{
+			title: 'User Tag',
+			dataIndex: 'user_tag',
+			key: 'user_tag',
+			sorter: (a, b) => compare(a.user_tag, b.user_tag),
+			sortDirection: ['ascend', 'descend'],
+			width: 140,
+			// ellipsis: true,
+			render: user_tag => (
+				<>
+					{ 
+						user_tag ? 
+							<Tag color="blue" key={ uuidv4() }>
+								{ user_tag }
+							</Tag>
+						: <Tag key={ uuidv4() }>None</Tag> 
+					}
+				</>
+			),
+		},
+		{
 			title: 'Tag',
 			dataIndex: 'tag',
 			key: 'tag',
@@ -166,16 +186,6 @@ class Flag extends Component {
 					</Tag>
 				);
 			},
-		},
-		{
-			title: 'User Tag',
-			dataIndex: 'user_tag',
-			key: 'user_tag',
-			sorter: (a, b) => compare(a.tag, b.tag),
-			sortDirection: ['ascend', 'descend'],
-			width: 140,
-			ellipsis: true,
-			//setFilter: true
 		},
 		{
 			title: 'Spam Score',
