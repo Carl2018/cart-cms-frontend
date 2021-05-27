@@ -51,7 +51,7 @@ class Candidate extends Component {
 			this.setState({ spinning: true }, async () => {
 				this.props.searchCandidatesByTagSync({
 					currentPage: 1, 
-					pageSize: 10, 
+					pageSize: this.props.pageSizeCandidate, 
 					tagId, 
 				});
 				this.setState({ 
@@ -133,7 +133,7 @@ class Candidate extends Component {
 	titleModal = () => { return ( 
 		<Space>
 			<IdcardOutlined />
-			<strong>Candidates</strong>
+			<strong>{ `Candidates with Tag ${this.props.tag}` }</strong>
 		</Space>
 	); }
 
@@ -203,12 +203,16 @@ class Candidate extends Component {
 						<TableWrapper
 							key={ this.state.tableWrapperKey }
 							// data props
+							isSmall={ true }
 							noFilter={ true }
 							data={ this.props.dataCandidate ? this.props.dataCandidate : [] }
-							currentPage={ this.props.currentPageCandidate }
-							pageSize={ this.props.pageSizeCandidate }
-							total={ this.props.candCount }
-							pagination={ this.state.pagination }
+							pagination={ {
+								pageSizeOptions: [10, 25, 50, 100], 
+								pageSize: this.props.pageSizeCandidate,
+								current: this.props.currentPageCandidate,
+								total: this.props.candCount,
+								onChange: this.handleChangePage
+							} }
 							// display props
 							columns={ this.columns }
 							formItems={ this.formItems }
@@ -218,7 +222,6 @@ class Candidate extends Component {
 							softBanSync={ this.softBanSync }
 							hardBanSync={ this.hardBanSync }
 							blacklistSync={ this.blacklistSync }
-							onChangePage={ this.handleChangePage }
 							onChangeSize={ this.handleChangePage }
 						>
 						</TableWrapper>
