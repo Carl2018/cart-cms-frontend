@@ -377,7 +377,8 @@ class Stat extends React.Component {
         this.dataEntry('HK','rgba(255,69,0,1)','hk_'+data_type),
         this.dataEntry('TW','rgba(255,140,0,1)','tw_'+data_type),
         this.dataEntry('MY','rgba(30,144,255,1)','my_'+data_type),
-        this.dataEntry('CA','rgba(75,192,192,1)','ca_'+data_type)
+        this.dataEntry('CA','rgba(75,192,192,1)','ca_'+data_type),
+        this.dataEntry('SG','rgba(0,0,0,1)','sg_'+data_type)
       ]
     }
 
