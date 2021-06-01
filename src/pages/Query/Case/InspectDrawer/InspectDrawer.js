@@ -28,6 +28,10 @@ import DrawerDropdown from './DrawerDropdown'
 import Template from './Template'
 import Flag from './Flag'
 import Conversation from './Conversation'
+import Invitation from './Invitation'
+import LoginLog from './LoginLog'
+import Payment from './Payment'
+import RedisLog from './RedisLog'
 import Blacklist from './Blacklist'
 
 // import helpers
@@ -51,6 +55,18 @@ class InspectDrawer extends Component {
 			// for the conversation modal
 			visibleConversation: false,
 			modalKeyConversation: Date.now(),
+			// for the invitation modal
+			visibleInvitation: false,
+			modalKeyInvitation: Date.now(),
+			// for the loginLog modal
+			visibleLoginLog: false,
+			modalKeyLoginLog: Date.now(),
+			// for the payment modal
+			visiblePayment: false,
+			modalKeyPayment: Date.now(),
+			// for the redisLog modal
+			visibleRedisLog: false,
+			modalKeyRedisLog: Date.now(),
 			// for Spin
 			spinning: false,
 			// for the blacklist modal
@@ -382,6 +398,7 @@ class InspectDrawer extends Component {
 	}
 
 	handleCloseTemplate = event => {
+		console.log(this.props.dataAccount);
 		this.setState({
 			visibleTemplate: false,
 			modalKeyTemplate: Date.now(),
@@ -413,6 +430,62 @@ class InspectDrawer extends Component {
 		this.setState({
 			visibleConversation: false,
 			modalKeyConversation: Date.now(),
+		});
+	}
+
+	// handlers for invitations
+	handleClickInvitations = event => {
+		this.setState({
+			visibleInvitation: true,
+		});
+	}
+
+	handleCloseInvitation = event => {
+		this.setState({
+			visibleInvitation: false,
+			modalKeyInvitation: Date.now(),
+		});
+	}
+
+	// handlers for login logs
+	handleClickLoginLogs = event => {
+		this.setState({
+			visibleLoginLog: true,
+		});
+	}
+
+	handleCloseLoginLog = event => {
+		this.setState({
+			visibleLoginLog: false,
+			modalKeyLoginLog: Date.now(),
+		});
+	}
+
+	// handlers for payments
+	handleClickPayments = event => {
+		this.setState({
+			visiblePayment: true,
+		});
+	}
+
+	handleClosePayment = event => {
+		this.setState({
+			visiblePayment: false,
+			modalKeyPayment: Date.now(),
+		});
+	}
+
+	// handlers for redis logs
+	handleClickRedisLogs = event => {
+		this.setState({
+			visibleRedisLog: true,
+		});
+	}
+
+	handleCloseRedisLog = event => {
+		this.setState({
+			visibleRedisLog: false,
+			modalKeyRedisLog: Date.now(),
 		});
 	}
 
@@ -576,6 +649,10 @@ class InspectDrawer extends Component {
 					onClickTemplates={ this.handleClickTemplates }
 					onClickFlags={ this.handleClickFlags }
 					onClickConversations={ this.handleClickConversations }
+					onClickInvitations={ this.handleClickInvitations }
+					onClickLoginLogs={ this.handleClickLoginLogs }
+					onClickPayments={ this.handleClickPayments }
+					onClickRedisLogs={ this.handleClickRedisLogs }
 				/>
 			</Col>
 		</Row>	
@@ -728,6 +805,46 @@ class InspectDrawer extends Component {
 						onCancel={ this.handleCloseConversation }
 					>
 					</Conversation>
+				</div>
+				<div>
+					<Invitation
+						dataAccount={ this.props.dataAccount }
+						allRelatedAccounts={ this.props.allRelatedAccounts }
+						modalKey={ this.state.modalKeyInvitation }
+						visible={ this.state.visibleInvitation }
+						onCancel={ this.handleCloseInvitation }
+					>
+					</Invitation>
+				</div>
+				<div>
+					<LoginLog
+						dataAccount={ this.props.dataAccount }
+						allRelatedAccounts={ this.props.allRelatedAccounts }
+						modalKey={ this.state.modalKeyLoginLog }
+						visible={ this.state.visibleLoginLog }
+						onCancel={ this.handleCloseLoginLog }
+					>
+					</LoginLog>
+				</div>
+				<div>
+					<Payment
+						dataAccount={ this.props.dataAccount }
+						allRelatedAccounts={ this.props.allRelatedAccounts }
+						modalKey={ this.state.modalKeyPayment }
+						visible={ this.state.visiblePayment }
+						onCancel={ this.handleClosePayment }
+					>
+					</Payment>
+				</div>
+				<div>
+					<RedisLog
+						dataAccount={ this.props.dataAccount }
+						allRelatedAccounts={ this.props.allRelatedAccounts }
+						modalKey={ this.state.modalKeyRedisLog }
+						visible={ this.state.visibleRedisLog }
+						onCancel={ this.handleCloseRedisLog }
+					>
+					</RedisLog>
 				</div>
 				<div>
 					<Blacklist

@@ -3,13 +3,14 @@ import React, { Component } from 'react';
 // import components from ant design
 import { Menu, Dropdown } from 'antd';
 import { 
-	HistoryOutlined, 
+	CommentOutlined,
+	CopyOutlined,
 	EditOutlined, 
+	FlagOutlined,
+	HistoryOutlined, 
+	ShakeOutlined,
 	UserAddOutlined,
 	UserDeleteOutlined,
-	CopyOutlined,
-	FlagOutlined,
-	CommentOutlined,
 } from '@ant-design/icons';
 
 // import shared and child components
@@ -73,6 +74,38 @@ class DrawerDropdown extends Component {
 				onClick={ this.props.onClickConversations }
 			>
 				Conversations
+			</Menu.Item>
+			<Menu.Item 
+				key='7' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <ShakeOutlined /> }
+				onClick={ this.props.onClickInvitations }
+			>
+				Invitations
+			</Menu.Item>
+			<Menu.Item 
+				key='8' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <ShakeOutlined /> }
+				onClick={ this.props.onClickLoginLogs }
+			>
+				Login Logs
+			</Menu.Item>
+			<Menu.Item 
+				key='9' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <ShakeOutlined /> }
+				onClick={ this.props.onClickPayments }
+			>
+				Payments
+			</Menu.Item>
+			<Menu.Item 
+				key='10' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <ShakeOutlined /> }
+				onClick={ this.props.onClickRedisLogs }
+			>
+				Redis Logs
 			</Menu.Item>
 		</Menu>
 	);
