@@ -36,7 +36,7 @@ class History extends Component {
 			title: 'Category',
 			dataIndex: 'product_id',
 			key: 'product_id',
-			wproduct_idth: '10%',
+			width: '20%',
 			sorter: (a, b) => compare(a.product_id, b.product_id),
 			// setFilter: true,
 			render: product_id => {
@@ -71,7 +71,7 @@ class History extends Component {
 			title: 'Periodicity',
 			dataIndex: 'product_id',
 			key: 'product_id',
-			wproduct_idth: '10%',
+			width: '20%',
 			sorter: (a, b) => compare(a.product_id, b.product_id),
 			// setFilter: true,
 			render: product_id => {
@@ -103,7 +103,7 @@ class History extends Component {
 			title: 'Expiry Date',
 			dataIndex: 'expiry_date',
 			key: 'expiry_date',
-			width: '40%',
+			width: '60%',
 			sorter: (a, b) => compare(a.expiry_date, b.expiry_date),
 			setFilter: true
 		},

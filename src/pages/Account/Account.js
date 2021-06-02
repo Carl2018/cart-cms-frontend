@@ -165,7 +165,7 @@ class Account extends Component {
 			title: 'Category',
 			dataIndex: 'product_id',
 			key: 'product_id',
-			wproduct_idth: '10%',
+			width: 120,
 			sorter: (a, b) => compare(a.product_id, b.product_id),
 			// setFilter: true,
 			render: product_id => {
@@ -200,7 +200,7 @@ class Account extends Component {
 			title: 'Periodicity',
 			dataIndex: 'product_id',
 			key: 'product_id',
-			wproduct_idth: '10%',
+			width: 120,
 			sorter: (a, b) => compare(a.product_id, b.product_id),
 			// setFilter: true,
 			render: product_id => {
@@ -263,7 +263,7 @@ class Account extends Component {
 			sorter: (a, b) => compare(a.physical_region, b.physical_region),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: 120,
+			width: 140,
 			setFilter: true
 		},
 		{
@@ -414,7 +414,7 @@ class Account extends Component {
 						formItems={ this.formItems }
 						tableHeader={ this.tableHeader }
 						drawerTitle='An Account'
-						scroll={ {x:1840} }
+						scroll={ {x:2000} }
 						// api props
 						create={ this.createSync }
 						edit={ this.updateSync }
