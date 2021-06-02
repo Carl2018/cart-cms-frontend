@@ -133,7 +133,7 @@ class Candidate extends Component {
 					{ 
 						user_tags ? user_tags.map( item => (
 							<Tag color="blue" key={ uuidv4() }>
-								{ item.length > 20 ? item.slice(0,20) + "..." : item }
+								{ item?.length > 20 ? item.slice(0,20) + "..." : item }
 							</Tag>
 						)) : <Tag key={ uuidv4() }>None</Tag> 
 					}
