@@ -75,7 +75,7 @@ class Email extends Component {
 			sorter: (a, b) => compare(a.email, b.email),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: '15%',
+			width: '25%',
 			setFilter: true
 		},
 		{
@@ -94,7 +94,7 @@ class Email extends Component {
 			sorter: (a, b) => compare(a.description, b.description),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: '15%',
+			width: '20%',
 			setFilter: true
 		},
 		{

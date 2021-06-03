@@ -428,9 +428,38 @@ class Candidate extends Component {
 		...this.config,
 		list: "search_by_keywords",
 	});
+	searchCandidateById = listSync.bind(this, {
+		...this.config,
+		list: "search_by_cid",
+	});
+
 	searchCandidatesSync = params => {
 		this.setState( { spinning: true, pagination: true }, async () => {
 			const { entry } = await this.searchCandidates({...params, cache: this.state.cache});
+
+			if (entry) {
+				// perform title classifications
+				let titles = {};
+				entry.forEach( item => { titles[item.id] = item.message });
+				const { entry : predictions } = await this.predictSync({ 
+					titles,
+					should_update: 0,
+				});
+				const data = entry.map( item => {
+					item.score = predictions[item.id]?.score ? predictions[item.id]?.score : 0;
+					item.tag = item.score > 6 ? 1 : 0;
+					return item; 
+				})
+				this.setState({ data });
+			}
+
+			this.setState({ spinning: false });
+		});
+	}
+
+	searchCandidateByIdSync = params => {
+		this.setState( { spinning: true, pagination: true }, async () => {
+			const { entry } = await this.searchCandidateById({...params, cache: this.state.cache});
 
 			if (entry) {
 				// perform title classifications
@@ -493,6 +522,7 @@ class Candidate extends Component {
 						hardBanSync={ this.hardBanSync }
 						blacklistSync={ this.blacklistSync }
 						searchCandidatesSync={ this.searchCandidatesSync }
+						searchCandidateByIdSync={ this.searchCandidateByIdSync}
 						onChangeCache={ this.handleChangeCache }
 						onChangePage={ this.handleChangePage }
 						onChangeSize={ this.handleChangePage }

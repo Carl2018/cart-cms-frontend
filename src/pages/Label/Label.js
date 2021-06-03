@@ -63,7 +63,7 @@ class Label extends Component {
 			key: 'labelname',
 			sorter: (a, b) => compare(a.labelname, b.labelname),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '35%',
 			ellipsis: true,
 			setFilter: true
 		},

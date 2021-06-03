@@ -150,10 +150,25 @@ class TableWrapper extends Component {
 		});
 	}
 
-	// handler for search
+	// handlers for search
 	handleSearch = data => {
 		if (data) {
 			this.props.searchCandidatesSync({ keywords: data });
+		} else {
+			const page = 1;
+			const size = 10;
+			this.props.onChangePage(page, size);
+		}
+	}
+
+	handleSearchByCid = data => {
+		if (!isFinite(data)) {
+			message.error("Candidate ID should be a number");
+			return;
+		}
+			
+		if (data) {
+			this.props.searchCandidateByIdSync({ cid: data });
 		} else {
 			const page = 1;
 			const size = 10;
@@ -227,6 +242,13 @@ class TableWrapper extends Component {
 									<Search
 										onSearch={ this.props.fromTagPage? this.handleSearch(this.props.keywords) : this.handleSearch }
 										placeholder= "Search Candidate by Message Keywords"
+										style={{ width: 400 }}
+										size="middle"
+										allowClear
+									/>
+									<Search
+										onSearch={ this.handleSearchByCid }
+										placeholder= "Search Candidate by ID"
 										style={{ width: 400 }}
 										size="middle"
 										allowClear

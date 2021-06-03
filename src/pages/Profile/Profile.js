@@ -76,7 +76,7 @@ class Profile extends Component {
 			key: 'profilename',
 			sorter: (a, b) => compare(a.profilename, b.profilename),
 			sortDirection: ['ascend', 'descend'],
-			width: '10%',
+			width: '20%',
 			setFilter: true
 		},
 		{
@@ -85,7 +85,7 @@ class Profile extends Component {
 			key: 'description',
 			sorter: (a, b) => compare(a.description, b.description),
 			sortDirection: ['ascend', 'descend'],
-			width: '30%',
+			width: '35%',
 			ellipsis: true,
 			setFilter: true
 		},

@@ -76,7 +76,7 @@ class Template extends Component {
 			key: 'title',
 			sorter: (a, b) => compare(a.title, b.title),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '35%',
 			ellipsis: true,
 			setFilter: true
 		},

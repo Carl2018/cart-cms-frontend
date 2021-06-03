@@ -7,6 +7,7 @@ export const candidateService = {
 		retrieveDetails,
     list,
     search_by_keywords,
+    search_by_cid,
     listInvitations,
 		retrieveInvitationRowCount,
     listLoginLogs,
@@ -63,6 +64,20 @@ function list(params={}) {
 function search_by_keywords(params={}) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/candidate/search_by_keywords`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+    const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+    return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function search_by_cid(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/candidate/search_by_cid`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api

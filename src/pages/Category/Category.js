@@ -71,7 +71,7 @@ class Category extends Component {
 			key: 'description',
 			sorter: (a, b) => compare(a.description, b.description),
 			sortDirection: ['ascend', 'descend'],
-			width: '30%',
+			width: '45%',
 			ellipsis: true,
 			setFilter: true
 		},
