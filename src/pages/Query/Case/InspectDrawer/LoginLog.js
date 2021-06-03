@@ -44,7 +44,7 @@ class LoginLog extends Component {
 			options: [],
 			// pagination
 			currentPage: 1,
-			pageSize: 10,
+			pageSize: 25,
 			total: 10,
 		};
 	}
@@ -177,7 +177,7 @@ class LoginLog extends Component {
 		this.setState({ total: row_count });
 	}
 	list = listSync.bind(this, this.config);
-	listSync = ({currentPage=1, pageSize=10}) => {
+	listSync = ({currentPage=1, pageSize=25}) => {
 		// wrap the logic with Promise to allow await statement
 		return new Promise(function (resolve) {
 			this.setState( { spinning: true }, async () => {
@@ -263,8 +263,10 @@ class LoginLog extends Component {
 								<TableBody
 									columns={ this.columns } 
 									data={ this.state.loginLogs }
-									isSmall={ true }
+									size={ "small" }
 									pagination={{
+										showQuickJumper: true,
+										showSizeChanger: true,
 										pageSizeOptions: [10, 25, 50, 100], 
 										pageSize: this.state.pageSize,
 										current: this.state.currentPage,

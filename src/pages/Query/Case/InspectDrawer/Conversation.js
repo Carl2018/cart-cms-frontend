@@ -53,7 +53,7 @@ class Conversation extends Component {
 			record: {},
 			// for pagination of content modal
 			currentPage: 1,
-			pageSize: 10,
+			pageSize: 25,
 			total: 5000,
 		};
 	}
@@ -328,7 +328,7 @@ class Conversation extends Component {
 								<TableBody
 									columns={ this.columns } 
 									data={ this.state.conversations }
-									isSmall={ true }
+									size={ "small" }
 								/>
 							</div>
 						</Spin>

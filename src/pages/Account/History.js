@@ -135,7 +135,7 @@ class History extends Component {
 							<TableBody
 								columns={ this.columns } 
 								data={ this.props.history ? this.props.history : [] }
-								isSmall={ true }
+								size={ "small" }
 							/>
 						</div>
 					</div>

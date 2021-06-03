@@ -46,7 +46,7 @@ class Profile extends Component {
 			labels: [],
 			spinning: false,
 			rowCount: 0,
-			defaultPageSize: 10,
+			defaultPageSize: 25,
 			defaultPage: 1,
 		};
 	}
@@ -257,6 +257,7 @@ class Profile extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Profile'
 						pagination={ false }
+						size={ "small" }
 						// api props
 						create={ this.createSync }
 						list={ this.listSync }

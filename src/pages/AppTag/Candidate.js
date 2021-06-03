@@ -203,7 +203,7 @@ class Candidate extends Component {
 						<TableWrapper
 							key={ this.state.tableWrapperKey }
 							// data props
-							isSmall={ true }
+							size={ "small" }
 							noFilter={ true }
 							data={ this.props.dataCandidate ? this.props.dataCandidate : [] }
 							pagination={ {

@@ -43,7 +43,7 @@ class Email extends Component {
 			options: [],
 			spinning: false,
 			rowCount: 0,
-			defaultPageSize: 10,
+			defaultPageSize: 25,
 			defaultPage: 1,
 		};
 	}
@@ -261,7 +261,7 @@ class Email extends Component {
 						tableHeader={ this.tableHeader }
 						dropdownName='Create Profile'
 						drawerTitle='An Email'
-						isSmall={ this.props.isSmall }
+						size={ "small" }
 						pagination={ false }
 						// api props
 						create={ this.createSync }

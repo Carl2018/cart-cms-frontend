@@ -46,7 +46,7 @@ class Case extends Component {
 			options: [],
 			spinning: false,
 			rowCount: 0,
-			defaultPageSize: 10,
+			defaultPageSize: 25,
 			defaultPage: 1,
 		};
 	}
@@ -390,6 +390,7 @@ class Case extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Case'
 						pagination={ false }
+						size={ "small" }
 						// api props
 						create={ this.createSync }
 						list={ this.listSync }

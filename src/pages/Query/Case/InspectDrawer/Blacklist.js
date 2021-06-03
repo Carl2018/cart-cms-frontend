@@ -208,7 +208,7 @@ class Blacklist extends Component {
 								<TableBody
 									columns={ this.columns } 
 									data={ this.props.blacklist }
-									isSmall={ true }
+									size={ "small" }
 									selectedRowKeys={ this.state.selectedRowKeys }
 									onSelectChange={ this.handleSelectChange }
 								/>

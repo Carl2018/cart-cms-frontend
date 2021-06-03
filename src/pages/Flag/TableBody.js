@@ -154,7 +154,7 @@ class TableBody extends Component {
 							rowKey={ "id" }
 							pagination={ this.props.pagination }
 							showHeader={ this.props.showHeader }
-                            loading={ this.props.loading }
+							loading={ this.props.loading }
 						/>
 					)
 				}

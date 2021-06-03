@@ -530,6 +530,7 @@ class Flag extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Flag'
 						showDropdown={ false }
+						size={ "small" }
 						scroll={ {x:2080} }
 						// api props
 						listSync={ this.listSync }

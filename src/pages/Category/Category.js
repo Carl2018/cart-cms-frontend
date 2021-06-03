@@ -32,7 +32,7 @@ class Category extends Component {
 			data: [],
 			spinning: false,
 			rowCount: 0,
-			defaultPageSize: 10,
+			defaultPageSize: 25,
 			defaultPage: 1,
 		};
 	}
@@ -173,6 +173,7 @@ class Category extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Category'
 						pagination={ false }
+						size={ "small" }
 						// api props
 						create={ this.createSync }
 						list={ this.listSync }

@@ -36,7 +36,7 @@ class Title extends Component {
 			data: [],
 			spinning: false,
 			rowCount: 0,
-			defaultPageSize: 10,
+			defaultPageSize: 25,
 			defaultPage: 1,
 		};
 	}
@@ -378,6 +378,7 @@ class Title extends Component {
 						drawerTitle='A Title'
 						pagination={ false }
 						noBatch={ true }
+						size={ "small" }
 						// api props
 						list={ this.listSync }
 						edit={ this.updateSync }

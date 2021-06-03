@@ -44,7 +44,7 @@ class Template extends Component {
 			categories: [],
 			spinning: false,
 			rowCount: 0,
-			defaultPageSize: 10,
+			defaultPageSize: 25,
 			defaultPage: 1,
 		};
 	}
@@ -285,6 +285,7 @@ class Template extends Component {
 						drawerTitle='A Template'
 						drawerWidth={ 900 }
 						pagination={ false }
+						size={ "small" }
 						// api props
 						create={ this.createSync }
 						list={ this.listSync }

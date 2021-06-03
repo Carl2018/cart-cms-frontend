@@ -197,7 +197,7 @@ class TableWrapper extends Component {
 							null : this.state.selectedRowKeys 
 						}
 						onSelectChange={ this.handleSelectChange }
-						isSmall={ this.props.isSmall }
+						size={ this.props.size }
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
 						pagination={ this.props.pagination }
@@ -212,6 +212,7 @@ class TableWrapper extends Component {
 							defaultPage={ this.props.defaultPage }
 							list={ this.props.list }
 							filters={ this.props.filters }
+							size={ this.props.size }
 						/> 
 						: <></> 
 					}

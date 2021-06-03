@@ -308,6 +308,7 @@ class Word extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Word'
 						showDropdown={ false }
+						size={ "small" }
 						// api props
 						create={ this.createSync }
 						edit={ this.updateSync }

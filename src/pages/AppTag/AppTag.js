@@ -523,7 +523,7 @@ class AppTag extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Tag'
 						noBatch={ true }
-						isSmall={ true }
+						size={ "small" }
 						// api props
 						edit={ this.updateSync }
 						refreshTable={ this.refreshTable }

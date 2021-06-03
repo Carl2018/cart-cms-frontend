@@ -181,7 +181,7 @@ class Email extends Component {
 					tableHeader={ this.tableHeader }
 					drawerTitle='An Email'
 					loading={ this.props.loading }
-					isSmall={ this.props.isSmall }
+					size={ this.props.size }
 					showHeader={ this.props.showHeader }
 					showDropdown={ this.props.showDropdown }
 					// api props

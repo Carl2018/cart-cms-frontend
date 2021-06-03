@@ -38,7 +38,7 @@ class Candidate extends Component {
 			// pagination
 			pagination: false,
 			currentPage: 1,
-			pageSize: 10,
+			pageSize: 25,
 			total: 5000,
 		};
 	}
@@ -485,6 +485,7 @@ class Candidate extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Candidate'
 						showDropdown={ false }
+						size={ "small" }
 						scroll={ {x:2000} }
 						// api props
 						listSync={ this.listSync }

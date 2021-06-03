@@ -43,7 +43,7 @@ class Account extends Component {
 			spinning: false,
 			// pagination
 			currentPage: 1,
-			pageSize: 10,
+			pageSize: 25,
 			total: 0,
 		};
 	}
@@ -415,6 +415,7 @@ class Account extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='An Account'
 						scroll={ {x:2000} }
+						size={ "small" }
 						// api props
 						create={ this.createSync }
 						edit={ this.updateSync }

@@ -241,7 +241,7 @@ class TableWrapper extends Component {
 						data={ this.props.data } 
 						columns={ this.columns } 
 						scroll={ this.props.scroll }
-						isSmall={ this.props.isSmall }
+						size={ this.props.size }
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
 						pagination={ this.props.pagination }
@@ -254,7 +254,8 @@ class TableWrapper extends Component {
 							showQuickJumper
 							current={ this.props.currentPage }
 							pageSize={ this.props.pageSize }
-							pageSizeOptions={ [10, 20, 50] }
+							pageSizeOptions={ [10, 25, 50, 100] }
+							size={ this.props.size }
 							total={ this.props.total }
 							onChange={ this.props.onChangePage }
 							onShowSizeChange={ this.props.onChangeSize }

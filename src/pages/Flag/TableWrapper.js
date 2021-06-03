@@ -286,7 +286,7 @@ class TableWrapper extends Component {
 						data={ this.props.data } 
 						columns={ this.columns } 
 						scroll={ this.props.scroll }
-						isSmall={ this.props.isSmall }
+						size={ this.props.size }
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
 						pagination={ this.props.pagination }

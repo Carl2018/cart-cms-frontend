@@ -97,7 +97,7 @@ class Content extends Component {
 						<TableBody
 							columns={ this.columns } 
 							data={ this.props.data }
-							isSmall={ true }
+							size={ "small" }
 							pagination={ false }
 						/>
 						<div style={{marginTop: "16px", textAlign: "right" }} >
@@ -106,10 +106,11 @@ class Content extends Component {
 								showQuickJumper
 								current={ this.props.currentPage }
 								pageSize={ this.props.pageSize }
-								pageSizeOptions={ [10, 20, 50] }
+								pageSizeOptions={ [10, 25, 50] }
 								total={ this.props.total }
 								onChange={ this.props.onChangePage }
 								onShowSizeChange={ this.props.onChangePage }
+								size={ "small" }
 							/>
 						</div>
 					</Spin>
