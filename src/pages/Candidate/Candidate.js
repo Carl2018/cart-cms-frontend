@@ -6,6 +6,7 @@ import {
 	Select,
 	Spin,
 	Tag,
+	message,
 } from 'antd';
 import { IdcardOutlined } from '@ant-design/icons';
 
@@ -22,7 +23,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { createSync, listSync, updateSync } = backend;
+const { createSync, retrieveSync, listSync, updateSync } = backend;
 const { compare, toDatetime } = helpers;
 const { Option } = Select;
 
@@ -389,6 +390,7 @@ class Candidate extends Component {
 				});
 				const data = entry.map( item => {
 					item.score = predictions[item.id]?.score ? predictions[item.id]?.score : 0;
+					item.probability = predictions[item.id]?.percent ? predictions[item.id]?.percent : 0;
 					item.tag = item.score > 6 ? 1 : 0;
 					return item; 
 				})
@@ -447,6 +449,7 @@ class Candidate extends Component {
 				});
 				const data = entry.map( item => {
 					item.score = predictions[item.id]?.score ? predictions[item.id]?.score : 0;
+					item.probability = predictions[item.id]?.percent ? predictions[item.id]?.percent : 0;
 					item.tag = item.score > 6 ? 1 : 0;
 					return item; 
 				})
@@ -471,6 +474,7 @@ class Candidate extends Component {
 				});
 				const data = entry.map( item => {
 					item.score = predictions[item.id]?.score ? predictions[item.id]?.score : 0;
+					item.probability = predictions[item.id]?.percent ? predictions[item.id]?.percent : 0;
 					item.tag = item.score > 6 ? 1 : 0;
 					return item; 
 				})
@@ -486,6 +490,27 @@ class Candidate extends Component {
 		create: "predict",
 		dataName: "unknown",
 	});
+
+	searchTitleByCid = retrieveSync.bind(this, {
+		service: titleService,
+		retrieve: "searchTitleByCid",
+		dataName: "dummy",
+	});
+
+	createSync = createSync.bind(this, {
+		service: titleService,
+		create: "create",
+		retrieve: "retrieve",
+		dataName: "unknown",
+	});
+
+	handleClickMislabelled = async params => {
+		const { entry } = await this.searchTitleByCid(params);
+		if (!entry)
+			this.createSync(params);
+		else
+			message.info("The mislabel has been recoreded already")
+	}
 
 	// refresh table
 	refreshTable = () => {
@@ -508,6 +533,7 @@ class Candidate extends Component {
 						pageSize={ this.state.pageSize }
 						total={ this.state.total }
 						pagination={ this.state.pagination }
+						cache={ this.state.cache }
 						// display props
 						columns={ this.columns }
 						formItems={ this.formItems }
@@ -523,6 +549,7 @@ class Candidate extends Component {
 						blacklistSync={ this.blacklistSync }
 						searchCandidatesSync={ this.searchCandidatesSync }
 						searchCandidateByIdSync={ this.searchCandidateByIdSync}
+						onClickMislabelled={ this.handleClickMislabelled }
 						onChangeCache={ this.handleChangeCache }
 						onChangePage={ this.handleChangePage }
 						onChangeSize={ this.handleChangePage }

@@ -28,7 +28,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { createSync, listSync, updateSync } = backend;
+const { createSync, retrieveSync, listSync, updateSync } = backend;
 const { compare, toDatetime } = helpers;
 const { Option } = Select;
 
@@ -450,6 +450,7 @@ class Flag extends Component {
 				});
 				const data = entry.map( item => {
 					item.score = predictions[item.id]?.score ? predictions[item.id]?.score : 0;
+					item.probability = predictions[item.id]?.percent ? predictions[item.id]?.percent : 0;
 					item.tag = item.score > 6 ? 1 : 0;
 					return item; 
 				})
@@ -502,6 +503,101 @@ class Flag extends Component {
 		dataName: "unknown",
 	});
 
+	list = listSync.bind(this, this.config);
+	listSync = (interval=48, orderBy='timestamp', page=1, remarks='') => {
+		this.setState( { spinning: true }, async () => {
+			const { entry } = await this.list({ 
+				cache: this.state.cache, 
+				interval, 
+				order_by: orderBy, 
+				page,
+				remarks,
+			});
+
+			if (entry) {
+				// perform title classifications
+				let titles = {};
+				entry.forEach( item => { titles[item.id] = item.suspect_message });
+				const { entry : predictions } = await this.predictSync({ 
+					titles,
+					should_update: 0,
+				});
+				const data = entry.map( item => {
+					item.score = predictions[item.id]?.score ? predictions[item.id]?.score : 0;
+					item.probability = predictions[item.id]?.percent ? predictions[item.id]?.percent : 0;
+					item.tag = item.score > 6 ? 1 : 0;
+					return item; 
+				})
+				this.setState({ data });
+			}
+
+			this.setState({ spinning: false });
+		});
+	}
+	configCandidate = {
+		service: candidateService,
+		retrieve: "retrieve",
+		update: "ban",
+		dataName: "data",
+		pageName: "Flags",
+	};
+	ban = updateSync.bind(this, this.configCandidate);
+	softBanSync = async record => {
+		const body = {
+			candidate_id: record.suspect_id,
+			ban_type: "S",
+			cache: this.state.cache,
+		}
+		await this.ban(record.suspect_id, body);
+		this.updateLocal( record, 's' );
+	}
+	hardBanSync = async record => {
+		const body = {
+			candidate_id: record.suspect_id,
+			ban_type: "H",
+			cache: this.state.cache,
+		}
+		await this.ban(record.suspect_id, body);
+		this.updateLocal( record, 'h' );
+	}
+	blacklistSync = async (id, record) => {
+		const body = {
+			candidate_id: id,
+			ban_type: "B",
+			blacklist_type: record.blacklist_type,
+			cache: this.state.cache,
+		}
+		await this.ban(id, body);
+		this.updateLocal( record, 'h' );
+	}
+
+	predictSync = createSync.bind(this, {
+		service: titleService,
+		create: "predict",
+		dataName: "unknown",
+	});
+
+	searchTitleByCid = retrieveSync.bind(this, {
+		service: titleService,
+		retrieve: "searchTitleByCid",
+		dataName: "dummy",
+	});
+
+	createSync = createSync.bind(this, {
+		service: titleService,
+		create: "create",
+		retrieve: "retrieve",
+		dataName: "unknown",
+	});
+
+	handleClickMislabelled = async params => {
+		const { entry } = await this.searchTitleByCid(params);
+		if (!entry)
+			this.createSync(params);
+		else
+			message.info("The mislabel has been recoreded already")
+	}
+
 	// refresh table
 	refreshTable = () => {
 		this.setState({ spinning: true }, async () => {
@@ -537,6 +633,7 @@ class Flag extends Component {
 						softBanSync={ this.softBanSync}
 						hardBanSync={ this.hardBanSync }
 						blacklistSync={ this.blacklistSync }
+						onClickMislabelled={ this.handleClickMislabelled }
 						onChangeCache={ this.handleChangeCache }
 						onChangeOrderBy={ this.handleChangeOrderBy }
 						onChangePage={ this.handleChangePage }

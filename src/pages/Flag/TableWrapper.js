@@ -16,6 +16,7 @@ import {
 	message, 
 } from 'antd';
 import { 
+	CloseOutlined, 
 	CommentOutlined,
 	ExceptionOutlined,
 	EyeInvisibleOutlined, 
@@ -81,6 +82,14 @@ class TableWrapper extends Component {
 			>
 				Conversations
 			</Menu.Item>
+			<Menu.Item 
+				key='5' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <CloseOutlined /> }
+				onClick={ this.onClickMislabelled.bind(this, record) }
+			>
+				Mislabelled
+			</Menu.Item>
 		</Menu>
 	);
 	
@@ -145,6 +154,7 @@ class TableWrapper extends Component {
 
 	// handlers for actions in TableBody
 	handleClickBlacklist = record => {
+		console.log(record);
 		this.setState({
 			visible: true, 
 			disabled: false,
@@ -163,6 +173,17 @@ class TableWrapper extends Component {
 		});
 	}
 
+	onClickMislabelled = record => {
+		const category = record.tag === 1 ? 0 : 1;
+		this.props.onClickMislabelled({
+			cache: this.props.cache,
+			candidate_id: record.suspect_id,
+			title: record.suspect_message,
+			score: record.score,
+			probability: record.probability,
+			category,
+		});
+	}
 
 	// handlers for actions in TableDrawer
   handleClose = () => {

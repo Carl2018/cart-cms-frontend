@@ -3,9 +3,11 @@ import { authHeader, mlAuthHeader } from '_helpers';
 import { handleResponse } from '_helpers';
 
 export const titleService = {
+		create,
 		retrieve,
 		retrieveRowCount,
     list,
+    searchTitleByCid,
     update,
     count,
     collect,
@@ -15,6 +17,16 @@ export const titleService = {
     deploy,
     predict,
 };
+
+function create(record) {
+    const requestOptions = { 
+			method: 'POST', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/title/create`, requestOptions)
+			.then(handleResponse);
+}
 
 function retrieve(params={}) {
 		// append query string
@@ -47,6 +59,20 @@ function retrieveRowCount(params={}) {
 function list(params={}) {
 		// append query string
 		let url = new URL(`${config.apiUrl}/title/list`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+    const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+    return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function searchTitleByCid(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/title/search_title_by_cid`);
 		Object.keys(params).forEach( key => 
 			url.searchParams.append(key, params[key]) );
 		// call the api
