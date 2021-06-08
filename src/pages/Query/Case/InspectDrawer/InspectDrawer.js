@@ -34,9 +34,18 @@ import Payment from './Payment'
 import RedisLog from './RedisLog'
 import Blacklist from './Blacklist'
 
-// import helpers
-import { helpers } from '_helpers';
+// import services
+import { candidateService } from '_services';
 
+// import helpers
+import { backend, helpers } from '_helpers';
+
+// destructure imported components and objects
+const { 
+	retrieveSync, 
+	listSync, 
+	updateSync, 
+} = backend;
 // destructure imported components and objects
 const { compare } = helpers;
 const { Item } = Descriptions;
@@ -72,7 +81,44 @@ class InspectDrawer extends Component {
 			// for the blacklist modal
 			visibleBlacklist: false,
 			modalKeyBlacklist: Date.now(),
+			// for retrieving gender and candidates with same udid
+			db: "ea",
+			candidateId: 0,
+			gender: 0,
+			udid: null,
+			relatedCandidates: [],
 		};
+	}
+
+	componentDidUpdate(prevProps) {
+		const { visible, dataAccount } = this.props;
+		if(prevProps.visible !== visible && visible && dataAccount) {
+			const { db, candidate_id: candidateId } = dataAccount;
+			this.setState({ db, candidateId, spinning: true }, async () => {
+				let response = await this.retrieveCandidateProfileSync({ 
+					db, 
+					candidate_id: candidateId,
+				});
+				let gender = 0;
+				let udid = null;
+				if (response?.entry)
+					({ entry: {gender, udid} } = response);
+				response = null;
+				// remove this line
+				udid = "token'";
+				if (udid)
+					response = await this.listCandidatesByUdidSync({ 
+						db, 
+						udid,
+					});
+				let relatedCandidates = [];
+				console.log(response);
+				if (response?.entry)
+					relatedCandidates = response.entry.map( item => item.candidate_id );
+				console.log(relatedCandidates);
+				this.setState({ gender, udid, relatedCandidates, spinning: false });
+			});
+		}
 	}
 
 	// for process history panel
@@ -388,7 +434,7 @@ class InspectDrawer extends Component {
 	onClickProcess = () => this.props.onClickProcess(this.props.dataCase);
 
 	// handlers for edit 
-	onClickEdit = () => this.props.onClickEdit(this.props.dataCase);
+	onClickEdit = () => this.props.onClickEdit(this.props.dataCase, this.state.gender);
 
 	// handlers for templates
 	handleClickTemplates = event => {
@@ -572,6 +618,44 @@ class InspectDrawer extends Component {
 		});
 	}
 
+	// get gender
+	getGender = () => {
+		let color = 'default';
+		let text = 'Unknown';
+		switch (this.state.gender) {
+			case 0 :
+				color = 'default';
+				text = 'Unknown';
+				break;
+			case 1 :
+				color = 'geekblue';
+				text = 'Male';
+				break;
+			case 2 :
+				color = 'magenta';
+				text = 'Female';
+				break;
+			case 3 :
+				color = 'purple';
+				text = 'Other';
+				break;
+			default:
+				color = 'default';
+				text = 'Unknown';
+				break;
+		};	
+		return (
+			<Tag color={ color } key={ uuidv4() }>
+				{ text }
+			</Tag>
+		);
+	}
+
+	getRelatedCandidates = () => {
+		return this.state.relatedCandidates.map( item =>
+			(<Tag key={ uuidv4() }> { item } </Tag> )
+		)
+	}
 	// define status 
 	getStatus = status => {
 		let color = 'geekblue';
@@ -658,6 +742,18 @@ class InspectDrawer extends Component {
 		</Row>	
 	)
 
+	// candidate table
+	config = {
+		service: candidateService,
+		retrieve: "retrieveCandidateProfile",
+		list: "listCandidatesByUdid",
+		update: "updateCandidateGender",
+		dataName: "unknown",
+	};
+	retrieveCandidateProfileSync = retrieveSync.bind(this, this.config);
+	listCandidatesByUdidSync = listSync.bind(this, this.config);
+	updateCandidateGenderSync = updateSync.bind(this, this.config);
+
 	render(){
 		const categoryname = this.props.dataCase.categoryname;
 		const last_processed_by = this.props.dataCase.last_processed_by;
@@ -680,6 +776,7 @@ class InspectDrawer extends Component {
 						>
 							<Descriptions 
 								column={ 3 }
+								size={ "middle" }
 							>
 								<Item
 									label="Case ID" 
@@ -703,8 +800,14 @@ class InspectDrawer extends Component {
 									}
 								</Item>
 								<Item
+									label="Gender"
+									span = { 1 } 
+								>
+									{ this.getGender() }
+								</Item>
+								<Item
 									label="Created At"
-									span = { 2 } 
+									span = { 1 } 
 								>
 									{ this.props.dataCase.created_at }
 								</Item>
@@ -729,6 +832,18 @@ class InspectDrawer extends Component {
 									span = { 3 } 
 								>
 									{ remarks }
+								</Item>
+								<Item 
+									label="Candidate ID" 
+									span = { 3 } 
+								>
+									{ this.state.candidateId }
+								</Item>
+								<Item 
+									label="Related Candidates" 
+									span = { 3 } 
+								>
+									{ this.getRelatedCandidates() }
 								</Item>
 							</Descriptions>
 						</Card>

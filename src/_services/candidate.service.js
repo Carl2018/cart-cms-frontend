@@ -16,7 +16,10 @@ export const candidateService = {
 		retrievePaymentRowCount,
     listRedisLogs,
 		retrieveRedisLogRowCount,
+		retrieveCandidateProfile,
+    listCandidatesByUdid,
     ban,
+    updateCandidateGender,
 };
 
 function retrieve(params={}) {
@@ -201,6 +204,34 @@ function retrieveRedisLogRowCount(params={}) {
 			.then(handleResponse);
 }
 
+function retrieveCandidateProfile(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/candidate/retrieve_candidate_profile`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+    const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+    return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function listCandidatesByUdid(params={}) {
+		// append query string
+		let url = new URL(`${config.apiUrl}/candidate/list_candidates_by_udid`);
+		Object.keys(params).forEach( key => 
+			url.searchParams.append(key, params[key]) );
+		// call the api
+    const requestOptions = { 
+			method: 'GET', 
+			headers: authHeader() 
+		};
+    return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
 function ban(record) {
     const requestOptions = { 
 			method: 'PUT', 
@@ -208,5 +239,15 @@ function ban(record) {
 			body: JSON.stringify(record)
 		};
     return fetch(`${config.apiUrl}/candidate/ban`, requestOptions)
+			.then(handleResponse);
+}
+
+function updateCandidateGender(record) {
+    const requestOptions = { 
+			method: 'PUT', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/candidate/update_candidate_gender`, requestOptions)
 			.then(handleResponse);
 }
