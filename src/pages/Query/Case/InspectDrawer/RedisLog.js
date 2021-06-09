@@ -124,7 +124,7 @@ class RedisLog extends Component {
 			wvalueth: '80%',
 			sorter: (a, b) => compare(a.value, b.value),
 			// setFilter: true,
-			render: value => toDatetime(value),
+			render: value => toDatetime(value*1000),
 		}
 	];
 		
