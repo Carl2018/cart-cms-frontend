@@ -104,15 +104,13 @@ class InspectDrawer extends Component {
 				if (response?.entry)
 					({ entry: {gender, udid} } = response);
 				response = null;
-				// remove this line
-				udid = "token'";
-				if (udid)
-					response = await this.listCandidatesByUdidSync({ 
-						db, 
-						udid,
-					});
+// uncomment these lines after search by udid is fixed
+//				if (udid)
+//					response = await this.listCandidatesByUdidSync({ 
+//						db, 
+//						udid,
+//					});
 				let relatedCandidates = [];
-// uncomment these line after search by udid is fixed
 //				if (response?.entry)
 //					relatedCandidates = response.entry.map( item => item.candidate_id );
 				this.setState({ gender, udid, relatedCandidates, spinning: false });
