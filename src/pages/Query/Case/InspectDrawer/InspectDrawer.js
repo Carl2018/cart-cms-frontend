@@ -112,10 +112,9 @@ class InspectDrawer extends Component {
 						udid,
 					});
 				let relatedCandidates = [];
-				console.log(response);
-				if (response?.entry)
-					relatedCandidates = response.entry.map( item => item.candidate_id );
-				console.log(relatedCandidates);
+// uncomment these line after search by udid is fixed
+//				if (response?.entry)
+//					relatedCandidates = response.entry.map( item => item.candidate_id );
 				this.setState({ gender, udid, relatedCandidates, spinning: false });
 			});
 		}
@@ -754,6 +753,19 @@ class InspectDrawer extends Component {
 	listCandidatesByUdidSync = listSync.bind(this, this.config);
 	updateCandidateGenderSync = updateSync.bind(this, this.config);
 
+	// add these tags after search by udid is fixed
+	//								<Item 
+	//									label="Candidate ID" 
+	//									span = { 3 } 
+	//								>
+	//									{ this.state.candidateId }
+	//								</Item>
+	//								<Item 
+	//									label="Related Candidates" 
+	//									span = { 3 } 
+	//								>
+	//									{ this.getRelatedCandidates() }
+	//								</Item>
 	render(){
 		const categoryname = this.props.dataCase.categoryname;
 		const last_processed_by = this.props.dataCase.last_processed_by;
@@ -832,18 +844,6 @@ class InspectDrawer extends Component {
 									span = { 3 } 
 								>
 									{ remarks }
-								</Item>
-								<Item 
-									label="Candidate ID" 
-									span = { 3 } 
-								>
-									{ this.state.candidateId }
-								</Item>
-								<Item 
-									label="Related Candidates" 
-									span = { 3 } 
-								>
-									{ this.getRelatedCandidates() }
 								</Item>
 							</Descriptions>
 						</Card>
