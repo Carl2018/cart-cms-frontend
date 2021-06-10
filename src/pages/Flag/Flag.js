@@ -144,11 +144,11 @@ class Flag extends Component {
 			render: user_tag => (
 				<>
 					{ 
-						user_tag ? 
+						( typeof(user_tag) === 'string' && user_tag ) ? user_tag.split(',').map( item => (
 							<Tag color="blue" key={ uuidv4() }>
-								{ user_tag }
+								{ item?.length > 20 ? item.slice(0,20) + "..." : item }
 							</Tag>
-						: <Tag key={ uuidv4() }>None</Tag> 
+						)) : <Tag key={ uuidv4() }>None</Tag> 
 					}
 				</>
 			),
