@@ -154,7 +154,7 @@ class Flag extends Component {
 			),
 		},
 		{
-			title: 'Tag',
+			title: 'Tags',
 			dataIndex: 'tag',
 			key: 'tag',
 			sorter: (a, b) => compare(a.tag, b.tag),
