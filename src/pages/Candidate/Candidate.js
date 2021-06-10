@@ -6,6 +6,7 @@ import {
 	Select,
 	Spin,
 	Tag,
+	message,
 } from 'antd';
 import { IdcardOutlined } from '@ant-design/icons';
 
@@ -22,7 +23,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { createSync, listSync, updateSync } = backend;
+const { createSync, retrieveSync, listSync, updateSync } = backend;
 const { compare, toDatetime } = helpers;
 const { Option } = Select;
 
@@ -38,7 +39,7 @@ class Candidate extends Component {
 			// pagination
 			pagination: false,
 			currentPage: 1,
-			pageSize: 10,
+			pageSize: 25,
 			total: 5000,
 		};
 	}
@@ -71,6 +72,46 @@ class Candidate extends Component {
 			setFilter: true
 		},
 		{
+			title: 'Gender',
+			dataIndex: 'gender',
+			key: 'gender',
+			sorter: (a, b) => compare(a.gender, b.gender),
+			sortDirection: ['ascend', 'descend'],
+			width: 140,
+			// setFilter: true,
+			render: gender => {
+				let color = 'default';
+				let text = 'Unknown';
+				switch (gender) {
+					case '0' :
+						color = 'default';
+						text = 'Unknown';
+						break;
+					case '1' :
+						color = 'geekblue';
+						text = 'Male';
+						break;
+					case '2' :
+						color = 'magenta';
+						text = 'Female';
+						break;
+					case '3' :
+						color = 'purple';
+						text = 'Other';
+						break;
+					default:
+						color = 'default';
+						text = 'Unknown';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+		},
+		{
 			title: 'Message',
 			dataIndex: 'message',
 			key: 'message',
@@ -81,14 +122,24 @@ class Candidate extends Component {
 			setFilter: true
 		},
 		{
-			title: 'Last Updated',
-			dataIndex: 'timestamp',
-			key: 'timestamp',
-			sorter: (a, b) => compare(a.timestamp, b.timestamp),
+			title: 'User Tags',
+			dataIndex: 'user_tags',
+			key: 'user_tags',
+			sorter: (a, b) => compare(a.tag, b.tag),
 			sortDirection: ['ascend', 'descend'],
-			width: 140,
-			// setFilter: true,
-			render: timestamp => (<>{ toDatetime(Number(timestamp)*1000) }</>),
+			width: 200,
+			// ellipsis: true,
+			render: user_tags => (
+				<>
+					{ 
+						user_tags ? user_tags.map( item => (
+							<Tag color="blue" key={ uuidv4() }>
+								{ item?.length > 20 ? item.slice(0,20) + "..." : item }
+							</Tag>
+						)) : <Tag key={ uuidv4() }>None</Tag> 
+					}
+				</>
+			),
 		},
 		{
 			title: 'Tag',
@@ -122,15 +173,6 @@ class Candidate extends Component {
 					</Tag>
 				);
 			},
-		},
-		{
-			title: 'User Tag',
-			dataIndex: 'user_tag',
-			key: 'user_tag',
-			sorter: (a, b) => compare(a.tag, b.tag),
-			sortDirection: ['ascend', 'descend'],
-			width: 140,
-			ellipsis: true,
 		},
 		{
 			title: 'Spam Score',
@@ -256,44 +298,14 @@ class Candidate extends Component {
 			},
 		},
 		{
-			title: 'Gender',
-			dataIndex: 'gender',
-			key: 'gender',
-			sorter: (a, b) => compare(a.gender, b.gender),
+			title: 'Last Updated',
+			dataIndex: 'timestamp',
+			key: 'timestamp',
+			sorter: (a, b) => compare(a.timestamp, b.timestamp),
 			sortDirection: ['ascend', 'descend'],
 			width: 140,
 			// setFilter: true,
-			render: gender => {
-				let color = 'default';
-				let text = 'Unknown';
-				switch (gender) {
-					case '0' :
-						color = 'default';
-						text = 'Unknown';
-						break;
-					case '1' :
-						color = 'geekblue';
-						text = 'Male';
-						break;
-					case '2' :
-						color = 'magenta';
-						text = 'Female';
-						break;
-					case '3' :
-						color = 'purple';
-						text = 'Other';
-						break;
-					default:
-						color = 'default';
-						text = 'Unknown';
-						break;
-				};	
-				return (
-					<Tag color={ color } key={ uuidv4() }>
-						{ text }
-					</Tag>
-				);
-			},
+			render: timestamp => (<>{ toDatetime(Number(timestamp)*1000) }</>),
 		},
 	];
 
@@ -378,6 +390,7 @@ class Candidate extends Component {
 				});
 				const data = entry.map( item => {
 					item.score = predictions[item.id]?.score ? predictions[item.id]?.score : 0;
+					item.probability = predictions[item.id]?.percent ? predictions[item.id]?.percent : 0;
 					item.tag = item.score > 6 ? 1 : 0;
 					return item; 
 				})
@@ -417,6 +430,11 @@ class Candidate extends Component {
 		...this.config,
 		list: "search_by_keywords",
 	});
+	searchCandidateById = listSync.bind(this, {
+		...this.config,
+		list: "search_by_cid",
+	});
+
 	searchCandidatesSync = params => {
 		this.setState( { spinning: true, pagination: true }, async () => {
 			const { entry } = await this.searchCandidates({...params, cache: this.state.cache});
@@ -431,6 +449,32 @@ class Candidate extends Component {
 				});
 				const data = entry.map( item => {
 					item.score = predictions[item.id]?.score ? predictions[item.id]?.score : 0;
+					item.probability = predictions[item.id]?.percent ? predictions[item.id]?.percent : 0;
+					item.tag = item.score > 6 ? 1 : 0;
+					return item; 
+				})
+				this.setState({ data });
+			}
+
+			this.setState({ spinning: false });
+		});
+	}
+
+	searchCandidateByIdSync = params => {
+		this.setState( { spinning: true, pagination: true }, async () => {
+			const { entry } = await this.searchCandidateById({...params, cache: this.state.cache});
+
+			if (entry) {
+				// perform title classifications
+				let titles = {};
+				entry.forEach( item => { titles[item.id] = item.message });
+				const { entry : predictions } = await this.predictSync({ 
+					titles,
+					should_update: 0,
+				});
+				const data = entry.map( item => {
+					item.score = predictions[item.id]?.score ? predictions[item.id]?.score : 0;
+					item.probability = predictions[item.id]?.percent ? predictions[item.id]?.percent : 0;
 					item.tag = item.score > 6 ? 1 : 0;
 					return item; 
 				})
@@ -492,6 +536,27 @@ class Candidate extends Component {
 		dataName: "unknown",
 	});
 
+	searchTitleByCid = retrieveSync.bind(this, {
+		service: titleService,
+		retrieve: "searchTitleByCid",
+		dataName: "dummy",
+	});
+
+	createSync = createSync.bind(this, {
+		service: titleService,
+		create: "create",
+		retrieve: "retrieve",
+		dataName: "unknown",
+	});
+
+	handleClickMislabelled = async params => {
+		const { entry } = await this.searchTitleByCid(params);
+		if (!entry)
+			this.createSync(params);
+		else
+			message.info("The mislabel has been recoreded already")
+	}
+
 	// refresh table
 	refreshTable = () => {
 		this.setState({ spinning: true }, async () => {
@@ -513,19 +578,23 @@ class Candidate extends Component {
 						pageSize={ this.state.pageSize }
 						total={ this.state.total }
 						pagination={ this.state.pagination }
+						cache={ this.state.cache }
 						// display props
 						columns={ this.columns }
 						formItems={ this.formItems }
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Candidate'
 						showDropdown={ false }
-						scroll={ {x:1880} }
+						size={ "small" }
+						scroll={ {x:2000} }
 						// api props
 						listSync={ this.listSync }
 						softBanSync={ this.softBanSync}
 						hardBanSync={ this.hardBanSync }
 						blacklistSync={ this.blacklistSync }
 						searchCandidatesSync={ this.searchCandidatesSync }
+						searchCandidateByIdSync={ this.searchCandidateByIdSync}
+						onClickMislabelled={ this.handleClickMislabelled }
 						onChangeCache={ this.handleChangeCache }
 						onChangePage={ this.handleChangePage }
 						onChangeSize={ this.handleChangePage }

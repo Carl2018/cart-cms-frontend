@@ -43,7 +43,7 @@ class Email extends Component {
 			options: [],
 			spinning: false,
 			rowCount: 0,
-			defaultPageSize: 10,
+			defaultPageSize: 25,
 			defaultPage: 1,
 		};
 	}
@@ -75,7 +75,7 @@ class Email extends Component {
 			sorter: (a, b) => compare(a.email, b.email),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: '15%',
+			width: '25%',
 			setFilter: true
 		},
 		{
@@ -94,7 +94,7 @@ class Email extends Component {
 			sorter: (a, b) => compare(a.description, b.description),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: '15%',
+			width: '20%',
 			setFilter: true
 		},
 		{
@@ -261,7 +261,7 @@ class Email extends Component {
 						tableHeader={ this.tableHeader }
 						dropdownName='Create Profile'
 						drawerTitle='An Email'
-						isSmall={ this.props.isSmall }
+						size={ "small" }
 						pagination={ false }
 						// api props
 						create={ this.createSync }

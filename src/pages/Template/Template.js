@@ -44,7 +44,7 @@ class Template extends Component {
 			categories: [],
 			spinning: false,
 			rowCount: 0,
-			defaultPageSize: 10,
+			defaultPageSize: 25,
 			defaultPage: 1,
 		};
 	}
@@ -76,7 +76,7 @@ class Template extends Component {
 			key: 'title',
 			sorter: (a, b) => compare(a.title, b.title),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '35%',
 			ellipsis: true,
 			setFilter: true
 		},
@@ -285,6 +285,7 @@ class Template extends Component {
 						drawerTitle='A Template'
 						drawerWidth={ 900 }
 						pagination={ false }
+						size={ "small" }
 						// api props
 						create={ this.createSync }
 						list={ this.listSync }

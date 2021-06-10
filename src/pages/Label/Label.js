@@ -34,7 +34,7 @@ class Label extends Component {
 			data: [],
 			spinning: false,
 			rowCount: 0,
-			defaultPageSize: 10,
+			defaultPageSize: 25,
 			defaultPage: 1,
 		};
 	}
@@ -63,7 +63,7 @@ class Label extends Component {
 			key: 'labelname',
 			sorter: (a, b) => compare(a.labelname, b.labelname),
 			sortDirection: ['ascend', 'descend'],
-			width: '20%',
+			width: '35%',
 			ellipsis: true,
 			setFilter: true
 		},
@@ -187,6 +187,7 @@ class Label extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='A Label'
 						pagination={ false }
+						size={ "small" }
 						// api props
 						create={ this.createSync }
 						list={ this.listSync }

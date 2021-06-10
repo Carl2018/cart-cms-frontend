@@ -28,11 +28,24 @@ import DrawerDropdown from './DrawerDropdown'
 import Template from './Template'
 import Flag from './Flag'
 import Conversation from './Conversation'
+import Invitation from './Invitation'
+import LoginLog from './LoginLog'
+import Payment from './Payment'
+import RedisLog from './RedisLog'
 import Blacklist from './Blacklist'
 
-// import helpers
-import { helpers } from '_helpers';
+// import services
+import { candidateService } from '_services';
 
+// import helpers
+import { backend, helpers } from '_helpers';
+
+// destructure imported components and objects
+const { 
+	retrieveSync, 
+	listSync, 
+	updateSync, 
+} = backend;
 // destructure imported components and objects
 const { compare } = helpers;
 const { Item } = Descriptions;
@@ -51,12 +64,58 @@ class InspectDrawer extends Component {
 			// for the conversation modal
 			visibleConversation: false,
 			modalKeyConversation: Date.now(),
+			// for the invitation modal
+			visibleInvitation: false,
+			modalKeyInvitation: Date.now(),
+			// for the loginLog modal
+			visibleLoginLog: false,
+			modalKeyLoginLog: Date.now(),
+			// for the payment modal
+			visiblePayment: false,
+			modalKeyPayment: Date.now(),
+			// for the redisLog modal
+			visibleRedisLog: false,
+			modalKeyRedisLog: Date.now(),
 			// for Spin
 			spinning: false,
 			// for the blacklist modal
 			visibleBlacklist: false,
 			modalKeyBlacklist: Date.now(),
+			// for retrieving gender and candidates with same udid
+			db: "ea",
+			candidateId: 0,
+			gender: 0,
+			udid: null,
+			relatedCandidates: [],
 		};
+	}
+
+	componentDidUpdate(prevProps) {
+		const { visible, dataAccount } = this.props;
+		if(prevProps.visible !== visible && visible && dataAccount) {
+			const { db, candidate_id: candidateId } = dataAccount;
+			this.setState({ db, candidateId, spinning: true }, async () => {
+				let response = await this.retrieveCandidateProfileSync({ 
+					db, 
+					candidate_id: candidateId,
+				});
+				let gender = 0;
+				let udid = null;
+				if (response?.entry)
+					({ entry: {gender, udid} } = response);
+				response = null;
+// uncomment these lines after search by udid is fixed
+//				if (udid)
+//					response = await this.listCandidatesByUdidSync({ 
+//						db, 
+//						udid,
+//					});
+				let relatedCandidates = [];
+//				if (response?.entry)
+//					relatedCandidates = response.entry.map( item => item.candidate_id );
+				this.setState({ gender, udid, relatedCandidates, spinning: false });
+			});
+		}
 	}
 
 	// for process history panel
@@ -372,7 +431,7 @@ class InspectDrawer extends Component {
 	onClickProcess = () => this.props.onClickProcess(this.props.dataCase);
 
 	// handlers for edit 
-	onClickEdit = () => this.props.onClickEdit(this.props.dataCase);
+	onClickEdit = () => this.props.onClickEdit(this.props.dataCase, this.state.gender);
 
 	// handlers for templates
 	handleClickTemplates = event => {
@@ -382,6 +441,7 @@ class InspectDrawer extends Component {
 	}
 
 	handleCloseTemplate = event => {
+		console.log(this.props.dataAccount);
 		this.setState({
 			visibleTemplate: false,
 			modalKeyTemplate: Date.now(),
@@ -413,6 +473,62 @@ class InspectDrawer extends Component {
 		this.setState({
 			visibleConversation: false,
 			modalKeyConversation: Date.now(),
+		});
+	}
+
+	// handlers for invitations
+	handleClickInvitations = event => {
+		this.setState({
+			visibleInvitation: true,
+		});
+	}
+
+	handleCloseInvitation = event => {
+		this.setState({
+			visibleInvitation: false,
+			modalKeyInvitation: Date.now(),
+		});
+	}
+
+	// handlers for login logs
+	handleClickLoginLogs = event => {
+		this.setState({
+			visibleLoginLog: true,
+		});
+	}
+
+	handleCloseLoginLog = event => {
+		this.setState({
+			visibleLoginLog: false,
+			modalKeyLoginLog: Date.now(),
+		});
+	}
+
+	// handlers for payments
+	handleClickPayments = event => {
+		this.setState({
+			visiblePayment: true,
+		});
+	}
+
+	handleClosePayment = event => {
+		this.setState({
+			visiblePayment: false,
+			modalKeyPayment: Date.now(),
+		});
+	}
+
+	// handlers for redis logs
+	handleClickRedisLogs = event => {
+		this.setState({
+			visibleRedisLog: true,
+		});
+	}
+
+	handleCloseRedisLog = event => {
+		this.setState({
+			visibleRedisLog: false,
+			modalKeyRedisLog: Date.now(),
 		});
 	}
 
@@ -499,6 +615,44 @@ class InspectDrawer extends Component {
 		});
 	}
 
+	// get gender
+	getGender = () => {
+		let color = 'default';
+		let text = 'Unknown';
+		switch (this.state.gender) {
+			case 0 :
+				color = 'default';
+				text = 'Unknown';
+				break;
+			case 1 :
+				color = 'geekblue';
+				text = 'Male';
+				break;
+			case 2 :
+				color = 'magenta';
+				text = 'Female';
+				break;
+			case 3 :
+				color = 'purple';
+				text = 'Other';
+				break;
+			default:
+				color = 'default';
+				text = 'Unknown';
+				break;
+		};	
+		return (
+			<Tag color={ color } key={ uuidv4() }>
+				{ text }
+			</Tag>
+		);
+	}
+
+	getRelatedCandidates = () => {
+		return this.state.relatedCandidates.map( item =>
+			(<Tag key={ uuidv4() }> { item } </Tag> )
+		)
+	}
 	// define status 
 	getStatus = status => {
 		let color = 'geekblue';
@@ -576,11 +730,40 @@ class InspectDrawer extends Component {
 					onClickTemplates={ this.handleClickTemplates }
 					onClickFlags={ this.handleClickFlags }
 					onClickConversations={ this.handleClickConversations }
+					onClickInvitations={ this.handleClickInvitations }
+					onClickLoginLogs={ this.handleClickLoginLogs }
+					onClickPayments={ this.handleClickPayments }
+					onClickRedisLogs={ this.handleClickRedisLogs }
 				/>
 			</Col>
 		</Row>	
 	)
 
+	// candidate table
+	config = {
+		service: candidateService,
+		retrieve: "retrieveCandidateProfile",
+		list: "listCandidatesByUdid",
+		update: "updateCandidateGender",
+		dataName: "unknown",
+	};
+	retrieveCandidateProfileSync = retrieveSync.bind(this, this.config);
+	listCandidatesByUdidSync = listSync.bind(this, this.config);
+	updateCandidateGenderSync = updateSync.bind(this, this.config);
+
+	// add these tags after search by udid is fixed
+	//								<Item 
+	//									label="Candidate ID" 
+	//									span = { 3 } 
+	//								>
+	//									{ this.state.candidateId }
+	//								</Item>
+	//								<Item 
+	//									label="Related Candidates" 
+	//									span = { 3 } 
+	//								>
+	//									{ this.getRelatedCandidates() }
+	//								</Item>
 	render(){
 		const categoryname = this.props.dataCase.categoryname;
 		const last_processed_by = this.props.dataCase.last_processed_by;
@@ -603,6 +786,7 @@ class InspectDrawer extends Component {
 						>
 							<Descriptions 
 								column={ 3 }
+								size={ "middle" }
 							>
 								<Item
 									label="Case ID" 
@@ -626,8 +810,14 @@ class InspectDrawer extends Component {
 									}
 								</Item>
 								<Item
+									label="Gender"
+									span = { 1 } 
+								>
+									{ this.getGender() }
+								</Item>
+								<Item
 									label="Created At"
-									span = { 2 } 
+									span = { 1 } 
 								>
 									{ this.props.dataCase.created_at }
 								</Item>
@@ -728,6 +918,46 @@ class InspectDrawer extends Component {
 						onCancel={ this.handleCloseConversation }
 					>
 					</Conversation>
+				</div>
+				<div>
+					<Invitation
+						dataAccount={ this.props.dataAccount }
+						allRelatedAccounts={ this.props.allRelatedAccounts }
+						modalKey={ this.state.modalKeyInvitation }
+						visible={ this.state.visibleInvitation }
+						onCancel={ this.handleCloseInvitation }
+					>
+					</Invitation>
+				</div>
+				<div>
+					<LoginLog
+						dataAccount={ this.props.dataAccount }
+						allRelatedAccounts={ this.props.allRelatedAccounts }
+						modalKey={ this.state.modalKeyLoginLog }
+						visible={ this.state.visibleLoginLog }
+						onCancel={ this.handleCloseLoginLog }
+					>
+					</LoginLog>
+				</div>
+				<div>
+					<Payment
+						dataAccount={ this.props.dataAccount }
+						allRelatedAccounts={ this.props.allRelatedAccounts }
+						modalKey={ this.state.modalKeyPayment }
+						visible={ this.state.visiblePayment }
+						onCancel={ this.handleClosePayment }
+					>
+					</Payment>
+				</div>
+				<div>
+					<RedisLog
+						dataAccount={ this.props.dataAccount }
+						allRelatedAccounts={ this.props.allRelatedAccounts }
+						modalKey={ this.state.modalKeyRedisLog }
+						visible={ this.state.visibleRedisLog }
+						onCancel={ this.handleCloseRedisLog }
+					>
+					</RedisLog>
 				</div>
 				<div>
 					<Blacklist

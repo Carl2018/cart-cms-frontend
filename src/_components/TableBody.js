@@ -150,7 +150,7 @@ class TableBody extends Component {
 							columns={ columns } 
 							dataSource={ data } 
 							rowSelection={ rowSelection } 
-							size={ this.props.isSmall ? "small" : "default" }
+							size={ this.props.size ? this.props.size : "default" }
 							scroll={ this.props.scroll }
 							rowKey={ "id" }
 							pagination={ this.props.pagination }
@@ -162,7 +162,7 @@ class TableBody extends Component {
 						<Table 
 							columns={ columns } 
 							dataSource={ data } 
-							size={ this.props.isSmall ? "small" : "default" }
+							size={ this.props.size ? this.props.size : "default" }
 							scroll={ this.props.scroll }
 							rowKey={ "id" }
 							pagination={ this.props.pagination }

@@ -315,6 +315,7 @@ class Case extends Component {
 					loading={ this.props.loading }
 					showHeader={ this.props.showHeader }
 					showDropdown={ this.props.showDropdown }
+					size={ this.props.size }
 					scroll={ { x: 1400 } }
 					// api props
 					create={ this.props.create }

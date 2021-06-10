@@ -250,7 +250,7 @@ class Account extends Component {
 						tableHeader={ this.tableHeader }
 						drawerTitle='An Account'
 						loading={ this.props.loading }
-						isSmall={ this.props.isSmall }
+						size={ this.props.size }
 						scroll={ { x:1600 } }
 						showHeader={ this.props.showHeader }
 						showDropdown={ this.props.showDropdown }

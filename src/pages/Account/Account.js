@@ -43,7 +43,7 @@ class Account extends Component {
 			spinning: false,
 			// pagination
 			currentPage: 1,
-			pageSize: 10,
+			pageSize: 25,
 			total: 0,
 		};
 	}
@@ -162,13 +162,71 @@ class Account extends Component {
 			width: 120,
 		},
 		{
-			title: 'Product ID',
+			title: 'Category',
 			dataIndex: 'product_id',
 			key: 'product_id',
-			sorter: (a, b) => compare(a.product_id, b.product_id),
-			sortDirection: ['ascend', 'descend'],
 			width: 120,
-			setFilter: true
+			sorter: (a, b) => compare(a.product_id, b.product_id),
+			// setFilter: true,
+			render: product_id => {
+				const match = product_id.match(/gold|silver|adfree/);
+				const category = match ? match[0] : "none";
+				let color = 'default';
+				switch (category) {
+					case 'gold':
+						color = 'gold';
+						break;
+					case 'silver':
+						color = '#c0c0c0';
+						break;
+					case 'adfree':
+						color = 'cyan';
+						break;
+					case 'none':
+						color = 'purple';
+						break;
+					default:
+						color = 'purple';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ category }
+					</Tag>
+				);
+			},
+		},
+		{
+			title: 'Periodicity',
+			dataIndex: 'product_id',
+			key: 'product_id',
+			width: 120,
+			sorter: (a, b) => compare(a.product_id, b.product_id),
+			// setFilter: true,
+			render: product_id => {
+				const match = product_id.match(/quarter|halfyear|monthly/);
+				const periodicity = match ? match[0] : "none";
+				let color = 'default';
+				switch (periodicity) {
+					case 'quarter' :
+						color = 'gold';
+						break;
+					case 'halfyear' :
+						color = '#c0c0c0';
+						break;
+					case 'monthly' :
+						color = 'cyan';
+						break;
+					default:
+						color = 'cyan';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ periodicity }
+					</Tag>
+				);
+			},
 		},
 		{
 			title: 'Expiry Date',
@@ -205,7 +263,7 @@ class Account extends Component {
 			sorter: (a, b) => compare(a.physical_region, b.physical_region),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: 120,
+			width: 140,
 			setFilter: true
 		},
 		{
@@ -356,7 +414,8 @@ class Account extends Component {
 						formItems={ this.formItems }
 						tableHeader={ this.tableHeader }
 						drawerTitle='An Account'
-						scroll={ {x:1840} }
+						scroll={ {x:2000} }
+						size={ "small" }
 						// api props
 						create={ this.createSync }
 						edit={ this.updateSync }

@@ -41,7 +41,7 @@ class Email extends Component {
 			sorter: (a, b) => compare(a.email, b.email),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: '15%',
+			width: '20%',
 			setFilter: true
 		},
 		{
@@ -50,7 +50,7 @@ class Email extends Component {
 			key: 'profilename',
 			sorter: (a, b) => compare(a.profilename, b.profilename),
 			sortDirection: ['ascend', 'descend'],
-			width: '10%',
+			width: '15%',
 			setFilter: true
 		},
 		{
@@ -60,7 +60,7 @@ class Email extends Component {
 			sorter: (a, b) => compare(a.description, b.description),
 			sortDirection: ['ascend', 'descend'],
 			ellipsis: true,
-			width: '15%',
+			width: '20%',
 			setFilter: true
 		},
 		{
@@ -181,7 +181,7 @@ class Email extends Component {
 					tableHeader={ this.tableHeader }
 					drawerTitle='An Email'
 					loading={ this.props.loading }
-					isSmall={ this.props.isSmall }
+					size={ this.props.size }
 					showHeader={ this.props.showHeader }
 					showDropdown={ this.props.showDropdown }
 					// api props

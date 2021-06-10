@@ -449,7 +449,7 @@ class Query extends Component {
 							labels={ this.state.labels }
 							// display props
 							tableHeader={ <><strong>Profile</strong></> }
-							isSmall={ true }
+							size={ "small" }
 							showHeader={ this.state.showHeader }
 							showDropdown={ this.state.showDropdown }
 							// api props
@@ -475,7 +475,7 @@ class Query extends Component {
 							labels={ this.state.labels }
 							// display props
 							tableHeader={ <><strong>Cases</strong></> }
-							isSmall={ true }
+							size={ "small" }
 							showHeader={ this.state.showHeader }
 							showDropdown={ this.state.showDropdown }
 							// api props
@@ -500,7 +500,7 @@ class Query extends Component {
 							profilename={ this.state.profilename }
 							// display props
 							tableHeader={ <><strong>Accounts</strong></> }
-							isSmall={ true }
+							size={ "small" }
 							showHeader={ this.state.showHeader }
 							showDropdown={ this.state.showDropdown }
 							// api props

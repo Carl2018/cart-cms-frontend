@@ -38,6 +38,8 @@ async function createSync(config, record) {
 		data = [ entry, ...data ];
 		this.setState({ [dataName]: data });
 		message.success('A record has been created');
+	} else if (response.code === 202){
+		message.success('request accepted');
 	} else {
 		message.error(response.en);
 	}

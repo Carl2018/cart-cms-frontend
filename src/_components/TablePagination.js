@@ -52,10 +52,10 @@ class TablePagination extends Component {
 					current={ this.state.currentPage }
 					pageSize={ this.state.pageSize }
 					total={ this.props.rowCount }
-					size={ "default" }
+					size={ this.props.size ? this.props.size : "default" }
 					style={{ marginTop: "20px" }}
 					showSizeChanger={ true }
-					pageSizeOptions={ [5, 10, 20, 50, 100] }
+					pageSizeOptions={ [10, 25, 50, 100] }
 					showQuickJumper
 					onShowSizeChange={ this.handleChange }
 					onChange = { this.handleChange}

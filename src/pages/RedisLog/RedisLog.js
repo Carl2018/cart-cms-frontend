@@ -44,7 +44,7 @@ class RedisLog extends Component {
 			data: [],
 			spinning: false,
 			rowCount: 0,
-			defaultPageSize: 10,
+			defaultPageSize: 25,
 			defaultPage: 1,
 			region:"1",
 			candidate_id:"",
@@ -351,7 +351,8 @@ class RedisLog extends Component {
 						showDropdown={ false }
 						noAction={ true }
 						noBatch={ true }
-						// scroll={ {x:1200} }
+						size={ "small" }
+						scroll={ {x:2200} }
 						// api props
 						list={ this.listSync }
 					>

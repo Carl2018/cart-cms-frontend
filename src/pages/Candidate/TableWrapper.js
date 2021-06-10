@@ -16,6 +16,7 @@ import {
 	message, 
 } from 'antd';
 import { 
+	CloseOutlined,
 	CommentOutlined,
 	ExceptionOutlined,
 	EyeInvisibleOutlined, 
@@ -76,6 +77,14 @@ class TableWrapper extends Component {
 			<Menu.Item 
 				key='4' 
 				style={{ color:'#5a9ef8' }} 
+				icon={ <CloseOutlined /> }
+				onClick={ this.onClickMislabelled.bind(this, record) }
+			>
+				Mislabelled
+			</Menu.Item>
+			<Menu.Item 
+				key='5' 
+				style={{ color:'#5a9ef8' }} 
 				icon={ <EyeOutlined /> }
 				onClick={ 
 					this.handleClickDoAction.bind(this, this.getOptions('Unban', record)) }
@@ -83,7 +92,7 @@ class TableWrapper extends Component {
 				Unban
 			</Menu.Item>
 			<Menu.Item 
-				key='5' 
+				key='6' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <ExceptionOutlined /> }
 				onClick={ this.handleClickDoAction.bind(this, this.getOptions('Scam', record)) }
@@ -91,7 +100,7 @@ class TableWrapper extends Component {
 				Scam
 			</Menu.Item>
 			<Menu.Item 
-				key='6' 
+				key='7' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <EyeOutlined /> }
 				onClick={ this.handleClickDoAction.bind(this, this.getOptions('Unscam', record)) }
@@ -99,7 +108,7 @@ class TableWrapper extends Component {
 				Unscam
 			</Menu.Item>
 			<Menu.Item 
-				key='7' 
+				key='8' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <ExceptionOutlined /> }
 				onClick={ this.handleClickDoAction.bind(this, this.getOptions('Sex', record)) }
@@ -107,7 +116,7 @@ class TableWrapper extends Component {
 				Sex
 			</Menu.Item>
 			<Menu.Item 
-				key='8' 
+				key='9' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <EyeOutlined /> }
 				onClick={ this.handleClickDoAction.bind(this, this.getOptions('Unsex', record)) }
@@ -192,10 +201,37 @@ class TableWrapper extends Component {
 		});
 	}
 
-	// handler for search
+	onClickMislabelled = record => {
+		const category = record.tag === 1 ? 0 : 1;
+		this.props.onClickMislabelled({
+			cache: this.props.cache,
+			candidate_id: record.id,
+			title: record.message,
+			score: record.score,
+			probability: record.probability,
+			category,
+		});
+	}
+
+	// handlers for search
 	handleSearch = data => {
 		if (data) {
 			this.props.searchCandidatesSync({ keywords: data });
+		} else {
+			const page = 1;
+			const size = 10;
+			this.props.onChangePage(page, size);
+		}
+	}
+
+	handleSearchByCid = data => {
+		if (!isFinite(data)) {
+			message.error("Candidate ID should be a number");
+			return;
+		}
+			
+		if (data) {
+			this.props.searchCandidateByIdSync({ cid: data });
 		} else {
 			const page = 1;
 			const size = 10;
@@ -357,6 +393,13 @@ class TableWrapper extends Component {
 										size="middle"
 										allowClear
 									/>
+									<Search
+										onSearch={ this.handleSearchByCid }
+										placeholder= "Search Candidate by ID"
+										style={{ width: 400 }}
+										size="middle"
+										allowClear
+									/>
 								</Space>
 							</Col>
 						</Row>
@@ -367,7 +410,7 @@ class TableWrapper extends Component {
 						data={ this.props.data } 
 						columns={ this.columns } 
 						scroll={ this.props.scroll }
-						isSmall={ this.props.isSmall }
+						size={ this.props.size }
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
 						pagination={ this.props.pagination }
@@ -380,7 +423,8 @@ class TableWrapper extends Component {
 							showQuickJumper
 							current={ this.props.currentPage }
 							pageSize={ this.props.pageSize }
-							pageSizeOptions={ [10, 20, 50] }
+							pageSizeOptions={ [10, 25, 50, 100] }
+							size={ this.props.size }
 							total={ this.props.total }
 							onChange={ this.props.onChangePage }
 							onShowSizeChange={ this.props.onChangeSize }

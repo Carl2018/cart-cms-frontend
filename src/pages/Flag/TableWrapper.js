@@ -16,6 +16,7 @@ import {
 	message, 
 } from 'antd';
 import { 
+	CloseOutlined, 
 	CommentOutlined,
 	ExceptionOutlined,
 	EyeInvisibleOutlined, 
@@ -85,6 +86,14 @@ class TableWrapper extends Component {
 			<Menu.Item 
 				key='5' 
 				style={{ color:'#5a9ef8' }} 
+				icon={ <CloseOutlined /> }
+				onClick={ this.onClickMislabelled.bind(this, record) }
+			>
+				Mislabelled
+			</Menu.Item>
+			<Menu.Item 
+				key='6' 
+				style={{ color:'#5a9ef8' }} 
 				icon={ <EyeOutlined /> }
 				onClick={ 
 					this.handleClickDoAction.bind(this, this.getOptions('Unban', record)) }
@@ -92,7 +101,7 @@ class TableWrapper extends Component {
 				Unban
 			</Menu.Item>
 			<Menu.Item 
-				key='6' 
+				key='7' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <ExceptionOutlined /> }
 				onClick={ this.handleClickDoAction.bind(this, this.getOptions('Scam', record)) }
@@ -100,7 +109,7 @@ class TableWrapper extends Component {
 				Scam
 			</Menu.Item>
 			<Menu.Item 
-				key='7' 
+				key='8' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <EyeOutlined /> }
 				onClick={ this.handleClickDoAction.bind(this, this.getOptions('Unscam', record)) }
@@ -108,7 +117,7 @@ class TableWrapper extends Component {
 				Unscam
 			</Menu.Item>
 			<Menu.Item 
-				key='8' 
+				key='9' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <ExceptionOutlined /> }
 				onClick={ this.handleClickDoAction.bind(this, this.getOptions('Sex', record)) }
@@ -116,7 +125,7 @@ class TableWrapper extends Component {
 				Sex
 			</Menu.Item>
 			<Menu.Item 
-				key='9' 
+				key='10' 
 				style={{ color:'#5a9ef8' }} 
 				icon={ <EyeOutlined /> }
 				onClick={ this.handleClickDoAction.bind(this, this.getOptions('Unsex', record)) }
@@ -187,6 +196,7 @@ class TableWrapper extends Component {
 
 	// handlers for actions in TableBody
 	handleClickBlacklist = record => {
+		console.log(record);
 		this.setState({
 			visible: true, 
 			disabled: false,
@@ -205,6 +215,17 @@ class TableWrapper extends Component {
 		});
 	}
 
+	onClickMislabelled = record => {
+		const category = record.tag === 1 ? 0 : 1;
+		this.props.onClickMislabelled({
+			cache: this.props.cache,
+			candidate_id: record.suspect_id,
+			title: record.suspect_message,
+			score: record.score,
+			probability: record.probability,
+			category,
+		});
+	}
 
 	// handlers for actions in TableDrawer
   handleClose = () => {
@@ -411,7 +432,7 @@ class TableWrapper extends Component {
 						data={ this.props.data } 
 						columns={ this.columns } 
 						scroll={ this.props.scroll }
-						isSmall={ this.props.isSmall }
+						size={ this.props.size }
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
 						pagination={ this.props.pagination }

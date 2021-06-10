@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 // import components from ant design
 import { 
@@ -11,6 +12,7 @@ import {
 	Select,
 	Space,
 	Spin,
+	Tag,
 	message,
 } from 'antd';
 import { FileTextOutlined } from '@ant-design/icons';
@@ -53,7 +55,7 @@ class Conversation extends Component {
 			record: {},
 			// for pagination of content modal
 			currentPage: 1,
-			pageSize: 10,
+			pageSize: 25,
 			total: 5000,
 		};
 	}
@@ -67,31 +69,96 @@ class Conversation extends Component {
 			title: 'Conversation ID',
 			dataIndex: 'id',
 			key: 'id',
-			width: '10%',
+			fixed: 'left',
+			width: 150,
 			sorter: (a, b) => compare(a.id, b.id),
-			setFilter: true
-		},
-		{
-			title: 'Chosen ID',
-			dataIndex: 'cid_chosen_id',
-			key: 'cid_chosen_id',
-			width: '10%',
-			sorter: (a, b) => compare(a.cid_chosen_id, b.cid_chosen_id),
 			setFilter: true
 		},
 		{
 			title: 'Invitor ID',
 			dataIndex: 'cid_invitor_id',
 			key: 'cid_invitor_id',
-			width: '10%',
+			width: 150,
 			sorter: (a, b) => compare(a.cid_chosen_id, b.cid_chosen_id),
 			setFilter: true 
+		},
+		{
+			title: 'Chosen ID',
+			dataIndex: 'cid_chosen_id',
+			key: 'cid_chosen_id',
+			width: 150,
+			sorter: (a, b) => compare(a.cid_chosen_id, b.cid_chosen_id),
+			setFilter: true,
+		},
+		{
+			title: 'Closed',
+			dataIndex: 'isClosed',
+			key: 'isClosed',
+			width: 150,
+			sorter: (a, b) => compare(a.isClosed, b.isClosed),
+			// setFilter: true,
+			render: isClosed => {
+				let color = 'default';
+				let text = 'No';
+				switch (isClosed) {
+					case 1 :
+						color = 'blue';
+						text = 'Yes';
+						break;
+					case 0 :
+						color = 'default';
+						text = 'No';
+						break;
+					default:
+						color = 'default';
+						text = 'No';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+		},
+		{
+			title: 'Absent',
+			dataIndex: 'is_invitor_deleted',
+			key: 'is_invitor_deleted',
+			width: 150,
+			// sorter: (a, b) => compare(a.is_invitor_deleted, b.is_invitor_deleted),
+			// setFilter: true,
+			render: (temp, record) => {
+				const { is_invitor_deleted, is_chosen_deleted } = record;
+				console.log(is_invitor_deleted);
+				console.log(is_chosen_deleted);
+				let color = 'default';
+				let text = 'No';
+				if (is_invitor_deleted && is_chosen_deleted) {
+					text = 'Both';
+					color = 'red';
+				} else if (is_invitor_deleted ) {
+					text = 'Invitor';
+					color = 'geekblue';
+				} else if (is_chosen_deleted) {
+					text = 'Chosen';
+					color = 'purple';
+				} else {
+					text = 'None';
+					color = 'cyan';
+				}
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
 		},
 		{
 			title: 'Chosen Message',
 			dataIndex: 'cid_chosen_message',
 			key: 'cid_chosen_message',
-			width: '15%',
+			width: 200,
 			sorter: (a, b) => compare(a.cid_chosen_message, b.cid_chosen_message),
 			setFilter: true 
 		},
@@ -99,27 +166,31 @@ class Conversation extends Component {
 			title: 'Invitor Message',
 			dataIndex: 'cid_invitor_message',
 			key: 'cid_invitor_message',
-			width: '15%',
+			width: 200,
 			sorter: (a, b) => compare(a.cid_invitor_message, b.cid_invitor_message),
 			setFilter: true
 		},
 		{
-			title: 'Created At',
+			title: 'Start Date',
 			dataIndex: 'created_at',
 			key: 'created_at',
-			width: '15%',
+			width: 150,
 			sorter: (a, b) => compare(a.created_at, b.created_at),
 			render: timestring => (<>{ toDatetime( Date.parse(timestring) ) }</>),
 			// setFilter: true
 		},
 		{
-			title: 'Updated At',
+			title: 'End Date',
 			dataIndex: 'updated_at',
 			key: 'updated_at',
-			width: '15%',
+			width: 150,
 			sorter: (a, b) => compare(a.updated_at, b.updated_at),
-			render: timestring => (<>{ toDatetime( Date.parse(timestring) ) }</>),
 			// setFilter: true
+			render: (updated_at, record) => {
+				const { isClosed } = record;
+				const endDate = isClosed ? toDatetime( Date.parse(updated_at) ) : "N/A";
+				return (<>{ endDate }</>);
+			}
 		},
 		{
 			title: 'Actions',
@@ -135,7 +206,8 @@ class Conversation extends Component {
 					</Button>
 				</Space>
 			),
-			width: '10%',
+			fixed: 'right',
+			width: 150,
 			setFilter: false
 		},
 	];
@@ -328,7 +400,8 @@ class Conversation extends Component {
 								<TableBody
 									columns={ this.columns } 
 									data={ this.state.conversations }
-									isSmall={ true }
+									size={ "small" }
+									scroll={ {x:2000} }
 								/>
 							</div>
 						</Spin>

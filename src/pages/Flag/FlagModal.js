@@ -49,7 +49,7 @@ class FlagModal extends Component {
 			options: [],
 			// for pagination
 			currentPage: 1,
-			pageSize: 10,
+			pageSize: 25,
 			total: 5000,
 		};
 	}
@@ -363,10 +363,11 @@ class FlagModal extends Component {
 									showQuickJumper
 									current={ this.state.currentPage }
 									pageSize={ this.state.pageSize }
-									pageSizeOptions={ [10, 20, 50] }
+									pageSizeOptions={ [10, 25, 50, 100] }
 									total={ this.state.total }
 									onChange={ this.handleChangePage }
 									onShowSizeChange={ this.handleChangePage }
+									size={ "small" }
 								/>
 							</div>
 						</Spin>

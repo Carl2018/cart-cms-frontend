@@ -8,6 +8,7 @@ import {
 	Menu, 
 	Popconfirm, 
 	Row, 
+	Select, 
 	Space, 
 	message, 
 	notification, 
@@ -33,6 +34,7 @@ import { InspectDrawer } from './InspectDrawer/InspectDrawer'
 // import services
 import { 
 	accountService,
+	candidateService,
 	blacklistService,
 	processService, 
 	profileService, 
@@ -43,6 +45,7 @@ import { backend } from '_helpers';
 
 // destructure imported components and objects
 const { createSync, listSync, updateSync } = backend;
+const { Option } = Select;
 
 class TableWrapper extends Component {
 	constructor(props) {
@@ -77,6 +80,7 @@ class TableWrapper extends Component {
 			queriedEmail: {},
 			accountBound: {},
 			blacklist: [],
+			dummy: [],
 		};
 	}
 	
@@ -183,12 +187,13 @@ class TableWrapper extends Component {
 	}
 
 	// handlers for actions in TableBody
-	handleClickEdit = record => {
-		this.setState({
-			visible: true, 
-			disabled: false,
-			record: {...record, case_id: record.id},
-		});
+	handleClickEdit = (record, gender) => {
+		this.setState({record: {...record, case_id: record.id, gender} }, () => 
+			this.setState({
+				visible: true, 
+				disabled: false,
+			})
+		)
 	}
 
 	handleClickDelete = record => this.props.delete(record.id);
@@ -257,6 +262,19 @@ class TableWrapper extends Component {
 	handleSubmit = async record => {
 		if (this.state.record.id) { // edit the entry
 			await this.props.edit(this.state.record.id, record);
+			// update gender in wowo database
+			if(record?.gender) {
+				const { db, candidate_id } = this.state.accountBound;
+				await this.updateCandidateGenderSync(1, { 
+					db,
+					candidate_id,
+					gender: record.gender,
+				});
+				// refresh gender
+				this.setState({ visibleInspect: 1 });
+				this.setState({ visibleInspect: true });
+				console.log("heere");
+			}
 		} else { // create an entry
 			let response = null;
 			response = await this.props.create(record);
@@ -555,7 +573,39 @@ class TableWrapper extends Component {
 	searchBlacklist = listSync.bind(this, this.configBlacklist );
 	unbanBlacklist = updateSync.bind(this, this.configBlacklist );
 
+	// candidate table
+	config = {
+		service: candidateService,
+		retrieve: "retrieveCandidateProfile",
+		update: "updateCandidateGender",
+		dataName: "dummy",
+	};
+	updateCandidateGenderSync = updateSync.bind(this, this.config);
+
 	render(){
+		const formItems = this.state.visibleInspect ? [...this.props.formItems,
+			{
+				label: 'Gender',
+				name: 'gender',
+				rules: [
+					{
+						required: true,
+						message: 'gender cannot be empty',
+					}
+				],
+				editable: true,
+				input: disabled => (
+					<Select
+						disabled={ disabled }
+					>
+						<Option value={ 1 }>Male</Option>
+						<Option value={ 2 }>Female</Option>
+						<Option value={ 3 }>Others</Option>
+					</Select>
+				)
+			},
+		] : this.props.formItems;
+		
 		return (
 			<div className='TableWrapper'>
 				<Row style={{ margin: this.props.isSmall ? "8px" : "16px" }}>
@@ -594,7 +644,7 @@ class TableWrapper extends Component {
 						columns={ this.columns } 
 						selectedRowKeys={ this.state.selectedRowKeys }
 						onSelectChange={ this.handleSelectChange }
-						isSmall={ this.props.isSmall }
+						size={ this.props.size }
 						showHeader={ this.props.showHeader }
 						loading={ this.props.loading }
 						scroll={ this.props.scroll }
@@ -607,7 +657,7 @@ class TableWrapper extends Component {
 						visible={ this.state.visible } 
 						onClose={ this.handleClose }
 						record={ this.state.record }
-						formItems={ this.props.formItems }
+						formItems={ formItems }
 						disabled={ this.state.disabled } 
 						isCreate={ this.state.isCreate } 
 						onSubmit={ this.handleSubmit }
@@ -664,7 +714,7 @@ class TableWrapper extends Component {
 						blacklist={ this.state.blacklist }
 						// display props
 						drawerTitle={ this.props.drawerTitle } 
-						formItems={ this.props.formItems }
+						formItems={ formItems }
 						visible={ this.state.visibleInspect } 
 						disabled={ this.state.disabledInspect } 
 						// api props

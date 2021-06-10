@@ -43,7 +43,7 @@ class Log extends Component {
 			data: [],
 			spinning: false,
 			rowCount: 0,
-			defaultPageSize: 10,
+			defaultPageSize: 25,
 			defaultPage: 1,
 			pagename: "Categories",
 			users: [],
@@ -452,6 +452,7 @@ class Log extends Component {
 						showDropdown={ false }
 						noAction={ true }
 						noBatch={ true }
+						size={ "small" }
 						scroll={ {x:2200} }
 						// api props
 						list={ this.listSync }
