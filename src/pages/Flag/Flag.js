@@ -492,6 +492,52 @@ class Flag extends Component {
 		dataName: "unknown",
 	});
 
+	unban = updateSync.bind(this, {...this.configCandidate, update:'unban'});
+	unbanSync = async record => {
+		const body = {
+			candidate_id: record.id,
+			ban_type: "S",
+			cache: this.state.cache,
+		}
+		await this.unban(record.id, body);
+	}
+	scam = updateSync.bind(this, {...this.configCandidate, update:'scam'});
+	scamSync = async record => {
+		const body = {
+			candidate_id: record.id,
+			ban_type: "S",
+			cache: this.state.cache,
+		}
+		await this.scam(record.id, body);
+	}
+	unscam = updateSync.bind(this, {...this.configCandidate, update:'unscam'});
+	unscamSync = async record => {
+		const body = {
+			candidate_id: record.id,
+			ban_type: "S",
+			cache: this.state.cache,
+		}
+		await this.unscam(record.id, body);
+	}
+	sex = updateSync.bind(this, {...this.configCandidate, update:'sex'});
+	sexSync = async record => {
+		const body = {
+			candidate_id: record.id,
+			ban_type: "S",
+			cache: this.state.cache,
+		}
+		await this.sex(record.id, body);
+	}
+	unsex = updateSync.bind(this, {...this.configCandidate, update:'unsex'});
+	unsexSync = async record => {
+		const body = {
+			candidate_id: record.id,
+			ban_type: "S",
+			cache: this.state.cache,
+		}
+		await this.unsex(record.id, body);
+	}
+
 	// refresh table
 	refreshTable = () => {
 		this.setState({ spinning: true }, async () => {
@@ -533,6 +579,12 @@ class Flag extends Component {
 						onChangeRemarks={ this.handleChangeRemarks }
 						onSearch={ this.handleSearch }
 						onClickFlag={ this.handleClickFlag }
+
+						unbanSync={ this.unbanSync }
+						scamSync={ this.scamSync }
+						unscamSync={ this.unscamSync }
+						sexSync={ this.sexSync }
+						unsexSync={ this.unsexSync }
 					>
 					</TableWrapper>
 				</Spin>

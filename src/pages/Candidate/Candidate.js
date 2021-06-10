@@ -440,6 +440,51 @@ class Candidate extends Component {
 			this.setState({ spinning: false });
 		});
 	}
+	unban = updateSync.bind(this, {...this.config, update:'unban'});
+	unbanSync = async record => {
+		const body = {
+			candidate_id: record.id,
+			ban_type: "U",
+			cache: this.state.cache,
+		}
+		await this.unban(record.id, body);
+	}
+	scam = updateSync.bind(this, {...this.config, update:'scam'});
+	scamSync = async record => {
+		const body = {
+			candidate_id: record.id,
+			ban_type: "S",
+			cache: this.state.cache,
+		}
+		await this.scam(record.id, body);
+	}
+	unscam = updateSync.bind(this, {...this.config, update:'unscam'});
+	unscamSync = async record => {
+		const body = {
+			candidate_id: record.id,
+			ban_type: "S",
+			cache: this.state.cache,
+		}
+		await this.unscam(record.id, body);
+	}
+	sex = updateSync.bind(this, {...this.config, update:'sex'});
+	sexSync = async record => {
+		const body = {
+			candidate_id: record.id,
+			ban_type: "S",
+			cache: this.state.cache,
+		}
+		await this.sex(record.id, body);
+	}
+	unsex = updateSync.bind(this, {...this.config, update:'unsex'});
+	unsexSync = async record => {
+		const body = {
+			candidate_id: record.id,
+			ban_type: "S",
+			cache: this.state.cache,
+		}
+		await this.unsex(record.id, body);
+	}
 
 	predictSync = createSync.bind(this, {
 		service: titleService,
@@ -484,6 +529,12 @@ class Candidate extends Component {
 						onChangeCache={ this.handleChangeCache }
 						onChangePage={ this.handleChangePage }
 						onChangeSize={ this.handleChangePage }
+
+						unbanSync={ this.unbanSync }
+						scamSync={ this.scamSync }
+						unscamSync={ this.unscamSync }
+						sexSync={ this.sexSync }
+						unsexSync={ this.unsexSync }
 					>
 					</TableWrapper>
 				</Spin>

@@ -5,6 +5,7 @@ import { handleResponse } from '_helpers';
 export const conversationService = {
     list,
     listContent,
+	downloadContent,
 };
 
 function list(params={}) {
@@ -30,6 +31,18 @@ function listContent(params={}) {
     const requestOptions = { 
 			method: 'GET', 
 			headers: authHeader() 
+		};
+    return fetch(url, requestOptions)
+			.then(handleResponse);
+}
+
+function downloadContent(params={}) {
+	let url = new URL(`${config.apiUrl}/conversation/download_content`);
+	params = {"conversations":["111","222","333"]};
+		const requestOptions = { 
+			method: 'POST', 
+			headers: authHeader(),
+			body: JSON.stringify(params)
 		};
     return fetch(url, requestOptions)
 			.then(handleResponse);

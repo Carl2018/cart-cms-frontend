@@ -3,11 +3,16 @@ import { authHeader } from '_helpers';
 import { handleResponse } from '_helpers';
 
 export const candidateService = {
-		retrieve,
-		retrieveDetails,
+	retrieve,
+	retrieveDetails,
     list,
     search_by_keywords,
     ban,
+	unban,
+	sex,
+	unsex,
+	scam,
+	unscam,
 };
 
 function retrieve(params={}) {
@@ -73,5 +78,55 @@ function ban(record) {
 			body: JSON.stringify(record)
 		};
     return fetch(`${config.apiUrl}/candidate/ban`, requestOptions)
+			.then(handleResponse);
+}
+
+function unban(record) {
+    const requestOptions = { 
+			method: 'PUT', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/candidate/unban`, requestOptions)
+			.then(handleResponse);
+}
+
+function scam(record) {
+    const requestOptions = { 
+			method: 'PUT', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/candidate/scam`, requestOptions)
+			.then(handleResponse);
+}
+
+function unscam(record) {
+    const requestOptions = { 
+			method: 'PUT', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/candidate/unscam`, requestOptions)
+			.then(handleResponse);
+}
+
+function sex(record) {
+    const requestOptions = { 
+			method: 'PUT', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/candidate/sex`, requestOptions)
+			.then(handleResponse);
+}
+
+function unsex(record) {
+    const requestOptions = { 
+			method: 'PUT', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/candidate/unsex`, requestOptions)
 			.then(handleResponse);
 }

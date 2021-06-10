@@ -21,7 +21,8 @@ import {
 	EyeInvisibleOutlined, 
 	FlagOutlined, 
 	SearchOutlined, 
-	UserDeleteOutlined, 
+	UserDeleteOutlined,
+	EyeOutlined, 
 } from '@ant-design/icons';
 
 // import shared components
@@ -80,6 +81,47 @@ class TableWrapper extends Component {
 				onClick={ this.handleClickConversation.bind(this, record) }
 			>
 				Conversations
+			</Menu.Item>
+			<Menu.Item 
+				key='5' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <EyeOutlined /> }
+				onClick={ 
+					this.handleClickDoAction.bind(this, this.getOptions('Unban', record)) }
+			>
+				Unban
+			</Menu.Item>
+			<Menu.Item 
+				key='6' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <ExceptionOutlined /> }
+				onClick={ this.handleClickDoAction.bind(this, this.getOptions('Scam', record)) }
+			>
+				Scam
+			</Menu.Item>
+			<Menu.Item 
+				key='7' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <EyeOutlined /> }
+				onClick={ this.handleClickDoAction.bind(this, this.getOptions('Unscam', record)) }
+			>
+				Unscam
+			</Menu.Item>
+			<Menu.Item 
+				key='8' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <ExceptionOutlined /> }
+				onClick={ this.handleClickDoAction.bind(this, this.getOptions('Sex', record)) }
+			>
+				Sex
+			</Menu.Item>
+			<Menu.Item 
+				key='9' 
+				style={{ color:'#5a9ef8' }} 
+				icon={ <EyeOutlined /> }
+				onClick={ this.handleClickDoAction.bind(this, this.getOptions('Unsex', record)) }
+			>
+				Unsex
 			</Menu.Item>
 		</Menu>
 	);
@@ -193,6 +235,89 @@ class TableWrapper extends Component {
 		});
 	}
 
+	// handler for general notification of action.
+	handleClickDoAction = (options) => {
+		const key = `open${Date.now()}`;
+		const btn = (
+			<Button 
+				type='primary' 
+				size='small' 
+				onClick={ this.handleClickConfirmAction.bind(this, notification.close, key, options.record, options.type) }
+			>
+				Confirm
+			</Button>
+		);
+		notification.open({
+			message: options.message,
+			description: options.description,
+			btn,
+			key,
+			duration: 0,
+			onClose: () => message.info( options.onCloseMessage ),
+		});
+	};
+	getOptions = (type, record) => {
+		let options = {}
+		options.record = record
+		switch (type) {
+			case 'Unban':
+				options.type = 'Unban'
+				options.message = 'About to Unban a Candidate'
+				options.description = 'Are you sure to unban this candidate?'
+				options.onCloseMessage = 'Unban has been canceled'
+				break;
+			case 'Sex':
+				options.type = 'Sex'
+				options.message = 'About to Sex a Candidate'
+				options.description = 'Are you sure to sex this candidate?'
+				options.onCloseMessage = 'Sex has been canceled'
+				break;
+			case 'Unsex':
+				options.type = 'Unsex'
+				options.message = 'About to Unsex a Candidate'
+				options.description = 'Are you sure to unsex this candidate?'
+				options.onCloseMessage = 'Unsex has been canceled'
+				break;
+			case 'Scam':
+				options.type = 'Scam'
+				options.message = 'About to Scam a Candidate'
+				options.description = 'Are you sure to scam this candidate?'
+				options.onCloseMessage = 'Scam has been canceled'
+				break;
+			case 'Unscam':
+				options.type = 'Unscam'
+				options.message = 'About to Unscam a Candidate'
+				options.description = 'Are you sure to unscam this candidate?'
+				options.onCloseMessage = 'Unscam has been canceled'
+				break;
+			default:
+				break;
+		}
+		return options;
+	}
+	// handler for general notification of do/undo action.
+	handleClickConfirmAction = (closeNotification, notificationKey, record, type) => {
+		switch (type) {
+			case 'Unban':
+				this.props.unbanSync(record);
+				break;
+			case 'Sex':
+				this.props.sexSync(record);
+				break;
+			case 'Unsex':
+				this.props.unsexSync(record);
+				break;
+			case 'Scam':
+				this.props.scamSync(record);
+				break;
+			case 'Unscam':
+				this.props.unscamSync(record);
+				break;
+			default:
+				break;
+		}
+		closeNotification(notificationKey);
+	}
 
 	render(){
 		return (

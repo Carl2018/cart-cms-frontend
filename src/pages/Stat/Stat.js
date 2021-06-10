@@ -382,6 +382,15 @@ class Stat extends React.Component {
       ]
     }
 
+    getDataSetsFromRedis = () => {
+      return [
+        this.dataEntry('Normal','rgba(255,69,0,1)','normal_premium_user'),
+        this.dataEntry('Plus','rgba(255,140,0,1)','plus_premium_user'),
+        this.dataEntry('Silver','rgba(30,144,255,1)','silver_premium_user'),
+        this.dataEntry('Gold','rgba(75,192,192,1)','gold_premium_user'),
+      ]
+    }
+
     getDataSetsByRegion = (region_type) => {
       return [
         this.dataEntry('Google','rgba(255,69,0,1)',region_type+'_google_register'),
@@ -411,7 +420,25 @@ class Stat extends React.Component {
     getDataArrayBasedOnType = (input_property) =>{
       let regions = {'au' : 'au', 'ca' : 'ca', 'cn' : 'cn', 'gb' : 'gb', 'hk' : 'hk', 
         'jp' : 'jp', 'mo' : 'mo', 'my' : 'my', 'nz' : 'nz', 'sg' : 'sg', 'tw' : 'tw', 'us' : 'us' }; 
-      let counts = {'invitation_count': 'invitation_count', 'conversation_count': 'conversation_count', 'match_rate':'match_rate', 'google_register' : 'google_register', 'sms_register': 'sms_register', 'facebook_register': 'facebook_register', 'apple_register' : 'apple_register', 'total_register': 'total_register', 't1_gold_1m' : 't1_gold_1m', 't1_gold_3m' : 't1_gold_3m', 't1_gold_6m' : 't1_gold_6m', 't2_silver_1m' : 't2_silver_1m', 't2_silver_3m' : 't2_silver_3m', 't2_silver_6m' : 't2_silver_6m', 't2_silver_1yr' : 't2_silver_1yr', 't3_adfree_1m' : 't3_adfree_1m', 't3_adfree_3m' : 't3_adfree_3m', 't3_adfree_6m' : 't3_adfree_6m', }
+      let counts = {
+        'invitation_count': 'invitation_count', 
+        'conversation_count': 'conversation_count', 
+        'match_rate':'match_rate', 
+        'google_register' : 'google_register', 
+        'sms_register': 'sms_register', 
+        'facebook_register': 'facebook_register', 
+        'apple_register' : 'apple_register', 
+        'total_register': 'total_register', 
+        't1_gold_1m' : 't1_gold_1m', 
+        't1_gold_3m' : 't1_gold_3m', 
+        't1_gold_6m' : 't1_gold_6m', 
+        't2_silver_1m' : 't2_silver_1m', 
+        't2_silver_3m' : 't2_silver_3m', 
+        't2_silver_6m' : 't2_silver_6m', 
+        't2_silver_1yr' : 't2_silver_1yr', 
+        't3_adfree_1m' : 't3_adfree_1m', 
+        't3_adfree_3m' : 't3_adfree_3m', 
+        't3_adfree_6m' : 't3_adfree_6m', }
       let properties = {}
       for( let index_r in regions){
         for( let index_c in counts){
@@ -610,6 +637,30 @@ class Stat extends React.Component {
               datasets: this.getDataSetsByCountry('hk','subscription')
             }} options={this.state.line_chart_options}/>
           </Card>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Card
+              title="Match Rate (%)"
+              style={{ margin: "16px 0px 0px 0px" }}
+            >
+            <Line data={{
+              labels: this.getLabels(),
+              datasets: this.getDataSetsFromRedis()
+            }} options={this.state.line_chart_options}/>
+            </Card>
+          </Col>
+          <Col span={12}>
+            <Card
+              title="Invitation Success Rate"
+              style={{ margin: "16px 0px 0px 0px" }}
+            >
+            <Line data={{
+              labels: this.getLabels(),
+              datasets: this.getDataSetsFromRedis()
+            }} options={this.state.line_chart_options}/>
+            </Card>
           </Col>
         </Row>
         <div gutter={16}>

@@ -13,8 +13,7 @@ import {
 	Spin,
 	message,
 } from 'antd';
-import { FileTextOutlined } from '@ant-design/icons';
-
+import { FileTextOutlined, DownloadOutlined } from '@ant-design/icons';
 // import shared and child components
 import { TableBody } from '_components'
 import { Content } from './Content'
@@ -133,6 +132,13 @@ class Conversation extends Component {
 					>
 						View
 					</Button>
+					<Button 
+						type="primary" 
+						icon={<DownloadOutlined />} 
+						onClick={ this.handleClickPdfExport }
+						size="small"
+					>
+					</Button>
 				</Space>
 			),
 			width: '10%',
@@ -231,6 +237,20 @@ class Conversation extends Component {
 		this.setState({ loadingContent: false });
 	}
 
+	handleClickPdfExport = () => {
+		// if(this.state.contents.length < 1){
+		// 	message.error("Download failed. The conversation is empty.");
+		// 	return;
+		// }
+		this.setState( async () => {
+			const params = {
+				conversations: this.state.contents
+			}
+			await this.downloadContents(params);
+		});
+		message.success("Mock download succeed.");
+	}
+
 	// handler for close content modal
 	handleCloseContent = event => {
 		this.setState({
@@ -266,6 +286,13 @@ class Conversation extends Component {
 		dataName: "contents",
 	};
 	listContents = listSync.bind(this, this.configContent);
+
+	configDownloadContent = {
+		service: conversationService,
+		list: "downloadContent",
+		dataName: "tempt",
+	};
+	downloadContents = listSync.bind(this, this.configDownloadContent);
 
 	render(){
 		return (
