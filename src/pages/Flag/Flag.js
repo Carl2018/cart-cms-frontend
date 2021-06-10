@@ -95,7 +95,6 @@ class Flag extends Component {
 			sortDirection: ['ascend', 'descend'],
 			width: 160,
 			// setFilter: true,
-			fixed: 'left',
 			render: status => {
 				let color = 'default';
 				let text = 'Unknown';

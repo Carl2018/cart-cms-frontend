@@ -5,7 +5,6 @@ import { Line } from 'react-chartjs-2';
 import { 
 	Button,
 	Col,
-	Input,
 	Modal,
 	Row,
 	Select,
@@ -28,7 +27,6 @@ import { backend, helpers } from "_helpers";
 // destructure imported components and objects
 const { listSync } = backend;
 const { compare, toDatetime } = helpers;
-const { Search } = Input;
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const moment = require('moment');
