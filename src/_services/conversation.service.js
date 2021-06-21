@@ -38,7 +38,6 @@ function listContent(params={}) {
 
 function downloadContent(params={}) {
 	let url = new URL(`${config.apiUrl}/conversation/download_content`);
-	params = {"conversations":["111","222","333"]};
 		const requestOptions = { 
 			method: 'POST', 
 			headers: authHeader(),

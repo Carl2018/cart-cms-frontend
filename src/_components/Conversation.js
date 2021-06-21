@@ -206,7 +206,7 @@ class Conversation extends Component {
 					<Button 
 						type="primary" 
 						icon={<DownloadOutlined />} 
-						onClick={ this.handleClickPdfExport }
+						onClick={ this.handleClickPdfExport.bind(this, record) }
 						size="small"
 					>
 					</Button>
@@ -309,16 +309,19 @@ class Conversation extends Component {
 		this.setState({ loadingContent: false });
 	}
 
-	handleClickPdfExport = () => {
-		// if(this.state.contents.length < 1){
-		// 	message.error("Download failed. The conversation is empty.");
-		// 	return;
-		// }
-		this.setState( async () => {
-			const params = {
-				conversations: this.state.contents
-			}
-			await this.downloadContents(params);
+	handleClickPdfExport = (record) => {
+		const params = {
+			db: this.state.db,
+			conversation_id: record.id,
+			page: this.state.currentPage,
+			item_per_page: this.state.pageSize,
+		}
+		this.setState( { loading: true }, async () => {
+			const temp = await this.downloadContents(params);
+			console.log(temp);
+		});
+		this.setState({ 
+			loading: false
 		});
 		message.success("Mock download succeed.");
 	}

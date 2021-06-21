@@ -1,5 +1,8 @@
 import React from 'react';
-import { Line } from 'react-chartjs-2';
+import { 
+  Line, 
+  Bar, 
+} from 'react-chartjs-2';
 // import styling from ant desgin
 import { LineChartOutlined,UploadOutlined } from '@ant-design/icons';
 import { 
@@ -47,99 +50,107 @@ const upploadProps = {
 
 class Stat extends React.Component {
     constructor(props) {
-        super(props);
-        this.state = {
-          currentUser: authenticationService.currentUserValue,
-          invitation_start_date: this.dateToString(this.getDaysBefore(-7)),
-          invitation_end_date: this.dateToString(this.getDaysBefore(-1)),
-          invitation_date_range: this.generateDateRangeArray(this.getDaysBefore(-7),this.getDaysBefore(-1) ),
-          revenue_start_date: this.dateToString(this.getDaysBefore(-1)),
-          revenue_end_date: this.dateToString(this.getDaysBefore(-1)),
-          revenue_region: '',
-          revenue_platform: '',
-          data: {},
-          dataSubscriber: {},
-          dataSubscription: {},
-          dataYesterday: {},
-          dataRevenue: {
+      super(props);
+      this.state = {
+        currentUser: authenticationService.currentUserValue,
+        invitation_start_date: this.dateToString(this.getDaysBefore(-7)),
+        invitation_end_date: this.dateToString(this.getDaysBefore(-1)),
+        invitation_date_range: this.generateDateRangeArray(this.getDaysBefore(-7),this.getDaysBefore(-1) ),
+        revenue_start_date: this.dateToString(this.getDaysBefore(-1)),
+        revenue_end_date: this.dateToString(this.getDaysBefore(-1)),
+        revenue_region: '',
+        revenue_platform: '',
+        data: {},
+        dataSubscriber: {},
+        dataSubscription: {},
+        dataYesterday: {},
+        dataRevenue: {
+        },
+        line_chart_options:{
+          tooltips: {
+            mode: 'index',
+            intersect: true,
           },
-          line_chart_options:{
-            tooltips: {
-              mode: 'index',
-              intersect: true,
+          scales: {
+            xAxes: [{
+              ticks: {
+                stepSize: 3,
+              }
+            }],
+          }
+        },
+        regions:[
+          { value: '1', label: 'HK' },
+          { value: '2', label: 'TW' },
+          { value: '3', label: 'MY' },
+          { value: '', label: 'All' },
+        ],
+        platform:[
+          { value: '1', label: 'IOS' },
+          { value: '2', label: 'Android' },
+          { value: '', label: 'All' },
+        ],
+        subscriptionColumns:[
+          {title:"", 
+            children:[
+              {title:"",dataIndex:"group",key:"group", width:'5%',
+              render: (text,row,index) => { 
+                let obj = {
+                  children: text,
+                  props: {}
+                }
+                if(index === 0 || index === 4 || index === 8  )
+                  obj.props.rowSpan = 4
+                  if( index !== 0 && index !== 4 && index !== 8 && index !== 12 )
+                  obj.props.rowSpan = 0
+                return obj 
+              }
             },
-            scales: {
-              xAxes: [{
-                ticks: {
-                  stepSize: 3,
-                }
-              }],
-            }
-          },
-          regions:[
-            { value: '1', label: 'HK' },
-            { value: '2', label: 'TW' },
-            { value: '3', label: 'MY' },
-            { value: '', label: 'All' },
-          ],
-          platform:[
-            { value: '1', label: 'IOS' },
-            { value: '2', label: 'Android' },
-            { value: '', label: 'All' },
-          ],
-          subscriptionColumns:[
-            {title:"", 
-              children:[
-                {title:"",dataIndex:"group",key:"group", width:'5%',
-                render: (text,row,index) => { 
-                  let obj = {
-                    children: text,
-                    props: {}
-                  }
-                  if(index === 0 || index === 4 || index === 8  )
-                    obj.props.rowSpan = 4
-                    if( index !== 0 && index !== 4 && index !== 8 && index !== 12 )
-                    obj.props.rowSpan = 0
-                  return obj 
-                }
-              },
-              {title:"",dataIndex:"duration",key:"duration", width:'6%'},
+            {title:"",dataIndex:"duration",key:"duration", width:'6%'},
+          ]
+        },
+          {title:"HK",
+            children:[
+              this.columnChildren("IOS No.","hk_ios_no","hk_ios_no",'5%'),
+              this.columnChildren("IOS $","hk_ios_cash","hk_ios_cash",'5%'),
+              this.columnChildren("AOS No.","hk_aos_no","hk_aos_no",'5%'),
+              this.columnChildren("AOS $","hk_aos_cash","hk_aos_cash",'5%')
             ]
           },
-            {title:"HK",
-              children:[
-                this.columnChildren("IOS No.","hk_ios_no","hk_ios_no",'5%'),
-                this.columnChildren("IOS $","hk_ios_cash","hk_ios_cash",'5%'),
-                this.columnChildren("AOS No.","hk_aos_no","hk_aos_no",'5%'),
-                this.columnChildren("AOS $","hk_aos_cash","hk_aos_cash",'5%')
-              ]
-            },
-            {title:"TW",
-              children:[
-                this.columnChildren("IOS No.","tw_ios_no","tw_ios_no",'5%'),
-                this.columnChildren("IOS $","tw_ios_cash","tw_ios_cash",'5%'),
-                this.columnChildren("AOS No.","tw_aos_no","tw_aos_no",'5%'),
-                this.columnChildren("AOS $","tw_aos_cash","tw_aos_cash",'5%')
-              ]
-            },
-            {title:"MY",
-              children:[
-                this.columnChildren("IOS No.","my_ios_no","my_ios_no",'5%'),
-                this.columnChildren("IOS $","my_ios_cash","my_ios_cash",'5%'),
-                this.columnChildren("AOS No.","my_aos_no","my_aos_no",'5%'),
-                this.columnChildren("AOS $","my_aos_cash","my_aos_cash",'5%')
-              ]
-            },
-            {title:"Others",
-              children:[
-                this.columnChildren("IOS No.","ot_ios_no","ot_ios_no",'5%'),
-                this.columnChildren("IOS $","ot_ios_cash","ot_ios_cash",'5%'),
-                this.columnChildren("AOS No.","ot_aos_no","ot_aos_no",'5%'),
-                this.columnChildren("AOS $","ot_aos_cash","ot_aos_cash",'5%')
-              ]
-            }
-          ],
-        };
+          {title:"TW",
+            children:[
+              this.columnChildren("IOS No.","tw_ios_no","tw_ios_no",'5%'),
+              this.columnChildren("IOS $","tw_ios_cash","tw_ios_cash",'5%'),
+              this.columnChildren("AOS No.","tw_aos_no","tw_aos_no",'5%'),
+              this.columnChildren("AOS $","tw_aos_cash","tw_aos_cash",'5%')
+            ]
+          },
+          {title:"MY",
+            children:[
+              this.columnChildren("IOS No.","my_ios_no","my_ios_no",'5%'),
+              this.columnChildren("IOS $","my_ios_cash","my_ios_cash",'5%'),
+              this.columnChildren("AOS No.","my_aos_no","my_aos_no",'5%'),
+              this.columnChildren("AOS $","my_aos_cash","my_aos_cash",'5%')
+            ]
+          },
+          {title:"Others",
+            children:[
+              this.columnChildren("IOS No.","ot_ios_no","ot_ios_no",'5%'),
+              this.columnChildren("IOS $","ot_ios_cash","ot_ios_cash",'5%'),
+              this.columnChildren("AOS No.","ot_aos_no","ot_aos_no",'5%'),
+              this.columnChildren("AOS $","ot_aos_cash","ot_aos_cash",'5%')
+            ]
+          }
+        ],
+        backgroundColor: [],
+        borderColor: [],
+        barData: [-12, 19, 30, 25, -20, -35,70],
+        scamSources:[
+          { value: '1', label: 'Force' },
+          { value: '2', label: 'Flag' },
+          { value: '3', label: 'All' },
+        ],
+      };
     }
     componentDidMount() {
       this.setState( async (state) => {
@@ -173,6 +184,7 @@ class Stat extends React.Component {
         }catch(error){
           console.log(error)
         }
+        this.getColorBasedOnValues(this.state.barData)
       });
     }
     columnChildren = (title,dataIndex,key,width) => {
@@ -382,13 +394,22 @@ class Stat extends React.Component {
       ]
     }
 
-    getDataSetsFromRedis = () => {
-      return [
-        this.dataEntry('Normal','rgba(255,69,0,1)','normal_premium_user'),
-        this.dataEntry('Plus','rgba(255,140,0,1)','plus_premium_user'),
-        this.dataEntry('Silver','rgba(30,144,255,1)','silver_premium_user'),
-        this.dataEntry('Gold','rgba(75,192,192,1)','gold_premium_user'),
-      ]
+    getDataSetsFromRedis = (which_data) => {
+      switch(which_data){
+        case 'invitation_rate':
+        default:
+          return [
+            this.dataEntry('Normal','rgba(255,69,0,1)','normal_premium_user'),
+            this.dataEntry('Plus','rgba(255,140,0,1)','plus_premium_user'),
+            this.dataEntry('Silver','rgba(30,144,255,1)','silver_premium_user'),
+            this.dataEntry('Gold','rgba(75,192,192,1)','gold_premium_user'),
+          ]
+        case 'scammer':
+          return [
+            this.dataEntry('Scammer','rgba(30,144,255,1)','normal_premium_user'),
+          ]
+      }
+      
     }
 
     getDataSetsByRegion = (region_type) => {
@@ -476,6 +497,19 @@ class Stat extends React.Component {
       }
       return final_entry
     }
+    getColorBasedOnValues = (barData)=> {
+      let colorArray = barData.map( 
+        x =>{
+          if(x>= 0)
+            return 'rgba(75,255,92,0.3)';
+          else 
+            return 'rgba(255, 99, 132, 0.3)';
+      })
+      this.setState({
+        backgroundColor: colorArray,
+        borderColor: colorArray
+      })
+    }
     axes = [
         { primary: true, type: 'time', position: 'bottom' },
         { type: 'linear', position: 'left' }
@@ -539,7 +573,7 @@ class Stat extends React.Component {
           <div 
             style={ 
               {
-                fontSize: '16px',
+                fontSize: '18px',
                 textAlign: 'left',
                 margin: "80px 0px 0px 0px"
               } 
@@ -647,19 +681,81 @@ class Stat extends React.Component {
             >
             <Line data={{
               labels: this.getLabels(),
-              datasets: this.getDataSetsFromRedis()
+              datasets: this.getDataSetsFromRedis('invitation_rate')
             }} options={this.state.line_chart_options}/>
             </Card>
           </Col>
           <Col span={12}>
             <Card
-              title="Invitation Success Rate"
+              title="Invitation Success Rate (%)"
               style={{ margin: "16px 0px 0px 0px" }}
             >
             <Line data={{
               labels: this.getLabels(),
-              datasets: this.getDataSetsFromRedis()
+              datasets: this.getDataSetsFromRedis('invitation_rate')
             }} options={this.state.line_chart_options}/>
+            </Card>
+          </Col>
+        </Row>
+        <div 
+            style={ 
+              {
+                fontSize: '18px',
+                textAlign: 'left',
+                margin: "80px 0px 30px 0px"
+              } 
+            } 
+          >
+          <Row gutter={16}>
+          <Col xxl={{span:7}} xl={{span:8}}>
+              { "Date Range " }
+              <RangePicker
+                ranges={{
+                  'Past 7 days': [moment().subtract(7,'days'), moment().subtract(1,'days')],
+                  'Past 14 days': [moment().subtract(14,'days'), moment().subtract(1,'days')],
+                  'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
+                }}
+                onChange={this.onChange}
+                size = "small"
+              />
+            </Col>
+            <Col xxl={{span:6}} xl={{span:7}} >
+              { "Scam Source: " }
+              <Cascader options={this.state.scamSources} placeholder="Please select" size="small"/>
+            </Col>
+          </Row>
+        </div>
+        {/* https://github.com/reactchartjs/react-chartjs-2/blob/master/example/src/charts/VerticalBar.js */}
+        <Row gutter={16}>
+          <Col span={12}>
+            <Card
+              title="Daily Scammers (No data, redis keys TBD)"
+              style={{ margin: "16px 0px 0px 0px" }}
+            >
+            <Line data={{
+              labels: this.getLabels(),
+              datasets: this.getDataSetsFromRedis('scammer')
+            }} options={this.state.line_chart_options}/>
+            </Card>
+          </Col>
+          <Col span={12}>
+            <Card
+              title="Daily Scammer Comparison (No data, redis keys TBD)"
+              style={{ margin: "16px 0px 0px 0px" }}
+            >
+              <Bar data={{
+                  labels: this.getLabels(),
+                  datasets: [
+                    {
+                      label: 'Percentage Change',
+                      data: this.state.barData,
+                      backgroundColor: this.state.backgroundColor,
+                      borderColor: this.state.borderColor,
+                      borderWidth: 1,
+                    },
+                  ],
+                }} 
+                options={this.state.barOptions} />
             </Card>
           </Col>
         </Row>
