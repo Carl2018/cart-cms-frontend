@@ -6,6 +6,7 @@ import {
 	CommentOutlined,
 	CopyOutlined,
 	EditOutlined, 
+	ExceptionOutlined, 
 	FlagOutlined,
 	HistoryOutlined, 
 	ShakeOutlined,
@@ -50,6 +51,14 @@ class DrawerDropdown extends Component {
 				onClick={ this.props.onClickBan }
 			>
 				Ban
+			</Menu.Item>
+			<Menu.Item 
+				key='33' 
+				style={{ color:'#ec5f5b' }} 
+				icon={ <ExceptionOutlined /> }
+				onClick={ this.props.onClickDeviceBan }
+			>
+				Device Ban
 			</Menu.Item>
 			<Menu.Item 
 				key='4' 
