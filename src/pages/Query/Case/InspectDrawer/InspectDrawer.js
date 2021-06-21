@@ -87,6 +87,7 @@ class InspectDrawer extends Component {
 			gender: 0,
 			udid: null,
 			relatedCandidates: [],
+			dummy: [],
 		};
 	}
 
@@ -245,7 +246,7 @@ class InspectDrawer extends Component {
 			title: 'Account Type',
 			dataIndex: 'account_type',
 			key: 'account_type',
-			width: '20%',
+			width: '15%',
 			render: account_type => {
 				let color = 'gold';
 				let text = 'Phone';
@@ -324,7 +325,7 @@ class InspectDrawer extends Component {
 			dataIndex: 'physical_region',
 			key: 'physical_region',
 			ellipsis: true,
-			width: '15%',
+			width: '20%',
 			setFilter: false
 		},
 		{
@@ -337,7 +338,7 @@ class InspectDrawer extends Component {
 						icon={ <ExceptionOutlined /> }
 						onClick={ this.handleClickBlacklist.bind(this, record) }
 					>
-						Blacklist
+						Search Blacklist
 					</Button>
 				</Space>
 			),
@@ -423,6 +424,46 @@ class InspectDrawer extends Component {
 		this.setState({ spinning: true });
 		message.info("The ban button has been temporarily disabled");
 		//await this.props.onClickBan(this.props.dataAccount);
+		this.setState({ spinning: false });
+		closeNotification(notificationKey);
+	};
+
+	// handlers for device ban
+	onClickDeviceBan = () => {
+		const key = `open${Date.now()}`;
+		const btn = (
+			<Button 
+				type='primary' 
+				size='small' 
+				onClick={ this.handleClickConfirmDeviceBan.bind(this, notification.close, key) }
+			>
+				Confirm
+			</Button>
+		);
+		if (!this.props.dataAccount) {
+			message.error("The case is not bound to any account");
+		} else if (this.props.dataAccount.status === 'u') {
+			notification.open({
+				message: 'About to Device Ban This Account',
+				description:
+					<> 
+						{"Are you sure to "} 
+						<span style={{color: "#ec5f5b"}}><strong>Device Ban</strong></span> 
+						{" this account?"}
+					</>,
+				btn,
+				key,
+				duration: 0,
+				onClose: () => message.info("Device Ban Cancelled"),
+			});
+		} else {
+			message.info("The account has been banned already");
+		}
+	};
+
+	handleClickConfirmDeviceBan = async (closeNotification, notificationKey) => {
+		this.setState({ spinning: true });
+		await this.blacklistSync();
 		this.setState({ spinning: false });
 		closeNotification(notificationKey);
 	};
@@ -727,6 +768,7 @@ class InspectDrawer extends Component {
 					onClickEdit={ this.onClickEdit }
 					onClickUnban={ this.onClickUnban }
 					onClickBan={ this.onClickBan }
+					onClickDeviceBan={ this.onClickDeviceBan }
 					onClickTemplates={ this.handleClickTemplates }
 					onClickFlags={ this.handleClickFlags }
 					onClickConversations={ this.handleClickConversations }
@@ -745,12 +787,24 @@ class InspectDrawer extends Component {
 		retrieve: "retrieveCandidateProfile",
 		list: "listCandidatesByUdid",
 		update: "updateCandidateGender",
-		dataName: "unknown",
+		dataName: "dummy",
 	};
 	retrieveCandidateProfileSync = retrieveSync.bind(this, this.config);
 	listCandidatesByUdidSync = listSync.bind(this, this.config);
 	updateCandidateGenderSync = updateSync.bind(this, this.config);
 
+	ban = updateSync.bind(this, {...this.config, update: "ban"});
+	blacklistSync = async () => {
+		const { region, candidate_id } = this.props.dataAccount;
+		const body = {
+			candidate_id,
+			ban_type: "B",
+			blacklist_type: "U",
+			cache: region.toLowerCase(),
+		}
+		console.log(body);
+		await this.ban(candidate_id, body);
+	}
 	// add these tags after search by udid is fixed
 	//								<Item 
 	//									label="Candidate ID" 
