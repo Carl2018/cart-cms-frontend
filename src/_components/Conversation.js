@@ -313,17 +313,16 @@ class Conversation extends Component {
 		const params = {
 			db: this.state.db,
 			conversation_id: record.id,
-			page: this.state.currentPage,
-			item_per_page: this.state.pageSize,
+			page: 1,
+			item_per_page: 1000000,
+			title: `ChatRecord-${record.id}`
 		}
 		this.setState( { loading: true }, async () => {
-			const temp = await this.downloadContents(params);
-			console.log(temp);
+			await this.downloadContents(params)
+			this.setState({ loading: false })
 		});
-		this.setState({ 
-			loading: false
-		});
-		message.success("Mock download succeed.");
+		
+		;
 	}
 
 	// handler for close content modal

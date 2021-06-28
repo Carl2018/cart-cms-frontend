@@ -22,3 +22,13 @@ export function handleResponse(response) {
         return data;
     });
 }
+export function handleDownloadResponse(response,params) {
+    return response.blob().then(blob => {
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = `${params.title}.pdf`;
+        a.click();
+        return Promise.resolve(blob);
+    });
+}
