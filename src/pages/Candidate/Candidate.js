@@ -22,6 +22,8 @@ import {
 	helpers 
 } from '_helpers';
 
+import moment from 'moment';
+
 // destructure imported components and objects
 const { createSync, retrieveSync, listSync, updateSync } = backend;
 const { compare, toDatetime } = helpers;
@@ -499,6 +501,7 @@ class Candidate extends Component {
 			candidate_id: record.id,
 			ban_type: "S",
 			cache: this.state.cache,
+			timestamp: moment().format("YMDH"),
 		}
 		await this.scam(record.id, body);
 	}

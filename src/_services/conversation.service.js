@@ -1,6 +1,6 @@
 import { config } from 'config';
 import { authHeader } from '_helpers';
-import { handleResponse } from '_helpers';
+import { handleResponse,handleDownloadResponse } from '_helpers';
 
 export const conversationService = {
     list,
@@ -44,5 +44,5 @@ function downloadContent(params={}) {
 			body: JSON.stringify(params)
 		};
     return fetch(url, requestOptions)
-			.then(handleResponse);
+		.then(response => handleDownloadResponse(response,params));
 }
