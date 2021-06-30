@@ -15,7 +15,7 @@ import {
 	Tag,
 	message,
 } from 'antd';
-import { FileTextOutlined } from '@ant-design/icons';
+import { FileTextOutlined, DownloadOutlined } from '@ant-design/icons';
 
 // import shared and child components
 import { TableBody } from '_components'
@@ -204,6 +204,13 @@ class Conversation extends Component {
 					>
 						View
 					</Button>
+					<Button 
+						type="primary" 
+						icon={<DownloadOutlined />} 
+						onClick={ this.handleClickPdfExport.bind(this, record) }
+						size="small"
+					>
+					</Button>
 				</Space>
 			),
 			fixed: 'right',
@@ -308,6 +315,22 @@ class Conversation extends Component {
 		this.setState({ loadingContent: false });
 	}
 
+	handleClickPdfExport = (record) => {
+		const params = {
+			db: this.state.db,
+			conversation_id: record.id,
+			page: 1,
+			item_per_page: 1000000,
+			title: `ChatRecord-${record.id}`
+		}
+		this.setState( { loading: true }, async () => {
+			await this.downloadContents(params)
+			this.setState({ loading: false })
+		});
+		
+		;
+	}
+
 	// handler for close content modal
 	handleCloseContent = event => {
 		this.setState({
@@ -343,6 +366,13 @@ class Conversation extends Component {
 		dataName: "contents",
 	};
 	listContents = listSync.bind(this, this.configContent);
+
+	configDownloadContent = {
+		service: conversationService,
+		list: "downloadContent",
+		dataName: "tempt",
+	};
+	downloadContents = listSync.bind(this, this.configDownloadContent);
 
 	render(){
 		return (
