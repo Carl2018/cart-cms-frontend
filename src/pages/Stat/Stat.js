@@ -2,6 +2,7 @@ import React from 'react';
 import { 
   Line, 
   Bar, 
+  HorizontalBar
 } from 'react-chartjs-2';
 // import styling from ant desgin
 import { LineChartOutlined,UploadOutlined } from '@ant-design/icons';
@@ -32,7 +33,7 @@ const upploadProps = {
   //   authorization: 'authorization-text',
   // },
   onChange(info) {
-    if (info.file.status !== 'uploading') {
+    if (info.file.status !== 'up') {
       console.log(info.file, info.fileList);
     }
     if (info.file.status === 'done') {
@@ -52,20 +53,37 @@ class Stat extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
+        arpuDataset:{
+          labels: [],
+          datasets: [
+            {
+              label: '',
+              data: [],
+              backgroundColor: [],
+            },
+          ],
+        },
+        mockOption: {
+          responsive: true,
+        },
+        counter: 0,
         currentUser: authenticationService.currentUserValue,
-        invitation_start_date: this.dateToString(this.getDaysBefore(-7)),
-        invitation_end_date: this.dateToString(this.getDaysBefore(-1)),
+        invitation_start_date: moment(this.getDaysBefore(-7)).format("YYYY-MM-DD"),
+        invitation_end_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
         invitation_date_range: this.generateDateRangeArray(this.getDaysBefore(-7),this.getDaysBefore(-1) ),
-        revenue_start_date: this.dateToString(this.getDaysBefore(-1)),
-        revenue_end_date: this.dateToString(this.getDaysBefore(-1)),
+        revenue_start_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
+        revenue_end_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
+        arpu_start_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
+        arpu_end_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
+        arpu_graph_title: "Each Region's ARPU for a Given Period",
         revenue_region: '',
         revenue_platform: '',
         data: {},
         dataSubscriber: {},
         dataSubscription: {},
         dataYesterday: {},
-        dataRevenue: {
-        },
+        dataRevenue: {},
+        dataArpu:{},
         line_chart_options:{
           tooltips: {
             mode: 'index',
@@ -201,11 +219,7 @@ class Stat extends React.Component {
         }
       }
     }
-    dateToString = (selectedDate) => {
-      let currentDate = new Date(selectedDate)
-      let stringStartDate = currentDate.getFullYear()+"-"+(currentDate.getMonth()+1)+"-"+currentDate.getDate()
-      return stringStartDate
-    }
+
     onChange = (dateStrings) => {
       this.setState({
         invitation_start_date: dateStrings[0],
@@ -213,8 +227,8 @@ class Stat extends React.Component {
       })
       this.setDateRange(dateStrings[0],dateStrings[1])
       this.setState( async () => {
-        let start_date = this.dateToString(dateStrings[0])
-        let end_date = this.dateToString(dateStrings[1])
+        let start_date = moment(dateStrings[0]).format("YYYY-MM-DD")
+        let end_date = moment(dateStrings[1]).format("YYYY-MM-DD")
         try{
           this.listSyncInvite({
             start_date,
@@ -240,8 +254,8 @@ class Stat extends React.Component {
         revenue_end_date: dateStrings[1]
       })
       this.setState( async () => {
-        let start_date = this.dateToString(dateStrings[0])
-        let end_date = this.dateToString(dateStrings[1])
+        let start_date = moment(dateStrings[0]).format("YYYY-MM-DD")
+        let end_date = moment(dateStrings[1]).format("YYYY-MM-DD")
         let region = this.state.revenue_region
         let platform = this.state.revenue_platform
         this.tryListSyncRevenue(start_date,end_date,region,platform)
@@ -249,8 +263,8 @@ class Stat extends React.Component {
     }
     onChangeRegion = (region) => {
       this.setState( async () => {
-        let start_date = this.dateToString(this.state.revenue_start_date)
-        let end_date = this.dateToString(this.state.revenue_end_date)
+        let start_date = moment(this.state.revenue_start_date).format("YYYY-MM-DD")
+        let end_date = moment(this.state.revenue_end_date).format("YYYY-MM-DD")
         let platform = this.state.revenue_platform
         this.state.revenue_region = region
         this.tryListSyncRevenue(start_date,end_date,region,platform)
@@ -258,8 +272,8 @@ class Stat extends React.Component {
     }
     onChangePlatform = (platform) => {
       this.setState( async () => {
-        let start_date = this.dateToString(this.state.revenue_start_date)
-        let end_date = this.dateToString(this.state.revenue_end_date)
+        let start_date = moment(this.state.revenue_start_date).format("YYYY-MM-DD")
+        let end_date = moment(this.state.revenue_end_date).format("YYYY-MM-DD")
         let region = this.state.revenue_region
         this.state.revenue_platform = platform
         this.tryListSyncRevenue(start_date,end_date,region,platform)
@@ -267,6 +281,66 @@ class Stat extends React.Component {
     }
     tryListSyncRevenue = (revenue_start_date,revenue_end_date,revenue_region,revenue_platform) => {
       this.listSyncRevenue({ revenue_start_date, revenue_end_date,  revenue_region,  revenue_platform});
+    }
+    onChangeDaily = (dateString) => {
+      dateString = moment(dateString).format("YYYY-MM-DD")
+      let graph_title = "Each Region's ARPU for a given period"
+      if(dateString !== "Invalid date")
+          graph_title = "Each Region's ARPU on "+dateString
+
+      this.setState({
+        arpu_graph_title: graph_title,
+      }, async ( ) => { 
+        let arpu_start_date = dateString
+        let arpu_end_date = dateString
+        await this.listArpu({arpu_start_date, arpu_end_date})
+        this.updateArpuDataSet()
+      })
+    }
+    updateArpuDataSet = () => {
+      let returned_dataset = {
+        labels: this.state.dataArpu.regions,
+        datasets: [
+          {
+            label: 'Data',
+            data: this.state.dataArpu.revenue,
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.8)',
+              'rgba(54, 162, 235, 0.8)',
+              'rgba(255, 206, 86, 0.8)',
+              'rgba(75, 192, 192, 0.8)',
+              'rgba(153, 102, 255, 0.8)',
+              'rgba(255, 159, 64, 0.8)',
+            ],
+            barThickness: 'flex',
+            barPercentage: 0.4
+          },
+        ],
+      }
+      this.setState({
+        arpuDataset: returned_dataset
+      })
+    }
+    onChangeWeekly = (dateString, weekString) => {
+      this.setState({
+        arpu_graph_title: "\"Week Picker Is Not Ready\""
+      })
+    }
+    onChangeMonthly = (dateString, monthString) => {
+      let graph_title = "Each Region's ARPU for a given period"
+      if(dateString !== null)
+          graph_title = "Each Region's ARPU in "+monthString
+      let arpu_start_date = monthString + "-01"
+      let arpu_end_date = monthString + "-31"
+      this.setState({
+        arpu_start_date,
+        arpu_end_date,
+        arpu_graph_title: graph_title
+      }, async ()=>{
+        await this.listArpu({arpu_start_date, arpu_end_date})
+        this.updateArpuDataSet()
+      })
+      
     }
     // bind versions of CRUD
     configInvite = {
@@ -298,11 +372,17 @@ class Stat extends React.Component {
       service: statisticService,
       upload: "csv_import",
     }
+    configArpu = {
+      service: statisticService,
+      list: "arpu_list",
+      dataName:"dataArpu"
+    }
     listSyncInvite = listSync.bind(this, this.configInvite);
     listSyncSubscriber = listSync.bind(this, this.configSubscriber);
     listSyncSubscription = listSync.bind(this, this.configSubscription);
     listSyncYesterday = listSync.bind(this, this.yesterdayStat);
     listSyncRevenue = listSync.bind(this, this.configRevenue);
+    listArpu = listSync.bind(this, this.configArpu);
     uploadSync = uploadSync.bind(this,this.configUpload)
     setDateRange = (startDate, endDate) => {
       let dateArray = this.generateDateRangeArray(startDate, endDate);
@@ -315,7 +395,6 @@ class Stat extends React.Component {
       let dateArray = []
       let currentDate = new Date(startDate)
       endDate = new Date(endDate)
-      // let stringCurrentDate = this.dateToString(startDate)
       let stringCurrentDate = (currentDate.getMonth()+1) + "-" + currentDate.getDate()
       while (currentDate <= endDate) {
           dateArray.push(stringCurrentDate)
@@ -510,6 +589,28 @@ class Stat extends React.Component {
         borderColor: colorArray
       })
     }
+    //https://stackoverflow.com/questions/16590500/javascript-calculate-date-from-week-number
+    getDateByGivenWeekNumber = (weekString) => {
+      let year = weekString.slice(0,4)
+      let weekNumber = weekString.slice(5,-2)
+      var simple = new Date(year, 0, 1 + (weekNumber - 1) * 7);
+      var dow = simple.getDay();
+      var ISOweekStart = simple;
+      if (dow <= 4)
+          ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+      else
+          ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+      alert(ISOweekStart)
+
+
+      let d = (1 + (weekNumber - 1) * 7) // 1st of January + 7 days for each week
+      let start_date = new Date(year, 0, d)
+      start_date = moment(start_date).format('YYYY-MM-DD')
+      let end_date = moment(start_date).add(6, 'days').format('YYYY-MM-DD')
+      console.log(start_date)
+      console.log(end_date)
+    }
+ 
     axes = [
         { primary: true, type: 'time', position: 'bottom' },
         { type: 'linear', position: 'left' }
@@ -756,6 +857,41 @@ class Stat extends React.Component {
                   ],
                 }} 
                 options={this.state.barOptions} />
+            </Card>
+          </Col>
+        </Row>
+        <div 
+            style={ 
+              {
+                fontSize: '18px',
+                textAlign: 'left',
+                margin: "80px 0px 30px 0px"
+              } 
+            } 
+          >
+          <Row gutter={16}>
+            <Col xxl={{span:7}} xl={{span:8}}>
+              { "ARPU Date Picker " }
+              <DatePicker onChange={this.onChangeDaily} />
+            </Col>
+            <Col xxl={{span:7}} xl={{span:8}}>
+              { "ARPU Week Picker " }
+              <DatePicker onChange={this.onChangeWeekly} picker="week" />
+            </Col>
+            <Col xxl={{span:7}} xl={{span:8}}>
+              { "ARPU Month Picker " }
+              <DatePicker onChange={this.onChangeMonthly} picker="month" />
+            </Col>
+          </Row>
+        </div>
+        {/* ARPU for a given period of each region. */}
+        <Row gutter={16}>
+          <Col span={12}>
+            <Card
+              title={this.state.arpu_graph_title}
+              style={{ margin: "16px 0px 0px 0px" }}
+            >
+              <HorizontalBar data={this.state.arpuDataset} options={this.state.mockOption} />
             </Card>
           </Col>
         </Row>

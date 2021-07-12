@@ -490,7 +490,6 @@ class Candidate extends Component {
 	unbanSync = async record => {
 		const body = {
 			candidate_id: record.id,
-			ban_type: "U",
 			cache: this.state.cache,
 		}
 		await this.unban(record.id, body);
