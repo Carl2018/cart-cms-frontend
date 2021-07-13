@@ -17,7 +17,8 @@ import {
   Table,
   Button,
   Upload,
-  message
+  message,
+  Radio
 } from 'antd';
 
 import { authenticationService,statisticService } from '_services';
@@ -66,13 +67,14 @@ class Stat extends React.Component {
         mockOption: {
           responsive: true,
         },
-        counter: 0,
+        radioValue: "d",
         currentUser: authenticationService.currentUserValue,
         invitation_start_date: moment(this.getDaysBefore(-7)).format("YYYY-MM-DD"),
         invitation_end_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
         invitation_date_range: this.generateDateRangeArray(this.getDaysBefore(-7),this.getDaysBefore(-1) ),
         revenue_start_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
         revenue_end_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
+        arpu_default_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
         arpu_start_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
         arpu_end_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
         arpu_graph_title: "Each Region's ARPU for a Given Period",
@@ -282,20 +284,39 @@ class Stat extends React.Component {
     tryListSyncRevenue = (revenue_start_date,revenue_end_date,revenue_region,revenue_platform) => {
       this.listSyncRevenue({ revenue_start_date, revenue_end_date,  revenue_region,  revenue_platform});
     }
-    onChangeDaily = (dateString) => {
+    onChangeDaily =  (dateString) => {
       dateString = moment(dateString).format("YYYY-MM-DD")
+      let arpu_start_date = dateString
+      let arpu_end_date = dateString
       let graph_title = "Each Region's ARPU for a given period"
-      if(dateString !== "Invalid date")
-          graph_title = "Each Region's ARPU on "+dateString
-
-      this.setState({
-        arpu_graph_title: graph_title,
-      }, async ( ) => { 
-        let arpu_start_date = dateString
-        let arpu_end_date = dateString
-        await this.listArpu({arpu_start_date, arpu_end_date})
+      let radio_value = this.state.radioValue
+      if(dateString === "Invalid date"){
+        this.setState({
+          arpu_graph_title: graph_title,
+          arpu_start_date: dateString,
+          arpu_end_date: dateString
+        })
+        message.error(`Select a date first.`);
+      }
+      else{
+        graph_title = "Each Region's ARPU on "+dateString
+        this.setState({
+          arpu_graph_title: graph_title,
+          arpu_start_date,
+          arpu_end_date
+        }, async ( ) => { 
+          await this.listArpu({arpu_start_date, arpu_end_date, radio_value})
+          this.updateArpuDataSet()
+        })
+      }
+    }
+    callListArpu = async (arpu_start_date, arpu_end_date, radio_value) => {
+      if(this.state.arpu_start_date === "Invalid date"){
+        message.error(`Select a date first.`);
+      }else{
+        await this.listArpu({arpu_start_date, arpu_end_date, radio_value})
         this.updateArpuDataSet()
-      })
+      }
     }
     updateArpuDataSet = () => {
       let returned_dataset = {
@@ -321,26 +342,38 @@ class Stat extends React.Component {
         arpuDataset: returned_dataset
       })
     }
-    onChangeWeekly = (dateString, weekString) => {
-      this.setState({
-        arpu_graph_title: "\"Week Picker Is Not Ready\""
-      })
+    recalculateStartDate = (radioValue) => {
+      let startDate = null
+      let graph_title = null
+      if(radioValue === "d"){
+        startDate = this.state.arpu_end_date
+        graph_title = "Each Region's ARPU on "+ this.state.arpu_end_date
+      }
+      else if(radioValue === "w"){
+        startDate = moment(this.state.arpu_end_date).subtract(6, 'days').format("YYYY-MM-DD")
+        graph_title = `Each Region's ARPU between ${startDate} and ${this.state.arpu_end_date}`
+      }
+      else if(radioValue === "m"){
+        startDate = moment(this.state.arpu_end_date).subtract(29, 'days').format("YYYY-MM-DD")
+        graph_title = `Each Region's ARPU between ${startDate} and ${this.state.arpu_end_date}`
+      }
+
+      if(startDate === null)
+        message.error("Invalid radio value given.")
+      else
+        this.setState({
+          arpu_start_date: startDate,
+          arpu_graph_title: graph_title
+        },()=>{
+          this.callListArpu(this.state.arpu_start_date, this.state.arpu_end_date, radioValue)
+        })
     }
-    onChangeMonthly = (dateString, monthString) => {
-      let graph_title = "Each Region's ARPU for a given period"
-      if(dateString !== null)
-          graph_title = "Each Region's ARPU in "+monthString
-      let arpu_start_date = monthString + "-01"
-      let arpu_end_date = monthString + "-31"
+    onChangeRadioValue = e => {
       this.setState({
-        arpu_start_date,
-        arpu_end_date,
-        arpu_graph_title: graph_title
-      }, async ()=>{
-        await this.listArpu({arpu_start_date, arpu_end_date})
-        this.updateArpuDataSet()
+        radioValue: e.target.value
+      }, ()=>{
+        this.recalculateStartDate(e.target.value)
       })
-      
     }
     // bind versions of CRUD
     configInvite = {
@@ -870,17 +903,18 @@ class Stat extends React.Component {
             } 
           >
           <Row gutter={16}>
-            <Col xxl={{span:7}} xl={{span:8}}>
+            <Col xxl={{span:10}} xl={{span:12}}>
               { "ARPU Date Picker " }
-              <DatePicker onChange={this.onChangeDaily} />
-            </Col>
-            <Col xxl={{span:7}} xl={{span:8}}>
-              { "ARPU Week Picker " }
-              <DatePicker onChange={this.onChangeWeekly} picker="week" />
-            </Col>
-            <Col xxl={{span:7}} xl={{span:8}}>
-              { "ARPU Month Picker " }
-              <DatePicker onChange={this.onChangeMonthly} picker="month" />
+              <DatePicker onChange={this.onChangeDaily} defaultValue={moment(this.state.arpu_default_date, 'YYYY-MM-DD')}  />
+              <span style={{margin:"20px"}}>
+                <Radio.Group onChange={this.onChangeRadioValue} 
+                  value={this.state.radioValue} 
+                >
+                  <Radio value={"d"}>DAU</Radio>
+                  <Radio value={"w"}>WAU</Radio>
+                  <Radio value={"m"}>MAU</Radio>
+                </Radio.Group>
+              </span>
             </Col>
           </Row>
         </div>
