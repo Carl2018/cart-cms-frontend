@@ -3,12 +3,23 @@ import { authHeader } from '_helpers';
 import { handleResponse } from '_helpers';
 
 export const tagService = {
+		create,
 		retrieve,
 		retrieveRowCount,
     list,
 		searchCandidatesByTag,
     update,
 };
+
+function create(record) {
+    const requestOptions = { 
+			method: 'POST', 
+			headers: authHeader(),
+			body: JSON.stringify(record)
+		};
+    return fetch(`${config.apiUrl}/tag/create`, requestOptions)
+			.then(handleResponse);
+}
 
 function retrieve(params={}) {
 		// append query string

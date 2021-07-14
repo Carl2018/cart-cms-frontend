@@ -23,7 +23,7 @@ import {
 } from '_helpers';
 
 // destructure imported components and objects
-const { retrieveSync, listSync, updateSync } = backend;
+const { createSync, retrieveSync, listSync, updateSync } = backend;
 const { compare } = helpers;
 const { Option } = Select;
 
@@ -423,11 +423,13 @@ class AppTag extends Component {
 	// bind versions of CRUD
 	config = {
 		service: tagService,
+		create: "create",
 		retrieve: "retrieve",
 		list: "list",
 		update: "update",
 		dataName: "data",
 	};
+	createSync = createSync.bind(this, this.config);
 	retrieveRowCount = retrieveSync.bind(this, {
 		...this.config, 
 		retrieve: "retrieveRowCount",
@@ -525,6 +527,7 @@ class AppTag extends Component {
 						noBatch={ true }
 						size={ "small" }
 						// api props
+						create={ this.createSync }
 						edit={ this.updateSync }
 						refreshTable={ this.refreshTable }
 						onChangeCache={ this.handleChangeCache }

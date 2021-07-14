@@ -18,6 +18,7 @@ import {
 
 // import shared and child components
 import { TableBody } from '_components'
+import { TableDropdown } from '_components'
 import { TableDrawer } from './TableDrawer'
 import { Candidate } from './Candidate'
 
@@ -102,8 +103,9 @@ class TableWrapper extends Component {
   };
 
 	handleClickRefreshTable = () => {
-		this.props.refreshTable();
-		message.info('the table has been refreshed');
+		message.info('refresh is disabled');
+		// this.props.refreshTable();
+		// message.info('the table has been refreshed');
 	}
 
 	handleClickBatchDelete = () => {
@@ -150,7 +152,7 @@ class TableWrapper extends Component {
 		if (this.state.record.id) // edit the entry
 			this.props.edit(this.state.record.id, {...record, cache: this.props.cache});
 		else // create an entry
-			this.props.create(record);
+			this.props.create({...record, cache: this.props.cache});
 
 		this.setState({
 			record: {},
@@ -252,9 +254,15 @@ class TableWrapper extends Component {
 								onChange={ this.props.onChangeSearchTag }
 								onSearch={ this.handleSearch }
 								placeholder= "Search by Tag Name"
-								style={{ width: 400 }}
+								style={{ width: 260 }}
 								size="middle"
 								allowClear
+							/>
+							<TableDropdown 
+								dropdownName={ this.props.dropdownName }
+								onClickAdd={ this.handleClickAdd }
+								onClickRefreshTable={ this.handleClickRefreshTable }
+								onClickBatchDelete={ () => message.info('batch delete is disabled') }
 							/>
 						</Space>
 					</Col>

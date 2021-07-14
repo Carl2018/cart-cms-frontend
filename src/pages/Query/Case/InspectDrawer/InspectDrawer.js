@@ -660,7 +660,7 @@ class InspectDrawer extends Component {
 	getGender = () => {
 		let color = 'default';
 		let text = 'Unknown';
-		switch (this.state.gender) {
+		switch (Number(this.state.gender)) {
 			case 0 :
 				color = 'default';
 				text = 'Unknown';
