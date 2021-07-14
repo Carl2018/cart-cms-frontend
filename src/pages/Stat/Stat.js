@@ -54,15 +54,19 @@ class Stat extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        arpuDataset:{
-          labels: [],
-          datasets: [
-            {
-              label: '',
-              data: [],
-              backgroundColor: [],
-            },
-          ],
+        arpuEntry:{
+          arpuDataset:{
+            labels: [],
+            datasets: [
+              {
+                label: '',
+                data: [],
+                backgroundColor: [],
+              },
+            ],
+          },
+          missing_revenue_regions_string:"CA,HK,MY,SG,TW,US",
+          missing_user_regions_string:"CA,HK,MY,SG,TW,US",
         },
         mockOption: {
           responsive: true,
@@ -75,7 +79,6 @@ class Stat extends React.Component {
         revenue_start_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
         revenue_end_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
         arpu_default_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
-        arpu_start_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
         arpu_end_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
         arpu_graph_title: "Each Region's ARPU for a Given Period",
         revenue_region: '',
@@ -85,7 +88,6 @@ class Stat extends React.Component {
         dataSubscription: {},
         dataYesterday: {},
         dataRevenue: {},
-        dataArpu:{},
         line_chart_options:{
           tooltips: {
             mode: 'index',
@@ -103,13 +105,11 @@ class Stat extends React.Component {
           { value: '1', label: 'HK' },
           { value: '2', label: 'TW' },
           { value: '3', label: 'MY' },
-          { value: '', label: 'All' },
-        ],
+          { value: '', label: 'All' }],
         platform:[
           { value: '1', label: 'IOS' },
           { value: '2', label: 'Android' },
-          { value: '', label: 'All' },
-        ],
+          { value: '', label: 'All' }],
         subscriptionColumns:[
           {title:"", 
             children:[
@@ -286,95 +286,82 @@ class Stat extends React.Component {
     }
     onChangeDaily =  (dateString) => {
       dateString = moment(dateString).format("YYYY-MM-DD")
-      let arpu_start_date = dateString
       let arpu_end_date = dateString
       let graph_title = "Each Region's ARPU for a given period"
-      let radio_value = this.state.radioValue
+      let active_user_type = this.state.radioValue
       if(dateString === "Invalid date"){
         this.setState({
           arpu_graph_title: graph_title,
-          arpu_start_date: dateString,
           arpu_end_date: dateString
         })
         message.error(`Select a date first.`);
       }
       else{
-        graph_title = "Each Region's ARPU on "+dateString
         this.setState({
-          arpu_graph_title: graph_title,
-          arpu_start_date,
           arpu_end_date
         }, async ( ) => { 
-          await this.listArpu({arpu_start_date, arpu_end_date, radio_value})
-          this.updateArpuDataSet()
+          this.updateArpuGraphTitle(this.state.radioValue)
+          await this.listArpu({arpu_end_date, active_user_type})
         })
       }
     }
-    callListArpu = async (arpu_start_date, arpu_end_date, radio_value) => {
-      if(this.state.arpu_start_date === "Invalid date"){
+    callListArpu = async (arpu_end_date, active_user_type) => {
+      if(arpu_end_date === "Invalid date"){
         message.error(`Select a date first.`);
       }else{
-        await this.listArpu({arpu_start_date, arpu_end_date, radio_value})
-        this.updateArpuDataSet()
-      }
-    }
-    updateArpuDataSet = () => {
-      let returned_dataset = {
-        labels: this.state.dataArpu.regions,
-        datasets: [
-          {
-            label: 'Data',
-            data: this.state.dataArpu.revenue,
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.8)',
-              'rgba(54, 162, 235, 0.8)',
-              'rgba(255, 206, 86, 0.8)',
-              'rgba(75, 192, 192, 0.8)',
-              'rgba(153, 102, 255, 0.8)',
-              'rgba(255, 159, 64, 0.8)',
-            ],
-            barThickness: 'flex',
-            barPercentage: 0.4
-          },
-        ],
-      }
-      this.setState({
-        arpuDataset: returned_dataset
-      })
-    }
-    recalculateStartDate = (radioValue) => {
-      let startDate = null
-      let graph_title = null
-      if(radioValue === "d"){
-        startDate = this.state.arpu_end_date
-        graph_title = "Each Region's ARPU on "+ this.state.arpu_end_date
-      }
-      else if(radioValue === "w"){
-        startDate = moment(this.state.arpu_end_date).subtract(6, 'days').format("YYYY-MM-DD")
-        graph_title = `Each Region's ARPU between ${startDate} and ${this.state.arpu_end_date}`
-      }
-      else if(radioValue === "m"){
-        startDate = moment(this.state.arpu_end_date).subtract(29, 'days').format("YYYY-MM-DD")
-        graph_title = `Each Region's ARPU between ${startDate} and ${this.state.arpu_end_date}`
-      }
-
-      if(startDate === null)
-        message.error("Invalid radio value given.")
-      else
         this.setState({
-          arpu_start_date: startDate,
-          arpu_graph_title: graph_title
-        },()=>{
-          this.callListArpu(this.state.arpu_start_date, this.state.arpu_end_date, radioValue)
+          arpuEntry:{
+            arpuDataset:{
+              labels: [],
+              datasets: [
+                {
+                  label: '',
+                  data: [],
+                  backgroundColor: [],
+                },
+              ],
+            },
+            missing_revenue_regions_string:"CA,HK,MY,SG,TW,US",
+            missing_user_regions_string:"CA,HK,MY,SG,TW,US",
+          }
+        },async ()=> {
+          await this.listArpu({arpu_end_date, active_user_type})
         })
+    
+      }
     }
+     
     onChangeRadioValue = e => {
       this.setState({
         radioValue: e.target.value
       }, ()=>{
-        this.recalculateStartDate(e.target.value)
+        this.updateArpuGraphTitle(e.target.value)
       })
+      this.callListArpu(this.state.arpu_end_date, e.target.value)
     }
+
+    updateArpuGraphTitle = (radioValue) => {
+      let graph_title = null
+      let startDate = moment(this.state.arpu_end_date).format("YYYY-MM-DD")
+      if(radioValue === "d"){
+        graph_title = `Each Region's ARPU on ${this.state.arpu_end_date}`
+      }
+      else if(radioValue === "w"){
+        startDate = moment(this.state.arpu_end_date).subtract(6,'days').format("YYYY-MM-DD")
+        graph_title = `Each Region's ARPU between ${startDate} and ${this.state.arpu_end_date}`
+      }
+      else if(radioValue === "m"){
+        startDate = moment(this.state.arpu_end_date).subtract(29,'days').format("YYYY-MM-DD")
+        graph_title  = `Each Region's ARPU between ${startDate} and ${this.state.arpu_end_date}`
+      }
+      if(startDate === null)
+        message.error("Invalid radio value given.")
+      else
+        this.setState({
+          arpu_graph_title: graph_title
+        })
+    }
+
     // bind versions of CRUD
     configInvite = {
       service: statisticService,
@@ -407,8 +394,8 @@ class Stat extends React.Component {
     }
     configArpu = {
       service: statisticService,
-      list: "arpu_list",
-      dataName:"dataArpu"
+      list: "arpu_list", 
+      dataName:"arpuEntry"
     }
     listSyncInvite = listSync.bind(this, this.configInvite);
     listSyncSubscriber = listSync.bind(this, this.configSubscriber);
@@ -445,7 +432,6 @@ class Stat extends React.Component {
     }
 
     getLabels = () => {
-      
       return this.state.invitation_date_range
     }
     dataEntry = (customed_label,customed_color,data_type) => {
@@ -550,6 +536,7 @@ class Stat extends React.Component {
         this.dataEntryApple('T3 adfree 6m','rgba(30,144,255,1)',country+'_t3_adfree_6m',dataset),
       ]
     }
+
     getDataArrayBasedOnType = (input_property) =>{
       let regions = {'au' : 'au', 'ca' : 'ca', 'cn' : 'cn', 'gb' : 'gb', 'hk' : 'hk', 
         'jp' : 'jp', 'mo' : 'mo', 'my' : 'my', 'nz' : 'nz', 'sg' : 'sg', 'tw' : 'tw', 'us' : 'us' }; 
@@ -581,6 +568,7 @@ class Stat extends React.Component {
       }
       return this.state.data[properties[input_property]]
     }
+
     getAppleDataArrayBasedOnType = (input_property,dataset) =>{
       let regions = {'au' : 'au', 'ca' : 'ca', 'cn' : 'cn', 'gb' : 'gb', 'hk' : 'hk', 
         'jp' : 'jp', 'mo' : 'mo', 'my' : 'my', 'nz' : 'nz', 'sg' : 'sg', 'tw' : 'tw', 'us' : 'us' }; 
@@ -595,6 +583,7 @@ class Stat extends React.Component {
       let returned_array = dataset === 'subscriber' ? this.state.dataSubscriber[properties[input_property]] : this.state.dataSubscription[properties[input_property]]
       return returned_array
     }
+
     getSubscriptionRevenueTable = () => {
       let final_entry = []
       let formatted_entry = this.state.dataRevenue
@@ -609,6 +598,7 @@ class Stat extends React.Component {
       }
       return final_entry
     }
+
     getColorBasedOnValues = (barData)=> {
       let colorArray = barData.map( 
         x =>{
@@ -622,32 +612,11 @@ class Stat extends React.Component {
         borderColor: colorArray
       })
     }
-    //https://stackoverflow.com/questions/16590500/javascript-calculate-date-from-week-number
-    getDateByGivenWeekNumber = (weekString) => {
-      let year = weekString.slice(0,4)
-      let weekNumber = weekString.slice(5,-2)
-      var simple = new Date(year, 0, 1 + (weekNumber - 1) * 7);
-      var dow = simple.getDay();
-      var ISOweekStart = simple;
-      if (dow <= 4)
-          ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
-      else
-          ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
-      alert(ISOweekStart)
-
-
-      let d = (1 + (weekNumber - 1) * 7) // 1st of January + 7 days for each week
-      let start_date = new Date(year, 0, d)
-      start_date = moment(start_date).format('YYYY-MM-DD')
-      let end_date = moment(start_date).add(6, 'days').format('YYYY-MM-DD')
-      console.log(start_date)
-      console.log(end_date)
-    }
- 
+     
     axes = [
-        { primary: true, type: 'time', position: 'bottom' },
-        { type: 'linear', position: 'left' }
-      ]
+      { primary: true, type: 'time', position: 'bottom' },
+      { type: 'linear', position: 'left' }
+    ]
 //////////////////////////////////////////////////////////////////////////
     render() {
       const revenueDataSet = this.getSubscriptionRevenueTable()
@@ -660,8 +629,7 @@ class Stat extends React.Component {
                 textAlign: 'left',
                 margin: "16px 16px 16px 16px"
               } 
-            } 
-          >
+            }>
             <Space size="large">
               <LineChartOutlined />
               <strong>Stat</strong>
@@ -680,14 +648,12 @@ class Stat extends React.Component {
                 <Statistic title="Conversation Count" value={this.state.dataYesterday.total_conversation}  />
               </Col>
             </Row>
-            <div style={ 
-              {
+            <div style={{
                 fontSize: '18px',
                 textAlign: 'left',
                 color: 'black',
                 margin: "24px 0px 0px 0px"
-              } 
-            } >
+              }} >
               <Row gutter={16}>
                 <Col span={6}>
                   {this.state.dataYesterday.register}
@@ -705,13 +671,11 @@ class Stat extends React.Component {
             </div>
           </div>
           <div 
-            style={ 
-              {
-                fontSize: '18px',
-                textAlign: 'left',
-                margin: "80px 0px 0px 0px"
-              } 
-            } 
+            style={{
+              fontSize: '18px',
+              textAlign: 'left',
+              margin: "80px 0px 0px 0px"
+            }} 
           >
           <Row gutter={16}>
           <Col xxl={{span:7}} xl={{span:8}}>
@@ -894,22 +858,19 @@ class Stat extends React.Component {
           </Col>
         </Row>
         <div 
-            style={ 
-              {
-                fontSize: '18px',
-                textAlign: 'left',
-                margin: "80px 0px 30px 0px"
-              } 
-            } 
+            style={{
+              fontSize: '18px',
+              textAlign: 'left',
+              margin: "80px 0px 30px 0px"
+            }} 
           >
           <Row gutter={16}>
             <Col xxl={{span:10}} xl={{span:12}}>
-              { "ARPU Date Picker " }
+              { "ARPU Date Picker" }
               <DatePicker onChange={this.onChangeDaily} defaultValue={moment(this.state.arpu_default_date, 'YYYY-MM-DD')}  />
               <span style={{margin:"20px"}}>
                 <Radio.Group onChange={this.onChangeRadioValue} 
-                  value={this.state.radioValue} 
-                >
+                  value={this.state.radioValue}>
                   <Radio value={"d"}>DAU</Radio>
                   <Radio value={"w"}>WAU</Radio>
                   <Radio value={"m"}>MAU</Radio>
@@ -925,7 +886,16 @@ class Stat extends React.Component {
               title={this.state.arpu_graph_title}
               style={{ margin: "16px 0px 0px 0px" }}
             >
-              <HorizontalBar data={this.state.arpuDataset} options={this.state.mockOption} />
+              <HorizontalBar data={this.state.arpuEntry.arpuDataset} options={this.state.mockOption} />
+            </Card>
+          </Col>
+          <Col span={6}>
+            <Card 
+              title="Missing Data"
+              style={{ margin: "16px 0px 0px 0px" }}
+            >
+              <Card.Grid style={{width: '100%'}}>{`Revenue: `+ this.state.arpuEntry.missing_revenue_regions_string}</Card.Grid>
+              <Card.Grid style={{width: '100%'}}>{`Active user: `+ this.state.arpuEntry.missing_user_regions_string}</Card.Grid>
             </Card>
           </Col>
         </Row>
@@ -954,15 +924,7 @@ class Stat extends React.Component {
                 <Cascader options={this.state.platform} placeholder="Select" onChange={this.onChangePlatform} size="small" 
               style={{ width: '60%' }}/>
               </Col>
-              {/* <Col span={3} >
-                { "Plan " }
-                <Cascader options={this.state.plan} placeholder="Please select plan" />
-              </Col>
-              <Col span={2} >
-                <Button type="link" a href="https://www.bing.com" target="_blank">Link Button</Button>
-              </Col> */}
             <Col xs={{span:4}} lg={{span:4}} xl={{span:4}} xxl={{span:3}} >
-            {/* <Upload {...upploadProps} onChange={this.uploadFile}> */}
             <Upload {...upploadProps} action={this.uploadSync} >
                 <Button icon={<UploadOutlined/>} size="small">Import Active User CSV</Button>
                 </Upload>
@@ -970,9 +932,10 @@ class Stat extends React.Component {
             </Row>
           <Row gutter={16}>
             <Col span={24}>
-            <Table dataSource={revenueDataSet} bordered 
-              pagination={{hideOnSinglePage:true, pageSize:20}}
-              columns={this.state.subscriptionColumns} size="middle">
+              <Table 
+                dataSource={revenueDataSet} bordered 
+                pagination={{hideOnSinglePage:true, pageSize:20}}
+                columns={this.state.subscriptionColumns} size="middle">
               </Table>
             </Col>
           </Row>
