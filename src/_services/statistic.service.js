@@ -12,7 +12,8 @@ export const statisticService = {
     retrieve_row_count,
     category_lists,
     log_value_lists,
-    arpu_list
+    arpu_list,
+    scammer_list
 };
 
 
@@ -154,6 +155,20 @@ function log_value_lists(params={}) {
 function arpu_list(params={}) {
     // append query string
     let url = new URL(`${config.apiUrl}/arpu/list`);
+    Object.keys(params).forEach( key => 
+        url.searchParams.append(key, params[key]) );
+    // call the api
+    const requestOptions = { 
+            method: 'GET', 
+            headers: authHeader() 
+        };
+    return fetch(url, requestOptions)
+            .then(handleResponse);
+}
+
+function scammer_list(params={}) {
+    // append query string
+    let url = new URL(`${config.apiUrl}/statistic/scammer_list`);
     Object.keys(params).forEach( key => 
         url.searchParams.append(key, params[key]) );
     // call the api
