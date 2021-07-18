@@ -1,8 +1,7 @@
 import React from 'react';
 import { 
   Line, 
-  Bar, 
-  HorizontalBar
+  Bar
 } from 'react-chartjs-2';
 // import styling from ant desgin
 import { LineChartOutlined,UploadOutlined } from '@ant-design/icons';
@@ -69,15 +68,9 @@ class Stat extends React.Component {
           missing_revenue_regions_string:"",
           missing_user_regions_string:"",
         },
-        scammerDataSource:{
-          labels: [],
-          datasets: [{
-            label: 'Data',
-            data: [],
-            fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-            tension: 0.1
-          }]
+        scammerData:{
+        },
+        comparisonData:{
         },
         scam_start_date: moment().subtract(7,'days').format("YYYY-MM-DD"),
         scam_end_date: moment().subtract(1,'days').format("YYYY-MM-DD"),
@@ -210,7 +203,6 @@ class Stat extends React.Component {
         ],
         backgroundColor: [],
         borderColor: [],
-        barData: [-12, 19, 30, 25, -20, -35,70],
         scamSources:[
           { value: '1', label: 'Force' },
           { value: '2', label: 'Flag' },
@@ -229,6 +221,11 @@ class Stat extends React.Component {
 
         let scam_start_date = state.scam_start_date;
         let scam_end_date = state.scam_end_date;
+
+        let date_diff = moment(scam_end_date).diff(moment(scam_start_date), 'days')
+        let scam_previous_end_date = moment(scam_start_date).subtract(1,'days').format("YYYY-MM-DD")
+        let scam_previous_start_date = moment(scam_previous_end_date).subtract(date_diff,'days').format("YYYY-MM-DD")
+        
         try{
           await this.listSyncRevenue({
             revenue_start_date,
@@ -252,12 +249,20 @@ class Stat extends React.Component {
           });
           await this.listScammer({
             scam_start_date,
-            scam_end_date
+            scam_end_date,
+            date_diff
+          });
+          scam_start_date = scam_previous_start_date
+          scam_end_date = scam_previous_end_date
+          await this.listScamComparison({
+            scam_start_date,
+            scam_end_date,
+            date_diff
           });
         }catch(error){
           console.log(error)
         }
-        this.getColorBasedOnValues(this.state.barData)
+        this.getColorBasedOnValues(this.state.comparisonData)
       });
     }
     columnChildren = (title,dataIndex,key,width) => {
@@ -397,12 +402,22 @@ class Stat extends React.Component {
     onChangeDatePickerForScammer = dateStrings => {
       let scam_start_date = moment(dateStrings[0]).format("YYYY-MM-DD")
       let scam_end_date = moment(dateStrings[1]).format("YYYY-MM-DD")
+      let date_diff = moment(scam_end_date).diff(moment(scam_start_date), 'days')
+      let scam_previous_end_date = moment(scam_start_date).subtract(1,'days').format("YYYY-MM-DD")
+      let scam_previous_start_date = moment(scam_previous_end_date).subtract(date_diff,'days').format("YYYY-MM-DD")
       this.setState({
         scam_start_date,
         scam_end_date
       },async ()=> {
+        try {
+          await this.listScammer({scam_start_date, scam_end_date, date_diff})
 
-        await this.listScammer({scam_start_date, scam_end_date})
+          scam_start_date = scam_previous_start_date
+          scam_end_date = scam_previous_end_date
+          await this.listScamComparison({scam_start_date, scam_end_date, date_diff})
+        }catch(error){
+          console.log(error)
+        }
       })
     }
 
@@ -471,8 +486,14 @@ class Stat extends React.Component {
     configScammer = {
       service: statisticService,
       list: "scammer_list", 
-      dataName:"scammerDataSource"
+      dataName:"scammerData"
     }
+    configScammerComparison = {
+      service: statisticService,
+      list: "scammer_list", 
+      dataName:"comparisonData"
+    }
+
     listSyncInvite = listSync.bind(this, this.configInvite);
     listSyncSubscriber = listSync.bind(this, this.configSubscriber);
     listSyncSubscription = listSync.bind(this, this.configSubscription);
@@ -480,6 +501,7 @@ class Stat extends React.Component {
     listSyncRevenue = listSync.bind(this, this.configRevenue);
     listArpu = listSync.bind(this, this.configArpu);
     listScammer = listSync.bind(this, this.configScammer);
+    listScamComparison = listSync.bind(this, this.configScammerComparison);
     uploadSync = uploadSync.bind(this,this.configUpload)
     setDateRange = (startDate, endDate) => {
       let dateArray = this.generateDateRangeArray(startDate, endDate);
@@ -676,8 +698,9 @@ class Stat extends React.Component {
       return final_entry
     }
 
-    getColorBasedOnValues = (barData)=> {
-      let colorArray = barData.map( 
+    getColorBasedOnValues = (dataObject)=> {
+      let valuesArray = Object.values(dataObject)
+      let colorArray = valuesArray.map( 
         x =>{
           if(x>= 0)
             return 'rgba(75,255,92,0.3)';
@@ -908,20 +931,30 @@ class Stat extends React.Component {
               title="Daily Scammers Count"
               style={{ margin: "16px 0px 0px 0px" }}
             >
-            <Line data={this.state.scammerDataSource} options={this.state.line_chart_options}/>
+            <Line data={{
+              labels: Object.keys(this.state.scammerData),
+              datasets: [{
+                label: 'Data',
+                data: Object.values(this.state.scammerData),
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+              }]
+            }} 
+            options={this.state.line_chart_options}/>
             </Card>
           </Col>
           <Col span={12}>
             <Card
-              title="Daily Scammer Comparison (No data, redis keys TBD)"
+              title="Daily Scammer Comparison"
               style={{ margin: "16px 0px 0px 0px" }}
             >
               <Bar data={{
-                  labels: this.getLabels(),
+                  labels: Object.keys(this.state.comparisonData),
                   datasets: [
                     {
                       label: 'Percentage Change',
-                      data: this.state.barData,
+                      data: Object.values(this.state.comparisonData),
                       backgroundColor: this.state.backgroundColor,
                       borderColor: this.state.borderColor,
                       borderWidth: 1,
