@@ -68,9 +68,11 @@ class Stat extends React.Component {
           missing_revenue_regions_string:"",
           missing_user_regions_string:"",
         },
-        scammerData:{
-        },
-        comparisonData:{
+        scammerEntry:{
+          scammerData:{
+          },
+          comparisonData:{
+          }
         },
         scam_start_date: moment().subtract(7,'days').format("YYYY-MM-DD"),
         scam_end_date: moment().subtract(1,'days').format("YYYY-MM-DD"),
@@ -223,9 +225,6 @@ class Stat extends React.Component {
         let scam_end_date = state.scam_end_date;
 
         let date_diff = moment(scam_end_date).diff(moment(scam_start_date), 'days')
-        let scam_previous_end_date = moment(scam_start_date).subtract(1,'days').format("YYYY-MM-DD")
-        let scam_previous_start_date = moment(scam_previous_end_date).subtract(date_diff,'days').format("YYYY-MM-DD")
-        
         try{
           await this.listSyncRevenue({
             revenue_start_date,
@@ -252,17 +251,10 @@ class Stat extends React.Component {
             scam_end_date,
             date_diff
           });
-          scam_start_date = scam_previous_start_date
-          scam_end_date = scam_previous_end_date
-          await this.listScamComparison({
-            scam_start_date,
-            scam_end_date,
-            date_diff
-          });
         }catch(error){
           console.log(error)
         }
-        this.getColorBasedOnValues(this.state.comparisonData)
+        this.getColorBasedOnValues(this.state.scammerEntry.comparisonData)
       });
     }
     columnChildren = (title,dataIndex,key,width) => {
@@ -403,18 +395,12 @@ class Stat extends React.Component {
       let scam_start_date = moment(dateStrings[0]).format("YYYY-MM-DD")
       let scam_end_date = moment(dateStrings[1]).format("YYYY-MM-DD")
       let date_diff = moment(scam_end_date).diff(moment(scam_start_date), 'days')
-      let scam_previous_end_date = moment(scam_start_date).subtract(1,'days').format("YYYY-MM-DD")
-      let scam_previous_start_date = moment(scam_previous_end_date).subtract(date_diff,'days').format("YYYY-MM-DD")
       this.setState({
         scam_start_date,
         scam_end_date
       },async ()=> {
         try {
           await this.listScammer({scam_start_date, scam_end_date, date_diff})
-
-          scam_start_date = scam_previous_start_date
-          scam_end_date = scam_previous_end_date
-          await this.listScamComparison({scam_start_date, scam_end_date, date_diff})
         }catch(error){
           console.log(error)
         }
@@ -486,12 +472,7 @@ class Stat extends React.Component {
     configScammer = {
       service: statisticService,
       list: "scammer_list", 
-      dataName:"scammerData"
-    }
-    configScammerComparison = {
-      service: statisticService,
-      list: "scammer_list", 
-      dataName:"comparisonData"
+      dataName:"scammerEntry"
     }
 
     listSyncInvite = listSync.bind(this, this.configInvite);
@@ -501,7 +482,6 @@ class Stat extends React.Component {
     listSyncRevenue = listSync.bind(this, this.configRevenue);
     listArpu = listSync.bind(this, this.configArpu);
     listScammer = listSync.bind(this, this.configScammer);
-    listScamComparison = listSync.bind(this, this.configScammerComparison);
     uploadSync = uploadSync.bind(this,this.configUpload)
     setDateRange = (startDate, endDate) => {
       let dateArray = this.generateDateRangeArray(startDate, endDate);
@@ -932,10 +912,10 @@ class Stat extends React.Component {
               style={{ margin: "16px 0px 0px 0px" }}
             >
             <Line data={{
-              labels: Object.keys(this.state.scammerData),
+              labels: Object.keys(this.state.scammerEntry.scammerData),
               datasets: [{
                 label: 'Data',
-                data: Object.values(this.state.scammerData),
+                data: Object.values(this.state.scammerEntry.scammerData),
                 fill: false,
                 borderColor: 'rgb(75, 192, 192)',
                 tension: 0.1
@@ -950,11 +930,11 @@ class Stat extends React.Component {
               style={{ margin: "16px 0px 0px 0px" }}
             >
               <Bar data={{
-                  labels: Object.keys(this.state.comparisonData),
+                  labels: Object.keys(this.state.scammerEntry.comparisonData),
                   datasets: [
                     {
                       label: 'Percentage Change',
-                      data: Object.values(this.state.comparisonData),
+                      data: Object.values(this.state.scammerEntry.comparisonData),
                       backgroundColor: this.state.backgroundColor,
                       borderColor: this.state.borderColor,
                       borderWidth: 1,
