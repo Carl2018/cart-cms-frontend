@@ -1,8 +1,7 @@
 import React from 'react';
 import { 
   Line, 
-  Bar, 
-  HorizontalBar
+  Bar
 } from 'react-chartjs-2';
 // import styling from ant desgin
 import { LineChartOutlined,UploadOutlined } from '@ant-design/icons';
@@ -55,19 +54,26 @@ class Stat extends React.Component {
       super(props);
       this.state = {
         arpuEntry:{
-          arpuDataset:{
-            labels: [],
-            datasets: [
-              {
-                label: '',
-                data: [],
-                backgroundColor: [],
-              },
-            ],
-          },
-          missing_revenue_regions_string:"CA,HK,MY,SG,TW,US",
-          missing_user_regions_string:"CA,HK,MY,SG,TW,US",
+          arpuDataSource:[
+            {
+              key: '1',
+              HK: 0.0,
+              TW: 0.0,
+              CA: 0.0,
+              SG: 0.0,
+              MY: 0.0,
+              TOTAL: 0.0,
+            },
+          ],
+          missing_revenue_regions_string:"",
+          missing_user_regions_string:"",
         },
+        scammerData:{
+        },
+        comparisonData:{
+        },
+        scam_start_date: moment().subtract(7,'days').format("YYYY-MM-DD"),
+        scam_end_date: moment().subtract(1,'days').format("YYYY-MM-DD"),
         mockOption: {
           responsive: true,
         },
@@ -81,6 +87,7 @@ class Stat extends React.Component {
         arpu_default_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
         arpu_end_date: moment(this.getDaysBefore(-1)).format("YYYY-MM-DD"),
         arpu_graph_title: "Each Region's ARPU for a Given Period",
+        arpu_missing_data_title: "Missing Data",
         revenue_region: '',
         revenue_platform: '',
         data: {},
@@ -110,6 +117,38 @@ class Stat extends React.Component {
           { value: '1', label: 'IOS' },
           { value: '2', label: 'Android' },
           { value: '', label: 'All' }],
+        arpuColumns:[
+          {
+            title: 'HK',
+            dataIndex: 'HK',
+            key: 'HK',
+          },
+          {
+            title: 'TW',
+            dataIndex: 'TW',
+            key: 'TW',
+          },
+          {
+            title: 'CA',
+            dataIndex: 'CA',
+            key: 'CA',
+          },
+          {
+            title: 'SG',
+            dataIndex: 'SG',
+            key: 'SG',
+          },
+          {
+            title: 'MY',
+            dataIndex: 'MY',
+            key: 'MY',
+          },
+          {
+            title: 'Total',
+            dataIndex: 'TOTAL',
+            key: 'TOTAL',
+          },
+        ],
         subscriptionColumns:[
           {title:"", 
             children:[
@@ -164,7 +203,6 @@ class Stat extends React.Component {
         ],
         backgroundColor: [],
         borderColor: [],
-        barData: [-12, 19, 30, 25, -20, -35,70],
         scamSources:[
           { value: '1', label: 'Force' },
           { value: '2', label: 'Flag' },
@@ -180,6 +218,14 @@ class Stat extends React.Component {
         let revenue_end_date = state.revenue_end_date;
         let revenue_region = state.revenue_region;
         let revenue_platform = state.revenue_platform;
+
+        let scam_start_date = state.scam_start_date;
+        let scam_end_date = state.scam_end_date;
+
+        let date_diff = moment(scam_end_date).diff(moment(scam_start_date), 'days')
+        let scam_previous_end_date = moment(scam_start_date).subtract(1,'days').format("YYYY-MM-DD")
+        let scam_previous_start_date = moment(scam_previous_end_date).subtract(date_diff,'days').format("YYYY-MM-DD")
+        
         try{
           await this.listSyncRevenue({
             revenue_start_date,
@@ -201,10 +247,22 @@ class Stat extends React.Component {
           });
           await this.listSyncYesterday({
           });
+          await this.listScammer({
+            scam_start_date,
+            scam_end_date,
+            date_diff
+          });
+          scam_start_date = scam_previous_start_date
+          scam_end_date = scam_previous_end_date
+          await this.listScamComparison({
+            scam_start_date,
+            scam_end_date,
+            date_diff
+          });
         }catch(error){
           console.log(error)
         }
-        this.getColorBasedOnValues(this.state.barData)
+        this.getColorBasedOnValues(this.state.comparisonData)
       });
     }
     columnChildren = (title,dataIndex,key,width) => {
@@ -292,6 +350,7 @@ class Stat extends React.Component {
       if(dateString === "Invalid date"){
         this.setState({
           arpu_graph_title: graph_title,
+          arpu_missing_data_title: "Missing Data",
           arpu_end_date: dateString
         })
         message.error(`Select a date first.`);
@@ -311,23 +370,23 @@ class Stat extends React.Component {
       }else{
         this.setState({
           arpuEntry:{
-            arpuDataset:{
-              labels: [],
-              datasets: [
-                {
-                  label: '',
-                  data: [],
-                  backgroundColor: [],
-                },
-              ],
-            },
-            missing_revenue_regions_string:"CA,HK,MY,SG,TW,US",
-            missing_user_regions_string:"CA,HK,MY,SG,TW,US",
+            arpuDataSource:[
+              {
+                key: '1',
+                HK: 0.0,
+                TW: 0.0,
+                CA: 0.0,
+                SG: 0.0,
+                MY: 0.0,
+                TOTAL: 0.0,
+              },
+            ],
+            missing_revenue_regions_string:"HK,TW,CA,SG,MY",
+            missing_user_regions_string:"HK,TW,CA,SG,MY",
           }
         },async ()=> {
           await this.listArpu({arpu_end_date, active_user_type})
         })
-    
       }
     }
      
@@ -340,25 +399,52 @@ class Stat extends React.Component {
       this.callListArpu(this.state.arpu_end_date, e.target.value)
     }
 
+    onChangeDatePickerForScammer = dateStrings => {
+      let scam_start_date = moment(dateStrings[0]).format("YYYY-MM-DD")
+      let scam_end_date = moment(dateStrings[1]).format("YYYY-MM-DD")
+      let date_diff = moment(scam_end_date).diff(moment(scam_start_date), 'days')
+      let scam_previous_end_date = moment(scam_start_date).subtract(1,'days').format("YYYY-MM-DD")
+      let scam_previous_start_date = moment(scam_previous_end_date).subtract(date_diff,'days').format("YYYY-MM-DD")
+      this.setState({
+        scam_start_date,
+        scam_end_date
+      },async ()=> {
+        try {
+          await this.listScammer({scam_start_date, scam_end_date, date_diff})
+
+          scam_start_date = scam_previous_start_date
+          scam_end_date = scam_previous_end_date
+          await this.listScamComparison({scam_start_date, scam_end_date, date_diff})
+        }catch(error){
+          console.log(error)
+        }
+      })
+    }
+
     updateArpuGraphTitle = (radioValue) => {
-      let graph_title = null
+      let arpu_graph_title = null
+      let arpu_missing_data_title = null
       let startDate = moment(this.state.arpu_end_date).format("YYYY-MM-DD")
       if(radioValue === "d"){
-        graph_title = `Each Region's ARPU on ${this.state.arpu_end_date}`
+        arpu_graph_title = `Each Region's ARPU on ${this.state.arpu_end_date}`
+        arpu_missing_data_title = `Missing Data on ${this.state.arpu_end_date}`
       }
       else if(radioValue === "w"){
         startDate = moment(this.state.arpu_end_date).subtract(6,'days').format("YYYY-MM-DD")
-        graph_title = `Each Region's ARPU between ${startDate} and ${this.state.arpu_end_date}`
+        arpu_graph_title = `Each Region's ARPU between ${startDate} and ${this.state.arpu_end_date}`
+        arpu_missing_data_title = `Missing Data between ${startDate} and ${this.state.arpu_end_date}`
       }
       else if(radioValue === "m"){
         startDate = moment(this.state.arpu_end_date).subtract(29,'days').format("YYYY-MM-DD")
-        graph_title  = `Each Region's ARPU between ${startDate} and ${this.state.arpu_end_date}`
+        arpu_graph_title  = `Each Region's ARPU between ${startDate} and ${this.state.arpu_end_date}`
+        arpu_missing_data_title = `Missing Data between ${startDate} and ${this.state.arpu_end_date}`
       }
       if(startDate === null)
         message.error("Invalid radio value given.")
       else
         this.setState({
-          arpu_graph_title: graph_title
+          arpu_graph_title,
+          arpu_missing_data_title
         })
     }
 
@@ -397,12 +483,25 @@ class Stat extends React.Component {
       list: "arpu_list", 
       dataName:"arpuEntry"
     }
+    configScammer = {
+      service: statisticService,
+      list: "scammer_list", 
+      dataName:"scammerData"
+    }
+    configScammerComparison = {
+      service: statisticService,
+      list: "scammer_list", 
+      dataName:"comparisonData"
+    }
+
     listSyncInvite = listSync.bind(this, this.configInvite);
     listSyncSubscriber = listSync.bind(this, this.configSubscriber);
     listSyncSubscription = listSync.bind(this, this.configSubscription);
     listSyncYesterday = listSync.bind(this, this.yesterdayStat);
     listSyncRevenue = listSync.bind(this, this.configRevenue);
     listArpu = listSync.bind(this, this.configArpu);
+    listScammer = listSync.bind(this, this.configScammer);
+    listScamComparison = listSync.bind(this, this.configScammerComparison);
     uploadSync = uploadSync.bind(this,this.configUpload)
     setDateRange = (startDate, endDate) => {
       let dateArray = this.generateDateRangeArray(startDate, endDate);
@@ -599,8 +698,9 @@ class Stat extends React.Component {
       return final_entry
     }
 
-    getColorBasedOnValues = (barData)=> {
-      let colorArray = barData.map( 
+    getColorBasedOnValues = (dataObject)=> {
+      let valuesArray = Object.values(dataObject)
+      let colorArray = valuesArray.map( 
         x =>{
           if(x>= 0)
             return 'rgba(75,255,92,0.3)';
@@ -813,7 +913,8 @@ class Stat extends React.Component {
                   'Past 14 days': [moment().subtract(14,'days'), moment().subtract(1,'days')],
                   'Past Month': [moment().subtract(1,'months').startOf('month'), moment().subtract(1,'months').endOf('month')],
                 }}
-                onChange={this.onChange}
+                onChange={this.onChangeDatePickerForScammer}
+                defaultValue={[moment(this.state.scam_start_date, 'YYYY-MM-DD'), moment(this.state.scam_end_date, 'YYYY-MM-DD')]} 
                 size = "small"
               />
             </Col>
@@ -827,26 +928,33 @@ class Stat extends React.Component {
         <Row gutter={16}>
           <Col span={12}>
             <Card
-              title="Daily Scammers (No data, redis keys TBD)"
+              title="Daily Scammers Count"
               style={{ margin: "16px 0px 0px 0px" }}
             >
             <Line data={{
-              labels: this.getLabels(),
-              datasets: this.getDataSetsFromRedis('scammer')
-            }} options={this.state.line_chart_options}/>
+              labels: Object.keys(this.state.scammerData),
+              datasets: [{
+                label: 'Data',
+                data: Object.values(this.state.scammerData),
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+              }]
+            }} 
+            options={this.state.line_chart_options}/>
             </Card>
           </Col>
           <Col span={12}>
             <Card
-              title="Daily Scammer Comparison (No data, redis keys TBD)"
+              title="Daily Scammer Comparison"
               style={{ margin: "16px 0px 0px 0px" }}
             >
               <Bar data={{
-                  labels: this.getLabels(),
+                  labels: Object.keys(this.state.comparisonData),
                   datasets: [
                     {
                       label: 'Percentage Change',
-                      data: this.state.barData,
+                      data: Object.values(this.state.comparisonData),
                       backgroundColor: this.state.backgroundColor,
                       borderColor: this.state.borderColor,
                       borderWidth: 1,
@@ -886,16 +994,20 @@ class Stat extends React.Component {
               title={this.state.arpu_graph_title}
               style={{ margin: "16px 0px 0px 0px" }}
             >
-              <HorizontalBar data={this.state.arpuEntry.arpuDataset} options={this.state.mockOption} />
+              <Table 
+                dataSource={this.state.arpuEntry.arpuDataSource} bordered 
+                pagination={{hideOnSinglePage:true}}
+                columns={this.state.arpuColumns} size="middle">
+              </Table>
             </Card>
           </Col>
           <Col span={6}>
             <Card 
-              title="Missing Data"
+              title={this.state.arpu_missing_data_title}
               style={{ margin: "16px 0px 0px 0px" }}
             >
               <Card.Grid style={{width: '100%'}}>{`Revenue: `+ this.state.arpuEntry.missing_revenue_regions_string}</Card.Grid>
-              <Card.Grid style={{width: '100%'}}>{`Active user: `+ this.state.arpuEntry.missing_user_regions_string}</Card.Grid>
+              <Card.Grid style={{width: '100%'}}>{`Active User: `+ this.state.arpuEntry.missing_user_regions_string}</Card.Grid>
             </Card>
           </Col>
         </Row>
