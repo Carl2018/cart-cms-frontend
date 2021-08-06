@@ -169,7 +169,7 @@ class Account extends Component {
 			sorter: (a, b) => compare(a.product_id, b.product_id),
 			// setFilter: true,
 			render: product_id => {
-				const match = product_id.match(/gold|silver|adfree/);
+				const match = product_id?.match(/gold|silver|adfree/);
 				const category = match ? match[0] : "none";
 				let color = 'default';
 				switch (category) {
@@ -204,7 +204,7 @@ class Account extends Component {
 			sorter: (a, b) => compare(a.product_id, b.product_id),
 			// setFilter: true,
 			render: product_id => {
-				const match = product_id.match(/quarter|halfyear|monthly/);
+				const match = product_id?.match(/quarter|halfyear|monthly/);
 				const periodicity = match ? match[0] : "none";
 				let color = 'default';
 				switch (periodicity) {
