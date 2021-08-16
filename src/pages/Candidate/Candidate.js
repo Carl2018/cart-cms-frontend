@@ -300,6 +300,37 @@ class Candidate extends Component {
 			},
 		},
 		{
+			title: 'Scam Zone',
+			dataIndex: 'is_scammed',
+			key: 'is_scammed',
+			sorter: (a, b) => compare(a.is_scammed, b.is_scammed),
+			sortDirection: ['ascend', 'descend'],
+			width: 140,
+			render: is_scammed => {
+				let color = 'default';
+				let text = 'Unknown';
+				switch (is_scammed) {
+					case 1 :
+						color = 'red';
+						text = 'Scammed';
+						break;
+					case 0 :
+						color = 'green';
+						text = 'Unscammed';
+						break;
+					default:
+						color = 'green';
+						text = 'Unknown';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+		},
+		{
 			title: 'Last Updated',
 			dataIndex: 'timestamp',
 			key: 'timestamp',
