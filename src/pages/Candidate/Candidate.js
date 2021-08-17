@@ -79,7 +79,7 @@ class Candidate extends Component {
 			key: 'gender',
 			sorter: (a, b) => compare(a.gender, b.gender),
 			sortDirection: ['ascend', 'descend'],
-			width: 140,
+			width: 100,
 			// setFilter: true,
 			render: gender => {
 				let color = 'default';
@@ -182,7 +182,7 @@ class Candidate extends Component {
 			key: 'score',
 			sorter: (a, b) => compare(a.score, b.score),
 			sortDirection: ['ascend', 'descend'],
-			width: 140,
+			width: 120,
 			//setFilter: true
 			render: score => {
 				let color = '#00ff00';
@@ -237,7 +237,7 @@ class Candidate extends Component {
 			key: 'state',
 			sorter: (a, b) => compare(a.state, b.state),
 			sortDirection: ['ascend', 'descend'],
-			width: 140,
+			width: 120,
 			// setFilter: true,
 			render: state => {
 				let color = 'default';
@@ -269,7 +269,7 @@ class Candidate extends Component {
 			key: 'status',
 			sorter: (a, b) => compare(a.status, b.status),
 			sortDirection: ['ascend', 'descend'],
-			width: 140,
+			width: 120,
 			// setFilter: true,
 			render: status => {
 				let color = 'default';
@@ -305,7 +305,7 @@ class Candidate extends Component {
 			key: 'is_scammed',
 			sorter: (a, b) => compare(a.is_scammed, b.is_scammed),
 			sortDirection: ['ascend', 'descend'],
-			width: 140,
+			width: 100,
 			render: is_scammed => {
 				let color = 'default';
 				let text = 'Unknown';
@@ -317,6 +317,37 @@ class Candidate extends Component {
 					case 0 :
 						color = 'green';
 						text = 'Unscammed';
+						break;
+					default:
+						color = 'green';
+						text = 'Unknown';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+		},
+		{
+			title: 'Sex Zone',
+			dataIndex: 'is_sweet',
+			key: 'is_sweet',
+			sorter: (a, b) => compare(a.is_sweet, b.is_sweet),
+			sortDirection: ['ascend', 'descend'],
+			width: 90,
+			render: is_sweet => {
+				let color = 'default';
+				let text = 'Unknown';
+				switch (is_sweet) {
+					case 1 :
+						color = 'red';
+						text = 'Sweet';
+						break;
+					case 0 :
+						color = 'green';
+						text = 'Unsweet';
 						break;
 					default:
 						color = 'green';
