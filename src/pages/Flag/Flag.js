@@ -126,6 +126,68 @@ class Flag extends Component {
 			},
 		},
 		{
+			title: 'Scam Zone',
+			dataIndex: 'is_scammed',
+			key: 'is_scammed',
+			sorter: (a, b) => compare(a.is_scammed, b.is_scammed),
+			sortDirection: ['ascend', 'descend'],
+			width: 110,
+			render: is_scammed => {
+				let color = 'default';
+				let text = 'Unknown';
+				switch (is_scammed) {
+					case 1 :
+						color = 'red';
+						text = 'Scammed';
+						break;
+					case 0 :
+						color = 'green';
+						text = 'Unscammed';
+						break;
+					default:
+						color = 'green';
+						text = 'Unknown';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+		},
+		{
+			title: 'Sex Zone',
+			dataIndex: 'is_sweet',
+			key: 'is_sweet',
+			sorter: (a, b) => compare(a.is_sweet, b.is_sweet),
+			sortDirection: ['ascend', 'descend'],
+			width: 110,
+			render: is_sweet => {
+				let color = 'default';
+				let text = 'Unknown';
+				switch (is_sweet) {
+					case 1 :
+						color = 'red';
+						text = 'Sweet';
+						break;
+					case 0 :
+						color = 'green';
+						text = 'Unsweet';
+						break;
+					default:
+						color = 'green';
+						text = 'Unknown';
+						break;
+				};	
+				return (
+					<Tag color={ color } key={ uuidv4() }>
+						{ text }
+					</Tag>
+				);
+			},
+		},
+		{
 			title: 'Current Message',
 			dataIndex: 'current_message',
 			key: 'current_message',
