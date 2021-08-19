@@ -472,6 +472,7 @@ class Candidate extends Component {
 			cache: this.state.cache,
 		}
 		await this.ban(record.id, body);
+		await this.handleChangePage(this.state.currentPage, this.state.pageSize);
 	}
 	hardBanSync = async record => {
 		const body = {
@@ -480,6 +481,7 @@ class Candidate extends Component {
 			cache: this.state.cache,
 		}
 		await this.ban(record.id, body);
+		await this.handleChangePage(this.state.currentPage, this.state.pageSize);
 	}
 	blacklistSync = async (id, record) => {
 		const body = {
@@ -489,6 +491,7 @@ class Candidate extends Component {
 			cache: this.state.cache,
 		}
 		await this.ban(id, body);
+		await this.handleChangePage(this.state.currentPage, this.state.pageSize);
 	}
 	searchCandidates = listSync.bind(this, {
 		...this.config,
@@ -555,6 +558,7 @@ class Candidate extends Component {
 			cache: this.state.cache,
 		}
 		await this.unban(record.id, body);
+		await this.handleChangePage(this.state.currentPage, this.state.pageSize);
 	}
 	scam = updateSync.bind(this, {...this.config, update:'scam'});
 	scamSync = async record => {
@@ -565,6 +569,7 @@ class Candidate extends Component {
 			timestamp: moment().format("YMDH"),
 		}
 		await this.scam(record.id, body);
+		await this.handleChangePage(this.state.currentPage, this.state.pageSize);
 	}
 	unscam = updateSync.bind(this, {...this.config, update:'unscam'});
 	unscamSync = async record => {
@@ -574,6 +579,7 @@ class Candidate extends Component {
 			cache: this.state.cache,
 		}
 		await this.unscam(record.id, body);
+		await this.handleChangePage(this.state.currentPage, this.state.pageSize);
 	}
 	sex = updateSync.bind(this, {...this.config, update:'sex'});
 	sexSync = async record => {
@@ -583,6 +589,7 @@ class Candidate extends Component {
 			cache: this.state.cache,
 		}
 		await this.sex(record.id, body);
+		await this.handleChangePage(this.state.currentPage, this.state.pageSize);
 	}
 	unsex = updateSync.bind(this, {...this.config, update:'unsex'});
 	unsexSync = async record => {
@@ -592,6 +599,7 @@ class Candidate extends Component {
 			cache: this.state.cache,
 		}
 		await this.unsex(record.id, body);
+		await this.handleChangePage(this.state.currentPage, this.state.pageSize);
 	}
 
 	predictSync = createSync.bind(this, {
