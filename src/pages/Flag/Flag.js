@@ -481,8 +481,16 @@ class Flag extends Component {
 
 	// update local data
 	updateLocal = (record, type) => {
-		record.status = type;
-		this.setState({ data: [record, ...this.state.data]});
+		this.setState({ spinning: true }, async () => {
+			const interval = this.state.interval;
+			const orderBy = this.state.orderBy;
+			const page = this.state.page;
+			const remarks = this.state.remarks;
+			await this.listSync(interval, orderBy, page, remarks);
+			this.setState({ spinning: false });
+		});
+		// record.status = type;
+		// this.setState({ data: [record, ...this.state.data]});
 	}
 
 	// bind versions of CRUD
